@@ -1,5 +1,5 @@
 <template lang="pug">
-main#service
+#service
     .infoBox
         .serviceState
             table.serviceInfoTable
@@ -25,6 +25,7 @@ main#service
                 #[span(style="color:#33adff") &nbsp;&nbsp;&nbsp;&nbsp;const] skapi = #[span(style="color:#33adff") new] Skapi(#[span(style="color:#FFED91") "{{ currentService.service }}"], #[span(style="color:#FFED91") "dsalfkjsldkfjalsdkfjalskdfjlkdfjlaskfjlskjfalsf"]);
             .copy.clickable(@click="copy")
                 .material-symbols-outlined.fill file_copy
+        br
         a.question(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank")
             .material-symbols-outlined.empty.sml help 
             span Where do I put this code?
@@ -53,6 +54,9 @@ const route = useRoute();
     display: inline-table;
     border-spacing: 0 1rem;
 
+    td {
+        white-space: nowrap;
+    }
     .name {
         font-size: 20px;
         color: #0006;
@@ -77,7 +81,7 @@ const route = useRoute();
 .toggleWrap {
     display: inline-block;
     opacity: 1;
-
+    margin-bottom: 1rem;
     &.locked {
         opacity: 0.4;
     }
@@ -136,12 +140,14 @@ const route = useRoute();
     border-radius: 8px;
     box-shadow: 3px 9px 6px 0px rgba(0, 0, 0, 0.15);
     color: #FFF;
+    overflow-x: auto;
 
     .codeInner {
         // width: 100%;
-        overflow-x: auto;
+        // overflow-x: auto;
         font-size: 20px;
-        padding: 1rem 0;
+        // padding: 1rem 0;
+        max-width: 0;
     }
     .copy {
         position: absolute;

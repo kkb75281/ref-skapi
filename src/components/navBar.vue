@@ -60,6 +60,7 @@ const route = useRoute();
     a {
         text-decoration: none;
         color: var(--secondary-text);
+        display: inline-block;
     }
 }
 .service {

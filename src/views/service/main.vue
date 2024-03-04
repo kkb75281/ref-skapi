@@ -26,7 +26,7 @@ br
         router-link.router(:to="`/my-services/${currentService.service}/hosting`" :class="{'active': route.name == 'hosting'}")
             span.material-symbols-outlined.icon.fill language
             span.name Hosting
-    .right 
+    main.right 
         router-view
 </template>
 
@@ -52,15 +52,18 @@ if(currentService.value !== route.path.split('/')[2] || currentService.value == 
     display: flex;
     flex-wrap: nowrap;
     box-sizing: border-box;
-    padding: 0 20px;
+    // padding: 0 20px;
 
     .left {
-        width: 240px;
+        // width: 240px;
         box-sizing: border-box;
-        padding-right: 20px;
+        // padding-right: 20px;
+        padding-left: 20px;
     }
     .right {
-        width: calc(100vw - 240px);
+        flex-grow: 1;
+        padding: 0 20px;
+        // width: calc(100vw - 240px);
         // width: 100%;
     }
 }
