@@ -139,7 +139,7 @@ br
         svg.svgIcon
             use(xlink:href="@/assets/img/material-icon.svg#icon-mail-fill")
         span &nbsp;&nbsp;New {{emailType}}
-    .iconClick.square(@click="init" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}")
+    .iconClick.square(@click="getPage(true)" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}")
         //- .material-symbols-outlined.notranslate.fill(:class='{loading:fetching}') refresh
         svg.svgIcon(:class='{loading:fetching}')
             use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
@@ -379,12 +379,6 @@ watch(ascending, () => {
     }
 });
 
-watch(emailType, () => {
-    if (!fetching.value) {
-        init();
-    }
-});
-
 let mailEndpoint = ref("");
 
 let group: ComputedRef<
@@ -457,6 +451,13 @@ let getPage = async (refresh?: boolean) => {
         endOfList.value = false;
     }
 
+    currentService.getEmailTemplate(group.value).then(res => {
+        if (!res) return;
+
+        (currentService.service as any)["template_" + group.value].url = res.url;
+        (currentService.service as any)["template_" + group.value].subject = res.subject;
+    });
+
     if(!serviceAutoMails[currentService.id] || searchFor.value) {
         serviceAutoMails[currentService.id] = await Pager.init({
             id: "message_id",
@@ -464,7 +465,21 @@ let getPage = async (refresh?: boolean) => {
             sortBy: searchFor.value,
             order: ascending.value ? "asc" : "desc",
         });
+
+        // const pager = await Pager.init({
+        //     id: "message_id",
+        //     resultsPerPage: 10,
+        //     sortBy: searchFor.value,
+        //     order: ascending.value ? "asc" : "desc",
+        // });
+
+        // serviceAutoMails[currentService.id] = {
+        //     signup: pager,
+        //     auto: pager,
+        // };
     }
+
+    console.log(emailType)
 
     pager = serviceAutoMails[currentService.id];
 
@@ -479,7 +494,7 @@ let getPage = async (refresh?: boolean) => {
         // fetch from server
         let fetchedData = await currentService.getMailTemplates(
             callParams.value.params,
-            Object.assign({ fetchMore: !refresh }, callParams.value.options)
+            Object.assign({ fetchMore: !refresh }, callParams.value.options),
         );
 
         // save endOfList status
@@ -501,6 +516,13 @@ let getPage = async (refresh?: boolean) => {
         fetching.value = false;
     }
 };
+
+watch(emailType, (v, ov) => {
+    if (!fetching.value) {
+        // init();
+        getPage(true);
+    }
+}, { immediate: true });
 
 let resetIndex = async () => {
     currentPage.value = 1;
@@ -700,7 +722,6 @@ let init = async () => {
     // }
     currentPage.value = 1;
 
-
     // await currentService.getEmailTemplate(group.value).then(res => {
     //     if (!res) return;
 
@@ -716,7 +737,6 @@ let init = async () => {
         let disp = pager.getPage(currentPage.value);
         maxPage.value = disp.maxPage;
         listDisplay.value = disp.list;
-
     } else {
         serviceAutoMails[currentService.id] = pager;
         getPage(true);
@@ -729,6 +749,7 @@ let init = async () => {
     //     order: ascending.value ? "asc" : "desc",
     // });
 
+    // getPage(true);
     getHtml(group.value);
 };
 
