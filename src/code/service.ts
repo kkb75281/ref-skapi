@@ -1,6 +1,6 @@
 import { reactive, ref } from 'vue';
 import type { Ref } from 'vue';
-import { skapi } from './admin';
+import { skapi } from "@/main";
 import { Countries } from './countries';
 import { devLog } from './logger';
 import templates from 'rollup-plugin-visualizer/dist/plugin/template-types';
@@ -40,23 +40,23 @@ export type UserAttributes = {
   phone_number?: string;
   /** User's address, only visible to others when set to public. */
   address?:
-    | string
-    | {
-        /**
-         * Full mailing address, formatted for display or use on a mailing label. This field MAY contain multiple lines, separated by newlines. Newlines can be represented either as a carriage return/line feed pair ("\r\n") or as a single line feed character ("\n").
-         * street_address
-         * Full street address component, which MAY include house number, street name, Post Office Box, and multi-line extended street address information. This field MAY contain multiple lines, separated by newlines. Newlines can be represented either as a carriage return/line feed pair ("\r\n") or as a single line feed character ("\n").
-         */
-        formatted: string;
-        // City or locality component.
-        locality: string;
-        // State, province, prefecture, or region component.
-        region: string;
-        // Zip code or postal code component.
-        postal_code: string;
-        // Country name component.
-        country: string;
-      };
+  | string
+  | {
+    /**
+     * Full mailing address, formatted for display or use on a mailing label. This field MAY contain multiple lines, separated by newlines. Newlines can be represented either as a carriage return/line feed pair ("\r\n") or as a single line feed character ("\n").
+     * street_address
+     * Full street address component, which MAY include house number, street name, Post Office Box, and multi-line extended street address information. This field MAY contain multiple lines, separated by newlines. Newlines can be represented either as a carriage return/line feed pair ("\r\n") or as a single line feed character ("\n").
+     */
+    formatted: string;
+    // City or locality component.
+    locality: string;
+    // State, province, prefecture, or region component.
+    region: string;
+    // Zip code or postal code component.
+    postal_code: string;
+    // Country name component.
+    country: string;
+  };
   /**
    * User's gender. Can be "female" and "male".
    * Other values may be used when neither of the defined values are applicable.
@@ -75,6 +75,8 @@ export type UserAttributes = {
 };
 
 export type PublicUser = {
+  services: string[]; // service id list
+
   /** Service id of the user account. */
   service: string;
   /** User ID of the service owner. */
@@ -168,6 +170,7 @@ export type ServiceObj = {
     subject: string;
     url: string;
   };
+  email_alias?: string; // has value if email alias is registered
 };
 
 type SubscriptionObj = {
@@ -257,7 +260,8 @@ export default class Service {
     2: 'Standard',
     3: 'Premium',
     50: 'Unlimited',
-    51: 'Free Standard',
+    51: 'Standard (Perpetual License)',
+    52: 'Premium (Perpetual License)',
   };
   subscription: SubscriptionObj;
   storageInfo: {
@@ -320,27 +324,52 @@ export default class Service {
   //   return await skapi.util.request('admin-signup', Object.assign({ service: this.id, owner: this.owner }, params), { auth: true });
   // }
 
+  async registerSenderEmail(params: {
+    email_alias: string;
+  }): Promise<"SUCCESS: Sender e-mail has been registered."> {
+    let emailAlias: string;
+
+    if (params && 'email_alias' in params) {
+      emailAlias = params.email_alias;
+    } else {
+      emailAlias = '';
+    }
+
+    if (!emailAlias) {
+      throw 'Email is required.';
+    }
+
+    const specialCharPattern = /[!#$%^&*(),?":{}|<>]/g;
+    if (specialCharPattern.test(emailAlias)) {
+      throw 'Email contains special characters.';
+    }
+
+    let res = await skapi.util.request(this.admin_private_endpoint + 'register-sender-email', Object.assign({ service: this.id, owner: this.owner }, { email_alias: emailAlias }), { auth: true });
+    this.service.email_alias = emailAlias;
+    return res;
+  }
+
   registerOpenIDLogger(params: {
     url: string; // openid token 해석 url
     mthd: string; // GET or POST
-    hder: {[key:string]: string}; // header
-    prms: {[key:string]: string}; // params
+    hder: { [key: string]: string }; // header
+    prms: { [key: string]: string }; // params
     data: any; // post body data (post 만 해당)
     id: string; // openid logger id
     usr: string; // user id로 사용할 openid profile attribute
     cdtn: {
-        key: string; // openid profile attribute
-        value: string | boolean | number; // openid profile attribute value
-        condition: "=" | ">" | "<" | ">=" | "<=" | "!=" | "ends_with";
-        range: string | boolean | number; // value range
+      key: string; // openid profile attribute
+      value: string | boolean | number; // openid profile attribute value
+      condition: "=" | ">" | "<" | ">=" | "<=" | "!=" | "ends_with";
+      range: string | boolean | number; // value range
     },
-    request: 'create' | 'delete' | 'update' | 'list'; // request type
+    req: 'create' | 'delete' | 'update' | 'list'; // request type
   }) {
     return skapi.util.request(
-        this.admin_private_endpoint + 'register-openid',
-        Object.assign({ service: this.id, owner: this.owner }, skapi.util.extractFormData(params).data || {}),
-        { auth: true }
-      );
+      this.admin_private_endpoint + 'register-openid',
+      Object.assign({ service: this.id, owner: this.owner }, skapi.util.extractFormData(params).data || {}),
+      { auth: true }
+    );
   }
 
   async createAccount(
@@ -360,6 +389,20 @@ export default class Service {
     }
   ): Promise<'SUCCESS: Invitation has been sent.'> {
     return skapi.inviteUser(Object.assign({ service: this.id, owner: this.owner }, form), options);
+  }
+
+  async updateUserAttribute(
+    form: SubmitEvent | UserAttributes & UserProfilePublicSettings & { user_id: string },
+  ): Promise<{ [key: string]: any }> {
+    let attributes = skapi.util.extractFormData(form).data;
+
+    await skapi.util.request(
+      this.admin_private_endpoint + 'admin-edit-profile',
+      Object.assign({ service: this.id, owner: this.owner }, attributes),
+      { auth: true }
+    );
+
+    return attributes;
   }
 
   async grantAccess(params: { user_id: string; access_group: number }): Promise<'SUCCESS: Access has been granted to the user.'> {
@@ -881,10 +924,10 @@ export default class Service {
       let pendingStat = info.stat.includes('change:')
         ? 'transit'
         : info.stat.includes('remove')
-        ? 'removing'
-        : info.stat === 'active' || info.stat === 'tracked'
-        ? false
-        : info.stat;
+          ? 'removing'
+          : info.stat === 'active' || info.stat === 'tracked'
+            ? false
+            : info.stat;
       this.pending.subdomain = pendingStat;
       if (pendingStat) {
         time *= 1.2;
@@ -1099,7 +1142,7 @@ export default class Service {
           let result = xhr.responseText;
           try {
             result = JSON.parse(result);
-          } catch (err) {}
+          } catch (err) { }
           if (xhr.status >= 200 && xhr.status < 300) {
             res(result);
           } else {
@@ -1139,6 +1182,7 @@ export default class Service {
       let signedParams = Object.assign(
         {
           key: prefix + (f.webkitRelativePath || f.name),
+          size: f.size || 0,
           contentType: f.type || ct,
         },
         getSignedParams

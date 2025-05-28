@@ -1,77 +1,72 @@
 <template lang="pug">
-br
-br
-br
-
 main#subscription(v-if="serviceList[serviceId]?.subscriptionFetched")
-    router-link(:to="'/my-services/' + serviceId ")
-        img(src="@/assets/img/logo/logo.png" style="height:2em;")
+    .step-wrap
+        router-link(:to="'/my-services/' + serviceId")
+            img.symbol(src="@/assets/img/logo/symbol-logo.png" alt="Skapi logo")
+            span.list {{ serviceList[serviceId].service.name }}
 
-    .bottomLineTitle Subscription Plan
-
-    p
-        | Update your subscription plan for service "
-        span(style='font-weight:500') {{ serviceList[serviceId].service.name }}
-        | "
+        span >
         
-    p When upgrade/downgrading your subscription plan, the remaining days will be prorated and the amount will be adjusted accordingly on your next payment.
+        .route subscription plan
 
-    section
-        .planWrap
-            .infoBox
-                .mode
-                    | Standard
-                    small(style='font-weight:300') {{availablePlans[0] === false ? '  (Current Plan)' : ''}}
+    //- .section
+        router-link(:to="'/my-services/' + serviceId")
+            img.symbol(src="@/assets/img/logo/symbol-logo.png" alt="Skapi logo" style="height: 44px;margin-bottom: 0.5rem;")
+        .title.faktum Subscription Plan
+        .desc 
+            | Choose a plan for your service 
+            span.wordset.servicename {{serviceList[serviceId].service.name}}
+            br
+            | When upgrade/downgrading your subscription plan, 
+            span.wordset the remaining days will be prorated and the amount will be adjusted accordingly on your next payment.
 
-                template(v-if="availablePlans[0]")
-                    .price $19
-                    br
-                    button.final(@click="()=>{changeMode='standard';subscrOpt=availablePlans[0];}") {{availablePlans[0]}}
-                template(v-else-if="availablePlans[0] === null")
-                    .price $19
-                    br
-                    button.final.disabled N/A
-
-                hr
-
-                ul
-                    li Provides 10k user accounts
-                    li User invitations
-                    li 4GB of database
-                    li 50GB each for file storage and hosting storage
-                    li Real-time data
-
-                ul
-                    li Automated emails and sending newsletters
-                    li 1GB of email storage
-                    li Subdomain hosting
-            .infoBox
-                .mode
-                    | Premium
-                    small(style='font-weight:300') {{availablePlans[1] === false ? '  (Current Plan)' : ''}}
-
-                template(v-if="availablePlans[1]")
-                    .price $89
-                    br
-                    button.final(@click="()=>{changeMode='premium';subscrOpt=availablePlans[1];}") {{ availablePlans[1] }}
-                template(v-if="availablePlans[1] === null")
-                    .price $89
-                    br
-                    button.final.disabled N/A
-                hr
-
-                ul
-                    li 100k user accounts
-                    li User invitations
-                    li 100GB of database
-                    li 1TB each for file storage and hosting storage
-                    li Real-time data
-
-                ul
-                    li Automated emails and sending newsletters
-                    li 10GB of email storage
-                    li Subdomain hosting
-                    li unlimited use with pay-as-you-go when exceeding the limit (currently free for limited time)
+    .plan-wrap.card-wrap
+        .plan(:class="{'nohovered': availablePlans[0] === false || availablePlans[0] === null}")
+            .card
+                .title Standard 
+                //- .option 
+                    TabMenu(v-model="activeTabs.standard" :tabs="['basic', 'perpetual']")
+                .price
+                    template(v-if="activeTabs.standard === 0")
+                        .faktum {{ '$' + planSpec['Standard'].price }}
+                        span /mo
+                    template(v-else)
+                        .faktum {{ '$' + planSpec['Standard (Perpetual License)'].price }}
+                        span /only-once
+                .desc 
+                    template(v-if="activeTabs.standard === 0") Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
+                    template(v-else) Get lifetime access to the Standard plan for just $300—upgrade anytime as your needs grow.
+                button.final(type="button" :class="{'disabled': promiseRunning || availablePlans[0] === false || availablePlans[0] === null}" @click="selectedPlan('standard')")
+                    template(v-if="changeMode == 'standard' && promiseRunning")
+                        .loader(style="--loader-color:white; --loader-size: 12px")
+                    template(v-else-if="availablePlans[0]") {{ availablePlans[0] }}
+                    template(v-else-if="availablePlans[0] === false") Current
+                    template(v-else-if="availablePlans[0] === null") N/A
+                    template(v-else) Select
+            ul.provides
+                li(v-for="(des) in planSpec['Standard'].description") {{ des }}
+        .plan(:class="{'nohovered': availablePlans[1] === false || availablePlans[1] === null}")
+            .card
+                .title Premium 
+                //- .option 
+                    TabMenu(v-model="activeTabs.premium" :tabs="['basic', 'perpetual']")
+                .price
+                    template(v-if="activeTabs.premium === 0")
+                        .faktum {{ '$' + planSpec['Premium'].price }}
+                        span /mo
+                    template(v-else)
+                        .faktum {{ '$' + planSpec['Premium (Perpetual License)'].price }}
+                        span /only-once
+                .desc Empower your business with formcarry, #[span.wordset for big businesses]
+                button.final(type="button" :class="{'disabled': promiseRunning || availablePlans[1] === false || availablePlans[1] === null}" @click="selectedPlan('premium')")
+                    template(v-if="changeMode == 'premium' && promiseRunning")
+                        .loader(style="--loader-color:white; --loader-size: 12px")
+                    template(v-else-if="availablePlans[1]") {{ availablePlans[1] }}
+                    template(v-else-if="availablePlans[1] === false") Current
+                    template(v-else-if="availablePlans[1] === null") N/A
+                    template(v-else) Select
+            ul.provides
+                li(v-for="(des) in planSpec['Premium'].description") {{ des }}
 
     br
 
@@ -128,21 +123,39 @@ br
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { serviceList } from "@/views/service-list";
-import Modal from "@/components/modal.vue";
 import { user, customer } from "@/code/user";
-import { skapi } from "@/code/admin";
+import { skapi } from "@/main";
+import { currentServiceId, currentService } from '@/views/service/main';
+import { planSpec, currentServiceSpec } from "@/views/service/service-spec";
+
+import Modal from "@/components/modal.vue";
+import TabMenu from '@/components/tab.vue';
 
 const router = useRouter();
 const route = useRoute();
+
+let activeTabs = ref({
+    standard: 0,
+    premium: 0,
+});
 
 let serviceId = route.path.split("/")[2];
 let subscrOpt = ref(false);
 let promiseRunning = ref(false);
 let changeMode = "";
 let openCancelplan = ref(false);
+
+onMounted(() => {
+    console.log(currentServiceSpec.value)
+    console.log(availablePlans.value)
+    // 구독 변경 페이지로 바로 들어오거나 그 안에서 새로고침할 경우
+    if(currentService === null) {
+        router.push('/my-services/' + serviceId + '/dashboard');
+    }
+})
 
 let availablePlans = computed(() => {
     // true = createSubs
@@ -165,20 +178,35 @@ let availablePlans = computed(() => {
         return ["Subscribe", "Subscribe"];
     }
     if (serviceList[serviceId]?.service.plan == "Standard") {
-        return [false, "Upgrade"];
+        return [activeTabs.value.standard === 0 ? false : "Upgrade", "Upgrade"];
     }
     if (serviceList[serviceId]?.service.plan == "Premium") {
         let notAvail =
-            serviceList[serviceId].service.users > 10000 ||
-            serviceList[serviceId].storageInfo.email > 1073741824 ||
-            serviceList[serviceId].storageInfo.host > 53687091200 ||
-            serviceList[serviceId].storageInfo.cloud > 53687091200 ||
-            serviceList[serviceId].storageInfo.database > 4294967296;
-        return [notAvail ? null : "Downgrade", false];
+            currentServiceSpec.value.service.service.users > Number(planSpec['Premium'].users) ||
+            currentServiceSpec.value.storage.database > Number(planSpec['Premium'].storage.database) ||
+            currentServiceSpec.value.storage.cloud > Number(planSpec['Premium'].storage.cloud) ||
+            currentServiceSpec.value.storage.host > Number(planSpec['Premium'].storage.host) ||
+            currentServiceSpec.value.storage.email > Number(planSpec['Premium'].storage.email)
+
+        return [notAvail ? null : "Downgrade", activeTabs.value.premium === 0 ? false : "Upgrade"];
     }
 
     return [null, null];
 });
+
+let selectedPlan = (plan) => {
+    if (activeTabs.value[plan] == 1) {
+        plan = plan + '-perpetual';
+    }
+
+    if(plan === 'standard') {
+        subscrOpt.value = availablePlans.value[0];
+    } else {
+        subscrOpt.value = availablePlans.value[1];
+    }
+    
+    changeMode = plan;
+}
 
 let cancelSubs = async () => {
     promiseRunning.value = true;
@@ -197,37 +225,56 @@ let upgrade = () => {
     updateSubscription(changeMode);
 };
 
-let createSubscription = async (ticket_id, service_info) => {
+let createSubscription = async (ticket_id, service_info, isPerpetual=false) => {
+    promiseRunning.value = true;
+
+    if(changeMode.includes('perpetual')) {
+        isPerpetual = true;
+    }
+
     let resolvedCustomer = await customer;
     let product = JSON.parse(import.meta.env.VITE_PRODUCT);
     let customer_id = resolvedCustomer.id;
     let currentUrl = window.location;
-    promiseRunning.value = true;
+
+    let data = {
+        client_reference_id: service_info.owner,
+        customer: customer_id,
+        'customer_update[name]': 'auto',
+        'customer_update[address]': 'auto',
+
+        cancel_url: currentUrl.origin + '/my-services',
+        "line_items[0][quantity]": 1,
+        'line_items[0][price]': product[ticket_id],
+        "success_url": currentUrl.origin + '/my-services/' + service_info.id,
+        'tax_id_collection[enabled]': true,
+    }
+
+    if (isPerpetual) {
+        Object.assign(data, {
+            'metadata[service]': service_info.id,
+            'metadata[owner]': service_info.owner,
+            'metadata[price]': product[ticket_id],
+            'mode': 'payment',
+        })
+    } else {
+        Object.assign(data,{
+            'subscription_data[metadata][service]': service_info.id,
+            'subscription_data[metadata][owner]': service_info.owner,
+            'mode': 'subscription',
+            'subscription_data[description]': 'Subscription plan for service ID: "' + service_info.id + '"',
+        })
+    }
 
     let response = await skapi.clientSecretRequest({
-        clientSecretName: "stripe_test",
-        url: "https://api.stripe.com/v1/checkout/sessions",
-        method: "POST",
+        clientSecretName: 'stripe_test',
+        url: 'https://api.stripe.com/v1/checkout/sessions',
+        method: 'POST',
         headers: {
-            Authorization: "Bearer $CLIENT_SECRET",
-            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: 'Bearer $CLIENT_SECRET',
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
-        data: {
-            client_reference_id: user.user_id,
-            customer: customer_id,
-            "customer_update[name]": "auto",
-            "customer_update[address]": "auto",
-            "subscription_data[metadata][service]": service_info.id,
-            "subscription_data[metadata][owner]": user.user_id,
-            mode: "subscription",
-            "subscription_data[description]":
-                'Subscription plan for service ID: "' + service_info.id + '"',
-            cancel_url: currentUrl.origin + "/subscription/" + service_info.id,
-            "line_items[0][quantity]": 1,
-            "line_items[0][price]": product[ticket_id],
-            success_url: currentUrl.origin + "/my-services/" + service_info.id + "/dashboard/",
-            "tax_id_collection[enabled]": true,
-        },
+        data	
     });
 
     if (response.error) {
@@ -295,10 +342,72 @@ let updateSubscription = async (ticket_id) => {
     max-width: 1000px;
     padding: 0 8px;
     margin: 0 auto;
+    padding-top: 10px;
 
     .textIndent {
         padding: 0 12px; // = total 20px padding
     }
+}
+
+.section {
+    max-width: 570px;
+    margin: 0 auto;
+    padding: 4rem 20px;
+    text-align: center;
+
+    .title {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
+
+    .desc {
+        margin-bottom: 1rem;
+        line-height: 1.9;
+        color: #333;
+    }
+}
+
+.step-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    // max-width: 80rem;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 12px;
+    box-shadow: rgba(66, 62, 121, 0.25) 0px 0px 90px -14px;
+    // margin: 0 var(--nav-top);
+    border-color: #f7f9fc;
+
+    a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #000;
+
+        img {
+            height: 30px;
+        }
+    }
+
+    .route {
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.servicename {
+    font-weight: bold;
+    color: var(--main-color);
 }
 
 .mode {
@@ -309,70 +418,174 @@ let updateSubscription = async (ticket_id) => {
     margin-top: 8px;
 }
 
-.planWrap {
+.card-wrap {
+    max-width: 100%;
+    margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    // text-align: center;
 
-    .infoBox {
-        width: 280px;
+    .card {
         flex-grow: 1;
-        box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1) inset;
-    }
+        width: 48%;
+        min-width: 250px;
+        border: 1px solid rgba(0,0,0,0.1);
+        border-radius: 12px;
+        padding: 1rem;
+        transition: all .3s;
+        cursor: pointer;
+        background-color: #fff;
 
-    .price {
+        &:hover {
+            // border-color: var(--main-color);
+            box-shadow: 1px 1px 10px rgba(0,0,0, 0.05);
+        }
+
+        &.dark {
+            // background-color: var(--main-color);
+            // background: linear-gradient(to right, rgb(11, 53, 218), rgb(172, 250, 5), rgb(172, 250, 5), rgb(11, 53, 218));
+            // color: #fff;
+        }
+        
+        a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .icon {
+            width: 3rem;
+            height: 3rem;
+        }
+        .content {
+            text-align: left;
+
+            p {
+                margin: 0;
+
+                &.small {
+                    font-size: 0.8rem;
+                    color: rgba(0,0,0,0.5);
+                }
+            }
+        }
+    }
+}
+
+.plan-wrap {
+    max-width: 680px;
+    align-items: start;
+    padding-top: 7rem;
+
+    .plan {
+        width: 31%;
+        min-width: 250px;
+        flex-grow: 1;
+        transition: all .3s;
+
+        &.nohovered {
+            &:hover {
+                scale: 1;
+
+                .card {
+                    box-shadow: unset;
+                }
+            }
+        }
+            
+        &:hover {
+            scale: 1.05;
+
+            .card {
+                box-shadow: 1px 1px 10px rgba(0,0,0, 0.05);
+            }
+        }
+    }
+    .card {
+        width: 100%;
+        cursor: default;
+    }
+    .title {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+    .option {
         position: relative;
-        display: inline-block;
-        font-size: 1.6rem;
-        font-weight: 700;
-        padding: 1rem 0;
+        height: 2rem;
+        margin-bottom: 1rem;
+
+        .tab-menu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-55%, -50%);
+            scale: 0.9;
+            margin: 0;
+        }
+    }
+    .price {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        margin-bottom: 1rem;
+
+        .faktum {
+            font-size: 2.4rem;
+            margin-right: 0.5rem;
+        }
+        span {
+            color: #888
+        }
+    }
+    .desc {
+        margin: 0;
+        line-height: 1.4;
+        font-size: 0.8rem;
+        color: #777;
+        margin-bottom: 1rem;
+    }
+    button {
+        width: 100% !important;
+    }
+}
+
+.provides {
+    li {
+        position: relative;
+        list-style: none;
+        text-align: left;
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
 
         &::before {
             position: absolute;
-            content: "/mo";
-            right: -2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: var(--black-4);
+            content: '';
+            left: -1.3rem;
+            top: 0.1rem;
+            background: url('@/assets/img/icon/check.svg') no-repeat;
+            background-size: cover;
+            width: 16px;
+            height: 16px;
+            opacity: 0.8;
         }
     }
+}
 
-    ul {
-        padding: 0;
-        margin: 0;
-        list-style: none;
-        line-height: 28px;
+@media (max-width: 576px) {
+    .plan-wrap {
+        padding-top: 20px;
 
-        li {
-            position: relative;
-            color: rgba(0, 0, 0, 0.6);
-            font-size: 0.8rem;
-            font-weight: 400;
-            padding-left: 24px;
-
-            &::before {
-                position: absolute;
-                content: "";
-                left: 0;
-                top: 6px;
-                background: url("@/assets/img/icon/check.svg") no-repeat;
-                background-size: cover;
-                width: 16px;
-                height: 16px;
-                opacity: 0.8;
+        .plan {
+            &:hover, &.selected {
+                scale: 1;
             }
-
-            &.warning {
-                &::before {
-                    background: url("@/assets/img/icon/warning.svg") no-repeat;
-                    background-size: cover;
-                    width: 20px;
-                    height: 20px;
-                    left: -2px;
-                }
+            &.disabled {
+                scale: 0.95;
             }
         }
     }

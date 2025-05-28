@@ -22,15 +22,15 @@ br
             @input="(e)=>{form.password = e.target.value; error='';}" 
             :disabled="promiseRunning"
             name="password" placeholder="Enter password" required)
-            .passwordIcon(@click="showPassword = !showPassword")
-                template(v-if="showPassword")
-                    //- .material-symbols-outlined.notranslate.fill visibility
-                    svg.svgIcon(style="fill: var(--black-6)")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
-                template(v-else)
-                    //- .material-symbols-outlined.notranslate.fill visibility_off
-                    svg.svgIcon(style="fill: var(--black-6)")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+            //- .passwordIcon(@click.stop="showPassword = !showPassword")
+            //-     template(v-if="showPassword")
+            //-         //- .material-symbols-outlined.notranslate.fill visibility
+            //-         svg.svgIcon(style="fill: var(--black-6)")
+            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+            //-     template(v-else)
+            //-         //- .material-symbols-outlined.notranslate.fill visibility_off
+            //-         svg.svgIcon(style="fill: var(--black-6)")
+            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
 
         .actions
             Checkbox(style='font-weight:unset;' @change="(e)=>{setLocalStorage(e)}" :disabled='promiseRunning' v-model='remVal') Remember Me
@@ -71,8 +71,8 @@ br
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
-import { skapi } from '@/code/admin'
-import { user, updateUser } from '@/code/user'
+import { skapi } from '@/main'
+import { user } from '@/code/user'
 import { onMounted, ref } from 'vue';
 import Checkbox from '@/components/checkbox.vue';
 const router = useRouter();
@@ -112,11 +112,14 @@ let login = (e) => {
     }
 
     skapi.login(params).then(u => {
-        // await updateUser(true);
         for(let k in u) {
             user[k] = u[k];
         }
-        router.push('/my-services');
+		if(route.query?.suc_redirect) {
+			router.push(route.query?.suc_redirect);
+		} else {
+			router.push('/my-services');
+		}
     }).catch(err => {
         for (let k in user) {
             delete user[k];
@@ -151,6 +154,8 @@ let login = (e) => {
 }
 
 form {
+    padding: 8px;
+    
     >label {
         margin-bottom: 16px;
     }
@@ -177,17 +182,17 @@ form {
     }
 }
 
-.passwordInput {
-    position: relative;
+// .passwordInput {
+//     position: relative;
 
-    .passwordIcon {
-        position: absolute;
-        right: 15px;
-        bottom: 10px;
-        opacity: 0.5;
-        cursor: pointer;
-    }
-}
+//     .passwordIcon {
+//         position: absolute;
+//         right: 15px;
+//         bottom: 10px;
+//         opacity: 0.5;
+//         cursor: pointer;
+//     }
+// }
 
 @media (max-width: 480px) {
     form {

@@ -2,30 +2,36 @@
 nav#navBar(ref="navBar")
     .wrap
         .left
-            router-link.logo(to="/my-services" v-if="route.name != 'home' && loginState && route.path !== '/my-services'" style="color:white")
-                //- .material-symbols-outlined.notranslate.nohover.back(style="font-size:1.5em") arrow_back_ios
-                svg(width="1.5em" height="1.5em" style="fill:white")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back-ios")
-                span.name My Services
+            div(v-if="route.name != 'home' && user?.user_id && route.path !== '/my-services'" style="display:flex;gap:10px")
+                img.symbol(src="@/assets/img/logo/symbol-logo-white.svg" @click="router.push('/')" style="image-orientation:none; width:26px; cursor:pointer; vertical-align:top")
+                .router
+                    p.small(@click="router.push('/my-services')") My Services/
+                    p.big {{ serviceName }}
             router-link.logo(to="/" v-else)
                 img.symbol.mobile(src="@/assets/img/logo/symbol-logo-white.svg" style="image-orientation: none;")
                 img.symbol.desktop(src="@/assets/img/logo/logo-white.svg" style="image-orientation: none;height:38px")
         .right
-            ul
-                template(v-if="loginState")
-                    li(v-if="route.name == 'home'" style="margin-left:1rem")
+            ul.menu-wrap
+                template(v-if="user?.user_id")
+                    li.go-github
+                        a(href="https://github.com/broadwayinc/skapi-js" target="_blank")
+                            img(src="@/assets/img/icon/icon_github.svg")
+                    li
+                        a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") Docs
+                        
+                    li(v-if="route.name == 'home'")
                         router-link(to="/my-services") My Services
-                    li(v-else="route.name != 'home'")
-                        a.doc(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank" style="color:white")
-                            //- .material-symbols-outlined.notranslate menu_book
-                            svg(width="24" height="24" style="fill:white")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-menu-book")
-                            | &nbsp;Docs
+                    //- li(v-else="route.name != 'home'")
+                    //-     a.doc(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank" style="color:white")
+                    //-         //- .material-symbols-outlined.notranslate menu_book
+                    //-         svg(width="24" height="24" style="fill:white")
+                    //-             //- use(xlink:href="@/assets/img/material-icon.svg#icon-menu-book")
+                    //-         | &nbsp;Docs
 
                     li
                         .prof(@click.stop="(e)=>{showDropDown(e)}")
                             //- .material-symbols-outlined.notranslate.notranslate.fill(style="margin: 0 .5rem 0 1rem;font-size:32px;") account_circle
-                            svg(width="32" height="32" style="margin: 0 .5rem 0 1rem;")
+                            svg(width="32" height="32")
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-account-circle-fill")
                             .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                 .inner(style="padding:0")
@@ -49,15 +55,15 @@ nav#navBar(ref="navBar")
                                     //- .policy
                                     //-     router-link(to="/pp.html" target="_blank") Terms of service • Privacy policy
                 template(v-else)
-                    li
-                        .go-github
+                    li.go-github
+                        a(href="https://github.com/broadwayinc/skapi-js" target="_blank")
                             img(src="@/assets/img/icon/icon_github.svg")
                     li
                         a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") Docs
                     li
                         router-link.ser(to="/login") Login
                     li
-                        router-link(to="/signup") 
+                        router-link(to="/signup")
                             button.final Sign-up
 
 
@@ -70,18 +76,23 @@ nav#navBar(ref="navBar")
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
 import { onMounted, onBeforeUnmount, ref } from "vue";
-import { skapi } from "@/code/admin";
-import { loginState, user, updateUser, customer } from "@/code/user";
+import { skapi } from "@/main";
+import { serviceMainLoaded, currentService } from '@/views/service/main';
+import { user, customer } from "@/code/user";
 import { showDropDown } from "@/assets/js/event.js";
 import { setAutoHide, removeListener } from "./navBar-autohide.ts";
 
 const router = useRouter();
 const route = useRoute();
 
-// console.log(route.path.split("/")[1]);
 let navBar = ref(null);
 let moreVert = ref(null);
 let running = ref(false);
+let serviceName = ref(currentService?.service?.name || "");
+
+const updateServiceName = () => {
+    serviceName.value = currentService?.service?.name || "loading...";
+};
 
 let openBillingPage = async () => {
     running.value = true;
@@ -117,17 +128,18 @@ let navigateToPage = () => {
 
 let logout = () => {
     skapi.logout().then(() => {
-        updateUser();
         router.push({ path: "/login" });
     });
 };
 
 onMounted(() => {
     setAutoHide(navBar.value, 3);
+    window.addEventListener('serviceChanged', updateServiceName);
 });
 
 onBeforeUnmount(() => {
     removeListener();
+    window.removeEventListener('serviceChanged', updateServiceName);
 });
 </script>
 
@@ -135,14 +147,7 @@ onBeforeUnmount(() => {
 img.symbol.mobile {
     display: none;
 }
-@media (max-width: 600px) {
-    img.symbol.desktop {
-        display: none;
-    }
-    img.symbol.mobile {
-        display: block;
-    }
-}
+
 #proceeding {
     position: fixed;
     top: 0;
@@ -172,7 +177,6 @@ img.symbol.mobile {
 
     font-family: 'Radio Canada', serif;
     font-size: 20px;
-    padding: 20px 16px;
     border-bottom: 1px solid #475467;
     background-color: #101828;
 
@@ -181,29 +185,54 @@ img.symbol.mobile {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: 10px;
 
         max-width: 80rem;
+        padding: 20px 16px;
 
         .left {
-            flex-shrink: 0;
+            // flex-shrink: 0;
+            flex-grow: 1;
             display: inline-block;
             vertical-align: middle;
 
             .logo {
                 display: block;
                 text-decoration: none;
-
-                * {
-                    vertical-align: middle;
-                }
-
+                
                 img {
+                    width: auto;
                     height: 32px;
                     margin-right: 10px;
+                    vertical-align: middle;
                 }
+            }
 
-                span {
+            .router {
+                flex-grow: 1;
+
+                p {
+                    margin: 0;
+                }
+                .small {
+                    line-height: 1.1;
+                    font-size: 0.7rem;
+                    cursor: pointer;
+                    white-space: nowrap;
+                    opacity: 0.7;
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+                .big {
+                    width: 100%;
+                    min-width: 60px;
+                    line-height: 1.1;
                     font-weight: bold;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
             }
         }
@@ -211,7 +240,7 @@ img.symbol.mobile {
         .right {
             display: inline-block;
             vertical-align: middle;
-            flex-grow: 1;
+            // flex-grow: 1;
             font-weight: bold;
 
             ul {
@@ -226,6 +255,10 @@ img.symbol.mobile {
                 align-items: center;
                 gap: 24px;
 
+                &.menu-wrap {
+                    height: 40px;
+                }
+
                 li {
                     display: inline-block;
                     vertical-align: middle;
@@ -234,26 +267,26 @@ img.symbol.mobile {
                     cursor: pointer;
 
                     display: flex;
-
-                    &:first-of-type {
-                        margin-right: 24px;
-                    }
                 }
             }
 
             .go-github {
-                width: 20px;
-                height: 20px;
-                position: relative;
+                margin-right: 1.25rem;
 
-                &::after {
-                    content: "";
-                    display: inline-block;
-                    width: 1px;
+                a {
+                    width: 20px;
                     height: 20px;
-                    background-color: rgba(255, 255, 255, 0.4);
-                    position: absolute;
-                    right: -24px;
+                    position: relative;
+
+                    &::after {
+                        content: "";
+                        display: inline-block;
+                        width: 1px;
+                        height: 20px;
+                        background-color: rgba(255, 255, 255, 0.4);
+                        position: absolute;
+                        right: -24px;
+                    }
                 }
             }
         }
@@ -351,6 +384,51 @@ img.symbol.mobile {
         width: 100%;
         height: 100%;
         object-fit: conver;
+    }
+}
+
+@media (max-width: 600px) {
+    img.symbol.desktop {
+        display: none;
+    }
+
+    img.symbol.mobile {
+        display: block;
+    }
+
+    #navBar {
+        .wrap {
+            .left {
+                .router {
+                    .big {
+                        width: calc(100vw - 215px);
+                    }
+                }
+            }
+            .right {
+                ul {
+                    gap: 0.9rem;
+
+                    li {
+                        font-size: 0.9rem;
+                    }
+                }
+
+                .go-github {
+                    margin-right: 0.9rem;
+
+                    a {
+                        width: 16px;
+                        height: 16px;
+
+                        &::after {
+                            height: 0.9rem;
+                            right: -0.9rem;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 </style>

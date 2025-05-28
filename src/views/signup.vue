@@ -10,7 +10,7 @@ br
     .bottomLineTitle Sign Up
 
     form(@submit.prevent="signup")
-        p Enter Email and Password to create an account.
+        p Enter your Email and create a password.
 
         br
         
@@ -24,7 +24,7 @@ br
 
 
         label.passwordInput
-            | Password
+            | Create Password
             input.big(:type='showPassword ? "text" : "password"'
             ref="passwordField" 
             @input="e=> { form.password = e.target.value; e.target.setCustomValidity(''); error = '' }"
@@ -32,15 +32,15 @@ br
             maxlength="60"
             placeholder="At least 6 characters" 
             required)
-            .passwordIcon(@click="showPassword = !showPassword")
-                template(v-if="showPassword")
-                    //- .material-symbols-outlined.notranslate.fill visibility
-                    svg.svgIcon(style="fill: var(--black-6)")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
-                template(v-else)
-                    //- .material-symbols-outlined.notranslate.fill visibility_off
-                    svg.svgIcon(style="fill: var(--black-6)")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+            //- .passwordIcon(@click="showPassword = !showPassword")
+            //-     template(v-if="showPassword")
+            //-         //- .material-symbols-outlined.notranslate.fill visibility
+            //-         svg.svgIcon(style="fill: var(--black-6)")
+            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+            //-     template(v-else)
+            //-         //- .material-symbols-outlined.notranslate.fill visibility_off
+            //-         svg.svgIcon(style="fill: var(--black-6)")
+            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
 
         label.passwordInput
             | Confirm password
@@ -50,15 +50,15 @@ br
             @change="validatePassword"
             placeholder="Enter your password again to confirm" 
             required)
-            .passwordIcon(@click="showPassword = !showPassword")
-                template(v-if="showPassword")
-                    //- .material-symbols-outlined.notranslate.fill visibility
-                    svg.svgIcon(style="fill: var(--black-6)")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
-                template(v-else)
-                    //- .material-symbols-outlined.notranslate.fill visibility_off
-                    svg.svgIcon(style="fill: var(--black-6)")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+            //- .passwordIcon(@click="showPassword = !showPassword")
+            //-     template(v-if="showPassword")
+            //-         //- .material-symbols-outlined.notranslate.fill visibility
+            //-         svg.svgIcon(style="fill: var(--black-6)")
+            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+            //-     template(v-else)
+            //-         //- .material-symbols-outlined.notranslate.fill visibility_off
+            //-         svg.svgIcon(style="fill: var(--black-6)")
+            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
 
         .actions 
             Checkbox(v-model="form.subscribe" style='font-weight:unset;') I agree to receive newsletters from Skapi.
@@ -90,9 +90,9 @@ br
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
-import { skapi } from '@/code/admin'
+import { skapi } from '@/main'
 import { user } from '@/code/user'
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import Checkbox from '@/components/checkbox.vue';
 const router = useRouter();
 const route = useRoute();
@@ -107,6 +107,10 @@ let form = ref({
     password: '',
     password_confirm: '',
     subscribe: true,
+});
+let routeQuery = route.query;
+onMounted(() => {
+	console.log({routeQuery})
 });
 
 let validatePassword = () => {
@@ -128,6 +132,10 @@ let signup = (e) => {
         signup_confirmation: '/success',
         email_subscription: form.value.subscribe
     }
+
+	if(routeQuery?.suc_redirect) {
+		options.signup_confirmation = options.signup_confirmation + '?suc_redirect=' + routeQuery.suc_redirect
+	}
 
     skapi.signup(params, options).then(res => {
         router.push({ path: '/confirmation', query: { email: form.value.email } })
@@ -155,6 +163,8 @@ let signup = (e) => {
 }
 
 form {
+    padding: 8px;
+
     >label {
         margin-bottom: 16px;
     }
@@ -180,17 +190,17 @@ form {
     }
 }
 
-.passwordInput {
-    position: relative;
+// .passwordInput {
+//     position: relative;
 
-    .passwordIcon {
-        position: absolute;
-        right: 15px;
-        bottom: 10px;
-        opacity: 0.5;
-        cursor: pointer;
-    }
-}
+//     .passwordIcon {
+//         position: absolute;
+//         right: 15px;
+//         bottom: 10px;
+//         opacity: 0.5;
+//         cursor: pointer;
+//     }
+// }
 
 @media (max-width: 480px) {
     form {
