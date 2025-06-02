@@ -47,7 +47,7 @@ section.infoBox
         .smallTitle Subscription
         .smallValue(:style='{fontWeight:currentService.service.plan == "Canceled" ? "normal" : null, color:currentService.service.plan == "Canceled" ? "var(--caution-color)" : null}')
             span {{ currentService.service.plan || currentService.plan }}&nbsp;
-            router-link.editHandle(:to='`/subscription/${currentService.id}`') [CHANGE]
+            router-link.editHandle(v-if="currentService.service.group !== 51 && currentService.service.group !== 52" :to='`/subscription/${currentService.id}`') [CHANGE]
 
     .state 
         .smallTitle {{currentService.service.plan == "Canceled" ? '-' : 'Renewal Date'}}
@@ -65,41 +65,25 @@ section.infoBox
 
 
     .state 
-        .smallTitle Users 
-        .smallValue {{ getUserUnit(currentService.service.users) }} / 
-            span(v-if="currentService.plan == 'Trial' || currentService.plan == 'Standard' || currentService.plan == 'Free Standard'") 10K
-            span(v-else-if="currentService.plan == 'Premium'") 100K
-            span(v-else-if="currentService.plan == 'Unlimited'") Unlimited
+        .smallTitle Users
+        .smallValue {{ currentServiceSpec.dataSize?.users }} / {{ currentServiceSpec.servicePlan.users }}
 
     .state 
-        .smallTitle Database 
-        .smallValue {{ getFileSize(currentService.storageInfo.database) }} / 
-            span(v-if="currentService.plan == 'Trial' || currentService.plan == 'Standard' || currentService.plan == 'Free Standard'") 4GB
-            span(v-else-if="currentService.plan == 'Premium'") 100GB
-            span(v-else-if="currentService.plan == 'Unlimited'") Unlimited
+        .smallTitle Database
+        .smallValue {{ currentServiceSpec.dataSize?.database }} / {{ currentServiceSpec.servicePlan.storage.database }}
 
     .state 
         .smallTitle File Storage
-        .smallValue {{ getFileSize(currentService.storageInfo.cloud) }} / 
-            span(v-if="currentService.plan == 'Trial' || currentService.plan == 'Standard' || currentService.plan == 'Free Standard'") 50GB
-            span(v-else-if="currentService.plan == 'Premium'") 1TB
-            span(v-else-if="currentService.plan == 'Unlimited'") Unlimited
+        .smallValue {{ currentServiceSpec.dataSize?.cloud }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
 
     template(v-if="currentService.plan !== 'Trial'")
         .state 
             .smallTitle File Hosting
-            .smallValue {{ getFileSize(currentService.storageInfo.host) }} / 
-                span(v-if="currentService.plan == 'Trial' || currentService.plan == 'Standard' || currentService.plan == 'Free Standard'") 50GB
-                span(v-else-if="currentService.plan == 'Premium'") 1TB
-                span(v-else-if="currentService.plan == 'Unlimited'") Unlimited
+            .smallValue {{ currentServiceSpec.dataSize?.host }} / {{ currentServiceSpec.servicePlan.storage.host }}
 
         .state 
             .smallTitle Email Storage
-            .smallValue {{ getFileSize(currentService.storageInfo.email) }} / 
-                span(v-if="currentService.plan == 'Trial' || currentService.plan == 'Standard' || currentService.plan == 'Free Standard'") 1GB
-                span(v-else-if="currentService.plan == 'Premium'") 10GB
-                span(v-else-if="currentService.plan == 'Unlimited'") Unlimited
-
+            .smallValue {{ currentServiceSpec.dataSize?.email }} / {{ currentServiceSpec.servicePlan.storage.email }}
 
     hr(style='margin-top: 1.5rem;')
 
@@ -232,14 +216,15 @@ section.infoBox
 </template>
 
 <script setup lang="ts">
-import { nextTick, reactive, ref, computed } from 'vue';
+import { nextTick, reactive, ref, computed, onMounted } from 'vue';
 import { currentService } from '@/views/service/main';
-import Toggle from '@/components/toggle.vue';
-import Tooltip from '@/components/tooltip.vue';
 import { dateFormat } from '@/code/admin';
-import { getFileSize } from '@/code/admin';
 import { devLog } from '@/code/logger';
 import { user } from '@/code/user';
+import { currentServiceSpec } from '@/views/service/service-spec';
+
+import Toggle from '@/components/toggle.vue';
+import Tooltip from '@/components/tooltip.vue';
 
 let inputName = '';
 let inputCors = '';
@@ -267,20 +252,21 @@ let resetTime = (timestamp:number) => {
   // Convert the timestamp to a Date object
   let startDate = new Date(timestamp); // assuming the timestamp is in seconds
   let today = new Date();
+  let resetDay = 14;
 
   // Calculate the difference in days
   const diffInDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
 
   // Calculate the number of days since the last 7-day cycle
-  const daysSinceLastCycle = diffInDays % 30;
+  const daysSinceLastCycle = diffInDays % resetDay;
 
   // Calculate the number of days until the next cycle
-  let daysUntilNextCycle = (30 - daysSinceLastCycle) % 30;
+  let daysUntilNextCycle = (resetDay - daysSinceLastCycle) % resetDay;
 
   // If the cycle has just started today, then daysUntilNextCycle will be 0.
   // In that case, we want to return 7 (the next cycle will start in 7 days).
   if (daysUntilNextCycle === 0) {
-    daysUntilNextCycle = 30;
+    daysUntilNextCycle = resetDay;
   }
 
   // Add the number of days until the next cycle to today's date
@@ -375,29 +361,6 @@ let changeApiKey = () => {
         currentService.service.api_key = previous;
         throw err;
     });
-}
-
-let getUserUnit = (user: number) => {
-    let units = ['k', 'M', 'B', 'T'];
-    let result = '';
-
-    for (let i = units.length - 1; i >= 0; i--) {
-        let unitValue = Math.pow(10, (i + 1) * 3);
-        if (user >= unitValue) {
-            if (i === 0) {
-                result = user.toString();
-            } else {
-                result = (user / unitValue).toFixed(2) + units[i];
-            }
-            break;
-        }
-    }
-
-    if (result === '') {
-        result = user.toString();
-    }
-
-    return result;
 }
 
 // change prevent_signup

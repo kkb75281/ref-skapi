@@ -260,7 +260,8 @@ export default class Service {
     2: 'Standard',
     3: 'Premium',
     50: 'Unlimited',
-    51: 'Free Standard',
+    51: 'Standard (Perpetual License)',
+    52: 'Premium (Perpetual License)',
   };
   subscription: SubscriptionObj;
   storageInfo: {
@@ -391,7 +392,7 @@ export default class Service {
   }
 
   async updateUserAttribute(
-    form: SubmitEvent | UserAttributes & UserProfilePublicSettings & { email: string },
+    form: SubmitEvent | UserAttributes & UserProfilePublicSettings & { user_id: string },
   ): Promise<{ [key: string]: any }> {
     let attributes = skapi.util.extractFormData(form).data;
 
