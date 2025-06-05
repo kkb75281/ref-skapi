@@ -160,248 +160,247 @@
 </template>
 
 <script setup lang="ts">
-    import { computed, nextTick, ref, watch, type Ref } from 'vue';
-    import Checkbox from '@/components/checkbox.vue';
-    import { user } from '@/code/user';
-    import { currentService, serviceRecords } from "@/views/service/main";
-    
-    let service = currentService.id;
-    let owner = currentService.owner;
+import { computed, nextTick, ref, watch, type Ref } from 'vue';
+import Checkbox from '@/components/checkbox.vue';
+import { user } from '@/code/user';
+import { currentService, serviceRecords } from "@/views/service/main";
 
-    let { data } = defineProps({
-        data: Object
-    })
+let service = currentService.id;
+let owner = currentService.owner;
 
-    let def: any = {
-        table: {
-            name: "",
-            access_group: "public",
-            subscription: {
-                is_subscription_record: false, // When true, record will be uploaded to subscription table.
-                exclude_from_feed: false, // When true, record will be excluded from the subscribers feed.
-                notify_subscribers: false, // When true, subscribers will receive notification when the record is uploaded.
-                feed_referencing_records: false, // When true, records referencing this record will be included to the subscribers feed.
-                notify_referencing_records: false // When true, records referencing this record will be notified to subscribers.
-            },
+let { data } = defineProps({
+    data: Object
+})
+
+let def: any = {
+    table: {
+        name: "",
+        access_group: "public",
+        subscription: {
+            is_subscription_record: false, // When true, record will be uploaded to subscription table.
+            exclude_from_feed: false, // When true, record will be excluded from the subscribers feed.
+            notify_subscribers: false, // When true, subscribers will receive notification when the record is uploaded.
+            feed_referencing_records: false, // When true, records referencing this record will be included to the subscribers feed.
+            notify_referencing_records: false // When true, records referencing this record will be notified to subscribers.
         },
-        index: {
-            name: "",
-            value: "",
-        },
-        source: {
-            referencing_limit: null, // Default: null (Infinite)
-            prevent_multiple_referencing: false, // If true, a single user can reference this record only once.
-            only_granted_can_reference: false, // When true, only the user who has granted private access to the record can reference this record.
-            can_remove_referencing_records: false, // When true, owner of the record can remove any record that are referencing this record. Also when this record is deleted, all the record referencing this record will be deleted.
-            referencing_index_restrictions: null as any
-        },
-        reference: "",
-        tags: [] as string[],
-        readonly: false,
-        data: null,
-        bin: {},
+    },
+    index: {
+        name: "",
+        value: "",
+    },
+    source: {
+        referencing_limit: null, // Default: null (Infinite)
+        prevent_multiple_referencing: false, // If true, a single user can reference this record only once.
+        only_granted_can_reference: false, // When true, only the user who has granted private access to the record can reference this record.
+        can_remove_referencing_records: false, // When true, owner of the record can remove any record that are referencing this record. Also when this record is deleted, all the record referencing this record will be deleted.
+        referencing_index_restrictions: null as any
+    },
+    reference: "",
+    tags: [] as string[],
+    readonly: false,
+    data: null,
+    bin: {},
+}
+
+let accessGroup = ref('public');
+let indexName = ref("")
+let indexValueType = ref("string");
+
+let selectedRecord_data = ref('');
+let indexValue: Ref<any> = ref("");
+let restrictedAccess = ref(false);
+
+// file
+let deleteFileList = ref([]);
+let addFileList = ref([]);
+
+let selectedRecord = ref(def);
+
+function load(rec: any) {
+    rec = rec || def;
+    selectedRecord.value = rec;
+
+    deleteFileList.value = [];
+    addFileList.value = [];
+    accessGroup.value = typeof rec.table.access_group === 'number' ? 'authorized' : rec.table.access_group;
+    indexName.value = rec?.index?.name || "";
+    indexValue.value = rec.index?.value || "";
+
+    if (rec?.user_id && rec.table.access_group === 'private' && rec.user_id !== user?.user_id) {
+        restrictedAccess.value = true;
+    }
+    else {
+        restrictedAccess.value = false;
     }
 
-    let accessGroup = ref('public');
-    let indexName = ref("")
-    let indexValueType = ref("string");
-
-    let selectedRecord_data = ref('');
-    let indexValue: Ref<any> = ref("");
-    let restrictedAccess = ref(false);
-    
-    // file
-    let deleteFileList = ref([]);
-    let addFileList = ref([]);
-
-    let selectedRecord = ref(def);
-
-    function load(rec: any) {
-        rec = rec || def;
-        selectedRecord.value = rec;
-
-        deleteFileList.value = [];
-        addFileList.value = [];
-        accessGroup.value = typeof rec.table.access_group === 'number' ? 'authorized' : rec.table.access_group;
-        indexName.value = rec?.index?.name || "";
-        indexValue.value = rec.index?.value || "";
-
-        if (rec?.user_id && rec.table.access_group === 'private' && rec.user_id !== user?.user_id) {
-            restrictedAccess.value = true;
-        }
-        else {
-            restrictedAccess.value = false;
-        }
-
-        if (indexValue.value !== false || indexValue.value !== 0) {
-            indexValue.value = indexValue.value || "";
-        }
-
-        indexValueType.value = typeof indexValue.value;
-        console.log(rec.data);
-        selectedRecord_data.value = JSON.stringify(rec.data || null, null, 2);
-        if (Array.isArray(selectedRecord?.value?.tags)) {
-            selectedRecord.value.tags = selectedRecord.value.tags.join(", ");
-        }
+    if (indexValue.value !== false || indexValue.value !== 0) {
+        indexValue.value = indexValue.value || "";
     }
 
-    watch(() => data, (newVal) => {
-        load(newVal);
-    }, { immediate: true });
+    indexValueType.value = typeof indexValue.value;
+    console.log(rec.data);
+    selectedRecord_data.value = JSON.stringify(rec.data || null, null, 2);
+    if (Array.isArray(selectedRecord?.value?.tags)) {
+        selectedRecord.value.tags = selectedRecord.value.tags.join(", ");
+    }
+}
 
-    // textarea tab key
-    let handleKey = (e: any) => {
-        let start = e.target.selectionStart;
-        let end = e.target.selectionEnd;
-        let beforeCursor = e.target.value.slice(0, start);
-        let afterCursor = e.target.value.slice(start);
+watch(() => data, (newVal) => {
+    load(newVal);
+}, { immediate: true });
 
-        if (e.key == "Tab") {
-            e.preventDefault();
+// textarea tab key
+let handleKey = (e: any) => {
+    let start = e.target.selectionStart;
+    let end = e.target.selectionEnd;
+    let beforeCursor = e.target.value.slice(0, start);
+    let afterCursor = e.target.value.slice(start);
 
+    if (e.key == "Tab") {
+        e.preventDefault();
+
+        e.target.value =
+            e.target.value.substring(0, start) + "\t" + e.target.value.substring(end);
+        e.target.setSelectionRange(start + 1, start + 1);
+    } else if (e.key == "Enter") {
+        e.preventDefault();
+
+        let indentMatch = beforeCursor.match(/(\n|\s)*$/);
+        let startCount = indentMatch.input.split("{").length - 1;
+        let endCount = indentMatch.input.split("}").length - 1;
+
+        let currentLineStart = beforeCursor.lastIndexOf("\n") + 1;
+        let currentIndentation = beforeCursor.slice(currentLineStart).match(/^\s*/)[0];
+        let newIndentation = currentIndentation + "\t";
+        let newCursorPosition = beforeCursor.length + newIndentation.length + 1;
+
+        if (
+            (beforeCursor.endsWith("{") && afterCursor.startsWith("}")) ||
+            (beforeCursor.endsWith("[") && afterCursor.startsWith("]"))
+        ) {
             e.target.value =
-                e.target.value.substring(0, start) + "\t" + e.target.value.substring(end);
-            e.target.setSelectionRange(start + 1, start + 1);
-        } else if (e.key == "Enter") {
-            e.preventDefault();
-
-            let indentMatch = beforeCursor.match(/(\n|\s)*$/);
-            let startCount = indentMatch.input.split("{").length - 1;
-            let endCount = indentMatch.input.split("}").length - 1;
-
-            let currentLineStart = beforeCursor.lastIndexOf("\n") + 1;
-            let currentIndentation = beforeCursor.slice(currentLineStart).match(/^\s*/)[0];
-            let newIndentation = currentIndentation + "\t";
-            let newCursorPosition = beforeCursor.length + newIndentation.length + 1;
-
-            if (
-                (beforeCursor.endsWith("{") && afterCursor.startsWith("}")) ||
-                (beforeCursor.endsWith("[") && afterCursor.startsWith("]"))
-            ) {
+                beforeCursor +
+                "\n" +
+                newIndentation +
+                "\n" +
+                currentIndentation +
+                afterCursor;
+            e.target.setSelectionRange(newCursorPosition, newCursorPosition);
+        } else {
+            if (startCount > endCount) {
                 e.target.value =
                     beforeCursor +
                     "\n" +
-                    newIndentation +
-                    "\n" +
+                    currentIndentation +
                     currentIndentation +
                     afterCursor;
-                e.target.setSelectionRange(newCursorPosition, newCursorPosition);
-            } else {
-                if (startCount > endCount) {
-                    e.target.value =
-                        beforeCursor +
-                        "\n" +
-                        currentIndentation +
-                        currentIndentation +
-                        afterCursor;
-                    e.target.setSelectionRange(
-                        beforeCursor.length + newIndentation.length,
-                        beforeCursor.length + newIndentation.length
-                    );
-                }
+                e.target.setSelectionRange(
+                    beforeCursor.length + newIndentation.length,
+                    beforeCursor.length + newIndentation.length
+                );
             }
-        } else if (e.key == "{" && e.shiftKey) {
-            e.target.value = beforeCursor + "}" + afterCursor;
-            e.target.setSelectionRange(start, start);
-        } else if (e.key == "[") {
-            e.target.value = beforeCursor + "]" + afterCursor;
-            e.target.setSelectionRange(start, start);
         }
-    };
+    } else if (e.key == "{" && e.shiftKey) {
+        e.target.value = beforeCursor + "}" + afterCursor;
+        e.target.setSelectionRange(start, start);
+    } else if (e.key == "[") {
+        e.target.value = beforeCursor + "]" + afterCursor;
+        e.target.setSelectionRange(start, start);
+    }
+};
 
-    let addFile = () => {
-        addFileList.value.push({ key: "", filename: "" });
-        nextTick(() => {
-            let scrollTarget = document.querySelector(".detailRecord .content");
-            scrollTarget.scrollTop = scrollTarget.scrollHeight;
-        });
-    };
+let addFile = () => {
+    addFileList.value.push({ key: "", filename: "" });
+    nextTick(() => {
+        let scrollTarget = document.querySelector(".detailRecord .content");
+        scrollTarget.scrollTop = scrollTarget.scrollHeight;
+    });
+};
 
-    let deleteFile = (key: string, index: number) => {
-        deleteFileList.value.push(selectedRecord.value.bin[key].splice(index, 1)[0].url.split('?')[0]);
-    };
+let deleteFile = (key: string, index: number) => {
+    deleteFileList.value.push(selectedRecord.value.bin[key].splice(index, 1)[0].url.split('?')[0]);
+};
 
 </script>
 <style lang="less">
+.content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+    font-size: 0.8rem;
 
-    .content {
-        flex-grow: 1;
-        overflow-y: auto;
-        padding: 20px;
-        font-size: 0.8rem;
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 12px;
 
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            margin-bottom: 12px;
+        &.indent {
+            padding-left: 20px;
 
-            &.indent {
-                padding-left: 20px;
-
-                .key {
-                    font-weight: normal;
-                    width: 150px;
-                }
+            .key {
+                font-weight: normal;
+                width: 150px;
             }
-        }
-
-        .key {
-            font-weight: 500;
-            width: 170px;
-        }
-
-        .value {
-            flex-grow: 1;
-            min-width: 270px;
-            margin: 6px 0 6px;
-
-            input {
-                width: 100%;
-            }
-        }
-
-        .file {
-            .removeFile {
-                cursor: pointer;
-            }
-
-            .filename {
-                display: inline-block;
-                vertical-align: middle;
-                max-width: 100%;
-                min-width: 270px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                color: var(--main-color);
-
-                @media (pointer: fine) {
-                    &:hover {
-                        text-decoration: underline;
-                    }
-                }
-
-                font-weight: 500;
-                cursor: pointer;
-                margin-bottom: 4px;
-            }
-
-            input.line.key {
-                margin-bottom: 4px;
-            }
-        }
-
-        .add {
-            width: 100%;
-            text-align: center;
-            padding: 6px 0;
-            color: var(--main-color);
-            background-color: #293fe60d;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
         }
     }
+
+    .key {
+        font-weight: 500;
+        width: 170px;
+    }
+
+    .value {
+        flex-grow: 1;
+        min-width: 270px;
+        margin: 6px 0 6px;
+
+        input {
+            width: 100%;
+        }
+    }
+
+    .file {
+        .removeFile {
+            cursor: pointer;
+        }
+
+        .filename {
+            display: inline-block;
+            vertical-align: middle;
+            max-width: 100%;
+            min-width: 270px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--main-color);
+
+            @media (pointer: fine) {
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 4px;
+        }
+
+        input.line.key {
+            margin-bottom: 4px;
+        }
+    }
+
+    .add {
+        width: 100%;
+        text-align: center;
+        padding: 6px 0;
+        color: var(--main-color);
+        background-color: #293fe60d;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+}
 </style>
