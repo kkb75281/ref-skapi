@@ -24,7 +24,7 @@ main#create
         .plan(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
             .card
                 .title Trial
-                .option 
+                //- .option 
                     TabMenu(v-model="activeTabs.trial" :tabs="['basic']")
                 .price
                     .faktum {{ '$' + planSpec['Trial'].price }}
@@ -40,7 +40,7 @@ main#create
         .plan(:class="{'selected' : (serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'standard' && serviceMode !== 'standard-perpetual') && promiseRunning}")
             .card
                 .title Standard 
-                .option 
+                //- .option 
                     TabMenu(v-model="activeTabs.standard" :tabs="['basic', 'perpetual']")
                 .price
                     template(v-if="activeTabs.standard === 0") 
@@ -61,7 +61,7 @@ main#create
         .plan(:class="{'selected' : (serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'premium' && serviceMode !== 'premium-perpetual') && promiseRunning}")
             .card
                 .title Premium 
-                .option 
+                //- .option 
                     TabMenu(v-model="activeTabs.premium" :tabs="['basic', 'perpetual']")
                 .price
                     template(v-if="activeTabs.premium === 0") 
@@ -116,8 +116,8 @@ let activeTabs = ref({
 });
 let step = ref(1);
 
-let createSubscription = async (ticket_id, service_info, isPerpetual=false) => {
-    if(serviceMode.value.includes('perpetual')) {
+let createSubscription = async (ticket_id, service_info, isPerpetual = false) => {
+    if (serviceMode.value.includes('perpetual')) {
         isPerpetual = true;
     }
 
@@ -147,7 +147,7 @@ let createSubscription = async (ticket_id, service_info, isPerpetual=false) => {
             'mode': 'payment',
         })
     } else {
-        Object.assign(data,{
+        Object.assign(data, {
             'subscription_data[metadata][service]': service_info.id,
             'subscription_data[metadata][owner]': service_info.owner,
             'mode': 'subscription',
@@ -163,9 +163,9 @@ let createSubscription = async (ticket_id, service_info, isPerpetual=false) => {
             Authorization: 'Bearer $CLIENT_SECRET',
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        data	
+        data
     });
-	
+
     if (response.error) {
         alert(response.error.message);
         return;
@@ -195,7 +195,7 @@ let createService = () => {
 }
 
 let selectedPlan = (plan: string) => {
-    if(plan !== 'trial') {
+    if (plan !== 'trial') {
         if (activeTabs.value[plan] == 1) {
             plan = plan + '-perpetual';
         }
@@ -289,7 +289,7 @@ input {
         flex-grow: 1;
         width: 48%;
         min-width: 250px;
-        border: 1px solid rgba(0,0,0,0.1);
+        border: 1px solid rgba(0, 0, 0, 0.1);
         border-radius: 12px;
         padding: 1rem;
         transition: all .3s;
@@ -298,9 +298,9 @@ input {
 
         &:hover {
             // border-color: var(--main-color);
-            box-shadow: 1px 1px 10px rgba(0,0,0, 0.05);
+            box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.05);
         }
-        
+
         a {
             display: flex;
             align-items: center;
@@ -313,6 +313,7 @@ input {
             width: 3rem;
             height: 3rem;
         }
+
         .content {
             text-align: left;
 
@@ -321,7 +322,7 @@ input {
 
                 &.small {
                     font-size: 0.8rem;
-                    color: rgba(0,0,0,0.5);
+                    color: rgba(0, 0, 0, 0.5);
                 }
             }
         }
@@ -341,28 +342,33 @@ input {
 
         &.selected {
             scale: 1.05;
-            
+
             .card {
-                box-shadow: 1px 1px 10px rgba(0,0,0, 0.05);
+                box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.05);
             }
         }
+
         &.disabled {
             opacity: 0.5;
             pointer-events: none;
             cursor: default;
         }
+
         &:hover {
             scale: 1.05;
         }
     }
+
     .card {
         width: 100%;
         cursor: default;
     }
+
     .title {
         font-size: 1rem;
         margin-bottom: 1rem;
     }
+
     .option {
         position: relative;
         height: 2rem;
@@ -377,6 +383,7 @@ input {
             margin: 0;
         }
     }
+
     .price {
         display: flex;
         align-items: baseline;
@@ -387,10 +394,12 @@ input {
             font-size: 2.4rem;
             margin-right: 0.5rem;
         }
+
         span {
             color: #888
         }
     }
+
     .desc {
         margin: 0;
         line-height: 1.4;
@@ -398,6 +407,7 @@ input {
         color: #777;
         margin-bottom: 1rem;
     }
+
     button {
         width: 100% !important;
     }
@@ -431,6 +441,7 @@ input {
             display: none;
         }
     }
+
     .form {
         height: unset;
         padding: 0 10px;
@@ -440,13 +451,17 @@ input {
             width: 100%;
         }
     }
+
     .plan-wrap {
         padding-top: 20px;
 
         .plan {
-            &:hover, &.selected {
+
+            &:hover,
+            &.selected {
                 scale: 1;
             }
+
             &.disabled {
                 scale: 0.95;
             }

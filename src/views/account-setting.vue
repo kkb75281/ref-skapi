@@ -194,7 +194,14 @@ watch(emailSubscribed, async (n, o) => {
         });
     }
     subing_email.value = false
-})
+});
+watch(activeBar, (n, o) => {
+    if (n && n !== o) {
+        if (inputEmail.value !== user.email) {
+            inputEmail.value = user.email;
+        }
+    }
+});
 </script>
 
 <style scoped lang="less">
