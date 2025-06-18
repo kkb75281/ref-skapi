@@ -223,631 +223,549 @@ Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
 
 </template>
 <script setup lang="ts">
-    import Table from "@/components/table.vue";
-    import Checkbox from "@/components/checkbox.vue";
-    import Modal from "@/components/modal.vue";
-    import Pager from "@/code/pager";
-    import Guide from "./guide.vue";
-    import SearchBox from './searchbox.vue'
-    import RecDetails from './showDetail.vue'
+import Table from "@/components/table.vue";
+import Checkbox from "@/components/checkbox.vue";
+import Modal from "@/components/modal.vue";
+import Pager from "@/code/pager";
+import Guide from "./guide.vue";
+import SearchBox from './searchbox.vue'
+import RecDetails from './showDetail.vue'
 
-    import type { Ref } from "vue";
-    import { ref, computed, watch, nextTick } from "vue";
-    import { skapi } from "@/main";
-    import { user } from "@/code/user";
-    import { devLog } from "@/code/logger"
-    import { currentService, serviceRecords } from "@/views/service/main";
-    import { showDropDown } from "@/assets/js/event.js";
+import type { Ref } from "vue";
+import { ref, computed, watch, nextTick } from "vue";
+import { skapi } from "@/main";
+import { user } from "@/code/user";
+import { devLog } from "@/code/logger"
+import { currentService, serviceRecords } from "@/views/service/main";
+import { showDropDown } from "@/assets/js/event.js";
 
-    // table columns
-    let filterOptions = ref({
-        table: true,
-        user_id: false,
-        reference: true,
-        index: false,
-        tag: false,
-        record_id: true,
-        updated: true,
-        ip: false,
-        files: true,
-        referenced: true,
-        data: true,
-    });
+// table columns
+let filterOptions = ref({
+    table: true,
+    user_id: false,
+    reference: true,
+    index: false,
+    tag: false,
+    record_id: true,
+    updated: true,
+    ip: false,
+    files: true,
+    referenced: true,
+    data: true,
+});
 
-    // ui/ux related
-    let openDeleteRecords = ref(false);
-    let promiseRunning = ref(false);
-    let tableKey = ref(0);
-    let fetching = ref(false);
-    let maxPage = ref(0);
-    let currentPage: Ref<number> = ref(1);
-    let endOfList = ref(false);
-    let showDetail = ref(false);
-    let showGuide = ref(false);
-    let hovering = ref(false);
+// ui/ux related
+let openDeleteRecords = ref(false);
+let promiseRunning = ref(false);
+let tableKey = ref(0);
+let fetching = ref(false);
+let maxPage = ref(0);
+let currentPage: Ref<number> = ref(1);
+let endOfList = ref(false);
+let showDetail = ref(false);
+let showGuide = ref(false);
+let hovering = ref(false);
 
-    let colspan = computed(() => {
-        return Object.values(filterOptions.value).filter((value) => value === true).length + 1;
-    });
+let colspan = computed(() => {
+    return Object.values(filterOptions.value).filter((value) => value === true).length + 1;
+});
 
-    let countMyFiles = (rc: any) => {
-        let count = 0;
-        if (!rc.bin) return 0;
-        for (let k in rc.bin) {
-            count += rc.bin[k].length;
-        }
-
-        return count
+let countMyFiles = (rc: any) => {
+    let count = 0;
+    if (!rc.bin) return 0;
+    for (let k in rc.bin) {
+        count += rc.bin[k].length;
     }
 
-    watch(currentPage, (n, o) => {
-        if (
-            n !== o &&
-            n > 0 &&
-            (n <= maxPage.value || (n > maxPage.value && !endOfList.value))
-        ) {
-            getPage();
-        } else {
-            currentPage.value = o;
-        }
-    });
+    return count
+}
 
-    watch(showDetail, (nv) => {
-        if (nv) {
-            nextTick(() => {
-                let scrollTarget = document.querySelector(".detailRecord .content");
-                let detailRecord = document.querySelector(".detailRecord");
-                let targetTop = window.scrollY + detailRecord.getBoundingClientRect().top;
-                scrollTarget.scrollTop = 0;
-                window.scrollTo(0, targetTop);
-            });
-        }
-    });
+watch(currentPage, (n, o) => {
+    if (
+        n !== o &&
+        n > 0 &&
+        (n <= maxPage.value || (n > maxPage.value && !endOfList.value))
+    ) {
+        getPage();
+    } else {
+        currentPage.value = o;
+    }
+});
 
-    let pager: Pager = null;
-    let listDisplay = ref(null);
+watch(showDetail, (nv) => {
+    if (nv) {
+        nextTick(() => {
+            let scrollTarget = document.querySelector(".detailRecord .content");
+            let detailRecord = document.querySelector(".detailRecord");
+            let targetTop = window.scrollY + detailRecord.getBoundingClientRect().top;
+            scrollTarget.scrollTop = 0;
+            window.scrollTo(0, targetTop);
+        });
+    }
+});
 
-    let callParams: any = {};
+let pager: Pager = null;
+let listDisplay = ref(null);
 
-    let callSearch = async (e: HTMLFormElement) => {
-        let toFetch: {
-            data: {
-                record_id: string;
-                unique_id: string;
-                table: {
-                    name?: string;
-                    access_group?: string | number;
-                    subscription?: string;
-                };
-                index: {
-                    name?: any;
-                    value?: any;
-                    condition?: any;
-                    range?: any;
-                };
-                reference?: string;
-                tags?: string;
+let callParams: any = {};
+
+let callSearch = async (e: HTMLFormElement) => {
+    let toFetch: {
+        data: {
+            record_id: string;
+            unique_id: string;
+            table: {
+                name?: string;
+                access_group?: string | number;
+                subscription?: string;
             };
-            files: {
-                file: File;
-                name: string;
-            }[];
-        } = skapi.util.extractFormData(e, { ignoreEmpty: true });
+            index: {
+                name?: any;
+                value?: any;
+                condition?: any;
+                range?: any;
+            };
+            reference?: string;
+            tags?: string;
+        };
+        files: {
+            file: File;
+            name: string;
+        }[];
+    } = skapi.util.extractFormData(e, { ignoreEmpty: true });
 
-        if (!toFetch.data?.index?.name) {
-            delete toFetch.data.index
-        }
+    if (!toFetch.data?.index?.name) {
+        delete toFetch.data.index
+    }
 
-        if (!toFetch.data?.table?.name) {
-            if (toFetch.data?.record_id || toFetch.data?.unique_id) {
-                callParams = {
-                    record_id: toFetch?.data?.record_id || undefined,
-                    unique_id: toFetch?.data?.unique_id || undefined,
-                }
-            }
-            else {
-                callParams = {};
+    if (!toFetch.data?.table?.name) {
+        if (toFetch.data?.record_id || toFetch.data?.unique_id) {
+            callParams = {
+                record_id: toFetch?.data?.record_id || undefined,
+                unique_id: toFetch?.data?.unique_id || undefined,
             }
         }
         else {
-            callParams = toFetch.data;
+            callParams = {};
         }
-        await setUpNewPageList();
-        getPage(true);
-    };
-
-    let setUpNewPageList = async () => {
-        endOfList.value = false;
-        currentPage.value = 1;
-        maxPage.value = 0;
-
-        serviceRecords[currentService.id] = await Pager.init({
-            id: "record_id",
-            resultsPerPage: 10,
-            sortBy: callParams?.index?.name || "record_id",
-            order:
-                callParams?.index?.name && (callParams?.index?.condition || "").includes("<")
-                    ? "desc"
-                    : callParams?.table?.name
-                        ? "asc"
-                        : "desc",
-        });
     }
+    else {
+        callParams = toFetch.data;
+    }
+    await setUpNewPageList();
+    getPage(true);
+};
 
-    let getPage = async (refresh?: boolean) => {
-        pager = serviceRecords[currentService.id];
-        if (!refresh) {
-            if ((maxPage.value >= currentPage.value) || endOfList.value) {
-                let disp = pager.getPage(currentPage.value);
-                maxPage.value = disp.maxPage;
-                listDisplay.value = disp.list;
+let setUpNewPageList = async () => {
+    endOfList.value = false;
+    currentPage.value = 1;
+    maxPage.value = 0;
 
-                while (disp.maxPage > 0 && disp.maxPage < currentPage.value && !disp.list.length) {
-                    currentPage.value--;
-                }
+    serviceRecords[currentService.id] = await Pager.init({
+        id: "record_id",
+        resultsPerPage: 10,
+        sortBy: callParams?.index?.name || "record_id",
+        order:
+            callParams?.index?.name && (callParams?.index?.condition || "").includes("<")
+                ? "desc"
+                : callParams?.table?.name
+                    ? "asc"
+                    : "desc",
+    });
+}
 
-                return;
+let getPage = async (refresh?: boolean) => {
+    pager = serviceRecords[currentService.id];
+    if (!refresh) {
+        if ((maxPage.value >= currentPage.value) || endOfList.value) {
+            let disp = pager.getPage(currentPage.value);
+            maxPage.value = disp.maxPage;
+            listDisplay.value = disp.list;
+
+            while (disp.maxPage > 0 && disp.maxPage < currentPage.value && !disp.list.length) {
+                currentPage.value--;
             }
-        }
 
-        fetching.value = true;
-
-        let fetchedData = await skapi.getRecords(Object.assign({ service: currentService.id }, callParams), {
-            fetchMore: !refresh,
-        })
-            .catch((err) => {
-                alert(err);
-                fetching.value = false;
-                throw err;
-            });
-
-        fetchedData.list.forEach((r) => {
-            if (r.bin) {
-                // remove getFile function from bin data. Pager cannot handle functions.
-                for (let k in r.bin) {
-                    r.bin[k] = r.bin[k].map(f => {
-                        delete f.getFile;
-                        return f;
-                    })
-                }
-            }
-        });
-
-        // save endOfList status as a Pager property
-        pager.endOfList = fetchedData.endOfList;
-        endOfList.value = pager.endOfList;
-
-        // insert data in pager
-        if (fetchedData.list.length > 0) {
-            await pager.insertItems(fetchedData.list);
-        }
-
-        // get page from pager
-        let disp = pager.getPage(currentPage.value);
-        maxPage.value = disp.maxPage;
-        listDisplay.value = disp.list;
-
-        while (disp.maxPage > 0 && disp.maxPage < currentPage.value && !disp.list.length) {
-            currentPage.value--;
-        }
-
-        fetching.value = false;
-
-    };
-
-    let init = async () => {
-        currentPage.value = 1;
-
-        // setup pagers
-        if (serviceRecords[currentService.id] && Object.keys(serviceRecords[currentService.id]).length) {
-            endOfList.value = serviceRecords[currentService.id].endOfList;
-            getPage();
-
-        } else {
-            await setUpNewPageList();
-            getPage(true);
-        }
-    };
-
-    init();
-
-    let selectedRecord = ref(null);
-    let uploading = ref(false);
-
-    let upload = async (e: SubmitEvent) => {
-        uploading.value = true;
-
-        let { data, files } = skapi.util.extractFormData(e, { nullIfEmpty: true });
-
-        let jsonData = data.data || null;
-
-        try {
-            if (jsonData)
-                jsonData = JSON.parse(data.data);
-        } catch (err) {
-            alert('Invalid JSON data');
-            uploading.value = false;
             return;
         }
+    }
 
-        let configs = data.config;
+    fetching.value = true;
 
-        if (!configs.index?.name) {
-            delete configs.index;
+    let fetchedData = await skapi.getRecords(Object.assign({ service: currentService.id }, callParams), {
+        fetchMore: !refresh,
+    })
+        .catch((err) => {
+            alert(err);
+            fetching.value = false;
+            throw err;
+        });
+
+    fetchedData.list.forEach((r) => {
+        if (r.bin) {
+            // remove getFile function from bin data. Pager cannot handle functions.
+            for (let k in r.bin) {
+                r.bin[k] = r.bin[k].map(f => {
+                    delete f.getFile;
+                    return f;
+                })
+            }
+        }
+    });
+
+    // save endOfList status as a Pager property
+    pager.endOfList = fetchedData.endOfList;
+    endOfList.value = pager.endOfList;
+
+    // insert data in pager
+    if (fetchedData.list.length > 0) {
+        await pager.insertItems(fetchedData.list);
+    }
+
+    // get page from pager
+    let disp = pager.getPage(currentPage.value);
+    maxPage.value = disp.maxPage;
+    listDisplay.value = disp.list;
+
+    while (disp.maxPage > 0 && disp.maxPage < currentPage.value && !disp.list.length) {
+        currentPage.value--;
+    }
+
+    fetching.value = false;
+
+};
+
+let init = async () => {
+    currentPage.value = 1;
+
+    // setup pagers
+    if (serviceRecords[currentService.id] && Object.keys(serviceRecords[currentService.id]).length) {
+        endOfList.value = serviceRecords[currentService.id].endOfList;
+        getPage();
+
+    } else {
+        await setUpNewPageList();
+        getPage(true);
+    }
+};
+
+init();
+
+let selectedRecord = ref(null);
+let uploading = ref(false);
+
+let upload = async (e: SubmitEvent) => {
+    uploading.value = true;
+
+    let { data, files } = skapi.util.extractFormData(e, { nullIfEmpty: true });
+
+    let jsonData = data.data || null;
+
+    try {
+        if (jsonData)
+            jsonData = JSON.parse(data.data);
+    } catch (err) {
+        alert('Invalid JSON data');
+        uploading.value = false;
+        return;
+    }
+
+    let configs = data.config;
+
+    if (!configs.index?.name) {
+        delete configs.index;
+    }
+
+    try {
+        let r = await skapi.postRecord(jsonData, configs, files);
+
+        if (r.bin) {
+            // remove getFile function from bin data. Pager cannot handle functions.
+            for (let k in r.bin) {
+                r.bin[k] = r.bin[k].map(f => {
+                    delete f.getFile;
+                    return f;
+                })
+            }
         }
 
-        try {
-            let r = await skapi.postRecord(jsonData, configs, files);
+        if (configs.record_id) {
+            await pager.editItem(r);
+        } else {
+            await pager.insertItems([r]);
+        }
 
-            if (r.bin) {
-                // remove getFile function from bin data. Pager cannot handle functions.
-                for (let k in r.bin) {
-                    r.bin[k] = r.bin[k].map(f => {
-                        delete f.getFile;
-                        return f;
-                    })
+        getPage();
+
+        showDetail.value = false;
+    } catch (err: any) {
+        alert(err.message);
+        throw err;
+    } finally {
+        uploading.value = false;
+    }
+};
+
+let deleteRecords = () => {
+    promiseRunning.value = true;
+
+    let deleteIds = Object.keys(checked.value)
+
+    skapi
+        .deleteRecords({ service: currentService.id, record_id: deleteIds })
+        .then(async (r) => {
+            for (let id of deleteIds) {
+                for (let i = 0; i < listDisplay.value.length; i++) {
+                    if (listDisplay.value[i].record_id == id) {
+                        listDisplay.value.splice(i, 1);
+                    }
                 }
-            }
-
-            if (configs.record_id) {
-                await pager.editItem(r);
-            } else {
-                await pager.insertItems([r]);
+                await pager.deleteItem(id);
             }
 
             getPage();
 
-            showDetail.value = false;
-        } catch (err: any) {
-            alert(err.message);
-            throw err;
-        } finally {
-            uploading.value = false;
-        }
-    };
+            checked.value = {};
+            promiseRunning.value = false;
+            openDeleteRecords.value = false;
+        });
+};
 
-    let deleteRecords = () => {
-        promiseRunning.value = true;
+let copyID = (e) => {
+    let target = e.currentTarget;
+    let copy = target.textContent;
+    let doc = document.createElement("textarea");
 
-        let deleteIds = Object.keys(checked.value)
+    doc.textContent = target.textContent;
+    document.body.append(doc);
+    doc.select();
+    document.execCommand("copy");
+    doc.remove();
 
-        skapi
-            .deleteRecords({ service: currentService.id, record_id: deleteIds })
-            .then(async (r) => {
-                for (let id of deleteIds) {
-                    for (let i = 0; i < listDisplay.value.length; i++) {
-                        if (listDisplay.value[i].record_id == id) {
-                            listDisplay.value.splice(i, 1);
-                        }
-                    }
-                    await pager.deleteItem(id);
-                }
+    target.classList.add("clicked");
 
-                getPage();
+    setTimeout(() => {
+        target.classList.remove("clicked");
+    }, 1000);
+};
 
-                checked.value = {};
-                promiseRunning.value = false;
-                openDeleteRecords.value = false;
-            });
-    };
-
-    let copyID = (e) => {
-        let target = e.currentTarget;
-        let copy = target.textContent;
-        let doc = document.createElement("textarea");
-
-        doc.textContent = target.textContent;
-        document.body.append(doc);
-        doc.select();
-        document.execCommand("copy");
-        doc.remove();
-
-        target.classList.add("clicked");
-
-        setTimeout(() => {
-            target.classList.remove("clicked");
-        }, 1000);
-    };
-
-    // checks
-    let checked: any = ref({});
+// checks
+let checked: any = ref({});
 
 </script>
 
 <style scoped lang="less">
-    textarea::placeholder {
-        opacity: 0.5;
-    }
+textarea::placeholder {
+    opacity: 0.5;
+}
 
-    .updown {
-        background-color: #fff;
-        background-color: var(--main-color);
-        border-radius: 50%;
-        margin-left: 8px;
-        cursor: pointer;
-        box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
-    }
+.updown {
+    background-color: #fff;
+    background-color: var(--main-color);
+    border-radius: 50%;
+    margin-left: 8px;
+    cursor: pointer;
+    box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
+}
 
-    .moreVert {
-        .inner {
-            padding-top: 0.25rem;
-
-            &>* {
-                padding: 0.25rem 0.5rem;
-            }
-
-            padding-bottom: 0.25rem;
-        }
-    }
-
-    #searchForm {
-        // max-width: 700px;
-        margin: 0 auto;
-
-        .inner {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 8px;
-        }
-
-        // .customSelect {
-        //     flex-grow: 1;
-        // }
-        .search {
-            position: relative;
-            flex-grow: 50;
-
-            .icon {
-                &:hover {
-                    @media (pointer: fine) {
-                        color: var(--main-color) !important;
-                    }
-                }
-
-                position: absolute;
-                top: 50%;
-                right: 10px;
-                transform: translateY(-50%);
-                user-select: none;
-
-                &::before {
-                    display: none;
-                }
-            }
-        }
-
-        .groupWrap {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-radius: 6px;
-            border-style: hidden;
-            cursor: pointer;
-            user-select: none;
-
-            .group {
-                position: relative;
-                height: 44px;
-                padding: 10px;
-                flex-grow: 1;
-                text-align: center;
-                background-color: #fff;
-                color: rgba(0, 0, 0, 0.4);
-                fill: rgba(0, 0, 0, 0.4);
-
-                svg {
-                    width: 23px;
-                    height: 23px;
-                    vertical-align: unset !important;
-                }
-
-                &::after {
-                    position: absolute;
-                    content: "";
-                    top: 0;
-                    left: -1px;
-                    bottom: 0;
-                    right: 0;
-                    border: 1px solid rgba(0, 0, 0, 0.5);
-                }
-
-                &:first-child {
-                    border-radius: 6px 0 0 8px;
-
-                    &::after {
-                        border-radius: 6px 0 0 8px;
-                    }
-                }
-
-                &:nth-child(2) {
-                    &::after {
-                        border-left: 0;
-                    }
-                }
-
-                &:last-child {
-                    border-radius: 0 8px 8px 0;
-
-                    &::after {
-                        border-left: 0;
-                        border-radius: 0 8px 8px 0;
-                    }
-                }
-
-                &.active {
-                    background-color: rgba(41, 63, 230, 0.05);
-                    color: var(--main-color);
-                    fill: var(--main-color);
-
-                    &::after {
-                        border: 1px solid var(--main-color);
-                    }
-                }
-            }
-        }
-
-        .btn {
-            flex-grow: 1;
-            width: 140px;
-        }
-
-        .advanced {
-            font-size: 0.8rem;
-            user-select: none;
-
-            .infoBox {
-                input {
-                    outline: 0;
-                    background-color: rgba(0, 0, 0, 0.05);
-                }
-            }
-        }
-    }
-
-    .tableMenu {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
+.moreVert {
+    .inner {
+        padding-top: 0.25rem;
 
         &>* {
-            margin-bottom: 8px;
+            padding: 0.25rem 0.5rem;
+        }
+
+        padding-bottom: 0.25rem;
+    }
+}
+
+#searchForm {
+    // max-width: 700px;
+    margin: 0 auto;
+
+    .inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+    }
+
+    // .customSelect {
+    //     flex-grow: 1;
+    // }
+    .search {
+        position: relative;
+        flex-grow: 50;
+
+        .icon {
+            &:hover {
+                @media (pointer: fine) {
+                    color: var(--main-color) !important;
+                }
+            }
+
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            user-select: none;
+
+            &::before {
+                display: none;
+            }
         }
     }
 
-    tbody {
-        td {
-            .click {
-                position: relative;
-                color: var(--main-color);
-                font-weight: 500;
+    .groupWrap {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 6px;
+        border-style: hidden;
+        cursor: pointer;
+        user-select: none;
+
+        .group {
+            position: relative;
+            height: 44px;
+            padding: 10px;
+            flex-grow: 1;
+            text-align: center;
+            background-color: #fff;
+            color: rgba(0, 0, 0, 0.4);
+            fill: rgba(0, 0, 0, 0.4);
+
+            svg {
+                width: 23px;
+                height: 23px;
+                vertical-align: unset !important;
+            }
+
+            &::after {
+                position: absolute;
+                content: "";
+                top: 0;
+                left: -1px;
+                bottom: 0;
+                right: 0;
+                border: 1px solid rgba(0, 0, 0, 0.5);
+            }
+
+            &:first-child {
+                border-radius: 6px 0 0 8px;
 
                 &::after {
-                    position: absolute;
-                    content: "copied!";
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    left: 0;
-                    width: 100%;
-                    border-radius: 4px;
-                    text-align: center;
-                    background-color: var(--main-color);
-                    color: #fff;
-                    display: none;
+                    border-radius: 6px 0 0 8px;
                 }
+            }
 
-                &:hover {
-                    text-decoration: underline;
-                    cursor: pointer;
+            &:nth-child(2) {
+                &::after {
+                    border-left: 0;
                 }
+            }
 
-                &.clicked {
-                    &::after {
-                        display: block;
-                    }
+            &:last-child {
+                border-radius: 0 8px 8px 0;
+
+                &::after {
+                    border-left: 0;
+                    border-radius: 0 8px 8px 0;
+                }
+            }
+
+            &.active {
+                background-color: rgba(41, 63, 230, 0.05);
+                color: var(--main-color);
+                fill: var(--main-color);
+
+                &::after {
+                    border: 1px solid var(--main-color);
                 }
             }
         }
     }
 
-    .recordPart {
-        position: relative;
-        overflow: hidden;
+    .btn {
+        flex-grow: 1;
+        width: 140px;
     }
 
-    #loading {
-        position: absolute;
-        top: 60px;
-        left: 20px;
-        height: 60px;
-        z-index: 2;
-        display: flex;
-        flex-wrap: nowrap;
-        align-items: center;
+    .advanced {
         font-size: 0.8rem;
-    }
+        user-select: none;
 
-    .detailRecord {
-        position: absolute;
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        display: flex;
-        flex-direction: column;
-        background-color: #fff;
-        transform: translateX(110%);
-        transition: all 0.3s;
-
-        &.show {
-            transform: translateX(0px);
+        .infoBox {
+            input {
+                outline: 0;
+                background-color: rgba(0, 0, 0, 0.05);
+            }
         }
+    }
+}
 
-        .header {
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 60px;
-            padding: 0 20px;
+.tableMenu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    &>* {
+        margin-bottom: 8px;
+    }
+}
+
+tbody {
+    td {
+        .click {
+            position: relative;
+            color: var(--main-color);
             font-weight: 500;
-            background-color: #f0f0f0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: inset 0 -3px 3px -3px rgba(0, 0, 0, 0.2);
 
-            .material-symbols-outlined {
+            &::after {
+                position: absolute;
+                content: "copied!";
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                border-radius: 4px;
+                text-align: center;
+                background-color: var(--main-color);
+                color: #fff;
+                display: none;
+            }
+
+            &:hover {
+                text-decoration: underline;
                 cursor: pointer;
             }
 
-            .name {
-                flex-grow: 1;
-                padding-left: 20px;
-            }
-
-            button {
-                padding: 0;
-                font-size: 0.9rem;
-            }
-        }
-    }
-
-    .content {
-        flex-grow: 1;
-        overflow-y: auto;
-        padding: 20px;
-        font-size: 0.8rem;
-
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            margin-bottom: 12px;
-
-            &.indent {
-                padding-left: 20px;
-
-                .key {
-                    font-weight: normal;
-                    width: 150px;
+            &.clicked {
+                &::after {
+                    display: block;
                 }
             }
         }
-
-        .key {
-            font-weight: 500;
-            width: 170px;
-        }
-
-        .value {
-            flex-grow: 1;
-            min-width: 270px;
-            margin: 6px 0 6px;
-
-            input {
-                width: 100%;
-            }
-        }
     }
+}
+
+.recordPart {
+    position: relative;
+    overflow: hidden;
+}
+
+#loading {
+    position: absolute;
+    top: 60px;
+    left: 20px;
+    height: 60px;
+    z-index: 2;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    font-size: 0.8rem;
+}
 </style>

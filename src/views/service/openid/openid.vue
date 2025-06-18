@@ -165,516 +165,434 @@ Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
 
 </template>
 <script setup lang="ts">
-    import Table from "@/components/table.vue";
-    import Checkbox from "@/components/checkbox.vue";
-    import Modal from "@/components/modal.vue";
-    import Pager from "@/code/pager";
-    import Guide from "./guide.vue";
-    import RecDetails from './showDetail.vue'
+import Table from "@/components/table.vue";
+import Checkbox from "@/components/checkbox.vue";
+import Modal from "@/components/modal.vue";
+import Pager from "@/code/pager";
+import Guide from "./guide.vue";
+import RecDetails from './showDetail.vue'
 
-    import type { Ref } from "vue";
-    import { ref, computed, watch, nextTick } from "vue";
-    import { skapi } from "@/main";
-    import { user } from "@/code/user";
-    import { devLog } from "@/code/logger"
-    import { currentService, serviceLoggers } from "@/views/service/main";
-    import { showDropDown } from "@/assets/js/event.js";
+import type { Ref } from "vue";
+import { ref, computed, watch, nextTick } from "vue";
+import { skapi } from "@/main";
+import { user } from "@/code/user";
+import { devLog } from "@/code/logger"
+import { currentService, serviceLoggers } from "@/views/service/main";
+import { showDropDown } from "@/assets/js/event.js";
 
-    // ui/ux related
-    let openDeleteRecords = ref(false);
-    let promiseRunning = ref(false);
-    let tableKey = ref(0);
-    let fetching = ref(false);
-    let maxPage = ref(0);
-    let currentPage: Ref<number> = ref(1);
-    let endOfList = ref(false);
-    let showDetail = ref(false);
-    let showGuide = ref(false);
-    let hovering = ref(false);
-    let colspan = 4;
+// ui/ux related
+let openDeleteRecords = ref(false);
+let promiseRunning = ref(false);
+let tableKey = ref(0);
+let fetching = ref(false);
+let maxPage = ref(0);
+let currentPage: Ref<number> = ref(1);
+let endOfList = ref(false);
+let showDetail = ref(false);
+let showGuide = ref(false);
+let hovering = ref(false);
+let colspan = 4;
 
-    watch(currentPage, (n, o) => {
-        if (
-            n !== o &&
-            n > 0 &&
-            (n <= maxPage.value || (n > maxPage.value && !endOfList.value))
-        ) {
-            getPage();
-        } else {
-            currentPage.value = o;
-        }
-    });
+watch(currentPage, (n, o) => {
+    if (
+        n !== o &&
+        n > 0 &&
+        (n <= maxPage.value || (n > maxPage.value && !endOfList.value))
+    ) {
+        getPage();
+    } else {
+        currentPage.value = o;
+    }
+});
 
-    watch(showDetail, (nv) => {
-        if (nv) {
-            nextTick(() => {
-                let scrollTarget = document.querySelector(".detailRecord .content");
-                let detailRecord = document.querySelector(".detailRecord");
-                let targetTop = window.scrollY + detailRecord.getBoundingClientRect().top;
-                scrollTarget.scrollTop = 0;
-                window.scrollTo(0, targetTop);
-            });
-        }
-    });
-
-    let pager: Pager = null;
-    let listDisplay = ref(null);
-
-    let setUpNewPageList = async () => {
-        endOfList.value = false;
-        currentPage.value = 1;
-        maxPage.value = 0;
-
-        serviceLoggers[currentService.id] = await Pager.init({
-            id: "id",
-            resultsPerPage: 10,
-            sortBy: "id",
-            order: "asc",
+watch(showDetail, (nv) => {
+    if (nv) {
+        nextTick(() => {
+            let scrollTarget = document.querySelector(".detailRecord .content");
+            let detailRecord = document.querySelector(".detailRecord");
+            let targetTop = window.scrollY + detailRecord.getBoundingClientRect().top;
+            scrollTarget.scrollTop = 0;
+            window.scrollTo(0, targetTop);
         });
     }
+});
 
-    let getPage = async (refresh?: boolean) => {
+let pager: Pager = null;
+let listDisplay = ref(null);
 
-        pager = serviceLoggers[currentService.id];
-        if (!refresh) {
-            if ((maxPage.value >= currentPage.value) || endOfList.value) {
-                let disp = pager.getPage(currentPage.value);
-                maxPage.value = disp.maxPage;
-                listDisplay.value = disp.list;
+let setUpNewPageList = async () => {
+    endOfList.value = false;
+    currentPage.value = 1;
+    maxPage.value = 0;
 
-                while (disp.maxPage > 0 && disp.maxPage < currentPage.value && !disp.list.length) {
-                    currentPage.value--;
-                }
+    serviceLoggers[currentService.id] = await Pager.init({
+        id: "id",
+        resultsPerPage: 10,
+        sortBy: "id",
+        order: "asc",
+    });
+}
 
-                return;
+let getPage = async (refresh?: boolean) => {
+
+    pager = serviceLoggers[currentService.id];
+    if (!refresh) {
+        if ((maxPage.value >= currentPage.value) || endOfList.value) {
+            let disp = pager.getPage(currentPage.value);
+            maxPage.value = disp.maxPage;
+            listDisplay.value = disp.list;
+
+            while (disp.maxPage > 0 && disp.maxPage < currentPage.value && !disp.list.length) {
+                currentPage.value--;
             }
-        }
 
-        fetching.value = true;
-        let fetchedData = await currentService.registerOpenIDLogger({ req: 'list' })
-
-        pager.endOfList = fetchedData.endOfList;
-        endOfList.value = pager.endOfList;
-
-        // insert data in pager
-        if (fetchedData.list.length > 0) {
-            await pager.insertItems(fetchedData.list);
-        }
-
-        // get page from pager
-        let disp = pager.getPage(currentPage.value);
-        maxPage.value = disp.maxPage;
-        listDisplay.value = disp.list;
-
-        while (disp.maxPage > 0 && disp.maxPage < currentPage.value && !disp.list.length) {
-            currentPage.value--;
-        }
-
-        fetching.value = false;
-    };
-
-    let init = async () => {
-        currentPage.value = 1;
-
-        // setup pagers
-        if (serviceLoggers[currentService.id] && Object.keys(serviceLoggers[currentService.id]).length) {
-            endOfList.value = serviceLoggers[currentService.id].endOfList;
-            getPage();
-
-        } else {
-            await setUpNewPageList();
-            getPage(true);
-        }
-    };
-
-    init();
-
-    let selectedLogger = ref(null);
-    let uploading = ref(false);
-
-    let upload = async (e: SubmitEvent) => {
-        uploading.value = true;
-
-        let { data } = skapi.util.extractFormData(e, { ignoreEmpty: true });
-
-        let jsonData = data;
-
-        try {
-            if (jsonData.data) {
-                jsonData.data = JSON.parse(jsonData.data);
-                if (!jsonData.data) {
-                    delete jsonData.data;
-                }
-            }
-            if (jsonData.prms) {
-                jsonData.prms = JSON.parse(jsonData.prms);
-                if (!jsonData.prms) {
-                    delete jsonData.prms;
-                }
-            }
-            if (jsonData.hder) {
-                jsonData.hder = JSON.parse(jsonData.hder);
-                if (!jsonData.hder) {
-                    delete jsonData.hder;
-                }
-            }
-        } catch (err) {
-            alert('Invalid JSON data');
-            uploading.value = false;
             return;
         }
+    }
 
-        if (!jsonData.cdtn?.key) {
-            delete jsonData.cdtn;
+    fetching.value = true;
+    let fetchedData = await currentService.registerOpenIDLogger({ req: 'list' })
+
+    pager.endOfList = fetchedData.endOfList;
+    endOfList.value = pager.endOfList;
+
+    // insert data in pager
+    if (fetchedData.list.length > 0) {
+        await pager.insertItems(fetchedData.list);
+    }
+
+    // get page from pager
+    let disp = pager.getPage(currentPage.value);
+    maxPage.value = disp.maxPage;
+    listDisplay.value = disp.list;
+
+    while (disp.maxPage > 0 && disp.maxPage < currentPage.value && !disp.list.length) {
+        currentPage.value--;
+    }
+
+    fetching.value = false;
+};
+
+let init = async () => {
+    currentPage.value = 1;
+
+    // setup pagers
+    if (serviceLoggers[currentService.id] && Object.keys(serviceLoggers[currentService.id]).length) {
+        endOfList.value = serviceLoggers[currentService.id].endOfList;
+        getPage();
+
+    } else {
+        await setUpNewPageList();
+        getPage(true);
+    }
+};
+
+init();
+
+let selectedLogger = ref(null);
+let uploading = ref(false);
+
+let upload = async (e: SubmitEvent) => {
+    uploading.value = true;
+
+    let { data } = skapi.util.extractFormData(e, { ignoreEmpty: true });
+
+    let jsonData = data;
+
+    try {
+        if (jsonData.data) {
+            jsonData.data = JSON.parse(jsonData.data);
+            if (!jsonData.data) {
+                delete jsonData.data;
+            }
+        }
+        if (jsonData.prms) {
+            jsonData.prms = JSON.parse(jsonData.prms);
+            if (!jsonData.prms) {
+                delete jsonData.prms;
+            }
+        }
+        if (jsonData.hder) {
+            jsonData.hder = JSON.parse(jsonData.hder);
+            if (!jsonData.hder) {
+                delete jsonData.hder;
+            }
+        }
+    } catch (err) {
+        alert('Invalid JSON data');
+        uploading.value = false;
+        return;
+    }
+
+    if (!jsonData.cdtn?.key) {
+        delete jsonData.cdtn;
+    }
+
+    try {
+        await currentService.registerOpenIDLogger(jsonData);
+
+        if (pager.list[jsonData.is]) {
+            await pager.editItem(jsonData);
+        } else {
+            await pager.insertItems([jsonData]);
         }
 
-        try {
-            await currentService.registerOpenIDLogger(jsonData);
+        getPage();
 
-            if (pager.list[jsonData.is]) {
-                await pager.editItem(jsonData);
-            } else {
-                await pager.insertItems([jsonData]);
+        showDetail.value = false;
+    } catch (err: any) {
+        alert(err.message);
+        throw err;
+    } finally {
+        uploading.value = false;
+    }
+};
+
+let deleteRecords = () => {
+    promiseRunning.value = true;
+
+    let deleteIds = Object.keys(checked.value)
+
+    let promise = deleteIds.map(id => {
+        currentService.registerOpenIDLogger({ req: "delete", id });
+    })
+
+    Promise.all(promise)
+        .then(async (r) => {
+            for (let id of deleteIds) {
+                for (let i = 0; i < listDisplay.value.length; i++) {
+                    if (listDisplay.value[i].record_id == id) {
+                        listDisplay.value.splice(i, 1);
+                    }
+                }
+                await pager.deleteItem(id);
             }
 
             getPage();
 
-            showDetail.value = false;
-        } catch (err: any) {
-            alert(err.message);
-            throw err;
-        } finally {
-            uploading.value = false;
-        }
-    };
+            checked.value = {};
+            promiseRunning.value = false;
+            openDeleteRecords.value = false;
+        });
+};
 
-    let deleteRecords = () => {
-        promiseRunning.value = true;
-
-        let deleteIds = Object.keys(checked.value)
-
-        let promise = deleteIds.map(id => {
-            currentService.registerOpenIDLogger({ req: "delete", id });
-        })
-
-        Promise.all(promise)
-            .then(async (r) => {
-                for (let id of deleteIds) {
-                    for (let i = 0; i < listDisplay.value.length; i++) {
-                        if (listDisplay.value[i].record_id == id) {
-                            listDisplay.value.splice(i, 1);
-                        }
-                    }
-                    await pager.deleteItem(id);
-                }
-
-                getPage();
-
-                checked.value = {};
-                promiseRunning.value = false;
-                openDeleteRecords.value = false;
-            });
-    };
-
-    // checks
-    let checked: any = ref({});
+// checks
+let checked: any = ref({});
 
 </script>
 
 <style scoped lang="less">
-    textarea::placeholder {
-        opacity: 0.5;
-    }
+textarea::placeholder {
+    opacity: 0.5;
+}
 
-    .updown {
-        background-color: #fff;
-        background-color: var(--main-color);
-        border-radius: 50%;
-        margin-left: 8px;
-        cursor: pointer;
-        box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
-    }
+.updown {
+    background-color: #fff;
+    background-color: var(--main-color);
+    border-radius: 50%;
+    margin-left: 8px;
+    cursor: pointer;
+    box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
+}
 
-    .moreVert {
-        .inner {
-            padding-top: 0.25rem;
-
-            &>* {
-                padding: 0.25rem 0.5rem;
-            }
-
-            padding-bottom: 0.25rem;
-        }
-    }
-
-    #searchForm {
-        // max-width: 700px;
-        margin: 0 auto;
-
-        .inner {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 8px;
-        }
-
-        // .customSelect {
-        //     flex-grow: 1;
-        // }
-        .search {
-            position: relative;
-            flex-grow: 50;
-
-            .icon {
-                &:hover {
-                    @media (pointer: fine) {
-                        color: var(--main-color) !important;
-                    }
-                }
-
-                position: absolute;
-                top: 50%;
-                right: 10px;
-                transform: translateY(-50%);
-                user-select: none;
-
-                &::before {
-                    display: none;
-                }
-            }
-        }
-
-        .groupWrap {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-radius: 6px;
-            border-style: hidden;
-            cursor: pointer;
-            user-select: none;
-
-            .group {
-                position: relative;
-                height: 44px;
-                padding: 10px;
-                flex-grow: 1;
-                text-align: center;
-                background-color: #fff;
-                color: rgba(0, 0, 0, 0.4);
-                fill: rgba(0, 0, 0, 0.4);
-
-                svg {
-                    width: 23px;
-                    height: 23px;
-                    vertical-align: unset !important;
-                }
-
-                &::after {
-                    position: absolute;
-                    content: "";
-                    top: 0;
-                    left: -1px;
-                    bottom: 0;
-                    right: 0;
-                    border: 1px solid rgba(0, 0, 0, 0.5);
-                }
-
-                &:first-child {
-                    border-radius: 6px 0 0 8px;
-
-                    &::after {
-                        border-radius: 6px 0 0 8px;
-                    }
-                }
-
-                &:nth-child(2) {
-                    &::after {
-                        border-left: 0;
-                    }
-                }
-
-                &:last-child {
-                    border-radius: 0 8px 8px 0;
-
-                    &::after {
-                        border-left: 0;
-                        border-radius: 0 8px 8px 0;
-                    }
-                }
-
-                &.active {
-                    background-color: rgba(41, 63, 230, 0.05);
-                    color: var(--main-color);
-                    fill: var(--main-color);
-
-                    &::after {
-                        border: 1px solid var(--main-color);
-                    }
-                }
-            }
-        }
-
-        .btn {
-            flex-grow: 1;
-            width: 140px;
-        }
-
-        .advanced {
-            font-size: 0.8rem;
-            user-select: none;
-
-            .infoBox {
-                input {
-                    outline: 0;
-                    background-color: rgba(0, 0, 0, 0.05);
-                }
-            }
-        }
-    }
-
-    .tableMenu {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
+.moreVert {
+    .inner {
+        padding-top: 0.25rem;
 
         &>* {
-            margin-bottom: 8px;
+            padding: 0.25rem 0.5rem;
+        }
+
+        padding-bottom: 0.25rem;
+    }
+}
+
+#searchForm {
+    // max-width: 700px;
+    margin: 0 auto;
+
+    .inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+    }
+
+    // .customSelect {
+    //     flex-grow: 1;
+    // }
+    .search {
+        position: relative;
+        flex-grow: 50;
+
+        .icon {
+            &:hover {
+                @media (pointer: fine) {
+                    color: var(--main-color) !important;
+                }
+            }
+
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            user-select: none;
+
+            &::before {
+                display: none;
+            }
         }
     }
 
-    tbody {
-        td {
-            .click {
-                position: relative;
-                color: var(--main-color);
-                font-weight: 500;
+    .groupWrap {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 6px;
+        border-style: hidden;
+        cursor: pointer;
+        user-select: none;
+
+        .group {
+            position: relative;
+            height: 44px;
+            padding: 10px;
+            flex-grow: 1;
+            text-align: center;
+            background-color: #fff;
+            color: rgba(0, 0, 0, 0.4);
+            fill: rgba(0, 0, 0, 0.4);
+
+            svg {
+                width: 23px;
+                height: 23px;
+                vertical-align: unset !important;
+            }
+
+            &::after {
+                position: absolute;
+                content: "";
+                top: 0;
+                left: -1px;
+                bottom: 0;
+                right: 0;
+                border: 1px solid rgba(0, 0, 0, 0.5);
+            }
+
+            &:first-child {
+                border-radius: 6px 0 0 8px;
 
                 &::after {
-                    position: absolute;
-                    content: "copied!";
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    left: 0;
-                    width: 100%;
-                    border-radius: 4px;
-                    text-align: center;
-                    background-color: var(--main-color);
-                    color: #fff;
-                    display: none;
+                    border-radius: 6px 0 0 8px;
                 }
+            }
 
-                &:hover {
-                    text-decoration: underline;
-                    cursor: pointer;
+            &:nth-child(2) {
+                &::after {
+                    border-left: 0;
                 }
+            }
 
-                &.clicked {
-                    &::after {
-                        display: block;
-                    }
+            &:last-child {
+                border-radius: 0 8px 8px 0;
+
+                &::after {
+                    border-left: 0;
+                    border-radius: 0 8px 8px 0;
+                }
+            }
+
+            &.active {
+                background-color: rgba(41, 63, 230, 0.05);
+                color: var(--main-color);
+                fill: var(--main-color);
+
+                &::after {
+                    border: 1px solid var(--main-color);
                 }
             }
         }
     }
 
-    .recordPart {
-        position: relative;
-        overflow: hidden;
+    .btn {
+        flex-grow: 1;
+        width: 140px;
     }
 
-    #loading {
-        position: absolute;
-        top: 60px;
-        left: 20px;
-        height: 60px;
-        z-index: 2;
-        display: flex;
-        flex-wrap: nowrap;
-        align-items: center;
+    .advanced {
         font-size: 0.8rem;
-    }
+        user-select: none;
 
-    .detailRecord {
-        position: absolute;
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        display: flex;
-        flex-direction: column;
-        background-color: #fff;
-        transform: translateX(110%);
-        transition: all 0.3s;
-
-        &.show {
-            transform: translateX(0px);
+        .infoBox {
+            input {
+                outline: 0;
+                background-color: rgba(0, 0, 0, 0.05);
+            }
         }
+    }
+}
 
-        .header {
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 60px;
-            padding: 0 20px;
+.tableMenu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    &>* {
+        margin-bottom: 8px;
+    }
+}
+
+tbody {
+    td {
+        .click {
+            position: relative;
+            color: var(--main-color);
             font-weight: 500;
-            background-color: #f0f0f0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: inset 0 -3px 3px -3px rgba(0, 0, 0, 0.2);
 
-            .material-symbols-outlined {
+            &::after {
+                position: absolute;
+                content: "copied!";
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                border-radius: 4px;
+                text-align: center;
+                background-color: var(--main-color);
+                color: #fff;
+                display: none;
+            }
+
+            &:hover {
+                text-decoration: underline;
                 cursor: pointer;
             }
 
-            .name {
-                flex-grow: 1;
-                padding-left: 20px;
-            }
-
-            button {
-                padding: 0;
-                font-size: 0.9rem;
-            }
-        }
-    }
-
-    .content {
-        flex-grow: 1;
-        overflow-y: auto;
-        padding: 20px;
-        font-size: 0.8rem;
-
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            margin-bottom: 12px;
-
-            &.indent {
-                padding-left: 20px;
-
-                .key {
-                    font-weight: normal;
-                    width: 150px;
+            &.clicked {
+                &::after {
+                    display: block;
                 }
             }
         }
-
-        .key {
-            font-weight: 500;
-            width: 170px;
-        }
-
-        .value {
-            flex-grow: 1;
-            min-width: 270px;
-            margin: 6px 0 6px;
-
-            input {
-                width: 100%;
-            }
-        }
     }
+}
+
+.recordPart {
+    position: relative;
+    overflow: hidden;
+}
+
+#loading {
+    position: absolute;
+    top: 60px;
+    left: 20px;
+    height: 60px;
+    z-index: 2;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    font-size: 0.8rem;
+}
 </style>

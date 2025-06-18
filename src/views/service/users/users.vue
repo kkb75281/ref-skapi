@@ -744,28 +744,28 @@ Modal(:open="successGrantAccess", @close="successGrantAccess = false")
     button.final(type="button", @click="()=>{checked.value = {};successGrantAccess = false;}") close
 </template>
 <script setup lang="ts">
-  import Table from "@/components/table.vue";
-  import Guide from "./guide.vue";
-  import Select from "@/components/select.vue";
-  import Checkbox from "@/components/checkbox.vue";
-  import Modal from "@/components/modal.vue";
-  import Calendar from "@/components/calendar.vue";
-  import Locale from "@/components/locale.vue";
-  import Pager from "@/code/pager";
+import Table from "@/components/table.vue";
+import Guide from "./guide.vue";
+import Select from "@/components/select.vue";
+import Checkbox from "@/components/checkbox.vue";
+import Modal from "@/components/modal.vue";
+import Calendar from "@/components/calendar.vue";
+import Locale from "@/components/locale.vue";
+import Pager from "@/code/pager";
 
-  import { nextTick, reactive, ref, computed, watch, type Ref } from "vue";
-  import { skapi } from "@/main";
-  import { user } from "@/code/user";
-  import { showDropDown } from "@/assets/js/event.js";
-  import { currentService, serviceUsers } from "@/views/service/main";
-  import { Countries } from "@/code/countries";
-  import { devLog } from "@/code/logger";
-  import UserDetails from './showDetail.vue'
+import { nextTick, reactive, ref, computed, watch, type Ref } from "vue";
+import { skapi } from "@/main";
+import { user } from "@/code/user";
+import { showDropDown } from "@/assets/js/event.js";
+import { currentService, serviceUsers } from "@/views/service/main";
+import { Countries } from "@/code/countries";
+import { devLog } from "@/code/logger";
+import UserDetails from './showDetail.vue'
 
-  let pager: Pager = null;
-  let selectedUser = ref(null);
+let pager: Pager = null;
+let selectedUser = ref(null);
 
-  let searchFor: Ref<
+let searchFor: Ref<
     "timestamp"
     | "user_id"
     | "email"
@@ -775,228 +775,228 @@ Modal(:open="successGrantAccess", @close="successGrantAccess = false")
     | "name"
     | "locale"
     | "birthdate"
-  > = ref("user_id");
+> = ref("user_id");
 
-  let searchValue: Ref<string | number> = ref("");
+let searchValue: Ref<string | number> = ref("");
 
-  // ui/ux related
-  let fetching = ref(false);
-  let maxPage = ref(0);
-  let currentPage: Ref<number> = ref(1);
-  let endOfList = ref(false);
-  let showCalendar = ref(false);
-  let showLocale = ref(false);
-  let showGuide = ref(false);
-  let hovering = ref(false);
-  let showDetail = ref(false);
+// ui/ux related
+let fetching = ref(false);
+let maxPage = ref(0);
+let currentPage: Ref<number> = ref(1);
+let endOfList = ref(false);
+let showCalendar = ref(false);
+let showLocale = ref(false);
+let showGuide = ref(false);
+let hovering = ref(false);
+let showDetail = ref(false);
 
-  let columnList = reactive([
+let columnList = reactive([
     {
-      name: "User ID",
-      key: "user_id",
-      value: true,
+        name: "User ID",
+        key: "user_id",
+        value: true,
     },
     {
-      name: "Email",
-      key: "email",
-      value: true,
+        name: "Email",
+        key: "email",
+        value: true,
     },
     {
-      name: "Name",
-      key: "name",
-      value: true,
+        name: "Name",
+        key: "name",
+        value: true,
     },
     {
-      name: "Access Group",
-      key: "access_group",
-      value: true,
+        name: "Access Group",
+        key: "access_group",
+        value: true,
     },
     {
-      name: "Approval",
-      key: "approved",
-      value: true,
+        name: "Approval",
+        key: "approved",
+        value: true,
     },
     {
-      name: "Date Created",
-      key: "timestamp",
-      value: false,
+        name: "Date Created",
+        key: "timestamp",
+        value: false,
     },
     {
-      name: "Phone Number",
-      key: "phone_number",
-      value: false,
+        name: "Phone Number",
+        key: "phone_number",
+        value: false,
     },
     {
-      name: "Address",
-      key: "address",
-      value: false,
+        name: "Address",
+        key: "address",
+        value: false,
     },
     {
-      name: "Locale",
-      key: "locale",
-      value: false,
+        name: "Locale",
+        key: "locale",
+        value: false,
     },
     {
-      name: "Gender",
-      key: "gender",
-      value: false,
+        name: "Gender",
+        key: "gender",
+        value: false,
     },
     {
-      name: "Birth Date",
-      key: "birthdate",
-      value: false,
+        name: "Birth Date",
+        key: "birthdate",
+        value: false,
     },
     {
-      name: "Picture",
-      key: "picture",
-      value: false,
+        name: "Picture",
+        key: "picture",
+        value: false,
     },
     {
-      name: "Profile",
-      key: "profile",
-      value: false,
+        name: "Profile",
+        key: "profile",
+        value: false,
     },
     {
-      name: "Website",
-      key: "website",
-      value: false,
+        name: "Website",
+        key: "website",
+        value: false,
     },
     {
-      name: "Nickname",
-      key: "nickname",
-      value: false,
+        name: "Nickname",
+        key: "nickname",
+        value: false,
     },
     {
-      name: "Misc",
-      key: "misc",
-      value: true,
+        name: "Misc",
+        key: "misc",
+        value: true,
     },
-  ]);
+]);
 
-  let searchOptions = [
+let searchOptions = [
     {
-      option: "User ID",
-      value: "user_id",
+        option: "User ID",
+        value: "user_id",
     },
     {
-      option: "Email",
-      value: "email",
+        option: "Email",
+        value: "email",
     },
     {
-      option: "Name",
-      value: "name",
+        option: "Name",
+        value: "name",
     },
     {
-      option: "Phone Number",
-      value: "phone_number",
+        option: "Phone Number",
+        value: "phone_number",
     },
     {
-      option: "Address",
-      value: "address",
+        option: "Address",
+        value: "address",
     },
     {
-      option: "Gender",
-      value: "gender",
+        option: "Gender",
+        value: "gender",
     },
     {
-      option: "Birth Date",
-      value: "birthdate",
+        option: "Birth Date",
+        value: "birthdate",
     },
     {
-      option: "Locale",
-      value: "locale",
+        option: "Locale",
+        value: "locale",
     },
     {
-      option: "Date Created",
-      value: "timestamp",
+        option: "Date Created",
+        value: "timestamp",
     },
-  ];
-  let uploading = ref(false);
+];
+let uploading = ref(false);
 
-  let upload = async (e: SubmitEvent) => {
+let upload = async (e: SubmitEvent) => {
     uploading.value = true;
 
     try {
-      let att = await currentService.updateUserAttribute(e);
-      console.log(att);
+        let att = await currentService.updateUserAttribute(e);
+        console.log(att);
 
-      for (let k in att.attributes) {
-        selectedUser.value[k] = att.attributes[k];
-      }
+        for (let k in att.attributes) {
+            selectedUser.value[k] = att.attributes[k];
+        }
 
-      let sel:any = {};
-      for(let k in selectedUser.value) {
-          sel[k] = selectedUser.value[k];
-      }
+        let sel: any = {};
+        for (let k in selectedUser.value) {
+            sel[k] = selectedUser.value[k];
+        }
 
-      await pager.editItem(sel);
+        await pager.editItem(sel);
 
-      getPage();
+        getPage();
 
-      selectedUser.value = null;
-      showDetail.value = false;
+        selectedUser.value = null;
+        showDetail.value = false;
     } catch (err: any) {
-      alert(err.message);
-      throw err;
+        alert(err.message);
+        throw err;
     } finally {
-      uploading.value = false;
+        uploading.value = false;
     }
-  };
+};
 
-  let checked: Ref<{ [key: string]: any }> = ref({});
-  function checkall() {
+let checked: Ref<{ [key: string]: any }> = ref({});
+function checkall() {
     if (Object.keys(checked.value).length) {
-      checked.value = {};
+        checked.value = {};
     } else {
-      listDisplay.value.forEach((user) => {
-        checked.value[user.record_id] = user;
-      });
+        listDisplay.value.forEach((user) => {
+            checked.value[user.record_id] = user;
+        });
     }
-  }
-  let colspan = 0;
-  let tableKey = ref(0);
+}
+let colspan = 0;
+let tableKey = ref(0);
 
-  watch(
+watch(
     columnList,
     (nv) => {
-      colspan = 1;
-      nv.forEach((c) => {
-        if (c.value) {
-          colspan++;
-        }
-      });
+        colspan = 1;
+        nv.forEach((c) => {
+            if (c.value) {
+                colspan++;
+            }
+        });
 
-      tableKey.value++;
+        tableKey.value++;
     },
     { immediate: true }
-  );
+);
 
-  watch(showDetail, (nv) => {
+watch(showDetail, (nv) => {
     if (nv) {
-      nextTick(() => {
-        let scrollTarget = document.querySelector(".detailRecord .content");
-        let detailRecord = document.querySelector(".detailRecord");
-        let targetTop = window.scrollY + detailRecord.getBoundingClientRect().top;
-        scrollTarget.scrollTop = 0;
-        window.scrollTo(0, targetTop);
-      });
+        nextTick(() => {
+            let scrollTarget = document.querySelector(".detailRecord .content");
+            let detailRecord = document.querySelector(".detailRecord");
+            let targetTop = window.scrollY + detailRecord.getBoundingClientRect().top;
+            scrollTarget.scrollTop = 0;
+            window.scrollTo(0, targetTop);
+        });
     }
-  });
+});
 
-  // modal related
-  let promiseRunning = ref(false);
-  let openInviteUser = ref(false);
-  let openCreateUser = ref(false);
-  let openBlockUser = ref(false);
-  let openUnblockUser = ref(false);
-  let openDeleteUser = ref(false);
-  let openUpgrade = ref(false);
-  let openGrantAccess = ref(false);
-  let successGrantAccess = ref(false);
-  let gender_public = ref(false);
-  let address_public = ref(false);
-  let birthdate_public = ref(false);
-  let createParams = {
+// modal related
+let promiseRunning = ref(false);
+let openInviteUser = ref(false);
+let openCreateUser = ref(false);
+let openBlockUser = ref(false);
+let openUnblockUser = ref(false);
+let openDeleteUser = ref(false);
+let openUpgrade = ref(false);
+let openGrantAccess = ref(false);
+let successGrantAccess = ref(false);
+let gender_public = ref(false);
+let address_public = ref(false);
+let birthdate_public = ref(false);
+let createParams = {
     email: "",
     name: "",
     password: "",
@@ -1009,514 +1009,514 @@ Modal(:open="successGrantAccess", @close="successGrantAccess = false")
     website: "",
     nickname: "",
     misc: "",
-  };
-  let inviteParams = {
+};
+let inviteParams = {
     email: "",
     name: "",
-  };
-  let redirect = "";
-  let error = ref("");
+};
+let redirect = "";
+let error = ref("");
 
-  // list renderer
-  let listDisplay = ref(null);
+// list renderer
+let listDisplay = ref(null);
 
-  // call getPage when currentPage changes
-  watch(currentPage, (n, o) => {
+// call getPage when currentPage changes
+watch(currentPage, (n, o) => {
     if (
-      n !== o &&
-      n > 0 &&
-      (n <= maxPage.value || (n > maxPage.value && !endOfList.value))
+        n !== o &&
+        n > 0 &&
+        (n <= maxPage.value || (n > maxPage.value && !endOfList.value))
     ) {
-      getPage();
+        getPage();
     } else {
-      currentPage.value = o;
+        currentPage.value = o;
     }
-  });
+});
 
-  watch(fetching, (n) => {
+watch(fetching, (n) => {
     if (n && showCalendar.value) {
-      showCalendar.value = false;
+        showCalendar.value = false;
     }
-  });
+});
 
-  watch(searchFor, (n, o) => {
+watch(searchFor, (n, o) => {
     if (n !== o) {
-      searchValue.value = "";
+        searchValue.value = "";
     }
-  });
+});
 
-  // computed fetch params
-  let callParams = computed(() => {
+// computed fetch params
+let callParams = computed(() => {
     let dates = searchValue.value.split("~").map((d) => d.trim());
     let result = {};
 
     switch (searchFor.value) {
-      case "timestamp":
-        let startDate = dates?.[0]
-          ? new Date(new Date(dates[0]).setHours(0, 0, 0, 0)).getTime()
-          : 0;
-        let endDate = dates?.[1]
-          ? new Date(new Date(dates[1]).setHours(23, 59, 59, 999)).getTime()
-          : "";
+        case "timestamp":
+            let startDate = dates?.[0]
+                ? new Date(new Date(dates[0]).setHours(0, 0, 0, 0)).getTime()
+                : 0;
+            let endDate = dates?.[1]
+                ? new Date(new Date(dates[1]).setHours(23, 59, 59, 999)).getTime()
+                : "";
 
-        if (startDate && endDate) {
-          result = {
-            service: currentService.id,
-            searchFor: searchFor.value,
-            value: startDate,
-            range: endDate,
-          };
-        } else if (startDate || endDate) {
-          result = {
-            service: currentService.id,
-            searchFor: searchFor.value,
-            value: startDate ? startDate : endDate,
-            condition: startDate ? ">=" : "<=",
-          };
-        } else {
-          result = {
-            service: currentService.id,
-            searchFor: searchFor.value,
-            value: new Date().getTime(),
-            condition: "<=",
-          };
-        }
+            if (startDate && endDate) {
+                result = {
+                    service: currentService.id,
+                    searchFor: searchFor.value,
+                    value: startDate,
+                    range: endDate,
+                };
+            } else if (startDate || endDate) {
+                result = {
+                    service: currentService.id,
+                    searchFor: searchFor.value,
+                    value: startDate ? startDate : endDate,
+                    condition: startDate ? ">=" : "<=",
+                };
+            } else {
+                result = {
+                    service: currentService.id,
+                    searchFor: searchFor.value,
+                    value: new Date().getTime(),
+                    condition: "<=",
+                };
+            }
 
-        break;
+            break;
 
-      case "user_id":
-      case "email":
-      case "phone_number":
-        result = {
-          service: currentService.id,
-          searchFor: searchFor.value,
-          value: searchValue.value,
-          condition: "=",
-        };
+        case "user_id":
+        case "email":
+        case "phone_number":
+            result = {
+                service: currentService.id,
+                searchFor: searchFor.value,
+                value: searchValue.value,
+                condition: "=",
+            };
 
-        break;
+            break;
 
-      case "birthdate":
-        let start = dates?.[0];
-        let end = dates?.[1];
+        case "birthdate":
+            let start = dates?.[0];
+            let end = dates?.[1];
 
-        if (start && end) {
-          result = {
-            service: currentService.id,
-            searchFor: searchFor.value,
-            value: start,
-            range: end,
-          };
-        } else if (start || end) {
-          result = {
-            service: currentService.id,
-            searchFor: searchFor.value,
-            value: start ? start : end,
-            condition: start ? ">=" : "<=",
-          };
-        }
+            if (start && end) {
+                result = {
+                    service: currentService.id,
+                    searchFor: searchFor.value,
+                    value: start,
+                    range: end,
+                };
+            } else if (start || end) {
+                result = {
+                    service: currentService.id,
+                    searchFor: searchFor.value,
+                    value: start ? start : end,
+                    condition: start ? ">=" : "<=",
+                };
+            }
 
-        break;
+            break;
 
-      default:
-        result = {
-          service: currentService.id,
-          searchFor: searchFor.value,
-          value: searchValue.value,
-          condition: ">=",
-        };
+        default:
+            result = {
+                service: currentService.id,
+                searchFor: searchFor.value,
+                value: searchValue.value,
+                condition: ">=",
+            };
     }
 
     return result;
-  });
+});
 
-  let getPage = async (refresh?: boolean) => {
+let getPage = async (refresh?: boolean) => {
     // if (!pager) {
     //     return;
     // }
 
     if (refresh) {
-      endOfList.value = false;
-      currentPage.value = 1;
+        endOfList.value = false;
+        currentPage.value = 1;
     }
 
     if (!serviceUsers[currentService.id] || searchValue.value) {
-      serviceUsers[currentService.id] = await Pager.init({
-        id: "user_id",
-        resultsPerPage: 10,
-        sortBy: !searchValue.value ? "timestamp" : callParams.value.searchFor,
-        order: !searchValue.value ? "desc" : "asc",
-      });
+        serviceUsers[currentService.id] = await Pager.init({
+            id: "user_id",
+            resultsPerPage: 10,
+            sortBy: !searchValue.value ? "timestamp" : callParams.value.searchFor,
+            order: !searchValue.value ? "desc" : "asc",
+        });
     }
 
     pager = serviceUsers[currentService.id];
 
     if ((!refresh && maxPage.value >= currentPage.value) || endOfList.value) {
-      listDisplay.value = pager.getPage(currentPage.value).list;
-      return;
+        listDisplay.value = pager.getPage(currentPage.value).list;
+        return;
     } else if (!endOfList.value || refresh) {
-      fetching.value = true;
+        fetching.value = true;
 
-      if (!searchValue.value) {
-        callParams.value.searchFor = "timestamp";
-        callParams.value.value = new Date().getTime();
-        callParams.value.condition = "<=";
-      }
+        if (!searchValue.value) {
+            callParams.value.searchFor = "timestamp";
+            callParams.value.value = new Date().getTime();
+            callParams.value.condition = "<=";
+        }
 
-      // devLog({callParams.value})
+        // devLog({callParams.value})
 
-      let fetchedData = await skapi
-        .getUsers(callParams.value, {
-          fetchMore: !refresh,
-          ascending: !searchValue.value ? false : true,
-        })
-        .catch((err) => {
-          fetching.value = false;
-          alert(err);
-        });
+        let fetchedData = await skapi
+            .getUsers(callParams.value, {
+                fetchMore: !refresh,
+                ascending: !searchValue.value ? false : true,
+            })
+            .catch((err) => {
+                fetching.value = false;
+                alert(err);
+            });
 
-      // devLog({fetchedData})
+        // devLog({fetchedData})
 
-      // save endOfList status
-      serviceUsers[currentService.id].endOfList = fetchedData.endOfList;
-      endOfList.value = serviceUsers[currentService.id].endOfList;
+        // save endOfList status
+        serviceUsers[currentService.id].endOfList = fetchedData.endOfList;
+        endOfList.value = serviceUsers[currentService.id].endOfList;
 
-      // insert data in pager
-      if (fetchedData.list.length > 0) {
-        await pager.insertItems(fetchedData.list);
-      }
+        // insert data in pager
+        if (fetchedData.list.length > 0) {
+            await pager.insertItems(fetchedData.list);
+        }
 
-      // get page from pager
-      updateListDisplay();
-      fetching.value = false;
+        // get page from pager
+        updateListDisplay();
+        fetching.value = false;
     }
-  };
+};
 
-  let init = async () => {
+let init = async () => {
     currentPage.value = 1;
 
     // setup pagers
     if (
-      serviceUsers[currentService.id] &&
-      Object.keys(serviceUsers[currentService.id]).length
+        serviceUsers[currentService.id] &&
+        Object.keys(serviceUsers[currentService.id]).length
     ) {
-      pager = serviceUsers[currentService.id];
-      endOfList.value = serviceUsers[currentService.id].endOfList;
-
-      let disp = pager.getPage(currentPage.value);
-      maxPage.value = disp.maxPage;
-      listDisplay.value = disp.list;
-    } else {
-      serviceUsers[currentService.id] = pager;
-      getPage(true);
-    }
-  };
-
-  init();
-
-  let moveFocus = (e: any, next: string) => {
-    if (e.key == "Enter") {
-      e.preventDefault();
-
-      if (e.target.id == "email" || e.target.id == "inviteUserEmail") {
-        if (!e.target.value) {
-          alert("email is required");
-          return false;
-        } else {
-          let email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
-          if (!email_regex.test(e.target.value)) {
-            alert("Please enter it in e-mail format");
-            return false;
-          }
-        }
-      } else if (e.target.id == "password") {
-        if (!e.target.value) {
-          alert("password is required");
-          return false;
-        } else {
-          if (e.target.value.length < 6 || e.target.value.length > 60) {
-            alert("Min 6 characters and Max 60 characters");
-            return false;
-          }
-        }
-      } else if (e.target.id == "inviteUserName") {
-        if (!e.target.value) {
-          alert("name is required");
-          return false;
-        }
-      }
-
-      let scrollTarget = e.target.parentElement.parentElement.parentElement;
-
-      if (
-        scrollTarget.getBoundingClientRect().height < scrollTarget.scrollHeight
-      ) {
-        scrollTarget.scrollTop += 70;
-      }
-
-      document.getElementById(next).focus();
-    }
-  };
-
-  let createUser = () => {
-    promiseRunning.value = true;
-    error.value = "";
-
-    if (gender_public.value || address_public.value || birthdate_public.value) {
-      Object.assign(
-        createParams,
-        {
-          gender_public: gender_public.value,
-          address_public: address_public.value,
-          birthdate_public: birthdate_public.value,
-        }
-      );
-    }
-
-    currentService
-      .createAccount(createParams, {
-        // email_subscription: redirect || false,
-      })
-      .then(async (res) => {
-        res.email = res.email_admin;
-        await pager.insertItems([res]);
+        pager = serviceUsers[currentService.id];
+        endOfList.value = serviceUsers[currentService.id].endOfList;
 
         let disp = pager.getPage(currentPage.value);
         maxPage.value = disp.maxPage;
         listDisplay.value = disp.list;
+    } else {
+        serviceUsers[currentService.id] = pager;
+        getPage(true);
+    }
+};
 
-        document.getElementById("createForm").reset();
-        for (let i in createParams) {
-          createParams[i] = "";
+init();
+
+let moveFocus = (e: any, next: string) => {
+    if (e.key == "Enter") {
+        e.preventDefault();
+
+        if (e.target.id == "email" || e.target.id == "inviteUserEmail") {
+            if (!e.target.value) {
+                alert("email is required");
+                return false;
+            } else {
+                let email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+                if (!email_regex.test(e.target.value)) {
+                    alert("Please enter it in e-mail format");
+                    return false;
+                }
+            }
+        } else if (e.target.id == "password") {
+            if (!e.target.value) {
+                alert("password is required");
+                return false;
+            } else {
+                if (e.target.value.length < 6 || e.target.value.length > 60) {
+                    alert("Min 6 characters and Max 60 characters");
+                    return false;
+                }
+            }
+        } else if (e.target.id == "inviteUserName") {
+            if (!e.target.value) {
+                alert("name is required");
+                return false;
+            }
         }
-        redirect = "";
-        gender_public.value = false;
-        address_public.value = false;
-        birthdate_public.value = false;
-        openCreateUser.value = false;
-        promiseRunning.value = false;
-        getPage();
-      })
-      .catch((err) => {
-        promiseRunning.value = false;
-        // error.value = err.message;
-        alert(err.message);
-      });
-  };
 
-  let inviteUser = () => {
+        let scrollTarget = e.target.parentElement.parentElement.parentElement;
+
+        if (
+            scrollTarget.getBoundingClientRect().height < scrollTarget.scrollHeight
+        ) {
+            scrollTarget.scrollTop += 70;
+        }
+
+        document.getElementById(next).focus();
+    }
+};
+
+let createUser = () => {
+    promiseRunning.value = true;
+    error.value = "";
+
+    if (gender_public.value || address_public.value || birthdate_public.value) {
+        Object.assign(
+            createParams,
+            {
+                gender_public: gender_public.value,
+                address_public: address_public.value,
+                birthdate_public: birthdate_public.value,
+            }
+        );
+    }
+
+    currentService
+        .createAccount(createParams, {
+            // email_subscription: redirect || false,
+        })
+        .then(async (res) => {
+            res.email = res.email_admin;
+            await pager.insertItems([res]);
+
+            let disp = pager.getPage(currentPage.value);
+            maxPage.value = disp.maxPage;
+            listDisplay.value = disp.list;
+
+            document.getElementById("createForm").reset();
+            for (let i in createParams) {
+                createParams[i] = "";
+            }
+            redirect = "";
+            gender_public.value = false;
+            address_public.value = false;
+            birthdate_public.value = false;
+            openCreateUser.value = false;
+            promiseRunning.value = false;
+            getPage();
+        })
+        .catch((err) => {
+            promiseRunning.value = false;
+            // error.value = err.message;
+            alert(err.message);
+        });
+};
+
+let inviteUser = () => {
     promiseRunning.value = true;
     error.value = "";
 
     let options = {};
     if (redirect) {
-      options.confirmation_url = redirect;
+        options.confirmation_url = redirect;
     }
 
     currentService
-      .inviteUser(inviteParams, options)
-      .then((res) => {
-        promiseRunning.value = false;
-        openInviteUser.value = false;
+        .inviteUser(inviteParams, options)
+        .then((res) => {
+            promiseRunning.value = false;
+            openInviteUser.value = false;
 
-        let successMessage = `Invitation E-Mail has been sent to: "${inviteParams.email}". Invited users will be listed once they accept their invitation.`;
-        alert(successMessage);
+            let successMessage = `Invitation E-Mail has been sent to: "${inviteParams.email}". Invited users will be listed once they accept their invitation.`;
+            alert(successMessage);
 
-        document.getElementById("inviteForm").reset();
-        for (let i in inviteParams) {
-          inviteParams[i] = "";
-        }
-        redirect = "";
-      })
-      .catch((err) => {
-        promiseRunning.value = false;
-        // error.value = err.message;
-        alert(err.message);
-      });
-  };
+            document.getElementById("inviteForm").reset();
+            for (let i in inviteParams) {
+                inviteParams[i] = "";
+            }
+            redirect = "";
+        })
+        .catch((err) => {
+            promiseRunning.value = false;
+            // error.value = err.message;
+            alert(err.message);
+        });
+};
 
-  let changeUserApprovalState = async (state: string) => {
+let changeUserApprovalState = async (state: string) => {
     promiseRunning.value = true;
 
     let user_ids = Object.keys(checked.value);
 
     let promise = user_ids.map(user_id => {
-      let selectedUser = pager.list[user_id];
-      let original_approved_info = selectedUser.approved.split(":");
-      let original_approver = original_approved_info[0];
-      let original_approved_status = original_approved_info[1];
+        let selectedUser = pager.list[user_id];
+        let original_approved_info = selectedUser.approved.split(":");
+        let original_approver = original_approved_info[0];
+        let original_approved_status = original_approved_info[1];
 
-      if (state == "block") {
-        if (original_approved_status == "suspended") {
-          // This user is already blocked.
-          return;
+        if (state == "block") {
+            if (original_approved_status == "suspended") {
+                // This user is already blocked.
+                return;
+            }
+
+            return currentService.blockAccount(user_id).then(() => {
+                selectedUser.approved = `${original_approver}:suspended:` + new Date().getTime();
+                return pager.editItem(selectedUser);
+            })
         }
 
-        return currentService.blockAccount(user_id).then(() => {
-          selectedUser.approved = `${original_approver}:suspended:` + new Date().getTime();
-          return pager.editItem(selectedUser);
-        })
-      }
+        else if (state == "unblock") {
+            if (original_approved_status != "suspended") {
+                // This user is not blocked.
+                return;
+            }
 
-      else if (state == "unblock") {
-        if (original_approved_status != "suspended") {
-          // This user is not blocked.
-          return;
+            return currentService.unblockAccount(user_id).then(() => {
+                selectedUser.approved = `${original_approver}:approved:` + new Date().getTime();
+                return pager.editItem(selectedUser);
+            })
         }
-
-        return currentService.unblockAccount(user_id).then(() => {
-          selectedUser.approved = `${original_approver}:approved:` + new Date().getTime();
-          return pager.editItem(selectedUser);
-        })
-      }
     });
 
     await Promise.all(promise).then(() => {
-      checked.value = {};
-      updateListDisplay();
-      promiseRunning.value = false;
-      openBlockUser.value = false;
-      openUnblockUser.value = false;
+        checked.value = {};
+        updateListDisplay();
+        promiseRunning.value = false;
+        openBlockUser.value = false;
+        openUnblockUser.value = false;
     }).catch((e) => {
-      promiseRunning.value = false;
-      alert(e.message);
+        promiseRunning.value = false;
+        alert(e.message);
     });
-  };
+};
 
-  let updateListDisplay = () => {
+let updateListDisplay = () => {
     let disp = pager.getPage(currentPage.value);
     maxPage.value = disp.maxPage;
     listDisplay.value = disp.list;
     while (
-      disp.maxPage > 0 &&
-      disp.maxPage < currentPage.value &&
-      !disp.list.length
+        disp.maxPage > 0 &&
+        disp.maxPage < currentPage.value &&
+        !disp.list.length
     ) {
-      currentPage.value--;
+        currentPage.value--;
     }
-  }
+}
 
-  let deleteUser = () => {
+let deleteUser = () => {
     promiseRunning.value = true;
 
     let userToDel = Object.keys(checked.value);
     let promises: Array<Promise<any>> = [];
     userToDel.forEach((u) => {
-      console.log({ u })
-      promises.push(currentService.deleteAccount(u).then(async () => {
-        await pager.deleteItem(u);
-      }));
+        console.log({ u })
+        promises.push(currentService.deleteAccount(u).then(async () => {
+            await pager.deleteItem(u);
+        }));
     });
 
     Promise.all(promises).then(() => {
-      checked.value = {};
-      updateListDisplay();
-      promiseRunning.value = false;
-      openDeleteUser.value = false;
+        checked.value = {};
+        updateListDisplay();
+        promiseRunning.value = false;
+        openDeleteUser.value = false;
     }).catch((e) => {
-      promiseRunning.value = false;
-      alert(e.message);
+        promiseRunning.value = false;
+        alert(e.message);
     });
 
-  };
+};
 
-  let closeModal = () => {
+let closeModal = () => {
     if (openInviteUser.value) {
-      document.getElementById("inviteForm").reset();
-      openInviteUser.value = false;
+        document.getElementById("inviteForm").reset();
+        openInviteUser.value = false;
     } else if (openCreateUser.value) {
-      document.getElementById("createForm").reset();
-      for (let i in createParams) {
-        createParams[i] = "";
-      }
-      gender_public.value = false;
-      address_public.value = false;
-      birthdate_public.value = false;
-      openCreateUser.value = false;
+        document.getElementById("createForm").reset();
+        for (let i in createParams) {
+            createParams[i] = "";
+        }
+        gender_public.value = false;
+        address_public.value = false;
+        birthdate_public.value = false;
+        openCreateUser.value = false;
     }
-  };
+};
 
-  let grantAccess = async () => {
+let grantAccess = async () => {
     promiseRunning.value = true;
 
     let inputAccess: HTMLInputElement = document.querySelector(".change-access");
     let resultAccess = Number(inputAccess.value);
 
     if (resultAccess < 1 || resultAccess > 99) {
-      promiseRunning.value = false;
-      inputAccess.value = "";
-      alert("Access group should be between 1 and 99");
-      return;
+        promiseRunning.value = false;
+        inputAccess.value = "";
+        alert("Access group should be between 1 and 99");
+        return;
     }
 
     let user_ids = Object.keys(checked.value);
     let promises: Array<Promise<any>> = [];
 
     user_ids.forEach((u) => {
-      promises.push(
-        currentService.grantAccess({ user_id: u, access_group: resultAccess }).then(() => {
-          pager.list[u].access_group = resultAccess;
-          pager.editItem(pager.list[u]);
-        })
-      );
+        promises.push(
+            currentService.grantAccess({ user_id: u, access_group: resultAccess }).then(() => {
+                pager.list[u].access_group = resultAccess;
+                pager.editItem(pager.list[u]);
+            })
+        );
     });
 
     await Promise.all(promises).then(() => {
-      inputAccess.value = "";
-      updateListDisplay();
-      openGrantAccess.value = false;
-      successGrantAccess.value = true;
+        inputAccess.value = "";
+        updateListDisplay();
+        openGrantAccess.value = false;
+        successGrantAccess.value = true;
     }).catch((e) => {
-      alert(e.message);
+        alert(e.message);
     }).finally(() => {
-      promiseRunning.value = false;
+        promiseRunning.value = false;
     });
-  };
+};
 
-  let closeGrantAccess = () => {
+let closeGrantAccess = () => {
     let inputAccess: HTMLInputElement = document.querySelector(".change-access");
 
     openGrantAccess.value = false;
 
     if (inputAccess) {
-      inputAccess.value = "";
+        inputAccess.value = "";
     }
-  };
+};
 </script>
 <style scoped lang="less">
-  body {
+body {
     font-family: "Twemoji Country Flags", "Radio Canada", sans-serif;
-  }
+}
 
-  // .updown {
-  //     background-color: #fff;
-  //     background-color: var(--main-color);
-  //     border-radius: 50%;
-  //     margin-left: 8px;
-  //     cursor: pointer;
-  //     box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
-  // }
-  .moreVert {
+// .updown {
+//     background-color: #fff;
+//     background-color: var(--main-color);
+//     border-radius: 50%;
+//     margin-left: 8px;
+//     cursor: pointer;
+//     box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
+// }
+.moreVert {
     .inner {
-      padding-top: 0.25rem;
+        padding-top: 0.25rem;
 
-      &>* {
-        padding: 0.25rem 0.5rem;
-      }
+        &>* {
+            padding: 0.25rem 0.5rem;
+        }
 
-      padding-bottom: 0.25rem;
+        padding-bottom: 0.25rem;
     }
-  }
+}
 
-  // svg {
-  //     fill: black;
-  //     width: 22px;
-  //     height: 22px;
-  // }
-  // svg:hover {
-  //       fill: var(--main-color);
-  // }
-  #searchForm {
+// svg {
+//     fill: black;
+//     width: 22px;
+//     height: 22px;
+// }
+// svg:hover {
+//       fill: var(--main-color);
+// }
+#searchForm {
     margin: 0 auto;
 
     display: flex;
@@ -1530,82 +1530,82 @@ Modal(:open="successGrantAccess", @close="successGrantAccess = false")
     //     flex-grow: 1;
     // }
     .search {
-      position: relative;
-      display: flex;
-      flex-grow: 50;
-      gap: 8px;
-      flex-shrink: 0;
-      min-width: 290px;
+        position: relative;
+        display: flex;
+        flex-grow: 50;
+        gap: 8px;
+        flex-shrink: 0;
+        min-width: 290px;
     }
 
     .clickInput {
-      position: relative;
+        position: relative;
     }
 
     .big {
-      padding-right: 40px;
+        padding-right: 40px;
     }
 
     svg,
     .icon {
-      position: absolute;
-      top: 50%;
-      right: 10px;
-      transform: translateY(-50%);
-      cursor: pointer;
-      user-select: none;
-      fill: black;
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        user-select: none;
+        fill: black;
     }
 
     svg:hover {
-      fill: var(--main-color);
+        fill: var(--main-color);
     }
 
     .final {
-      flex-grow: 1;
-      width: 140px;
+        flex-grow: 1;
+        width: 140px;
     }
-  }
+}
 
-  #calendar,
-  #localeSelector {
+#calendar,
+#localeSelector {
     position: absolute;
     right: 0;
     top: 100%;
     max-width: 100%;
     margin-top: 8px;
     z-index: 1;
-  }
+}
 
-  #createForm {
+#createForm {
     .label {
-      position: relative;
+        position: relative;
 
-      ._checkbox {
-        position: absolute;
-        top: 0;
-        right: 0;
-      }
+        ._checkbox {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
     }
-  }
+}
 
-  .tableMenu {
+.tableMenu {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     // flex-direction: row-reverse;
 
     &>* {
-      margin: 8px 0;
+        margin: 8px 0;
     }
-  }
+}
 
-  .userPart {
+.userPart {
     position: relative;
     overflow: hidden;
-  }
+}
 
-  #loading {
+#loading {
     position: absolute;
     top: 60px;
     left: 20px;
@@ -1615,118 +1615,74 @@ Modal(:open="successGrantAccess", @close="successGrantAccess = false")
     flex-wrap: nowrap;
     align-items: center;
     font-size: 0.8rem;
-  }
+}
 
-  .optionCol {
+.optionCol {
     &>*:not(:last-child) {
-      margin-right: 8px;
+        margin-right: 8px;
     }
-  }
+}
 
-  .iconClick.arrow {
+.iconClick.arrow {
     padding: 0;
     font-size: 0.8rem;
-  }
+}
 
-  .iconClick.deact {
+.iconClick.deact {
     color: rgba(0, 0, 0, 0.5);
 
     &::before {
-      box-shadow: unset !important;
+        box-shadow: unset !important;
     }
 
     svg {
-      fill: rgba(0, 0, 0, 0.5);
+        fill: rgba(0, 0, 0, 0.5);
     }
-  }
+}
 
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
-  }
+}
 
-  input[type="number"] {
+input[type="number"] {
     -moz-appearance: textfield;
-  }
+}
 
-  .detailRecord {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    background-color: #fff;
-    transform: translateX(110%);
-    transition: all 0.3s;
-
-    &.show {
-      transform: translateX(0px);
-    }
-
-    .header {
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 60px;
-      padding: 0 20px;
-      font-weight: 500;
-      background-color: #f0f0f0;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-      box-shadow: inset 0 -3px 3px -3px rgba(0, 0, 0, 0.2);
-
-      .material-symbols-outlined {
-        cursor: pointer;
-      }
-
-      .name {
-        flex-grow: 1;
-        padding-left: 20px;
-      }
-
-      button {
-        padding: 0;
-        font-size: 0.9rem;
-      }
-    }
-  }
-
-  tbody {
+tbody {
     td {
-      .click {
-        position: relative;
-        color: var(--main-color);
-        font-weight: 500;
+        .click {
+            position: relative;
+            color: var(--main-color);
+            font-weight: 500;
 
-        &::after {
-          position: absolute;
-          content: "copied!";
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          border-radius: 4px;
-          text-align: center;
-          background-color: var(--main-color);
-          color: #fff;
-          display: none;
-        }
+            &::after {
+                position: absolute;
+                content: "copied!";
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                border-radius: 4px;
+                text-align: center;
+                background-color: var(--main-color);
+                color: #fff;
+                display: none;
+            }
 
-        &:hover {
-          text-decoration: underline;
-          cursor: pointer;
-        }
+            &:hover {
+                text-decoration: underline;
+                cursor: pointer;
+            }
 
-        &.clicked {
-          &::after {
-            display: block;
-          }
+            &.clicked {
+                &::after {
+                    display: block;
+                }
+            }
         }
-      }
     }
-  }
+}
 </style>
