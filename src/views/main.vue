@@ -1,5 +1,5 @@
 <template lang="pug">
-NavBar
+//- NavBar
 router-view
 </template>
 
