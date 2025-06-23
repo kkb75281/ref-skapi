@@ -3,32 +3,34 @@ nav#navBar(ref="navBar")
     .wrap
         .left
             template(v-if="route.name != 'home' && user?.user_id && route.path !== '/my-services' && route.path !== '/account-setting'")
-                img.symbol(src="@/assets/img/logo/icon_logo.svg" @click="router.push('/')")
+                img.symbol(src="@/assets/img/logo/symbol-logo.png" @click="router.push('/')")
                 .router
                     span.small(@click="router.push('/my-services')") My Services/
                     p.big {{ serviceName }}
-            template(v-else)
-                router-link.logo(to="/")
-                    img.symbol(src="@/assets/img/logo/icon_logo.svg" @click="router.push('/')")
-                    //- span.faktum.desktop(style="font-size:1.4rem;") skapi
-                ul.section-wrap
-                    li.section(@click="scrollSec('section1')") Features
-                    li.section(@click="scrollSec('section2')") Price
-                    li.section(@click="scrollSec('section3')") FAQ
-                    li.section(@click="scrollSec('section4')") Contents
-
+            router-link.logo(to="/" v-else)
+                img.symbol(src="@/assets/img/logo/symbol-logo.png" @click="router.push('/')")
+                span.faktum.desktop(style="font-size:1.4rem;") skapi
         .right
             ul.menu-wrap
                 template(v-if="user?.user_id")
-                    li
-                        a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") Docs
                     li.go-github
                         a(href="https://github.com/broadwayinc/skapi-js" target="_blank")
                             img(src="@/assets/img/icon/icon_github.svg" style="filter: invert(1);")
+                    li
+                        a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") Docs
+                        
                     li(v-if="route.name == 'home'")
                         router-link(to="/my-services") My Services
+                    //- li(v-else="route.name != 'home'")
+                    //-     a.doc(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank" style="color:white")
+                    //-         //- .material-symbols-outlined.notranslate menu_book
+                    //-         svg(width="24" height="24" style="fill:white")
+                    //-             //- use(xlink:href="@/assets/img/material-icon.svg#icon-menu-book")
+                    //-         | &nbsp;Docs
+
                     li
                         .prof(@click.stop="(e)=>{showDropDown(e)}")
+                            //- .material-symbols-outlined.notranslate.notranslate.fill(style="margin: 0 .5rem 0 1rem;font-size:32px;") account_circle
                             svg(width="32" height="32")
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-account-circle-fill")
                             .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
@@ -36,45 +38,34 @@ nav#navBar(ref="navBar")
                                     .account {{ user.email }}
                                     ul.menu
                                         li(@click="openBillingPage")
+                                            //- .material-symbols-outlined.notranslate credit_card
                                             svg
                                                 use(xlink:href="@/assets/img/material-icon.svg#icon-credit-card")
                                             span Billing
                                         li(@click="navigateToPage")
+                                            //- .material-symbols-outlined.notranslate settings
                                             svg
                                                 use(xlink:href="@/assets/img/material-icon.svg#icon-settings")
                                             span Account Settings
                                         li(@click="logout")
+                                            //- .material-symbols-outlined.notranslate logout
                                             svg
                                                 use(xlink:href="@/assets/img/material-icon.svg#icon-logout")
                                             span Logout
+                                    //- .policy
+                                    //-     router-link(to="/pp.html" target="_blank") Terms of service • Privacy policy
                 template(v-else)
-                    li.go-community
-                        .ser.dropdown Community
-                            button.btn-dropdown(@click="toggleDropdown")
-                                img(src="@/assets/img/landingpage/icon_dropdown.svg")
-                            span.user-email {{ user?.email }}
-                            ul.dropdown-menu(v-show="isOpen")
-                                li(@click="router.push('/community')")
-                                    img(src="../../assets/img/landingpage/icon_community.svg")
-                                    | Billing
-                                li(@click="router.push('/blog')")
-                                    img(src="../..//assets/img/landingpage/icon_blog.svg")
-                                    | Account Setting
-                                li(@click="router.push('/roadmap')")
-                                    img(src="../..//assets/img/landingpage/icon_roadmap.svg")
-                                    | Logout
-                    li.go-docs
-                        a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
-                            img(src="@/assets/img/landingpage/icon_docs.svg")
-                            | Docs
                     li.go-github
-                        a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank") 
-                            img(src="@/assets/img/landingpage/icon_github.svg")
-                            | Github
-                    li.go-login
-                        router-link.ser(to="/login") 
-                            img(src="@/assets/img/landingpage/icon_login.svg")
-                            | Login
+                        a(href="https://github.com/broadwayinc/skapi-js" target="_blank")
+                            img(src="@/assets/img/icon/icon_github.svg" style="filter: invert(1);")
+                    li
+                        a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") Docs
+                    li
+                        router-link.ser(to="/login") Login
+                    li
+                        router-link(to="/signup")
+                            button.final Sign-up
+
 
 #proceeding(v-if="running")
     .inner    
@@ -86,7 +77,7 @@ nav#navBar(ref="navBar")
 import { useRoute, useRouter } from "vue-router";
 import { onMounted, onBeforeUnmount, ref, watch } from "vue";
 import { skapi } from "@/main";
-import { serviceMainLoaded, currentService } from "@/views/service/main";
+import { serviceMainLoaded, currentService } from '@/views/service/main';
 import { user, customer } from "@/code/user";
 import { showDropDown } from "@/assets/js/event.js";
 import { setAutoHide, removeListener, routeName } from "./navBar-autohide.ts";
@@ -143,30 +134,26 @@ let logout = () => {
 
 onMounted(() => {
     setAutoHide(navBar.value, 3);
-    window.addEventListener("serviceChanged", updateServiceName);
+    window.addEventListener('serviceChanged', updateServiceName);
 });
 
 onBeforeUnmount(() => {
     removeListener();
-    window.removeEventListener("serviceChanged", updateServiceName);
+    window.removeEventListener('serviceChanged', updateServiceName);
 });
 
-watch(
-    () => route.name,
-    (nv, ov) => {
-        if (nv) {
-            routeName.value = typeof nv === "string" ? nv : "";
-        }
-        // if(nv !== 'home') {
-        // 	document.body.style.setProperty('--nav-position', 'sticky');
-        // 	document.body.style.setProperty('--nav-top', '0px');
-        // } else {
-        // 	document.body.style.setProperty('--nav-position', 'fixed');
-        // 	document.body.style.setProperty('--nav-top', '20px');
-        // }
-    },
-    { immediate: true }
-);
+watch(() => route.name, (nv, ov) => {
+    if (nv) {
+        routeName.value = typeof nv === 'string' ? nv : '';
+    }
+    // if(nv !== 'home') {
+    // 	document.body.style.setProperty('--nav-position', 'sticky');
+    // 	document.body.style.setProperty('--nav-top', '0px');
+    // } else {
+    // 	document.body.style.setProperty('--nav-position', 'fixed');
+    // 	document.body.style.setProperty('--nav-top', '20px');
+    // }
+}, { immediate: true });
 </script>
 
 <style lang="less" scoped>
@@ -190,38 +177,52 @@ img.symbol.mobile {
 }
 
 #navBar {
-    position: fixed;
-    top: 0;
+    position: var(--nav-position, fixed);
     left: 0;
+    top: var(--nav-top, 20);
     z-index: 99999;
     width: 100%;
-    height: 4rem;
-    background-color: #000;
-    font-size: 1.125rem;
-    color: #fff;
-    fill: #fff; // for svg
+    display: flex;
+    align-items: center;
+    fill: #333; // for svg
+    justify-content: center;
+    // background-color: #fff;
+    // border-radius: 12px;
 
-    a {
-        color: #fff;
-    }
+    font-size: 20px;
+    // border-bottom: 1px solid rgba(0,0,0,0.1);
 
     .wrap {
         width: 100%;
-        height: 100%;
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        gap: 1rem;
-        padding: 0 2.5rem;
+        justify-content: space-between;
+        gap: 10px;
+
+        max-width: 80rem;
+        padding: 16px 20px;
+        // background-color: #fff;
+        background-color: rgba(255, 255, 255, 0.8);
+        // border: 1px solid rgba(0, 0, 0, 0.05);
+        border: 1.5px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border-radius: 12px;
+        // box-shadow: rgba(66, 62, 121, 0.06) 0px 48px 96px -24px;
+        // box-shadow: rgba(66, 62, 121, 0.1) 0px 0px 90px -14px;
+        box-shadow: rgba(66, 62, 121, 0.25) 0px 0px 90px -14px;
+        margin: 0 var(--nav-top);
+        border-color: #f7f9fc;
 
         .left {
+            // flex-shrink: 0;
             flex-grow: 1;
             display: flex;
             align-items: center;
-            gap: 3.75rem;
+            gap: 10px;
+            // vertical-align: middle;
 
             .symbol {
-                width: 6.25rem;
+                width: 26px;
                 cursor: pointer;
                 vertical-align: top;
                 image-orientation: none;
@@ -268,92 +269,77 @@ img.symbol.mobile {
                     margin-top: 0.7rem;
                 }
             }
-
-            .section-wrap {
-                display: flex;
-                align-items: center;
-                gap: 2.75rem;
-                padding-left: 0;
-
-                .section {
-                    list-style: none;
-                    cursor: pointer;
-                }
-            }
         }
 
         .right {
             display: inline-block;
             vertical-align: middle;
+            // flex-grow: 1;
+            // font-weight: bold;
+            // font-size: 0.9rem;
 
             ul {
+                position: relative;
+                text-align: right;
+                margin: 0;
+                padding: 0;
+                white-space: nowrap;
+
                 display: flex;
                 justify-content: flex-end;
                 align-items: center;
-                gap: 1.25rem;
-                padding-left: 0;
+                gap: 24px;
+
+                &.menu-wrap {
+                    height: 40px;
+                }
 
                 li {
-                    list-style: none;
+                    display: inline-block;
                     vertical-align: middle;
+                    list-style: none;
                     user-select: none;
+                    cursor: pointer;
+                    display: flex;
+
+                    a {
+                        // color: rgb(83, 84, 121);
+                        color: #333;
+                    }
+                }
+            }
+
+            .go-github {
+                margin-right: 1.25rem;
+
+                a {
+                    width: 20px;
+                    height: 20px;
                     position: relative;
-                    padding-right: 1.25rem;
 
                     &::after {
                         content: "";
                         display: inline-block;
                         width: 1px;
                         height: 20px;
-                        background-color: rgba(225, 225, 225, 0.2);
+                        // background-color: rgba(255, 255, 255, 0.4);
+                        background-color: rgba(0, 0, 0, 0.4);
                         position: absolute;
-                        top: 1px;
-                        right: 0;
+                        right: -24px;
                     }
-
-                    &:last-of-type {
-                        &::after {
-                            display: none;
-                        }
-                    }
-                }
-
-                .go-community {
-                    .btn-dropdown {
-                        background: none;
-                        border: none;
-                        padding: 0;
-                        margin: 0;
-                        font: inherit;
-                        color: inherit;
-                        height: auto;
-                    }
-                }
-
-                .go-login {
-                    border-radius: 100px;
-                    border: 1px solid rgba(255, 255, 255, 0.2);
-                    padding: 0.5rem 1.125rem 0.5rem 1rem;
-                }
-
-                .ser {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    cursor: pointer;
                 }
             }
         }
 
         @media all and (pointer: fine) {
             .prof:hover {
-                & > .material-symbols-outlined:first-child {
+                &>.material-symbols-outlined:first-child {
                     box-shadow: inset 0px 0px 0 4px rgba(255, 255, 255, 0.5);
                     border-radius: 50%;
                 }
             }
 
-            .prof > svg:hover {
+            .prof>svg:hover {
                 box-shadow: inset 0px 0px 0 4px rgba(255, 255, 255, 0.5);
                 border-radius: 50%;
             }
@@ -438,7 +424,7 @@ img.symbol.mobile {
     img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: conver;
     }
 }
 
