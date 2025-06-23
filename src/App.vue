@@ -3,7 +3,7 @@ div._root(style='min-height: calc(100vh - 1rem - 1px - var(--footer-height, 0));
     //- router-view(v-if='route.name === "home" || loaded')
     router-view(v-if='connected')
 
-footer#footer.new
+//- footer#footer.new
     //- img(src="@/assets/img/logo/logo-white.svg" style="height:.88rem;")
     .logo(style="display:flex;align-items:center;gap:0.5rem;")
         img.symbol(src="@/assets/img/logo/symbol-logo.png" style="height:.88rem;margin:0")
