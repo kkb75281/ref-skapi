@@ -1,5 +1,5 @@
 <template lang="pug">
-div(style='min-height: calc(100vh - 1rem - 1px - var(--footer-height, 0));' :style='{"--footer-height": footerHeight+"px"}')
+div._root(style='min-height: calc(100vh - 1rem - 1px - var(--footer-height, 0));' :style='{"--footer-height": footerHeight+"px"}')
     //- router-view(v-if='route.name === "home" || loaded')
     router-view(v-if='connected')
 
@@ -27,7 +27,7 @@ onMounted(() => {
     // this is to make footer stick to bottom
     // get footer height
     footerHeight.value = document.getElementById('footer').offsetHeight.toString(); // number
-	console.log('footerHeight', footerHeight.value);
+    console.log('footerHeight', footerHeight.value);
     // detect window width change
     window.addEventListener('resize', () => {
         window.requestAnimationFrame(() => {
@@ -46,12 +46,12 @@ footer {
     box-shadow: 0px 2px black; // compensate offset calc
 
     // background-color: #101828;
-    border-top: 1px solid rgba(0,0,0,0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
     height: 2.5rem;
     overflow-y: hidden;
 
     &.new {
-        background-color:rgb(247, 249, 252);
+        background-color: rgb(247, 249, 252);
         border: 0;
         // border: 1px solid rgba(0,0,0,0.1);
         // background-color: #fff;
