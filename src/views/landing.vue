@@ -88,33 +88,39 @@ main.landing-page-root
 			.desc All You Need for Modern Web Apps. #[br]Discover 6 Unique Advantages Only Skapi Delivers.
 			.feature-wrap
 				.feature-item
+					.img
+						img(src="@/assets/img/landingpage/feature1.svg", alt="Feature Icon1")
 					.title Works with#[br]Any Frontend
-						//- img(src="@/assets/img/landingpage/feature1.svg", alt="Feature Icon1")
 					.content Skapi is compatible with Vue.js, React, Angular, and more, providing pre-built templates for various frameworks. It also works seamlessly with plain HTML without requiring any dependencies.
 
 				.feature-item
+					.img
+						img(src="@/assets/img/landingpage/feature2.svg", alt="Feature Icon2")
 					.title API Docs for#[br]Faster Dev Flow
-						//- img(src="@/assets/img/landingpage/feature2.svg", alt="Feature Icon2")
 					.content Well-written API documentation that your favorite language models can train on, enabling full support from your AI coding assistant like ChatGPT, GitHub Copilot, and more.
 
 				.feature-item
+					.img
+						img(src="@/assets/img/landingpage/feature3.svg", alt="Feature Icon3")
 					.title Built-in#[br]Email System
-						//- img(src="@/assets/img/landingpage/feature3.svg", alt="Feature Icon3")
 					.content Need to send marketing emails or automate service notifications? Skapi includes a fully integrated email system — no third-party providers required. Everything you need to manage app emails is built right in.
 
 				.feature-item
+					.img
+						img(src="@/assets/img/landingpage/feature4.svg", alt="Feature Icon4")
 					.title Instant#[br]File Hosting
-						//- img(src="@/assets/img/landingpage/feature4.svg", alt="Feature Icon4")
 					.content Skapi lets you host files or deploy static websites instantly on your own subdomain. Everything’s pre-configured and delivered fast worldwide via a built-in global CDN.
 
 				.feature-item
+					.img
+						img(src="@/assets/img/landingpage/feature5.svg", alt="Feature Icon5")
 					.title Scalable#[br]Database 
-						//- img(src="@/assets/img/landingpage/feature5.svg", alt="Feature Icon5")
 					.content Skapi delivers a scalable, flexible, auto-indexed database powered by DynamoDB — with built-in security by design for modern web applications.
 
 				.feature-item
+					.img
+						img(src="@/assets/img/landingpage/feature6.svg", alt="Feature Icon6")
 					.title Solid#[br]Security
-						//- img(src="@/assets/img/landingpage/feature6.svg", alt="Feature Icon6")
 					.content Skapi uses JWT-based authentication, pre-configured to securely handle user data, file access, and third-party API connections via Skapi’s API Bridge. No complex setup — just secure, reliable access out of the box.
 </template>
 
@@ -399,6 +405,7 @@ section {
 		grid-gap: 50px;
 
 		.feature-item {
+			position: relative;
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
@@ -409,10 +416,18 @@ section {
 			border-radius: 17px;
 			box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.05);
 
+			.img {
+				position: absolute;
+				top: 50px;
+				right: 50px;
+			}
+
 			.title {
+				position: relative;
 				margin: 0;
 				font-size: 2rem;
 				line-height: 1.2;
+				z-index: 1;
 			}
 
 			.content {
@@ -476,6 +491,30 @@ section {
 				text-align: center;
 				justify-content: flex-start;
 				gap: 30px;
+
+				.img {
+					position: relative;
+					top: unset;
+					right: unset;
+				}
+
+				&:nth-child(2) {
+					.img {
+						padding-left: 20px;
+					}
+				}
+
+				&:nth-child(3) {
+					.img {
+						padding-left: 8px;
+					}
+				}
+
+				&:nth-child(4) {
+					.img {
+						padding-left: 10px;
+					}
+				}
 			}
 		}
 	}
