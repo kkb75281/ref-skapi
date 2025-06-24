@@ -24,16 +24,16 @@ const route = useRoute();
 let footerHeight = ref('0');
 
 onMounted(() => {
-    // this is to make footer stick to bottom
-    // get footer height
-    footerHeight.value = document.getElementById('footer').offsetHeight.toString(); // number
-    console.log('footerHeight', footerHeight.value);
-    // detect window width change
-    window.addEventListener('resize', () => {
-        window.requestAnimationFrame(() => {
-            footerHeight.value = document.getElementById('footer').offsetHeight.toString();
-        });
-    });
+    // // this is to make footer stick to bottom
+    // // get footer height
+    // footerHeight.value = document.getElementById('footer').offsetHeight.toString(); // number
+    // console.log('footerHeight', footerHeight.value);
+    // // detect window width change
+    // window.addEventListener('resize', () => {
+    //     window.requestAnimationFrame(() => {
+    //         footerHeight.value = document.getElementById('footer').offsetHeight.toString();
+    //     });
+    // });
 })
 
 </script>
@@ -75,6 +75,102 @@ footer {
     .hideOnMobile {
         @media (max-width: 606px) {
             display: none;
+        }
+    }
+}
+
+.review-swiper {
+    .swiper {
+        padding-bottom: 8rem;
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+        &::after {
+            display: none;
+        }
+
+        margin-top: unset;
+        background-color: transparent;
+        background-size: cover;
+        width: 72px;
+        height: 72px;
+        opacity: 1;
+    }
+
+    .swiper-button-prev {
+        background-image: url('@/assets/img/landingpage/arrow_btn_left.svg');
+    }
+
+    .swiper-button-next {
+        background-image: url('@/assets/img/landingpage/arrow_btn_right.svg');
+    }
+
+    .swiper-pagination {
+        width: unset !important;
+        bottom: unset !important;
+        top: 39.5rem !important;
+    }
+
+    .swiper-pagination-bullet {
+        background: #3F3F3F;
+    }
+
+    .swiper-pagination-bullet-active {
+        background: #fff;
+    }
+}
+
+@media (max-width: 1280px) {
+    .review-swiper {
+
+        .swiper-button-prev,
+        .swiper-button-next {
+            left: 50%;
+            bottom: 0 !important;
+            top: unset;
+            right: unset;
+        }
+
+        .swiper-button-prev {
+            transform: translate(calc(-50% - 42px), 0);
+        }
+
+        .swiper-button-next {
+            transform: translate(calc(-50% + 42px), 0);
+        }
+    }
+}
+
+@media (max-width: 800px) {
+    .review-swiper {
+        .swiper {
+            padding-bottom: 6rem;
+        }
+
+        .swiper-pagination {
+            left: 50% !important;
+            top: var(--swiper-pagination-translate-y, 0) !important;
+            transform: translateX(-50%) !important;
+        }
+    }
+}
+
+@media (max-width: 430px) {
+    .review-swiper {
+
+        .swiper-button-prev,
+        .swiper-button-next {
+            width: 56px;
+            height: 56px;
+        }
+
+        .swiper-button-prev {
+            transform: translate(calc(-50% - 32px), 0);
+        }
+
+        .swiper-button-next {
+            transform: translate(calc(-50% + 32px), 0);
         }
     }
 }
