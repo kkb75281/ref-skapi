@@ -1,5 +1,5 @@
 <template lang="pug">
-main#accountSetting
+.account-setting
     .title Account Settings
         .delete-icon(@click="router.push('/delete-account')")
             svg
@@ -35,73 +35,6 @@ main#accountSetting
                 template(v-else)
                     template(v-if="emailSubscribed") Unsubscribe from newsletters
                     template(v-else) Subscribe to newsletters
-        //- template(v-else-if="activeBar === 'account'")
-            .form-title Delete Account
-            //- .desc This action will delete your account and all of your data.
-            button.final.warning(style="width:100%" @click="router.push('/delete-account')") Delete Account
-            //- template(v-if="updatingValue")
-                .loader(style="--loader-color:blue; --loader-size:12px")
-            //- label.material-symbols-outlined.notranslate.save(v-else) done
-            //- label(v-else)
-                svg.svgIcon.clickable.save
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-check")
-                input(type="submit" hidden)
-            //- span.material-symbols-outlined.notranslate.cancel(@click="modifyMode = false;") close
-            //- svg.svgIcon.black.clickable.cancel(@click="modifyMode = false;")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-close")
-//- br
-//- br
-//- br
-
-//- #accountSetting 
-    .infoBox
-        .infoTitle Account Settings
-
-        hr
-
-        .infoValue(style='margin-bottom:0;')
-            .smallTitle Email:
-            template(v-if="modifyMode")
-                form.editValue(@submit.prevent="changeEmail" style='margin-bottom:12px;')
-                    input.big(type="email" ref='emailInp' spellcheck="false" :value="inputEmail" @input="(e) => {e.target.setCustomValidity('');inputEmail = e.target.value;}" placeholder="your@email.com" required)
-
-                    template(v-if="updatingValue")
-                        .loader(style="--loader-color:blue; --loader-size:12px")
-                    //- label.material-symbols-outlined.notranslate.save(v-else) done
-                    label(v-else)
-                        svg.svgIcon.clickable.save
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-check")
-                        input(type="submit" hidden)
-                    //- span.material-symbols-outlined.notranslate.cancel(@click="modifyMode = false;") close
-                    svg.svgIcon.black.clickable.cancel(@click="modifyMode = false;")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-close")
-
-            div(v-else style='margin-bottom:12px;')
-                .ellipsis {{ user.email }}&nbsp;
-                span.editHandle(@click="editEmail") [CHANGE]
-
-        .infoValue
-            .smallTitle Password:
-            div
-                .ellipsis ******...&nbsp;
-                router-link.editHandle(to='/change-password') [CHANGE]
-
-        div(v-if="user.email_verified")
-            Checkbox(v-model="emailSubscribed" :disabled="!user.email_verified || subing_email || emailSubscribed === null") Receive newsletters from Skapi.
-        .iconClick(v-else style="color:var(--caution-color);display:inline-flex" @click="proceedVerification = true;")
-            //- .material-symbols-outlined.notranslate.fill(style='font-size:24px;') error
-            svg.svgIcon.clickable.danger(style="height: 24px; width: 24px;")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-error-fill")
-            span &nbsp;Click to verify your email address
-        hr
-
-        div(style="text-align:right")
-            router-link.iconClick.square(to='/delete-account' style='color:var(--caution-color);font-size:0.66rem;')
-            
-                //- .material-symbols-outlined.notranslate.fill(style='font-size:24px;') cancel
-                svg.svgIcon.clickable.danger(style="height: 24px; width: 24px;")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-cancel-fill")
-                span &nbsp;Delete Account
 br
 br
 br
@@ -205,9 +138,9 @@ watch(activeBar, (n, o) => {
 </script>
 
 <style scoped lang="less">
-#accountSetting {
+.account-setting {
     max-width: 1200px;
-    margin: 8px auto 0;
+    margin: 0 auto;
     padding: 0 10px;
     padding-top: 3rem;
 }

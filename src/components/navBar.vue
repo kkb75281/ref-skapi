@@ -103,7 +103,7 @@ nav#navBar(ref="navBar")
                                 .prof
                                     template(v-if="user?.user_id" )
                                         .img-profile(@click.stop="(e)=>{showDropDown(e)}")
-                                            img(src="@/assets/img/landingpage/icon_profile.svg")
+                                            img(src="@/assets/img/landingpage/icon_profile.svg" style="width: 2.5rem; height: 2.5rem;")
                                             .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                                 .account 
                                                     span.user-id {{ userEmail.split("@")[0] }}
@@ -737,11 +737,6 @@ img.symbol.mobile {
                 .prof {
                     display: flex;
                     cursor: pointer;
-
-                    img {
-                        width: 2.5rem;
-                        height: 2.5rem;
-                    }
                 }
 
                 .profile {

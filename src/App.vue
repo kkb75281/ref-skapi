@@ -3,7 +3,7 @@ div._root(style='min-height: calc(100vh - 1rem - 1px - var(--footer-height, 0));
     //- router-view(v-if='route.name === "home" || loaded')
     router-view(v-if='connected')
 
-footer#footer.new
+//- footer#footer.new
     //- img(src="@/assets/img/logo/logo-white.svg" style="height:.88rem;")
     .logo(style="display:flex;align-items:center;gap:0.5rem;")
         img.symbol(src="@/assets/img/logo/symbol-logo.png" style="height:.88rem;margin:0")
@@ -24,16 +24,16 @@ const route = useRoute();
 let footerHeight = ref('0');
 
 onMounted(() => {
-    // this is to make footer stick to bottom
-    // get footer height
-    footerHeight.value = document.getElementById('footer').offsetHeight.toString(); // number
-    console.log('footerHeight', footerHeight.value);
-    // detect window width change
-    window.addEventListener('resize', () => {
-        window.requestAnimationFrame(() => {
-            footerHeight.value = document.getElementById('footer').offsetHeight.toString();
-        });
-    });
+    // // this is to make footer stick to bottom
+    // // get footer height
+    // footerHeight.value = document.getElementById('footer').offsetHeight.toString(); // number
+    // console.log('footerHeight', footerHeight.value);
+    // // detect window width change
+    // window.addEventListener('resize', () => {
+    //     window.requestAnimationFrame(() => {
+    //         footerHeight.value = document.getElementById('footer').offsetHeight.toString();
+    //     });
+    // });
 })
 
 </script>
@@ -75,6 +75,40 @@ footer {
     .hideOnMobile {
         @media (max-width: 606px) {
             display: none;
+        }
+    }
+}
+
+.review-swiper {
+    .swiper {
+        padding-bottom: 8rem;
+    }
+
+    .swiper-pagination {
+        width: unset !important;
+        bottom: unset !important;
+        top: 39.5rem !important;
+    }
+
+    .swiper-pagination-bullet {
+        background: #3F3F3F;
+    }
+
+    .swiper-pagination-bullet-active {
+        background: #fff;
+    }
+}
+
+@media (max-width: 800px) {
+    .review-swiper {
+        .swiper {
+            padding-bottom: 6rem;
+        }
+
+        .swiper-pagination {
+            left: 50% !important;
+            top: var(--swiper-pagination-translate-y, 0) !important;
+            transform: translateX(-50%) !important;
         }
     }
 }

@@ -1,0 +1,28 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_16_4942)">
+<g clip-path="url(#clip1_16_4942)">
+<rect x="52.8496" y="68" width="94.9813" height="91.5586" rx="45.7793" fill="#FFC62B"/>
+<rect x="52.8496" y="68" width="94.9813" height="91.5586" rx="45.7793" fill="#544428" fill-opacity="0.2"/>
+<ellipse cx="90.8002" cy="103.222" rx="47.5776" ry="40.7404" fill="#FACE3C"/>
+<path d="M95.5996 84.3618C95.5996 84.3618 97.2278 86.652 99.8799 86.4986C102.532 86.3452 103.885 83.8826 103.885 83.8826" stroke="black" stroke-width="2.99491" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M108.021 83.3955C108.021 83.3955 109.843 85.5351 112.472 85.1512C115.1 84.7673 116.234 82.1961 116.234 82.1961" stroke="black" stroke-width="2.99491" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M89.0234 91.4878C89.0234 91.4878 95.5988 97.0814 106.614 96.3759C117.63 95.6704 123.438 89.2837 123.438 89.2837" stroke="black" stroke-width="2.99491" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<rect x="19.2363" y="69.2715" width="9.42253" height="9.42253" transform="rotate(-64.902 19.2363 69.2715)" fill="#00CFFF"/>
+<rect x="167.975" y="69.7817" width="9.42253" height="9.42253" transform="rotate(-72.2728 167.975 69.7817)" fill="#1692F6"/>
+<rect x="111.977" y="49.7812" width="9.42253" height="9.42253" transform="rotate(-72.2728 111.977 49.7812)" fill="#00CFFF"/>
+<rect x="70.9727" y="31.8896" width="9.42253" height="9.42253" transform="rotate(-25.6851 70.9727 31.8896)" fill="#4BF0AD"/>
+<rect x="57.9727" y="60.8516" width="3.28452" height="13.2029" transform="rotate(-68.0694 57.9727 60.8516)" fill="#284FDA"/>
+<rect x="19.9648" y="102.501" width="3.28452" height="13.2029" transform="rotate(-68.0694 19.9648 102.501)" fill="#4BF0AD"/>
+<rect x="177.291" y="103.807" width="3.28452" height="13.2029" transform="rotate(14.5399 177.291 103.807)" fill="#32CF38"/>
+<rect x="148.859" y="64.7983" width="3.28452" height="13.2029" transform="rotate(69.9085 148.859 64.7983)" fill="#4BF0AD"/>
+</g>
+<defs>
+<clipPath id="clip0_16_4942">
+<rect width="200" height="200" fill="white"/>
+</clipPath>
+<clipPath id="clip1_16_4942">
+<rect x="52.8496" y="68" width="94.9813" height="91.5586" rx="45.7793" fill="white"/>
+</clipPath>
+</defs>
+</svg>
