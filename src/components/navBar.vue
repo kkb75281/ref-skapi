@@ -142,17 +142,17 @@ nav#navBar(ref="navBar")
                         .community
                             span.text Community
                             ul.list-wrap
-                                li.item
+                                li.item.mo-item
                                     img(src="@/assets/img/landingpage/icon_discord.svg")
-                                li.item
+                                li.item.mo-item
                                     img(src="@/assets/img/landingpage/icon_instagram.svg")
-                                li.item
+                                li.item.mo-item
                                     img(src="@/assets/img/landingpage/icon_youtube.svg")
-                                li.item
+                                li.item.mo-item
                                     img(src="@/assets/img/landingpage/icon_x.svg")
-                                li.item
+                                li.item.mo-item
                                     img(src="@/assets/img/landingpage/icon_linkedin.svg")
-                                li.item
+                                li.item.mo-item
                                     img(src="@/assets/img/landingpage/icon_facebook.svg")
 #proceeding(v-if="running")
     .inner    
@@ -250,10 +250,12 @@ const closeMobileMenu = () => {
     }
 };
 
-const targetClasses = ["section-item", "ser", "item"];
+const targetClasses = ["section-item", "ser", "mo-item"];
 
 window.addEventListener("mouseover", (event) => {
-    const hoveredElement = event.target.closest(".section-item, .ser, .item");
+    const hoveredElement = event.target.closest(
+        ".section-item, .ser, .mo-item"
+    );
 
     if (hoveredElement) {
         const hoveredClass = targetClasses.find((cls) =>
@@ -262,14 +264,14 @@ window.addEventListener("mouseover", (event) => {
 
         const elements = document.querySelectorAll(`.${hoveredClass}`);
         elements.forEach((el) => {
-            el.style.opacity = 0.7;
+            el.style.opacity = 0.5;
         });
         hoveredElement.style.opacity = 1;
     }
 });
 
 window.addEventListener("mouseout", (event) => {
-    const leftElement = event.target.closest(".section-item, .ser, .item");
+    const leftElement = event.target.closest(".section-item, .ser, .mo-item");
 
     if (leftElement) {
         const leftClass = targetClasses.find((cls) =>
@@ -745,6 +747,8 @@ img.symbol.mobile {
                 .prof {
                     display: flex;
                     cursor: pointer;
+                    position: relative;
+                    top: 0.25rem;
                 }
 
                 .profile {
