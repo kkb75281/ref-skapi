@@ -112,4 +112,12 @@ footer {
         }
     }
 }
+
+@media (max-width: 480px) {
+    .review-swiper {
+        .swiper {
+            padding-bottom: 0;
+        }
+    }
+}
 </style>
