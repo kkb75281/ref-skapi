@@ -10,11 +10,11 @@ nav#navBar(ref="navBar")
             template(v-else)
                 router-link.logo(to="/")
                     img.symbol(src="@/assets/img/logo/icon_logo.svg" @click="router.push('/')")
-                ul.section-wrap
-                    li.section(@click="scrollSec('section1')") Features
-                    li.section(@click="scrollSec('section2')") Price
-                    li.section(@click="scrollSec('section3')") FAQ
-                    li.section(@click="scrollSec('section4')") Contents
+                ul.section-list
+                    li.section-item(@click="scrollSec('section1')") Features
+                    li.section-item(@click="scrollSec('section2')") Price
+                    li.section-item(@click="scrollSec('section3')") FAQ
+                    li.section-item(@click="scrollSec('section4')") Contents
 
         .right
             ul.menu-wrap
@@ -49,7 +49,7 @@ nav#navBar(ref="navBar")
                             img(src="@/assets/img/landingpage/icon_profile.svg")
                             .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                 .account 
-                                    span.user-id {{ user.email.split("@")[0] }}
+                                    span.user-id {{ userEmail.split("@")[0] }}
                                     | @{{ userEmail.split("@")[1] }}
                                 ul.dropdown-menu
                                     li.dropdown-list(@click="openBillingPage")
@@ -65,20 +65,20 @@ nav#navBar(ref="navBar")
                         li.list.go-community
                             .ser.dropdown(@click.stop="(e)=>{showDropDown(e)}") Community
                                 img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
-                                .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
-                                    .account 
-                                        span.user-id {{ user.email.split("@")[0] }}
-                                        | @{{ userEmail.split("@")[1] }}
-                                    ul.dropdown-menu
-                                        li.dropdown-list(@click="openBillingPage")
-                                            img(src="@/assets/img/landingpage/icon_billing.svg")
-                                            span Billing
-                                        li.dropdown-list(@click="navigateToPage")
-                                            img(src="@/assets/img/landingpage/icon_setting.svg")
-                                            span Account Settings
-                                        li.dropdown-list(@click="logout")
-                                            img(src="@/assets/img/landingpage/icon_logout.svg")
-                                            span Logout
+                                .moreVert.community(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
+                                    ul.list-wrap
+                                        li.item
+                                            img(src="@/assets/img/landingpage/icon_discord.svg")
+                                        li.item
+                                            img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                        li.item
+                                            img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                        li.item
+                                            img(src="@/assets/img/landingpage/icon_x.svg")
+                                        li.item
+                                            img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                        li.item
+                                            img(src="@/assets/img/landingpage/icon_facebook.svg")
                         li.list.go-docs
                             a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
                                 img(src="@/assets/img/landingpage/icon_docs.svg")
@@ -88,7 +88,7 @@ nav#navBar(ref="navBar")
                                 img(src="@/assets/img/landingpage/icon_github.svg")
                                 | Github
                         li.list.go-login
-                            router-link.ser(to="/login") 
+                            router-link(to="/login") 
                                 img(src="@/assets/img/landingpage/icon_login.svg")
                                 | Login
 
@@ -106,7 +106,7 @@ nav#navBar(ref="navBar")
                                             img(src="@/assets/img/landingpage/icon_profile.svg")
                                             .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                                 .account 
-                                                    span.user-id {{ user.email.split("@")[0] }}
+                                                    span.user-id {{ userEmail.split("@")[0] }}
                                                     | @{{ userEmail.split("@")[1] }}
                                                 ul.dropdown-menu
                                                     li.dropdown-list(@click="openBillingPage")
@@ -125,11 +125,11 @@ nav#navBar(ref="navBar")
                                 button.btn-close(@click="openMoMenu")
                                     img(src="@/assets/img/landingpage/icon_close.svg")
 
-                        ul.section-wrap
-                            li.section(@click="scrollSec('section1')") Features
-                            li.section(@click="scrollSec('section2')") Price
-                            li.section(@click="scrollSec('section3')") FAQ
-                            li.section(@click="scrollSec('section4')") Contents
+                        ul.section-list
+                            li.section-item(@click="scrollSec('section1')") Features
+                            li.section-item(@click="scrollSec('section2')") Price
+                            li.section-item(@click="scrollSec('section3')") FAQ
+                            li.section-item(@click="scrollSec('section4')") Contents
                         ul.menu-list
                             li.list.go-docs
                                 a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank" @click="closeMobileMenu") 
@@ -250,10 +250,10 @@ const closeMobileMenu = () => {
     }
 };
 
-const targetClasses = ["section", "ser"];
+const targetClasses = ["section-item", "ser"];
 
 window.addEventListener("mouseover", (event) => {
-    const hoveredElement = event.target.closest(".section, .ser");
+    const hoveredElement = event.target.closest(".section-item, .ser");
 
     if (hoveredElement) {
         const hoveredClass = targetClasses.find((cls) =>
@@ -269,7 +269,7 @@ window.addEventListener("mouseover", (event) => {
 });
 
 window.addEventListener("mouseout", (event) => {
-    const leftElement = event.target.closest(".section, .ser");
+    const leftElement = event.target.closest(".section-item, .ser");
 
     if (leftElement) {
         const leftClass = targetClasses.find((cls) =>
@@ -408,14 +408,14 @@ img.symbol.mobile {
                 }
             }
 
-            .section-wrap {
+            .section-list {
                 display: flex;
                 align-items: center;
                 padding-left: 0;
                 margin: 0;
                 height: 100%;
 
-                .section {
+                .section-item {
                     list-style: none;
                     cursor: pointer;
                     height: 100%;
@@ -477,6 +477,7 @@ img.symbol.mobile {
                     align-items: center;
                     cursor: pointer;
                     padding-right: 0;
+                    padding-left: 1.25rem;
 
                     &::after {
                         display: none;
@@ -512,13 +513,35 @@ img.symbol.mobile {
                     color: inherit;
                     height: auto;
                 }
+
+                .item {
+                    cursor: pointer;
+                }
             }
 
             .go-login {
                 border-radius: 100px;
                 border: 1px solid rgba(255, 255, 255, 0.2);
                 padding: 0.5rem 1.125rem 0.5rem 1rem;
-                height: initial;
+                margin-left: 1.25rem;
+                height: initial !important;
+
+                a {
+                    padding: 0;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    cursor: pointer;
+                    height: 100%;
+
+                    &:hover {
+                        text-decoration: none;
+                    }
+                }
+
+                &:after {
+                    content: none;
+                }
             }
         }
 
@@ -600,7 +623,7 @@ img.symbol.mobile {
     #navBar {
         .wrap {
             .left {
-                .section-wrap {
+                .section-list {
                     display: none;
                 }
             }
@@ -614,7 +637,7 @@ img.symbol.mobile {
             padding: 0 1.25rem;
 
             .left {
-                .section-wrap {
+                .section-list {
                     display: none;
                 }
             }
@@ -725,6 +748,21 @@ img.symbol.mobile {
                     top: 4rem;
                     right: 1.25rem;
                 }
+
+                .go-login {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+
+                    &:hover {
+                        text-decoration: none;
+                    }
+
+                    img {
+                        width: 1.25rem;
+                        height: 1.25rem;
+                    }
+                }
             }
 
             .btn-close {
@@ -760,7 +798,7 @@ img.symbol.mobile {
                 }
             }
 
-            .section-wrap {
+            .section-list {
                 &:after {
                     content: "";
                     display: inline-block;
