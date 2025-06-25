@@ -124,6 +124,124 @@ main.landing-page-root
 						img(src="@/assets/img/landingpage/feature6.svg", alt="Feature Icon6")
 					.title Solid#[br]Security
 					.content Skapi uses JWT-based authentication, pre-configured to securely handle user data, file access, and third-party API connections via Skapi’s API Bridge. No complex setup — just secure, reliable access out of the box.
+	.bg-colorful
+		section.plan
+			.title Pricing Plans
+			.desc Start for free, no credit card required.#[br]Test features, connect your frontend, and launch your project.#[br]Decide later if you want to upgrade.
+			.plan-wrap
+				.plan-item.blue
+					svg.mark
+						use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+					.top
+						.title Trial
+						.desc Best for testing and prototypingwwwwwwww
+					.middle
+						.price Free
+						button Get
+					.bottom
+						p Core includes:
+						ul
+							li.user 10K User Accounts
+							li.data 8GB Database Storage
+							li.file 100GB File Storage
+							li.mail(style="margin-bottom: 2.5rem;") Automated Emails
+							li.forbiden(style="font-size: .9375rem;") All user data is deleted every 14 days
+
+				.plan-item.green
+					svg.mark
+						use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+					.top
+						.title Standard
+						.desc Suit best for small businesses, MVP, small projects, etc.
+					.middle
+						.price $19
+							span /mon
+						button Get
+					.bottom
+						p Includes all Trial Plan features, but more functions:
+						ul
+							li.mail 1GB Email Storage
+							li.invitation User invitation System
+							li.global Website Hosting
+							li.global Subdomain Hosting
+							li.mail Sending Bulk Emails
+
+				.plan-item.yellow
+					svg.mark
+						use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+					.top
+						.title Premium
+						.desc Suit best for huge projects, Saas, social media, AI application, etc.
+					.middle
+						.price $89
+							span /mon
+						button Get
+					.bottom
+						p Includes all Standard Plan features, but more data:
+						ul
+							li.user 100K User Accounts
+							li.data 10GB Database Storage
+							li.file 1TB File Storage
+							li.mail 10GB Email Storage
+
+	.bg-dark
+		section.faq
+			.title FAQ
+			ul.faq-list
+				li.faq-item
+					.item-title(:class="{ open: openStates[0]}" @click="faqToggle(0)") How does Skapi make your app more secure?
+					.item-cont(v-show="openStates[0]")
+						p.text Skapi is built on a security-first data model where protection isn’t just enforced by infrastructure — it’s embedded directly into the data itself.
+						p.text Instead of relying on backend engineers to manually configure access rules (and account for edge cases — a common source of vulnerabilities), Skapi lets data owners define exactly how data is shared, accessed, and indexed — directly from the frontend.
+						p.text This eliminates the risk of backend misconfigurations and ensures that security policies stay attached to the data itself, wherever it goes.
+						br
+						p.text By shifting control to the data layer, Skapi delivers a system that is:
+						ul
+							li More secure by design
+							li Easier to manage
+							li Free from backend guesswork and silent errors
+						br
+						p.text It’s not just user-friendly — it’s trust built into the foundation.
+				li.faq-item
+					.item-title(:class="{ open: openStates[1]}" @click="faqToggle(1)") How does Skapi work without a server?
+					.item-cont(v-show="openStates[1]")
+						p.text In traditional web apps, a server sits between the frontend and backend — handling requests, managing databases, storing files, and more. But this setup often brings downsides: performance bottlenecks, downtime risks, and constant maintenance.
+						p.text At Skapi, we took a different approach. We’ve built the entire platform on serverless infrastructure, so your frontend connects directly and securely to backend resources — no servers to deploy, manage, or scale.
+						br
+						p.text The result?
+						ul
+							li Faster performance
+							li Lower costs
+							li Simpler development
+				li.faq-item
+					.item-title(:class="{ open: openStates[2]}" @click="faqToggle(2)") Do I need to know how to code?
+					.item-cont(v-show="openStates[2]")
+						p.text Not at all. With Skapi, there’s no server to set up, no backend code to write, and no complex configuration required. Just drop it into your frontend, and you’re ready to build.
+						p.text Skapi is also designed for AI-assisted and no-code development. Since everything runs securely from the frontend, you can even let your AI agent build a full-stack app — without exposing backend infrastructure.
+						p.text It’s the simplest and safest way to bring automation and AI into modern web development.
+				li.faq-item
+					.item-title(:class="{ open: openStates[3]}" @click="faqToggle(3)") How does Skapi keep the price so low?
+					.item-cont(v-show="openStates[3]")
+						p.text Traditional backends get expensive fast. A basic cloud server alone can cost over $100/month — and that’s before you add a basic SQL or NoSQL database which starts at another $50/month. Add file storage, CDN, email systems, and more — and the costs quickly multiply.
+						br
+						p.text Skapi avoids all of that. Our fully serverless architecture means no idle servers, no maintenance, and no wasted resources. You only pay for what you use — and still get everything you need:
+						br
+						ul
+							li Database
+							li File Storage
+							li Global CDN
+							li Built-in Email System
+						br
+						p.text With Skapi, you can run a complete web service at a fraction of the cost — often saving 90% or more compared to traditional stacks.
+
+				li.faq-item
+					.item-title(:class="{ open: openStates[4]}" @click="faqToggle(4)") What happens if I cancel my subscription?
+					.item-cont(v-show="openStates[4]")
+						p.text If you cancel your subscription, you’ll still have full access to your service until the end of your billing period.
+						p.text After that, the service will stop responding to requests.
+						p.text Your data will be retained for 30 days after your subscription ends.
+						p.text  If you don’t reactivate within that window, all data will be permanently deleted.
+
 </template>
 
 <script setup>
@@ -131,48 +249,67 @@ import { onMounted, ref, watch, onUnmounted } from "vue";
 import { npmVersion } from "@/main.ts";
 import { user } from "@/code/user";
 
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import { Pagination, Navigation } from 'swiper/modules';
-import 'swiper/css'; // import Swiper styles
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Pagination, Navigation } from "swiper/modules";
+import "swiper/css"; // import Swiper styles
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 
 function setSwiperImageWidth() {
-    let swiperImage = document.getElementById('reviewerImg');
+    let swiperImage = document.getElementById("reviewerImg");
     let swiperImageWidth = swiperImage.getBoundingClientRect().height + 10;
 
-    document.body.style.setProperty('--swiper-pagination-translate-y', `${swiperImageWidth}px`);
+    document.body.style.setProperty(
+        "--swiper-pagination-translate-y",
+        `${swiperImageWidth}px`
+    );
 }
 
 function onSwiperReady(swiper) {
-    console.log('Swiper is ready!');
+    console.log("Swiper is ready!");
     setTimeout(() => {
         setSwiperImageWidth();
     }, 100); // 약간의 딜레이로 DOM이 완전히 렌더링되도록 함
 }
 
+// 각 FAQ 항목 toggle (하나 열리면 다른 항목은 닫힘)
+const openStates = ref([false, false]);
+function faqToggle(index) {
+    if (openStates.value[index]) {
+        openStates.value[index] = false; // 이미 열려있으면 닫음
+        return;
+    }
+
+    // 다른 항목은 닫음
+    for (let i = 0; i < openStates.value.length; i++) {
+        openStates.value[i] = false;
+    }
+
+    openStates.value[index] = true; // 선택한 항목만 열림
+}
+
 onMounted(() => {
-    window.addEventListener('resize', setSwiperImageWidth);
-    document.body.style.backgroundColor = '#111112'; // 최상단, 최하단에서 스크롤시 배경색이 흰색으로 보이는 문제를 방지하기 위해 설정
+    window.addEventListener("resize", setSwiperImageWidth);
+    document.body.style.backgroundColor = "#111112"; // 최상단, 최하단에서 스크롤시 배경색이 흰색으로 보이는 문제를 방지하기 위해 설정
 });
 
 onUnmounted(() => {
-    window.removeEventListener('resize', setSwiperImageWidth);
-    document.body.style.backgroundColor = '#ffffff'; // 페이지가 언마운트될 때 배경색을 원래대로 되돌림
+    window.removeEventListener("resize", setSwiperImageWidth);
+    document.body.style.backgroundColor = "#ffffff"; // 페이지가 언마운트될 때 배경색을 원래대로 되돌림
 });
 </script>
 
 <style lang="less" scoped>
 button {
     display: inline-flex;
-    padding: .875rem 4.375rem;
+    padding: 0.875rem 4.375rem;
     justify-content: center;
     align-items: center;
     gap: 10px;
     border-radius: 13px;
-    background: #0A4DF1;
+    background: #0a4df1;
     border: 0;
-    color: #FFF;
+    color: #fff;
     font-size: 1.125rem;
     font-weight: 500;
     line-height: 1.5;
@@ -182,10 +319,20 @@ section {
     margin: 0 2.5rem;
     color: #fff;
     text-align: center;
+
+    .title {
+        font-size: 3rem;
+    }
+
+    .desc {
+        font-weight: 300;
+        font-size: 1.25rem;
+        opacity: 0.7;
+    }
 }
 
 .bg-blue {
-    background-color: #16171A;
+    background-color: #16171a;
 }
 
 .bg-dark-blue {
@@ -196,11 +343,16 @@ section {
     background-color: #111112;
 }
 
+.bg-colorful {
+    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% /
+        cover no-repeat;
+}
+
 .hero-bg {
     position: relative;
 
     &::before {
-        content: '';
+        content: "";
         position: absolute;
         top: 0;
         left: 0;
@@ -208,10 +360,6 @@ section {
         height: 54.25rem;
         background-color: #121214;
     }
-}
-
-.title {
-    font-size: 3rem;
 }
 
 .hero {
@@ -229,15 +377,18 @@ section {
     .desc {
         max-width: 43.75rem;
         margin: 0 auto;
-        opacity: 0.7;
         line-height: 1.5;
-        font-weight: 300;
-        font-size: 1.25rem;
         margin-bottom: 1.875rem;
     }
 
     .linear-gradient {
-        background-image: linear-gradient(92.16deg, #0156FF 3.64%, #079AF2 37.09%, #49C48D 61.65%, #E0FA1C 100%);
+        background-image: linear-gradient(
+            92.16deg,
+            #0156ff 3.64%,
+            #079af2 37.09%,
+            #49c48d 61.65%,
+            #e0fa1c 100%
+        );
         background-clip: text;
         -webkit-background-clip: text;
         color: transparent;
@@ -261,7 +412,7 @@ section {
         .inner {
             width: 100%;
             height: 100%;
-            background-color: #1C1C1C;
+            background-color: #1c1c1c;
             object-fit: cover;
         }
     }
@@ -288,14 +439,12 @@ section {
                 font-size: 1.75rem;
                 font-weight: 400;
                 line-height: 1.2;
-                margin-bottom: .875rem;
+                margin-bottom: 0.875rem;
             }
 
             .desc {
                 font-size: 1.125rem;
-                font-weight: 300;
                 line-height: 1.5;
-                opacity: 0.7;
             }
         }
     }
@@ -317,6 +466,8 @@ section {
         .swiper-button-prev,
         .swiper-button-next {
             position: absolute;
+            top: 50%;
+            transform: translateY(-130%);
 
             &::after {
                 display: none;
@@ -332,12 +483,12 @@ section {
 
         .swiper-button-prev {
             left: 0;
-            background-image: url('@/assets/img/landingpage/arrow_btn_left.svg');
+            background-image: url("@/assets/img/landingpage/arrow_btn_left.svg");
         }
 
         .swiper-button-next {
             right: 0;
-            background-image: url('@/assets/img/landingpage/arrow_btn_right.svg');
+            background-image: url("@/assets/img/landingpage/arrow_btn_right.svg");
         }
     }
 
@@ -353,7 +504,7 @@ section {
             position: relative;
             flex: 1 0 25%;
             height: 620px;
-            border-radius: .8125rem;
+            border-radius: 0.8125rem;
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -378,7 +529,6 @@ section {
 
                 .name {
                     font-weight: 500;
-                    margin-bottom: 7px;
                 }
 
                 .position {
@@ -412,7 +562,6 @@ section {
             }
         }
     }
-
 }
 
 .feature {
@@ -423,16 +572,14 @@ section {
     }
 
     .desc {
-        opacity: 0.7;
         line-height: 1.4;
-        font-size: 1.25rem;
         margin-bottom: 5rem;
     }
 
     .feature-wrap {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-gap: 50px;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 2.5rem;
 
         .feature-item {
             position: relative;
@@ -446,10 +593,36 @@ section {
             border-radius: 17px;
             box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.05);
 
+            // &:nth-child(1) {
+            // 	.img {
+            // 		right: 20px;
+            // 		top: 30px;
+            // 	}
+            // }
+
+            &:nth-child(3),
+            &:nth-child(4) {
+                .img {
+                    right: 0px;
+                }
+            }
+
+            &:nth-child(5) {
+                .img {
+                    right: 20px;
+                }
+            }
+
+            &:nth-child(6) {
+                .img {
+                    right: -10px;
+                }
+            }
+
             .img {
                 position: absolute;
-                top: 50px;
-                right: 50px;
+                top: 30px;
+                right: 30px;
             }
 
             .title {
@@ -469,13 +642,322 @@ section {
     }
 }
 
-@media (max-width: 1280px) {
-    .feature {
-        .feature-wrap {
-            grid-template-columns: repeat(2, 1fr);
+.plan {
+    padding: 5rem 0 6.25rem 0;
+    color: #000;
+
+    .title {
+        font-weight: 500;
+        margin-bottom: 1.25rem;
+    }
+
+    .desc {
+        margin-bottom: 3.75rem;
+        font-weight: 400;
+    }
+
+    .plan-wrap {
+        max-width: 1500px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.25rem;
+
+        .plan-item {
+            position: relative;
+            max-width: 386px;
+            // min-width: 326px;
+            flex-basis: 326px;
+            height: 660px;
+            flex-grow: 1;
+            background-color: #16171a;
+            border-radius: 1.0625rem;
+            padding: 2.5rem 2.125rem 0 2.125rem;
+            color: #fff;
+            text-align: left;
+
+            .mark {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 83px;
+                height: 83px;
+            }
+
+            .top {
+                .title {
+                    margin-bottom: 10px;
+                    font-size: 1.75rem;
+                    font-weight: 500;
+                }
+
+                .desc {
+                    width: 280px;
+                    font-size: 1.0625rem;
+                    font-weight: 300;
+                    line-height: 1.3;
+                    margin: 0;
+                }
+            }
+
+            .middle {
+                padding: 1.875rem 0;
+                margin: 1.875rem 0;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+                .price {
+                    font-size: 2.5rem;
+                    font-weight: 500;
+                    margin-bottom: 1.875rem;
+
+                    span {
+                        font-size: 16px;
+                        font-weight: 400;
+                        margin-left: 7px;
+                        opacity: 0.7;
+                    }
+                }
+
+                button {
+                    width: 100%;
+                    background-color: #242529;
+                }
+            }
+
+            .bottom {
+                font-size: 1rem;
+
+                p {
+                    margin: 0;
+                }
+
+                ul {
+                    margin: 0;
+                    padding: 0;
+                    margin-top: 1rem;
+
+                    li {
+                        position: relative;
+                        list-style: none;
+                        margin-left: 1.4rem;
+                        margin-bottom: 8px;
+
+                        &::before {
+                            position: absolute;
+                            content: "";
+                            left: -1.6rem;
+                            top: 1px;
+                            background-size: cover;
+                            width: 18px;
+                            height: 18px;
+                            opacity: 0.8;
+                        }
+
+                        &.user {
+                            &::before {
+                                background: url("@/assets/img/landingpage/icon_user.svg")
+                                    no-repeat;
+                            }
+                        }
+
+                        &.data {
+                            &::before {
+                                background: url("@/assets/img/landingpage/icon_data.svg")
+                                    no-repeat;
+                            }
+                        }
+
+                        &.file {
+                            &::before {
+                                background: url("@/assets/img/landingpage/icon_file.svg")
+                                    no-repeat;
+                            }
+                        }
+
+                        &.mail {
+                            &::before {
+                                background: url("@/assets/img/landingpage/icon_mail.svg")
+                                    no-repeat;
+                            }
+                        }
+
+                        &.forbiden {
+                            &::before {
+                                background: url("@/assets/img/landingpage/icon_forbiden.svg")
+                                    no-repeat;
+                            }
+                        }
+
+                        &.invitation {
+                            &::before {
+                                background: url("@/assets/img/landingpage/icon_invitation.svg")
+                                    no-repeat;
+                            }
+                        }
+
+                        &.global {
+                            &::before {
+                                background: url("@/assets/img/landingpage/icon_global.svg")
+                                    no-repeat;
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.blue {
+                .mark {
+                    fill: #0a4df1;
+                }
+
+                .top {
+                    .title {
+                        color: #306cff;
+                    }
+                }
+
+                .middle {
+                    button {
+                        &:hover {
+                            background-color: #0a4df1;
+                        }
+                    }
+                }
+            }
+
+            &.green {
+                .mark {
+                    fill: #52dfa2;
+                }
+
+                .top {
+                    .title {
+                        color: #52dfc7;
+                    }
+                }
+
+                .middle {
+                    button {
+                        &:hover {
+                            background-color: #3ad08f;
+                        }
+                    }
+                }
+            }
+
+            &.yellow {
+                .mark {
+                    fill: #fff06c;
+                }
+
+                .top {
+                    .title {
+                        color: #fff06c;
+                    }
+                }
+
+                .middle {
+                    button {
+                        &:hover {
+                            background-color: #e8ba3c;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.faq {
+    padding: 5rem 0 5.625rem;
+
+    .title {
+        font-size: 3rem;
+        font-weight: 400;
+        margin-bottom: 3.125rem;
+    }
+
+    .faq-list {
+        padding: 0;
+        margin: 0 auto;
+        list-style: none;
+        max-width: 62.5rem;
+    }
+
+    .faq-item {
+        background-color: #16171a;
+        border-radius: 0.875rem;
+        margin-bottom: 1rem;
+        text-align: left;
+
+        &:last-child {
+            margin-bottom: 0;
         }
     }
 
+    .item-title {
+        font-size: 1.375rem;
+        font-weight: 500;
+        line-height: 1.4;
+        padding: 1.875rem 6.125rem 1.875rem 2.5rem;
+        position: relative;
+        cursor: pointer;
+
+        &::after {
+            content: "";
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            background: url(/src/assets/img/landingpage/icon_plus.svg) no-repeat;
+            background-size: cover;
+            position: absolute;
+            right: 2.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.5s ease;
+        }
+
+        &.open {
+            &::after {
+                transform: rotate(45deg) translateY(-50%);
+                top: 2.5rem;
+                right: 3.1rem;
+            }
+        }
+    }
+
+    .item-cont {
+        padding: 0.25rem 4.5rem 2.5rem 2.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.2;
+
+        ul {
+            padding-left: 1.5rem;
+
+            li {
+                line-height: 1.3;
+            }
+        }
+    }
+
+    .text {
+        margin: 0;
+        word-break: keep-all;
+    }
+}
+
+@media (min-width: 1400px) {
+    .feature {
+        .feature-wrap {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+}
+
+@media (max-width: 1280px) {
     .review {
         .review-swiper {
             padding: 0;
@@ -499,12 +981,22 @@ section {
     }
 }
 
+@media (max-width: 1000px) {
+    .feature {
+        .feature-wrap {
+            max-width: 600px;
+            margin: 0 auto;
+            grid-template-columns: repeat(1, 1fr);
+        }
+    }
+}
+
 @media (max-width: 800px) {
     .hero {
         padding-bottom: 5rem;
 
         .title {
-            margin-bottom: .875rem;
+            margin-bottom: 0.875rem;
         }
     }
 
@@ -536,40 +1028,6 @@ section {
             }
         }
     }
-
-    .feature {
-        .feature-wrap {
-            .feature-item {
-                text-align: center;
-                justify-content: flex-start;
-                gap: 30px;
-
-                .img {
-                    position: relative;
-                    top: unset;
-                    right: unset;
-                }
-
-                &:nth-child(2) {
-                    .img {
-                        padding-left: 20px;
-                    }
-                }
-
-                &:nth-child(3) {
-                    .img {
-                        padding-left: 8px;
-                    }
-                }
-
-                &:nth-child(4) {
-                    .img {
-                        padding-left: 10px;
-                    }
-                }
-            }
-        }
-    }
 }
 
 @media (max-width: 600px) {
@@ -585,10 +1043,108 @@ section {
             }
         }
     }
+}
 
+@media (max-width: 540px) {
     .feature {
         .feature-wrap {
-            grid-template-columns: repeat(1, 1fr);
+            grid-gap: 2.25rem;
+
+            .feature-item {
+                text-align: center;
+                justify-content: flex-start;
+                gap: 30px;
+
+                // &:nth-child(1) {
+                // 	.img {
+                // 		right: unset;
+                // 		top: unset;
+                // 	}
+                // }
+
+                // &:nth-child(2) {
+                // 	.img {
+                // 		padding-right: 70px;
+                // 	}
+                // }
+
+                .img {
+                    position: relative;
+                    height: 130px;
+                    top: unset !important;
+                    right: unset !important;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                &:nth-child(2) {
+                    .img {
+                        padding-right: 50px;
+                    }
+                }
+
+                &:nth-child(3) {
+                    .img {
+                        padding-left: 8px;
+                    }
+                }
+
+                &:nth-child(4) {
+                    .img {
+                        padding-left: 20px;
+                    }
+                }
+
+                &:nth-child(6) {
+                    .img {
+                        padding-left: 35px;
+                    }
+                }
+            }
+        }
+    }
+
+    .faq {
+        padding: 3.125rem 0 3.75rem;
+
+        .title {
+            font-size: 1.875rem;
+            margin-bottom: 1.875rem;
+        }
+
+        .item-title {
+            padding: 1rem 4rem 1rem 1.5rem;
+            font-size: 1rem;
+
+            &::after {
+                width: 1.625rem;
+                height: 1.625rem;
+                right: 1.625rem;
+            }
+
+            &.open {
+                &::after {
+                    top: 1.5rem;
+                    right: 2rem;
+                }
+            }
+        }
+
+        .item-cont {
+            padding: 0.25rem 1.5rem 1.875rem;
+            font-size: 0.875rem;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .review {
+        .review-swiper {
+            .swiper-button-prev,
+            .swiper-button-next {
+                display: none;
+            }
         }
     }
 }
@@ -600,6 +1156,14 @@ section {
 
     section {
         margin: 0 1.875rem;
+
+        .title {
+            font-size: 1.875rem;
+        }
+
+        .desc {
+            font-size: 0.875rem;
+        }
     }
 
     .hero-bg {
@@ -608,23 +1172,19 @@ section {
         }
     }
 
-    .title {
-        font-size: 1.875rem;
-    }
-
     .hero {
         padding-top: 5rem;
         padding-bottom: 3.75rem;
 
         .title {
             font-size: 2.625rem;
-            margin-bottom: .875rem;
+            margin-bottom: 0.875rem;
         }
 
         .desc {
             padding: 0 1.25rem;
             margin-bottom: 2.5rem;
-            font-size: .9375rem;
+            font-size: 0.9375rem;
         }
     }
 
@@ -652,11 +1212,11 @@ section {
 
                 .title {
                     font-size: 1.5625rem;
-                    margin-bottom: .75rem;
+                    margin-bottom: 0.75rem;
                 }
 
                 .desc {
-                    font-size: .9375rem;
+                    font-size: 0.9375rem;
                 }
             }
         }
@@ -670,7 +1230,6 @@ section {
         }
 
         .review-swiper {
-
             .swiper-button-prev,
             .swiper-button-next {
                 width: 56px;
@@ -691,7 +1250,7 @@ section {
                 .profile {
                     left: 24px;
                     bottom: 24px;
-                    font-size: .9375rem;
+                    font-size: 0.9375rem;
 
                     .name {
                         margin-bottom: 4px;
@@ -702,12 +1261,12 @@ section {
             .content {
                 .summary {
                     p {
-                        font-size: 1.625rem
+                        font-size: 1.625rem;
                     }
                 }
 
                 .entire {
-                    font-size: .875rem;
+                    font-size: 0.875rem;
                 }
             }
         }
@@ -721,18 +1280,19 @@ section {
         }
 
         .desc {
-            font-size: .875rem;
             margin-bottom: 2.5rem;
         }
 
         .feature-wrap {
+            grid-gap: 1.5rem;
+
             .feature-item {
                 .title {
                     font-size: 1.625rem;
                 }
 
                 .content {
-                    font-size: .875rem;
+                    font-size: 0.875rem;
                 }
             }
         }

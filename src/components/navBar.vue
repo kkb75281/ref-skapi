@@ -264,7 +264,7 @@ window.addEventListener("mouseover", (event) => {
 
         const elements = document.querySelectorAll(`.${hoveredClass}`);
         elements.forEach((el) => {
-            el.style.opacity = 0.7;
+            el.style.opacity = 0.5;
         });
         hoveredElement.style.opacity = 1;
     }
