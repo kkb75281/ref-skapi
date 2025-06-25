@@ -226,7 +226,7 @@ let navigateToPage = () => {
 
 let logout = () => {
     skapi.logout().then(() => {
-        router.push({ path: "/login" });
+        router.push({ path: "/" });
     });
 };
 
@@ -250,10 +250,10 @@ const closeMobileMenu = () => {
     }
 };
 
-const targetClasses = ["section-item", "ser"];
+const targetClasses = ["section-item", "ser", "item"];
 
 window.addEventListener("mouseover", (event) => {
-    const hoveredElement = event.target.closest(".section-item, .ser");
+    const hoveredElement = event.target.closest(".section-item, .ser, .item");
 
     if (hoveredElement) {
         const hoveredClass = targetClasses.find((cls) =>
@@ -269,7 +269,7 @@ window.addEventListener("mouseover", (event) => {
 });
 
 window.addEventListener("mouseout", (event) => {
-    const leftElement = event.target.closest(".section-item, .ser");
+    const leftElement = event.target.closest(".section-item, .ser, .item");
 
     if (leftElement) {
         const leftClass = targetClasses.find((cls) =>
@@ -602,13 +602,14 @@ img.symbol.mobile {
                 padding: 1rem 1.25rem;
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
-                gap: 0.75rem;
+                // gap: 0.75rem 0;
             }
 
             .item {
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                padding: 0.375rem;
 
                 img {
                     width: 2.25rem;
@@ -693,13 +694,20 @@ img.symbol.mobile {
                 .list-wrap {
                     display: flex;
                     align-items: center;
-                    gap: 1rem;
                     flex-wrap: wrap;
                     padding: 0;
                 }
 
                 .item {
-                    padding: 0;
+                    padding: 0 0.5rem;
+
+                    &:first-child {
+                        padding-left: 0;
+                    }
+
+                    &:last-child {
+                        padding-right: 0;
+                    }
                 }
             }
         }
