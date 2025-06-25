@@ -46,18 +46,17 @@ main.landing-page-root
 					:modules="[Pagination, Navigation]"
 					@swiper="onSwiperReady"
 				)
-					swiper-slide
-						.review-item
-							.reviewer
-								img#reviewerImg(src="@/assets/img/landingpage/reviewer1.svg" alt="Reviewer 1")
-								.profile
-									.name Mohammad Nadim
-									.position Full Stack Developer
-							.content
-								.summary
-									p Skapi is perfect for students, professionals, and local businesses seeking a secure and efficient solution.
-									img(src="@/assets/img/landingpage/stars.svg" alt="Stars")
-								.entire As a student, I struggled with sending data to databases using Apache servers because plugin installation caused frequent OS errors. Skapi solves this by letting you import APIs and send data directly, with no extra plugins needed. It saves time, avoids errors, and requires no backend coding.
+					swiper-slide.review-item
+						.reviewer
+							img#reviewerImg(src="@/assets/img/landingpage/reviewer1.svg" alt="Reviewer 1")
+							.profile
+								.name Mohammad Nadim
+								.position Full Stack Developer
+						.content
+							.summary
+								p Skapi is perfect for students, professionals, and local businesses seeking a secure and efficient solution.
+								img(src="@/assets/img/landingpage/stars.svg" alt="Stars")
+							.entire As a student, I struggled with sending data to databases using Apache servers because plugin installation caused frequent OS errors. Skapi solves this by letting you import APIs and send data directly, with no extra plugins needed. It saves time, avoids errors, and requires no backend coding.
 					
 					swiper-slide.review-item
 						.reviewer
@@ -126,64 +125,80 @@ main.landing-page-root
 					.content Skapi uses JWT-based authentication, pre-configured to securely handle user data, file access, and third-party API connections via Skapi’s API Bridge. No complex setup — just secure, reliable access out of the box.
 	.bg-colorful
 		section.plan
-			.title Pricing Plans
-			.desc Start for free, no credit card required.#[br]Test features, connect your frontend, and launch your project.#[br]Decide later if you want to upgrade.
-			.plan-wrap
-				.plan-item.blue
-					svg.mark
-						use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
-					.top
-						.title Trial
-						.desc Best for testing and prototypingwwwwwwww
-					.middle
-						.price Free
-						button Get
-					.bottom
-						p Core includes:
-						ul
-							li.user 10K User Accounts
-							li.data 8GB Database Storage
-							li.file 100GB File Storage
-							li.mail(style="margin-bottom: 2.5rem;") Automated Emails
-							li.forbiden(style="font-size: .9375rem;") All user data is deleted every 14 days
+			.title.black Pricing Plans
+			.desc.black Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
+			.plan-swiper
+				.plan-swiper-pagination
+				swiper(
+					:spaceBetween="30"
+					:slideActiveClass="'on'"
+					:pagination="{ el: '.plan-swiper-pagination', clickable: true, bulletActiveClass: 'on', renderBullet: makeBullet }"
+					:breakpoints="{ 0: { slidesPerView: 1, enabled: true, loop: true }, 801: { slidesPerView: 3, enabled: false } }"
+					:modules="[Pagination]"
+				)
+					swiper-slide.plan-item.blue
+						svg.mark
+							use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+						.top
+							.title Trial
+							.desc Best for testing and prototypingwwwwwwww
+						.middle
+							.price Free
+							button Get
+						.bottom
+							p Core includes:
+							ul
+								li.user 10K User Accounts
+								li.data 8GB Database Storage
+								li.file 100GB File Storage
+								li.mail(style="margin-bottom: 2.5rem;") Automated Emails
+								li.forbiden(style="font-size: .9375rem;") All user data is deleted every 14 days
 
-				.plan-item.green
-					svg.mark
-						use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
-					.top
-						.title Standard
-						.desc Suit best for small businesses, MVP, small projects, etc.
-					.middle
-						.price $19
-							span /mon
-						button Get
-					.bottom
-						p Includes all Trial Plan features, but more functions:
-						ul
-							li.mail 1GB Email Storage
-							li.invitation User invitation System
-							li.global Website Hosting
-							li.global Subdomain Hosting
-							li.mail Sending Bulk Emails
+					swiper-slide.plan-item.green
+						svg.mark
+							use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+						.top
+							.title Standard
+							.desc Suit best for small businesses, MVP, small projects, etc.
+						.middle
+							.price $19
+								span /mon
+							button Get
+						.bottom
+							p Includes all Trial Plan features, but more functions:
+							ul
+								li.mail 1GB Email Storage
+								li.invitation User invitation System
+								li.global Website Hosting
+								li.global Subdomain Hosting
+								li.mail Sending Bulk Emails
 
-				.plan-item.yellow
-					svg.mark
-						use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
-					.top
-						.title Premium
-						.desc Suit best for huge projects, Saas, social media, AI application, etc.
-					.middle
-						.price $89
-							span /mon
-						button Get
-					.bottom
-						p Includes all Standard Plan features, but more data:
-						ul
-							li.user 100K User Accounts
-							li.data 10GB Database Storage
-							li.file 1TB File Storage
-							li.mail 10GB Email Storage
+					swiper-slide.plan-item.yellow
+						svg.mark
+							use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+						.top
+							.title Premium
+							.desc Suit best for huge projects, Saas, social media, AI application, etc.
+						.middle
+							.price $89
+								span /mon
+							button Get
+						.bottom
+							p Includes all Standard Plan features, but more data:
+							ul
+								li.user 100K User Accounts
+								li.data 10GB Database Storage
+								li.file 1TB File Storage
+								li.mail 10GB Email Storage
 
+	//- FAQ
+
+	.bg-dark
+		section.banner
+			.banner-inner.bg-colorful
+				.title.black Start Building Today!
+				.desc.black Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
+				button Get Started
 </template>
 
 <script setup>
@@ -211,6 +226,12 @@ function onSwiperReady(swiper) {
 	}, 100); // 약간의 딜레이로 DOM이 완전히 렌더링되도록 함
 }
 
+function makeBullet(index, className) {
+	let menu = ['Trial', 'Standard', 'Premium'];
+	console.log('makeBullet', index, className);
+	return `<span class="${className}">${menu[index]}</span>`;
+}
+
 onMounted(() => {
 	window.addEventListener('resize', setSwiperImageWidth);
 	document.body.style.backgroundColor = '#111112'; // 최상단, 최하단에서 스크롤시 배경색이 흰색으로 보이는 문제를 방지하기 위해 설정
@@ -236,6 +257,7 @@ button {
 	font-size: 1.125rem;
 	font-weight: 500;
 	line-height: 1.5;
+	white-space: nowrap;
 }
 
 section {
@@ -245,12 +267,22 @@ section {
 
 	.title {
 		font-size: 3rem;
+
+		&.black {
+			font-weight: 500;
+			color: #000;
+		}
 	}
 
 	.desc {
 		font-weight: 300;
 		font-size: 1.25rem;
 		opacity: 0.7;
+
+		&.black {
+			font-weight: 400;
+			color: #000;
+		}
 	}
 }
 
@@ -561,25 +593,32 @@ section {
 
 .plan {
 	padding: 5rem 0 6.25rem 0;
-	color: #000;
 
 	.title {
-		font-weight: 500;
 		margin-bottom: 1.25rem;
 	}
 
 	.desc {
-		margin-bottom: 3.75rem;
-		font-weight: 400;
+		margin-bottom: 1.875rem;
 	}
 
-	.plan-wrap {
+	.plan-swiper {
 		max-width: 1500px;
 		margin: 0 auto;
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
 		gap: 1.25rem;
+
+		.plan-swiper-pagination {
+			max-width: 420px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-bottom: 1.875rem;
+			gap: 10px;
+			display: none;
+		}
 
 		.plan-item {
 			position: relative;
@@ -780,6 +819,32 @@ section {
 	}
 }
 
+.banner {
+	padding: 5rem 0 6.25rem 0;
+	margin: 0 5rem;
+
+	.banner-inner {
+		max-width: 1600px;
+		margin: 0 auto 0;
+		border-radius: 25px;
+		padding: 7.625rem 3.4375rem;
+
+		.title {
+			font-size: 3.25rem;
+			margin-bottom: .625rem;
+		}
+
+		.desc {
+			line-height: 1.4;
+			margin-bottom: 1.25rem;
+
+			.wordset {
+				display: block;
+			}
+		}
+	}
+}
+
 @media (min-width: 1400px) {
 	.feature {
 		.feature-wrap {
@@ -810,6 +875,11 @@ section {
 			}
 		}
 	}
+
+	.banner {
+		padding-top: 80px;
+	}
+
 }
 
 @media (max-width: 1000px) {
@@ -859,6 +929,27 @@ section {
 			}
 		}
 	}
+
+	.plan {
+
+		.plan-swiper {
+			max-width: 480px;
+			margin: 0 auto;
+
+			.plan-swiper-pagination {
+				display: flex;
+			}
+
+			.plan-item {
+				max-width: unset;
+				flex-basis: unset;
+			}
+		}
+	}
+
+	.banner {
+		margin: 0 3.75rem;
+	}
 }
 
 @media (max-width: 600px) {
@@ -870,6 +961,16 @@ section {
 
 				.image {
 					margin: 0 auto;
+				}
+			}
+		}
+	}
+
+	.banner {
+		.banner-inner {
+			.desc {
+				.wordset {
+					display: unset;
 				}
 			}
 		}
@@ -952,6 +1053,7 @@ section {
 @media (max-width: 430px) {
 	button {
 		font-size: 1rem;
+		padding: .75rem 4.375rem;
 	}
 
 	section {
@@ -1095,6 +1197,80 @@ section {
 				.content {
 					font-size: .875rem;
 				}
+			}
+		}
+	}
+
+	.plan {
+		.title {
+			margin-bottom: 1rem;
+		}
+
+		.desc {
+			margin-bottom: 1.25rem;
+		}
+
+		.plan-swiper {
+			.plan-swiper-pagination {
+				margin-bottom: 1.25rem;
+				gap: 6px;
+			}
+
+			.plan-item {
+				height: unset;
+				padding-bottom: 2.5rem;
+
+				.top {
+					.title {
+						font-size: 1.5rem;
+					}
+
+					.desc {
+						font-size: .9375rem;
+					}
+				}
+
+				.middle {
+					padding: .625rem 0 .9375rem;
+					margin: .625rem 0;
+
+					.price {
+						font-size: 2rem;
+						margin-bottom: .9375rem;
+					}
+				}
+
+				.bottom {
+					ul {
+						li {
+							font-size: .875rem;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.banner {
+		padding: 3.75rem 0 5rem 0;
+		margin: 0 1.875rem;
+
+		.banner-inner {
+			padding: 5rem 2.5rem;
+
+			.title {
+				font-size: 1.75rem;
+			}
+
+			.desc {
+				max-width: 240px;
+				font-size: .9375rem;
+				margin: 0 auto;
+				margin-bottom: 1.25rem;
+			}
+
+			button {
+				width: 100%;
 			}
 		}
 	}
