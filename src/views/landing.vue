@@ -967,6 +967,7 @@ section {
         font-size: 1rem;
         font-weight: 400;
         line-height: 1.2;
+        opacity: 0.7;
 
         ul {
             padding-left: 1.5rem;
