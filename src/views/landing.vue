@@ -82,7 +82,9 @@ main.landing-page-root
 								img(src="@/assets/img/landingpage/stars.svg", alt="Stars")
 							.entire I work on core systems and web development at an insurance company. One of the challenges I often face is setting up new environments or getting started with unfamiliar frameworks. Skapi reduces the time I spend installing packages and configuring environments. For database operations, it’s incredibly convenient. You can just start using the database right away, no setup required.
 				.swiper-button-prev
+					img(src="@/assets/img/landingpage/arrow_left.svg", alt="Arrow Left")
 				.swiper-button-next
+					img(src="@/assets/img/landingpage/arrow_right.svg", alt="Arrow Right")
 	.bg-blue
 		section.feature
 			.title Features
@@ -258,6 +260,10 @@ button {
 	font-weight: 500;
 	line-height: 1.5;
 	white-space: nowrap;
+
+	&:hover {
+		background-color: #1656F2;
+	}
 }
 
 section {
@@ -426,17 +432,22 @@ section {
 			background-size: cover;
 			width: 72px;
 			height: 72px;
+			background-color: #191A1F;
+			border-radius: 50%;
 			opacity: 1;
+			user-select: none;
+
+			&:hover {
+				background-color: #25252A;
+			}
 		}
 
 		.swiper-button-prev {
 			left: 0;
-			background-image: url('@/assets/img/landingpage/arrow_btn_left.svg');
 		}
 
 		.swiper-button-next {
 			right: 0;
-			background-image: url('@/assets/img/landingpage/arrow_btn_right.svg');
 		}
 	}
 

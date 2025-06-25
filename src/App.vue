@@ -92,6 +92,10 @@ footer {
 
     .swiper-pagination-bullet {
         background: #3F3F3F;
+
+        &:hover {
+            background: #999;
+        }
     }
 
     .swiper-pagination-bullet-active {
@@ -113,10 +117,19 @@ footer {
         font-size: 20px;
         font-weight: 500;
         opacity: 1;
+        color: #000;
 
         &.on {
             background-color: #000;
             color: #fff;
+
+            &:hover {
+                background-color: #000;
+            }
+        }
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.05);
         }
     }
 
