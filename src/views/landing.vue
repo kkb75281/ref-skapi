@@ -153,10 +153,12 @@ function onSwiperReady(swiper) {
 
 onMounted(() => {
     window.addEventListener('resize', setSwiperImageWidth);
+    document.body.style.backgroundColor = '#111112'; // 최상단, 최하단에서 스크롤시 배경색이 흰색으로 보이는 문제를 방지하기 위해 설정
 });
 
 onUnmounted(() => {
     window.removeEventListener('resize', setSwiperImageWidth);
+    document.body.style.backgroundColor = '#ffffff'; // 페이지가 언마운트될 때 배경색을 원래대로 되돌림
 });
 </script>
 
