@@ -10,7 +10,7 @@ nav#navBar(ref="navBar")
             template(v-else)
                 router-link.logo(to="/")
                     img.symbol(src="@/assets/img/logo/icon_logo.svg" @click="router.push('/')")
-                ul.section-list
+                ul.section-list(v-if="route.name === 'home'")
                     li.section-item(@click="scrollSec('section1')") Features
                     li.section-item(@click="scrollSec('section2')") Price
                     li.section-item(@click="scrollSec('section3')") FAQ
@@ -129,7 +129,7 @@ nav#navBar(ref="navBar")
                                 button.btn-close(@click="openMoMenu")
                                     img(src="@/assets/img/landingpage/icon_close.svg")
 
-                        ul.section-list
+                        ul.section-list(v-if="route.name === 'home'")
                             li.section-item(@click="scrollSec('section1')") Features
                             li.section-item(@click="scrollSec('section2')") Price
                             li.section-item(@click="scrollSec('section3')") FAQ
@@ -143,6 +143,10 @@ nav#navBar(ref="navBar")
                                 a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank" @click="closeMobileMenu")
                                     img(src="@/assets/img/landingpage/icon_github.svg")
                                     | Github
+                            li.list.go-service
+                                router-link.ser(to="/my-services" @click="closeMobileMenu") 
+                                    img(src="@/assets/img/logo/symbol-logo-white.svg")
+                                    | My Services
                         .community
                             span.text Community
                             ul.list-wrap
@@ -638,7 +642,7 @@ img.symbol.mobile {
     }
 }
 
-@media (max-width: 799px) {
+@media (max-width: 800px) {
     #navBar {
         .wrap {
             padding: 0 1.25rem;
@@ -684,7 +688,7 @@ img.symbol.mobile {
                 border: none;
                 background-color: inherit;
                 border-radius: 0;
-                padding: 1.25rem;
+                padding: 1.25rem 1.25rem 0.75rem 1.25rem;
                 position: absolute;
                 width: 100%;
                 bottom: 60px;
@@ -705,7 +709,7 @@ img.symbol.mobile {
                 }
 
                 .item {
-                    padding: 0 0.5rem;
+                    padding: 0.25rem 1rem 0.25rem 0;
 
                     &:first-child {
                         padding-left: 0;
@@ -751,7 +755,6 @@ img.symbol.mobile {
                 .prof {
                     display: flex;
                     cursor: pointer;
-                    position: relative;
                     top: 0.25rem;
                 }
 
@@ -827,6 +830,20 @@ img.symbol.mobile {
                 padding-top: 1.25rem;
 
                 .list {
+                    padding: 0;
+
+                    &:first-child {
+                        .ser {
+                            padding-left: 1.5rem;
+                        }
+                    }
+
+                    &::after {
+                        content: none;
+                    }
+                }
+
+                .ser {
                     padding: 1rem 1.5rem;
                 }
 
