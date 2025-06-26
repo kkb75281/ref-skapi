@@ -215,7 +215,7 @@ main.landing-page-root
 					.item-title(:class="{ open: openStates[1]}" @click="faqToggle(1)") How does Skapi work without a server?
 					.item-cont(v-show="openStates[1]")
 						p.text In traditional web apps, a server sits between the frontend and backend — handling requests, managing databases, storing files, and more. But this setup often brings downsides: performance bottlenecks, downtime risks, and constant maintenance.
-						p.text At Skapi, we took a different approach. We’ve built the entire platform on serverless infrastructure, so your frontend connects directly and securely to backend resources — no servers to deploy, manage, or scale.
+						p.text At Skapi, we took a different approach.We’ve built the entire platform on serverless infrastructure, so your frontend connects directly and securely to backend resources — no servers to deploy, manage, or scale.
 						br
 						p.text The result?
 						ul
@@ -322,7 +322,9 @@ onUnmounted(() => {
 <style lang="less" scoped>
 button {
     display: inline-flex;
-    padding: 0.875rem 4.375rem;
+    max-width: 240px;
+    padding: 0 0.875rem;
+    width: 100%;
     justify-content: center;
     align-items: center;
     gap: 10px;
@@ -960,7 +962,7 @@ section {
             background-size: cover;
             position: absolute;
             right: 2.5rem;
-            top: 1.7rem;
+            top: 1.8rem;
             transition: transform 0.5s ease;
             transform-origin: center;
         }
@@ -1160,27 +1162,20 @@ section {
                 justify-content: flex-start;
                 gap: 30px;
 
-                // &:nth-child(1) {
-                // 	.img {
-                // 		right: unset;
-                // 		top: unset;
-                // 	}
-                // }
-
-                // &:nth-child(2) {
-                // 	.img {
-                // 		padding-right: 70px;
-                // 	}
-                // }
-
                 .img {
                     position: relative;
-                    height: 130px;
+                    // height: 130px;
                     top: unset !important;
                     right: unset !important;
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                }
+
+                &:nth-child(1) {
+                    .img {
+                        padding-right: 20px;
+                    }
                 }
 
                 &:nth-child(2) {
@@ -1228,13 +1223,6 @@ section {
                 right: 1.625rem;
                 top: 1rem;
             }
-
-            // &.open {
-            //     &::after {
-            //         top: 1.5rem;
-            //         right: 2rem;
-            //     }
-            // }
         }
 
         .item-cont {
@@ -1258,7 +1246,7 @@ section {
 @media (max-width: 430px) {
     button {
         font-size: 1rem;
-        padding: 0.75rem 4.375rem;
+        padding: 0 0.75rem;
     }
 
     section {
@@ -1391,9 +1379,23 @@ section {
         }
 
         .feature-wrap {
-            grid-gap: 1.5rem;
+            display: block;
 
             .feature-item {
+                gap: 6vw;
+                padding: 11.5vw;
+                margin-bottom: 1.5rem;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+
+                .img {
+                    img {
+                        width: 46vw;
+                    }
+                }
+
                 .title {
                     font-size: 1.625rem;
                 }
@@ -1460,7 +1462,7 @@ section {
         margin: 0 1.875rem;
 
         .banner-inner {
-            padding: 5rem 2.5rem;
+            padding: 18.5vw 9.5vw;
 
             .title {
                 font-size: 1.75rem;
@@ -1476,6 +1478,14 @@ section {
             button {
                 width: 100%;
             }
+        }
+    }
+}
+
+@media (max-width: 300px) {
+    .hero {
+        .title {
+            font-size: clamp(30px, 14vw, 2.625rem);
         }
     }
 }
