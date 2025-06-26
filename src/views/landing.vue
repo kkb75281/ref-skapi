@@ -303,8 +303,8 @@ function faqToggle(index) {
 }
 
 function makeBullet(index, className) {
-    let menu = ['Trial', 'Standard', 'Premium'];
-    console.log('makeBullet', index, className);
+    let menu = ["Trial", "Standard", "Premium"];
+    console.log("makeBullet", index, className);
     return `<span class="${className}">${menu[index]}</span>`;
 }
 
@@ -322,21 +322,21 @@ onUnmounted(() => {
 <style lang="less" scoped>
 button {
     display: inline-flex;
-    padding: .875rem 4.375rem;
+    padding: 0.875rem 4.375rem;
     justify-content: center;
     align-items: center;
     gap: 10px;
     border-radius: 13px;
-    background: #0A4DF1;
+    background: #0a4df1;
     border: 0;
-    color: #FFF;
+    color: #fff;
     font-size: 1.125rem;
     font-weight: 500;
     line-height: 1.5;
     white-space: nowrap;
 
     &:hover {
-        background-color: #1656F2;
+        background-color: #1656f2;
     }
 }
 
@@ -379,7 +379,8 @@ section {
 }
 
 .bg-colorful {
-    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% / cover no-repeat;
+    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% /
+        cover no-repeat;
 }
 
 .hero-bg {
@@ -416,11 +417,13 @@ section {
     }
 
     .linear-gradient {
-        background-image: linear-gradient(92.16deg,
-                #0156ff 3.64%,
-                #079af2 37.09%,
-                #49c48d 61.65%,
-                #e0fa1c 100%);
+        background-image: linear-gradient(
+            92.16deg,
+            #0156ff 3.64%,
+            #079af2 37.09%,
+            #49c48d 61.65%,
+            #e0fa1c 100%
+        );
         background-clip: text;
         -webkit-background-clip: text;
         color: transparent;
@@ -510,13 +513,13 @@ section {
             background-size: cover;
             width: 72px;
             height: 72px;
-            background-color: #191A1F;
+            background-color: #191a1f;
             border-radius: 50%;
             opacity: 1;
             user-select: none;
 
             &:hover {
-                background-color: #25252A;
+                background-color: #25252a;
             }
         }
 
@@ -541,7 +544,7 @@ section {
             position: relative;
             flex: 1 0 25%;
             height: 620px;
-            border-radius: .8125rem;
+            border-radius: 0.8125rem;
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -715,7 +718,7 @@ section {
             flex-basis: 326px;
             height: 660px;
             flex-grow: 1;
-            background-color: #16171A;
+            background-color: #16171a;
             border-radius: 1.0625rem;
             padding: 2.5rem 2.125rem 0 2.125rem;
             color: #fff;
@@ -790,7 +793,7 @@ section {
 
                         &::before {
                             position: absolute;
-                            content: '';
+                            content: "";
                             left: -1.6rem;
                             top: 1px;
                             background-size: cover;
@@ -801,43 +804,50 @@ section {
 
                         &.user {
                             &::before {
-                                background: url('@/assets/img/landingpage/icon_user.svg') no-repeat;
+                                background: url("@/assets/img/landingpage/icon_user.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.data {
                             &::before {
-                                background: url('@/assets/img/landingpage/icon_data.svg') no-repeat;
+                                background: url("@/assets/img/landingpage/icon_data.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.file {
                             &::before {
-                                background: url('@/assets/img/landingpage/icon_file.svg') no-repeat;
+                                background: url("@/assets/img/landingpage/icon_file.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.mail {
                             &::before {
-                                background: url('@/assets/img/landingpage/icon_mail.svg') no-repeat;
+                                background: url("@/assets/img/landingpage/icon_mail.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.forbiden {
                             &::before {
-                                background: url('@/assets/img/landingpage/icon_forbiden.svg') no-repeat;
+                                background: url("@/assets/img/landingpage/icon_forbiden.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.invitation {
                             &::before {
-                                background: url('@/assets/img/landingpage/icon_invitation.svg') no-repeat;
+                                background: url("@/assets/img/landingpage/icon_invitation.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.global {
                             &::before {
-                                background: url('@/assets/img/landingpage/icon_global.svg') no-repeat;
+                                background: url("@/assets/img/landingpage/icon_global.svg")
+                                    no-repeat;
                             }
                         }
                     }
@@ -846,19 +856,19 @@ section {
 
             &.blue {
                 .mark {
-                    fill: #0A4DF1;
+                    fill: #0a4df1;
                 }
 
                 .top {
                     .title {
-                        color: #306CFF;
+                        color: #306cff;
                     }
                 }
 
                 .middle {
                     button {
                         &:hover {
-                            background-color: #0A4DF1;
+                            background-color: #0a4df1;
                         }
                     }
                 }
@@ -866,19 +876,19 @@ section {
 
             &.green {
                 .mark {
-                    fill: #52DFA2;
+                    fill: #52dfa2;
                 }
 
                 .top {
                     .title {
-                        color: #52DFC7;
+                        color: #52dfc7;
                     }
                 }
 
                 .middle {
                     button {
                         &:hover {
-                            background-color: #3AD08F;
+                            background-color: #3ad08f;
                         }
                     }
                 }
@@ -886,19 +896,19 @@ section {
 
             &.yellow {
                 .mark {
-                    fill: #FFF06C;
+                    fill: #fff06c;
                 }
 
                 .top {
                     .title {
-                        color: #FFF06C;
+                        color: #fff06c;
                     }
                 }
 
                 .middle {
                     button {
                         &:hover {
-                            background-color: #E8BA3C;
+                            background-color: #e8ba3c;
                         }
                     }
                 }
@@ -996,7 +1006,7 @@ section {
 
         .title {
             font-size: 3.25rem;
-            margin-bottom: .625rem;
+            margin-bottom: 0.625rem;
         }
 
         .desc {
@@ -1061,7 +1071,7 @@ section {
         padding-bottom: 5rem;
 
         .title {
-            margin-bottom: .875rem;
+            margin-bottom: 0.875rem;
         }
     }
 
@@ -1095,7 +1105,6 @@ section {
     }
 
     .plan {
-
         .plan-swiper {
             max-width: 480px;
             margin: 0 auto;
@@ -1217,14 +1226,15 @@ section {
                 width: 1.625rem;
                 height: 1.625rem;
                 right: 1.625rem;
+                top: 1rem;
             }
 
-            &.open {
-                &::after {
-                    top: 1.5rem;
-                    right: 2rem;
-                }
-            }
+            // &.open {
+            //     &::after {
+            //         top: 1.5rem;
+            //         right: 2rem;
+            //     }
+            // }
         }
 
         .item-cont {
@@ -1237,7 +1247,6 @@ section {
 @media (max-width: 480px) {
     .review {
         .review-swiper {
-
             .swiper-button-prev,
             .swiper-button-next {
                 display: none;
@@ -1249,7 +1258,7 @@ section {
 @media (max-width: 430px) {
     button {
         font-size: 1rem;
-        padding: .75rem 4.375rem;
+        padding: 0.75rem 4.375rem;
     }
 
     section {
@@ -1260,7 +1269,7 @@ section {
         }
 
         .desc {
-            font-size: .875rem;
+            font-size: 0.875rem;
         }
     }
 
@@ -1276,13 +1285,13 @@ section {
 
         .title {
             font-size: 2.625rem;
-            margin-bottom: .875rem;
+            margin-bottom: 0.875rem;
         }
 
         .desc {
             padding: 0 1.25rem;
             margin-bottom: 2.5rem;
-            font-size: .9375rem;
+            font-size: 0.9375rem;
         }
     }
 
@@ -1310,11 +1319,11 @@ section {
 
                 .title {
                     font-size: 1.5625rem;
-                    margin-bottom: .75rem;
+                    margin-bottom: 0.75rem;
                 }
 
                 .desc {
-                    font-size: .9375rem;
+                    font-size: 0.9375rem;
                 }
             }
         }
@@ -1328,7 +1337,6 @@ section {
         }
 
         .review-swiper {
-
             .swiper-button-prev,
             .swiper-button-next {
                 width: 56px;
@@ -1349,7 +1357,7 @@ section {
                 .profile {
                     left: 24px;
                     bottom: 24px;
-                    font-size: .9375rem;
+                    font-size: 0.9375rem;
 
                     .name {
                         margin-bottom: 4px;
@@ -1360,12 +1368,12 @@ section {
             .content {
                 .summary {
                     p {
-                        font-size: 1.625rem
+                        font-size: 1.625rem;
                     }
                 }
 
                 .entire {
-                    font-size: .875rem;
+                    font-size: 0.875rem;
                 }
             }
         }
@@ -1391,7 +1399,7 @@ section {
                 }
 
                 .content {
-                    font-size: .875rem;
+                    font-size: 0.875rem;
                 }
             }
         }
@@ -1422,24 +1430,24 @@ section {
                     }
 
                     .desc {
-                        font-size: .9375rem;
+                        font-size: 0.9375rem;
                     }
                 }
 
                 .middle {
-                    padding: .625rem 0 .9375rem;
-                    margin: .625rem 0;
+                    padding: 0.625rem 0 0.9375rem;
+                    margin: 0.625rem 0;
 
                     .price {
                         font-size: 2rem;
-                        margin-bottom: .9375rem;
+                        margin-bottom: 0.9375rem;
                     }
                 }
 
                 .bottom {
                     ul {
                         li {
-                            font-size: .875rem;
+                            font-size: 0.875rem;
                         }
                     }
                 }
@@ -1460,7 +1468,7 @@ section {
 
             .desc {
                 max-width: 240px;
-                font-size: .9375rem;
+                font-size: 0.9375rem;
                 margin: 0 auto;
                 margin-bottom: 1.25rem;
             }
