@@ -13,7 +13,7 @@ footer#footer
 				ul.nav
 					li
 						a(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
-							img(src="@/assets/img/landingpage/icon_github.svg", alt="GitHub")
+							img(src="@/assets/img/landingpage/icon_docs.svg", alt="GitHub")
 							span Docs
 					li
 						a(href="https://github.com/broadwayinc/skapi-js" target="_blank") 
