@@ -11,8 +11,8 @@ main.landing-page-root
 				.inner
 
 		section.why
-			.title Why Skapi?
-			.reason-wrap
+			.title(data-aos="fade-up") Why Skapi?
+			.reason-wrap(data-aos="fade-up" data-aos-delay="300")
 				.reason-item
 					.image
 						img(src="@/assets/img/landingpage/icon_reason1.svg", alt="Why Skapi Icon1")
@@ -35,8 +35,8 @@ main.landing-page-root
 						.desc No more server config, maintenance, and email hacks. Skapi gives you everything out of the box — so you can launch faster and sleep better.
 	.bg-dark
 		section.review
-			.title Real Reviews
-			.review-swiper
+			.title(data-aos="fade-up" data-aos-delay="300") Real Reviews
+			.review-swiper(data-aos="fade-up" data-aos-delay="500")
 				swiper(
 					:slidesPerView="1"
 					:spaceBetween="30"
@@ -87,9 +87,9 @@ main.landing-page-root
 					img(src="@/assets/img/landingpage/arrow_right.svg", alt="Arrow Right")
 	.bg-blue
 		section#section1.feature
-			.title Features
-			.desc All You Need for Modern Web Apps. #[br]Discover 6 Unique Advantages Only Skapi Delivers.
-			.feature-wrap
+			.title(data-aos="fade-up") Features
+			.desc(data-aos="fade-up") All You Need for Modern Web Apps. #[br]Discover 6 Unique Advantages Only Skapi Delivers.
+			.feature-wrap(data-aos="fade-up" data-aos-delay="300")
 				.feature-item
 					.img
 						img(src="@/assets/img/landingpage/feature1.svg", alt="Feature Icon1")
@@ -127,9 +127,9 @@ main.landing-page-root
 					.content Skapi uses JWT-based authentication, pre-configured to securely handle user data, file access, and third-party API connections via Skapi’s API Bridge. No complex setup — just secure, reliable access out of the box.
 	.bg-colorful
 		section#section2.plan
-			.title.black Pricing Plans
-			.desc.black Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
-			.plan-swiper
+			.title.black(data-aos="fade-up") Pricing Plans
+			.desc.black(data-aos="fade-up") Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
+			.plan-swiper(data-aos="fade-up" data-aos-delay="300")
 				.plan-swiper-pagination
 				swiper(
 					:spaceBetween="30"
@@ -195,8 +195,8 @@ main.landing-page-root
 
 	.bg-dark
 		section#section3.faq
-			.title FAQ
-			ul.faq-list
+			.title(data-aos="fade-up") FAQ
+			ul.faq-list(data-aos="fade-up" data-aos-delay="300")
 				li.faq-item
 					.item-title(:class="{ open: openStates[0]}" @click="faqToggle(0)") How does Skapi make your app more secure?
 					.item-cont(v-show="openStates[0]")
@@ -253,9 +253,9 @@ main.landing-page-root
 
 		section.banner
 			.banner-inner.bg-colorful
-				.title.black Start Building Today!
-				.desc.black Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
-				button Get Started
+				.title.black(data-aos="fade-up" data-aos-delay="300") Start Building Today!
+				.desc.black(data-aos="fade-up" data-aos-delay="300") Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
+				button(data-aos="fade-up" data-aos-delay="500") Get Started
 </template>
 
 <script setup>
