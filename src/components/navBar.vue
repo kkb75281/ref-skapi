@@ -258,6 +258,18 @@ const closeMobileMenu = () => {
     }
 };
 
+const scrollSec = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        const remOffset =
+            4 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+        const scrollY = section.offsetTop - remOffset;
+        window.scrollTo({ top: scrollY, behavior: "smooth" });
+    }
+
+    closeMobileMenu();
+};
+
 const targetClasses = ["section-item", "ser", "mo-item"];
 
 window.addEventListener("mouseover", (event) => {
