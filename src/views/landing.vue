@@ -86,7 +86,7 @@ main.landing-page-root
 				.swiper-button-next
 					img(src="@/assets/img/landingpage/arrow_right.svg", alt="Arrow Right")
 	.bg-blue
-		section.feature
+		section#section1.feature
 			.title Features
 			.desc All You Need for Modern Web Apps. #[br]Discover 6 Unique Advantages Only Skapi Delivers.
 			.feature-wrap
@@ -126,7 +126,7 @@ main.landing-page-root
 					.title Solid#[br]Security
 					.content Skapi uses JWT-based authentication, pre-configured to securely handle user data, file access, and third-party API connections via Skapi’s API Bridge. No complex setup — just secure, reliable access out of the box.
 	.bg-colorful
-		section.plan
+		section#section2.plan
 			.title.black Pricing Plans
 			.desc.black Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
 			.plan-swiper
@@ -194,7 +194,7 @@ main.landing-page-root
 								li.mail 10GB Email Storage
 
 	.bg-dark
-		section.faq
+		section#section3.faq
 			.title FAQ
 			ul.faq-list
 				li.faq-item
