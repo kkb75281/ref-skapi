@@ -45,6 +45,10 @@ nav#navBar(ref="navBar")
                             a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank")
                                 img(src="@/assets/img/landingpage/icon_github.svg")
                                 | Github
+                        li.list.go-service
+                            router-link.ser(to="/my-services") 
+                                img(src="@/assets/img/logo/symbol-logo-white.svg")
+                                | My Services
                         li.list.user-profile(@click.stop="(e)=>{showDropDown(e)}")
                             img(src="@/assets/img/landingpage/icon_profile.svg")
                             .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")

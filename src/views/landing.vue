@@ -46,18 +46,17 @@ main.landing-page-root
 					:modules="[Pagination, Navigation]"
 					@swiper="onSwiperReady"
 				)
-					swiper-slide
-						.review-item
-							.reviewer
-								img#reviewerImg(src="@/assets/img/landingpage/reviewer1.svg" alt="Reviewer 1")
-								.profile
-									.name Mohammad Nadim
-									.position Full Stack Developer
-							.content
-								.summary
-									p Skapi is perfect for students, professionals, and local businesses seeking a secure and efficient solution.
-									img(src="@/assets/img/landingpage/stars.svg" alt="Stars")
-								.entire As a student, I struggled with sending data to databases using Apache servers because plugin installation caused frequent OS errors. Skapi solves this by letting you import APIs and send data directly, with no extra plugins needed. It saves time, avoids errors, and requires no backend coding.
+					swiper-slide.review-item
+						.reviewer
+							img#reviewerImg(src="@/assets/img/landingpage/reviewer1.svg" alt="Reviewer 1")
+							.profile
+								.name Mohammad Nadim
+								.position Full Stack Developer
+						.content
+							.summary
+								p Skapi is perfect for students, professionals, and local businesses seeking a secure and efficient solution.
+								img(src="@/assets/img/landingpage/stars.svg" alt="Stars")
+							.entire As a student, I struggled with sending data to databases using Apache servers because plugin installation caused frequent OS errors. Skapi solves this by letting you import APIs and send data directly, with no extra plugins needed. It saves time, avoids errors, and requires no backend coding.
 					
 					swiper-slide.review-item
 						.reviewer
@@ -83,7 +82,9 @@ main.landing-page-root
 								img(src="@/assets/img/landingpage/stars.svg", alt="Stars")
 							.entire I work on core systems and web development at an insurance company. One of the challenges I often face is setting up new environments or getting started with unfamiliar frameworks. Skapi reduces the time I spend installing packages and configuring environments. For database operations, it’s incredibly convenient. You can just start using the database right away, no setup required.
 				.swiper-button-prev
+					img(src="@/assets/img/landingpage/arrow_left.svg", alt="Arrow Left")
 				.swiper-button-next
+					img(src="@/assets/img/landingpage/arrow_right.svg", alt="Arrow Right")
 	.bg-blue
 		section.feature
 			.title Features
@@ -126,63 +127,71 @@ main.landing-page-root
 					.content Skapi uses JWT-based authentication, pre-configured to securely handle user data, file access, and third-party API connections via Skapi’s API Bridge. No complex setup — just secure, reliable access out of the box.
 	.bg-colorful
 		section.plan
-			.title Pricing Plans
-			.desc Start for free, no credit card required.#[br]Test features, connect your frontend, and launch your project.#[br]Decide later if you want to upgrade.
-			.plan-wrap
-				.plan-item.blue
-					svg.mark
-						use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
-					.top
-						.title Trial
-						.desc Best for testing and prototypingwwwwwwww
-					.middle
-						.price Free
-						button Get
-					.bottom
-						p Core includes:
-						ul
-							li.user 10K User Accounts
-							li.data 8GB Database Storage
-							li.file 100GB File Storage
-							li.mail(style="margin-bottom: 2.5rem;") Automated Emails
-							li.forbiden(style="font-size: .9375rem;") All user data is deleted every 14 days
+			.title.black Pricing Plans
+			.desc.black Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
+			.plan-swiper
+				.plan-swiper-pagination
+				swiper(
+					:spaceBetween="30"
+					:slideActiveClass="'on'"
+					:pagination="{ el: '.plan-swiper-pagination', clickable: true, bulletActiveClass: 'on', renderBullet: makeBullet }"
+					:breakpoints="{ 0: { slidesPerView: 1, enabled: true, loop: true }, 801: { slidesPerView: 3, enabled: false } }"
+					:modules="[Pagination]"
+				)
+					swiper-slide.plan-item.blue
+						svg.mark
+							use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+						.top
+							.title Trial
+							.desc Best for testing and prototypingwwwwwwww
+						.middle
+							.price Free
+							button Get
+						.bottom
+							p Core includes:
+							ul
+								li.user 10K User Accounts
+								li.data 8GB Database Storage
+								li.file 100GB File Storage
+								li.mail(style="margin-bottom: 2.5rem;") Automated Emails
+								li.forbiden(style="font-size: .9375rem;") All user data is deleted every 14 days
 
-				.plan-item.green
-					svg.mark
-						use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
-					.top
-						.title Standard
-						.desc Suit best for small businesses, MVP, small projects, etc.
-					.middle
-						.price $19
-							span /mon
-						button Get
-					.bottom
-						p Includes all Trial Plan features, but more functions:
-						ul
-							li.mail 1GB Email Storage
-							li.invitation User invitation System
-							li.global Website Hosting
-							li.global Subdomain Hosting
-							li.mail Sending Bulk Emails
+					swiper-slide.plan-item.green
+						svg.mark
+							use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+						.top
+							.title Standard
+							.desc Suit best for small businesses, MVP, small projects, etc.
+						.middle
+							.price $19
+								span /mon
+							button Get
+						.bottom
+							p Includes all Trial Plan features, but more functions:
+							ul
+								li.mail 1GB Email Storage
+								li.invitation User invitation System
+								li.global Website Hosting
+								li.global Subdomain Hosting
+								li.mail Sending Bulk Emails
 
-				.plan-item.yellow
-					svg.mark
-						use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
-					.top
-						.title Premium
-						.desc Suit best for huge projects, Saas, social media, AI application, etc.
-					.middle
-						.price $89
-							span /mon
-						button Get
-					.bottom
-						p Includes all Standard Plan features, but more data:
-						ul
-							li.user 100K User Accounts
-							li.data 10GB Database Storage
-							li.file 1TB File Storage
-							li.mail 10GB Email Storage
+					swiper-slide.plan-item.yellow
+						svg.mark
+							use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+						.top
+							.title Premium
+							.desc Suit best for huge projects, Saas, social media, AI application, etc.
+						.middle
+							.price $89
+								span /mon
+							button Get
+						.bottom
+							p Includes all Standard Plan features, but more data:
+							ul
+								li.user 100K User Accounts
+								li.data 10GB Database Storage
+								li.file 1TB File Storage
+								li.mail 10GB Email Storage
 
 	.bg-dark
 		section.faq
@@ -242,6 +251,11 @@ main.landing-page-root
 						p.text Your data will be retained for 30 days after your subscription ends.
 						p.text  If you don’t reactivate within that window, all data will be permanently deleted.
 
+		section.banner
+			.banner-inner.bg-colorful
+				.title.black Start Building Today!
+				.desc.black Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
+				button Get Started
 </template>
 
 <script setup>
@@ -288,6 +302,12 @@ function faqToggle(index) {
     openStates.value[index] = true; // 선택한 항목만 열림
 }
 
+function makeBullet(index, className) {
+    let menu = ['Trial', 'Standard', 'Premium'];
+    console.log('makeBullet', index, className);
+    return `<span class="${className}">${menu[index]}</span>`;
+}
+
 onMounted(() => {
     window.addEventListener("resize", setSwiperImageWidth);
     document.body.style.backgroundColor = "#111112"; // 최상단, 최하단에서 스크롤시 배경색이 흰색으로 보이는 문제를 방지하기 위해 설정
@@ -302,17 +322,22 @@ onUnmounted(() => {
 <style lang="less" scoped>
 button {
     display: inline-flex;
-    padding: 0.875rem 4.375rem;
+    padding: .875rem 4.375rem;
     justify-content: center;
     align-items: center;
     gap: 10px;
     border-radius: 13px;
-    background: #0a4df1;
+    background: #0A4DF1;
     border: 0;
-    color: #fff;
+    color: #FFF;
     font-size: 1.125rem;
     font-weight: 500;
     line-height: 1.5;
+    white-space: nowrap;
+
+    &:hover {
+        background-color: #1656F2;
+    }
 }
 
 section {
@@ -322,12 +347,22 @@ section {
 
     .title {
         font-size: 3rem;
+
+        &.black {
+            font-weight: 500;
+            color: #000;
+        }
     }
 
     .desc {
         font-weight: 300;
         font-size: 1.25rem;
         opacity: 0.7;
+
+        &.black {
+            font-weight: 400;
+            color: #000;
+        }
     }
 }
 
@@ -344,8 +379,7 @@ section {
 }
 
 .bg-colorful {
-    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% /
-        cover no-repeat;
+    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% / cover no-repeat;
 }
 
 .hero-bg {
@@ -382,13 +416,11 @@ section {
     }
 
     .linear-gradient {
-        background-image: linear-gradient(
-            92.16deg,
-            #0156ff 3.64%,
-            #079af2 37.09%,
-            #49c48d 61.65%,
-            #e0fa1c 100%
-        );
+        background-image: linear-gradient(92.16deg,
+                #0156ff 3.64%,
+                #079af2 37.09%,
+                #49c48d 61.65%,
+                #e0fa1c 100%);
         background-clip: text;
         -webkit-background-clip: text;
         color: transparent;
@@ -478,17 +510,22 @@ section {
             background-size: cover;
             width: 72px;
             height: 72px;
+            background-color: #191A1F;
+            border-radius: 50%;
             opacity: 1;
+            user-select: none;
+
+            &:hover {
+                background-color: #25252A;
+            }
         }
 
         .swiper-button-prev {
             left: 0;
-            background-image: url("@/assets/img/landingpage/arrow_btn_left.svg");
         }
 
         .swiper-button-next {
             right: 0;
-            background-image: url("@/assets/img/landingpage/arrow_btn_right.svg");
         }
     }
 
@@ -504,7 +541,7 @@ section {
             position: relative;
             flex: 1 0 25%;
             height: 620px;
-            border-radius: 0.8125rem;
+            border-radius: .8125rem;
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -644,25 +681,32 @@ section {
 
 .plan {
     padding: 5rem 0 6.25rem 0;
-    color: #000;
 
     .title {
-        font-weight: 500;
         margin-bottom: 1.25rem;
     }
 
     .desc {
-        margin-bottom: 3.75rem;
-        font-weight: 400;
+        margin-bottom: 1.875rem;
     }
 
-    .plan-wrap {
+    .plan-swiper {
         max-width: 1500px;
         margin: 0 auto;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
         gap: 1.25rem;
+
+        .plan-swiper-pagination {
+            max-width: 420px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.875rem;
+            gap: 10px;
+            display: none;
+        }
 
         .plan-item {
             position: relative;
@@ -671,7 +715,7 @@ section {
             flex-basis: 326px;
             height: 660px;
             flex-grow: 1;
-            background-color: #16171a;
+            background-color: #16171A;
             border-radius: 1.0625rem;
             padding: 2.5rem 2.125rem 0 2.125rem;
             color: #fff;
@@ -746,7 +790,7 @@ section {
 
                         &::before {
                             position: absolute;
-                            content: "";
+                            content: '';
                             left: -1.6rem;
                             top: 1px;
                             background-size: cover;
@@ -757,50 +801,43 @@ section {
 
                         &.user {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_user.svg")
-                                    no-repeat;
+                                background: url('@/assets/img/landingpage/icon_user.svg') no-repeat;
                             }
                         }
 
                         &.data {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_data.svg")
-                                    no-repeat;
+                                background: url('@/assets/img/landingpage/icon_data.svg') no-repeat;
                             }
                         }
 
                         &.file {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_file.svg")
-                                    no-repeat;
+                                background: url('@/assets/img/landingpage/icon_file.svg') no-repeat;
                             }
                         }
 
                         &.mail {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_mail.svg")
-                                    no-repeat;
+                                background: url('@/assets/img/landingpage/icon_mail.svg') no-repeat;
                             }
                         }
 
                         &.forbiden {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_forbiden.svg")
-                                    no-repeat;
+                                background: url('@/assets/img/landingpage/icon_forbiden.svg') no-repeat;
                             }
                         }
 
                         &.invitation {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_invitation.svg")
-                                    no-repeat;
+                                background: url('@/assets/img/landingpage/icon_invitation.svg') no-repeat;
                             }
                         }
 
                         &.global {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_global.svg")
-                                    no-repeat;
+                                background: url('@/assets/img/landingpage/icon_global.svg') no-repeat;
                             }
                         }
                     }
@@ -809,19 +846,19 @@ section {
 
             &.blue {
                 .mark {
-                    fill: #0a4df1;
+                    fill: #0A4DF1;
                 }
 
                 .top {
                     .title {
-                        color: #306cff;
+                        color: #306CFF;
                     }
                 }
 
                 .middle {
                     button {
                         &:hover {
-                            background-color: #0a4df1;
+                            background-color: #0A4DF1;
                         }
                     }
                 }
@@ -829,19 +866,19 @@ section {
 
             &.green {
                 .mark {
-                    fill: #52dfa2;
+                    fill: #52DFA2;
                 }
 
                 .top {
                     .title {
-                        color: #52dfc7;
+                        color: #52DFC7;
                     }
                 }
 
                 .middle {
                     button {
                         &:hover {
-                            background-color: #3ad08f;
+                            background-color: #3AD08F;
                         }
                     }
                 }
@@ -849,19 +886,19 @@ section {
 
             &.yellow {
                 .mark {
-                    fill: #fff06c;
+                    fill: #FFF06C;
                 }
 
                 .top {
                     .title {
-                        color: #fff06c;
+                        color: #FFF06C;
                     }
                 }
 
                 .middle {
                     button {
                         &:hover {
-                            background-color: #e8ba3c;
+                            background-color: #E8BA3C;
                         }
                     }
                 }
@@ -907,23 +944,20 @@ section {
 
         &::after {
             content: "";
-            display: inline-block;
             width: 2rem;
             height: 2rem;
             background: url(/src/assets/img/landingpage/icon_plus.svg) no-repeat;
             background-size: cover;
             position: absolute;
             right: 2.5rem;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 1.7rem;
             transition: transform 0.5s ease;
+            transform-origin: center;
         }
 
         &.open {
             &::after {
-                transform: rotate(45deg) translateY(-50%);
-                top: 2.5rem;
-                right: 3.1rem;
+                transform: rotate(45deg);
             }
         }
     }
@@ -933,6 +967,7 @@ section {
         font-size: 1rem;
         font-weight: 400;
         line-height: 1.2;
+        opacity: 0.7;
 
         ul {
             padding-left: 1.5rem;
@@ -946,6 +981,32 @@ section {
     .text {
         margin: 0;
         word-break: keep-all;
+    }
+}
+
+.banner {
+    padding: 5rem 0 6.25rem 0;
+    margin: 0 5rem;
+
+    .banner-inner {
+        max-width: 1600px;
+        margin: 0 auto 0;
+        border-radius: 25px;
+        padding: 7.625rem 3.4375rem;
+
+        .title {
+            font-size: 3.25rem;
+            margin-bottom: .625rem;
+        }
+
+        .desc {
+            line-height: 1.4;
+            margin-bottom: 1.25rem;
+
+            .wordset {
+                display: block;
+            }
+        }
     }
 }
 
@@ -979,6 +1040,10 @@ section {
             }
         }
     }
+
+    .banner {
+        padding-top: 80px;
+    }
 }
 
 @media (max-width: 1000px) {
@@ -996,7 +1061,7 @@ section {
         padding-bottom: 5rem;
 
         .title {
-            margin-bottom: 0.875rem;
+            margin-bottom: .875rem;
         }
     }
 
@@ -1028,6 +1093,27 @@ section {
             }
         }
     }
+
+    .plan {
+
+        .plan-swiper {
+            max-width: 480px;
+            margin: 0 auto;
+
+            .plan-swiper-pagination {
+                display: flex;
+            }
+
+            .plan-item {
+                max-width: unset;
+                flex-basis: unset;
+            }
+        }
+    }
+
+    .banner {
+        margin: 0 3.75rem;
+    }
 }
 
 @media (max-width: 600px) {
@@ -1039,6 +1125,16 @@ section {
 
                 .image {
                     margin: 0 auto;
+                }
+            }
+        }
+    }
+
+    .banner {
+        .banner-inner {
+            .desc {
+                .wordset {
+                    display: unset;
                 }
             }
         }
@@ -1141,6 +1237,7 @@ section {
 @media (max-width: 480px) {
     .review {
         .review-swiper {
+
             .swiper-button-prev,
             .swiper-button-next {
                 display: none;
@@ -1152,6 +1249,7 @@ section {
 @media (max-width: 430px) {
     button {
         font-size: 1rem;
+        padding: .75rem 4.375rem;
     }
 
     section {
@@ -1162,7 +1260,7 @@ section {
         }
 
         .desc {
-            font-size: 0.875rem;
+            font-size: .875rem;
         }
     }
 
@@ -1178,13 +1276,13 @@ section {
 
         .title {
             font-size: 2.625rem;
-            margin-bottom: 0.875rem;
+            margin-bottom: .875rem;
         }
 
         .desc {
             padding: 0 1.25rem;
             margin-bottom: 2.5rem;
-            font-size: 0.9375rem;
+            font-size: .9375rem;
         }
     }
 
@@ -1212,11 +1310,11 @@ section {
 
                 .title {
                     font-size: 1.5625rem;
-                    margin-bottom: 0.75rem;
+                    margin-bottom: .75rem;
                 }
 
                 .desc {
-                    font-size: 0.9375rem;
+                    font-size: .9375rem;
                 }
             }
         }
@@ -1230,6 +1328,7 @@ section {
         }
 
         .review-swiper {
+
             .swiper-button-prev,
             .swiper-button-next {
                 width: 56px;
@@ -1250,7 +1349,7 @@ section {
                 .profile {
                     left: 24px;
                     bottom: 24px;
-                    font-size: 0.9375rem;
+                    font-size: .9375rem;
 
                     .name {
                         margin-bottom: 4px;
@@ -1261,12 +1360,12 @@ section {
             .content {
                 .summary {
                     p {
-                        font-size: 1.625rem;
+                        font-size: 1.625rem
                     }
                 }
 
                 .entire {
-                    font-size: 0.875rem;
+                    font-size: .875rem;
                 }
             }
         }
@@ -1292,8 +1391,82 @@ section {
                 }
 
                 .content {
-                    font-size: 0.875rem;
+                    font-size: .875rem;
                 }
+            }
+        }
+    }
+
+    .plan {
+        .title {
+            margin-bottom: 1rem;
+        }
+
+        .desc {
+            margin-bottom: 1.25rem;
+        }
+
+        .plan-swiper {
+            .plan-swiper-pagination {
+                margin-bottom: 1.25rem;
+                gap: 6px;
+            }
+
+            .plan-item {
+                height: unset;
+                padding-bottom: 2.5rem;
+
+                .top {
+                    .title {
+                        font-size: 1.5rem;
+                    }
+
+                    .desc {
+                        font-size: .9375rem;
+                    }
+                }
+
+                .middle {
+                    padding: .625rem 0 .9375rem;
+                    margin: .625rem 0;
+
+                    .price {
+                        font-size: 2rem;
+                        margin-bottom: .9375rem;
+                    }
+                }
+
+                .bottom {
+                    ul {
+                        li {
+                            font-size: .875rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .banner {
+        padding: 3.75rem 0 5rem 0;
+        margin: 0 1.875rem;
+
+        .banner-inner {
+            padding: 5rem 2.5rem;
+
+            .title {
+                font-size: 1.75rem;
+            }
+
+            .desc {
+                max-width: 240px;
+                font-size: .9375rem;
+                margin: 0 auto;
+                margin-bottom: 1.25rem;
+            }
+
+            button {
+                width: 100%;
             }
         }
     }
