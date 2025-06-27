@@ -2,7 +2,7 @@
 footer#footer
 	.top
 		.top-inner
-			.left
+			.left(:class="{ 'has-sections': route.name === 'home' }")
 				.logo
 					img(src="@/assets/img/logo/logo-white.svg", alt="Skapi Logo")
 				ul.sections(v-if="route.name === 'home'")
@@ -112,13 +112,17 @@ onUnmounted(() => {
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
         .left {
-            max-width: 528px;
+            max-width: 350px;
             display: flex;
             flex-wrap: wrap;
             gap: 30px;
             flex-grow: 1;
             align-items: flex-start;
             justify-content: space-between;
+
+            &.has-sections {
+                max-width: 528px;
+            }
 
             .logo {
                 img {
@@ -214,6 +218,7 @@ onUnmounted(() => {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
+            justify-content: center;
             gap: 1rem;
         }
     }
@@ -296,6 +301,8 @@ onUnmounted(() => {
             gap: 30px;
 
             .left {
+                gap: 20px;
+
                 .logo {
                     gap: 20px;
 
@@ -306,7 +313,7 @@ onUnmounted(() => {
 
                 ul {
                     li {
-                        margin-bottom: 8px;
+                        padding: 4px 0;
                         font-size: 14px;
                     }
                 }
