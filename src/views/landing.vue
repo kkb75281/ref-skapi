@@ -348,6 +348,7 @@ section {
 
     .title {
         font-size: 3rem;
+        margin-bottom: 20px;
 
         &.black {
             font-weight: 500;
@@ -605,10 +606,6 @@ section {
 .feature {
     padding: 5rem 0;
 
-    .title {
-        margin-bottom: 1.25rem;
-    }
-
     .desc {
         line-height: 1.4;
         margin-bottom: 5rem;
@@ -682,10 +679,6 @@ section {
 
 .plan {
     padding: 5rem 0 6.25rem 0;
-
-    .title {
-        margin-bottom: 1.25rem;
-    }
 
     .desc {
         margin-bottom: 1.875rem;
@@ -912,8 +905,6 @@ section {
     padding: 5rem 0 5.625rem;
 
     .title {
-        font-size: 3rem;
-        font-weight: 400;
         margin-bottom: 3.125rem;
     }
 
@@ -1208,7 +1199,6 @@ section {
         padding: 3.125rem 0 3.75rem;
 
         .title {
-            font-size: 1.875rem;
             margin-bottom: 1.875rem;
         }
 
@@ -1254,6 +1244,7 @@ section {
 
         .title {
             font-size: 1.875rem;
+            margin-bottom: 1rem;
         }
 
         .desc {
