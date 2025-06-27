@@ -1113,6 +1113,16 @@ section {
 
     .banner {
         margin: 0 3.75rem;
+
+        .banner-inner {
+            .title {
+                font-size: 2.875rem;
+            }
+
+            .desc {
+                font-size: 1.125rem;
+            }
+        }
     }
 }
 
