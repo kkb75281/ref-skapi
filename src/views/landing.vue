@@ -760,6 +760,7 @@ section {
 
                 button {
                     width: 100%;
+                    max-width: 100%;
                     background-color: #242529;
                 }
             }
