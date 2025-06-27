@@ -50,7 +50,8 @@ nav#navBar(ref="navBar")
                                 img(src="@/assets/img/logo/symbol-logo-white.svg")
                                 | My Services
                         li.list.user-profile(@click.stop="(e)=>{showDropDown(e)}")
-                            img(src="@/assets/img/landingpage/icon_profile.svg")
+                            .img-profile-wrap
+                                img(src="@/assets/img/landingpage/icon_profile.svg")
                             .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                 .account 
                                     span.user-id {{ userEmail.split("@")[0] }}
@@ -507,27 +508,34 @@ img.symbol.mobile {
                     padding-left: 1.25rem;
                     position: relative;
 
+                    .img-profile-wrap {
+                        overflow: hidden;
+                        position: relative;
+
+                        &:hover {
+                            &::after {
+                                content: "";
+                                display: inline-block;
+                                width: 100%;
+                                height: 100%;
+                                background-color: rgba(255, 255, 255, 0.05);
+                                position: absolute;
+                                top: 50%;
+                                left: 0;
+                                transform: translateY(-50%);
+                                z-index: 1;
+                                border-radius: 50%;
+                            }
+                        }
+                    }
+
                     img {
+                        display: block;
                         overflow: hidden;
                     }
 
                     &::after {
                         display: none;
-                    }
-
-                    &:hover {
-                        &::after {
-                            content: "";
-                            display: inline-block;
-                            width: 100%;
-                            height: 100%;
-                            background-color: rgba(255, 255, 255, 0.05);
-                            position: absolute;
-                            top: 50%;
-                            left: 0;
-                            transform: translateY(-50%);
-                            z-index: 1;
-                        }
                     }
                 }
             }
@@ -802,6 +810,7 @@ img.symbol.mobile {
                 .img-profile {
                     .img-wrap {
                         position: relative;
+                        overflow: hidden;
 
                         img {
                             display: block;
@@ -819,6 +828,7 @@ img.symbol.mobile {
                                 left: 0;
                                 transform: translateY(-50%);
                                 z-index: 1;
+                                border-radius: 50%;
                             }
                         }
                     }
