@@ -2,24 +2,27 @@
 footer#footer
 	.top
 		.top-inner
-			.left
+			.left(:class="{ 'has-sections': route.name === 'home' }")
 				.logo
 					img(src="@/assets/img/logo/logo-white.svg", alt="Skapi Logo")
-				ul.sections
-					li Features
-					li Price
-					li FAQ
-					li Contents
+				ul.sections(v-if="route.name === 'home'")
+					li(@click="scrollSec('section1')") Features
+					li(@click="scrollSec('section2')") Price
+					li(@click="scrollSec('section3')") FAQ
+					li(@click="scrollSec('section4')") Contents
 				ul.nav
 					li
-						img(src="@/assets/img/landingpage/icon_github.svg", alt="GitHub")
-						span Docs
+						a(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
+							img(src="@/assets/img/landingpage/icon_docs.svg", alt="GitHub")
+							span Docs
 					li
-						img(src="@/assets/img/landingpage/icon_github.svg", alt="GitHub")
-						span Github
+						a(href="https://github.com/broadwayinc/skapi-js" target="_blank") 
+							img(src="@/assets/img/landingpage/icon_github.svg", alt="GitHub")
+							span Github
 					li
-						img(src="@/assets/img/logo/symbol-logo-white.svg", alt="Skapi Symbol Logo")
-						span My services
+						router-link(to="/my-services")
+							img(src="@/assets/img/logo/symbol-logo-white.svg", alt="Skapi Symbol Logo")
+							span My services
 			.right
 				p support@broadwayinc.com
 				p.small Terms of service / Privacy policy
@@ -35,7 +38,22 @@ footer#footer
 				img(src="@/assets/img/landingpage/icon_facebook.svg")
 </template>
 <script setup>
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
+import { useRoute, useRouter } from "vue-router";
+
+const router = useRouter();
+const route = useRoute();
+const hoveredMenu = ref('');
+
+const scrollSec = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        const remOffset =
+            4 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+        const scrollY = section.offsetTop - remOffset;
+        window.scrollTo({ top: scrollY, behavior: "smooth" });
+    }
+};
 
 function setFooterHeight() {
     const footerElement = document.getElementById('footer');
@@ -94,12 +112,17 @@ onUnmounted(() => {
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
         .left {
-            max-width: 528px;
+            max-width: 350px;
             display: flex;
             flex-wrap: wrap;
             gap: 30px;
             flex-grow: 1;
+            align-items: flex-start;
             justify-content: space-between;
+
+            &.has-sections {
+                max-width: 528px;
+            }
 
             .logo {
                 img {
@@ -114,10 +137,25 @@ onUnmounted(() => {
                 li {
                     list-style: none;
                     font-size: 17px;
-                    margin-bottom: 12px;
+                    padding: 6px 0;
+                    cursor: pointer;
 
-                    &:last-child {
-                        margin-bottom: 0;
+                    &:first-child {
+                        padding-top: 0;
+                    }
+
+                    &:hover {
+                        opacity: 1 !important;
+                    }
+                }
+
+                &:hover {
+                    &::before {
+                        content: none;
+                    }
+
+                    li {
+                        opacity: 0.5;
                     }
                 }
 
@@ -130,6 +168,17 @@ onUnmounted(() => {
                         img {
                             width: 20px;
                             height: 20px;
+                        }
+
+                        a {
+                            color: #fff;
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+
+                            &:hover {
+                                text-decoration: none;
+                            }
                         }
                     }
                 }
@@ -169,6 +218,7 @@ onUnmounted(() => {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
+            justify-content: center;
             gap: 1rem;
         }
     }
@@ -190,6 +240,19 @@ onUnmounted(() => {
         .top-inner,
         .bottom-inner {
             margin: 0 60px;
+        }
+
+        .top {
+            .right {
+                p {
+                    font-size: 15px;
+                    margin-bottom: 8px;
+
+                    &.small {
+                        font-size: 13px;
+                    }
+                }
+            }
         }
     }
 }
@@ -238,6 +301,8 @@ onUnmounted(() => {
             gap: 30px;
 
             .left {
+                gap: 20px;
+
                 .logo {
                     gap: 20px;
 
@@ -248,7 +313,7 @@ onUnmounted(() => {
 
                 ul {
                     li {
-                        margin-bottom: 8px;
+                        padding: 4px 0;
                         font-size: 14px;
                     }
                 }
