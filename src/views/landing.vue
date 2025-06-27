@@ -4,15 +4,15 @@ main.landing-page-root
 		section.hero
 			.title #[span.linear-gradient Zero-Setup] #[span.wordset Backend API]
 			.desc Skapi is a serverless backend platform that gives frontend developers,no-coders, and product teams everything they need: auth, database,file storage, and real-time APIs.  Launch your app in minutes.
-			button Get Started
+			button(data-aos="fade-up" data-aos-duration="500") Get Started
 
 		section.video
 			.wrap
 				.inner
 
 		section.why
-			.title Why Skapi?
-			.reason-wrap
+			.title(data-aos="fade-up") Why Skapi?
+			.reason-wrap(data-aos="fade-up" data-aos-delay="300")
 				.reason-item
 					.image
 						img(src="@/assets/img/landingpage/icon_reason1.svg", alt="Why Skapi Icon1")
@@ -35,8 +35,8 @@ main.landing-page-root
 						.desc No more server config, maintenance, and email hacks. Skapi gives you everything out of the box — so you can launch faster and sleep better.
 	.bg-dark
 		section.review
-			.title Real Reviews
-			.review-swiper
+			.title(data-aos="fade-up" data-aos-delay="300") Real Reviews
+			.review-swiper(data-aos="fade-up" data-aos-delay="500")
 				swiper(
 					:slidesPerView="1"
 					:spaceBetween="30"
@@ -87,9 +87,9 @@ main.landing-page-root
 					img(src="@/assets/img/landingpage/arrow_right.svg", alt="Arrow Right")
 	.bg-blue
 		section#section1.feature
-			.title Features
-			.desc All You Need for Modern Web Apps. #[br]Discover 6 Unique Advantages Only Skapi Delivers.
-			.feature-wrap
+			.title(data-aos="fade-up") Features
+			.desc(data-aos="fade-up") All You Need for Modern Web Apps. #[br]Discover 6 Unique Advantages Only Skapi Delivers.
+			.feature-wrap(data-aos="fade-up" data-aos-delay="300")
 				.feature-item
 					.img
 						img(src="@/assets/img/landingpage/feature1.svg", alt="Feature Icon1")
@@ -127,9 +127,9 @@ main.landing-page-root
 					.content Skapi uses JWT-based authentication, pre-configured to securely handle user data, file access, and third-party API connections via Skapi’s API Bridge. No complex setup — just secure, reliable access out of the box.
 	.bg-colorful
 		section#section2.plan
-			.title.black Pricing Plans
-			.desc.black Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
-			.plan-swiper
+			.title.black(data-aos="fade-up") Pricing Plans
+			.desc.black(data-aos="fade-up") Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
+			.plan-swiper(data-aos="fade-up" data-aos-delay="300")
 				.plan-swiper-pagination
 				swiper(
 					:spaceBetween="30"
@@ -195,8 +195,8 @@ main.landing-page-root
 
 	.bg-dark
 		section#section3.faq
-			.title FAQ
-			ul.faq-list
+			.title(data-aos="fade-up") FAQ
+			ul.faq-list(data-aos="fade-up" data-aos-delay="300")
 				li.faq-item
 					.item-title(:class="{ open: openStates[0]}" @click="faqToggle(0)") How does Skapi make your app more secure?
 					.item-cont(v-show="openStates[0]")
@@ -253,13 +253,13 @@ main.landing-page-root
 
 		section.banner
 			.banner-inner.bg-colorful
-				.title.black Start Building Today!
-				.desc.black Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
-				button Get Started
+				.title.black(data-aos="fade-up" data-aos-delay="300") Start Building Today!
+				.desc.black(data-aos="fade-up" data-aos-delay="300") Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
+				button(data-aos="fade-up" data-aos-delay="500") Get Started
 </template>
 
 <script setup>
-import { onMounted, ref, watch, onUnmounted } from "vue";
+import { onMounted, ref, watch, onUnmounted, onBeforeUnmount } from "vue";
 import { npmVersion } from "@/main.ts";
 import { user } from "@/code/user";
 
@@ -308,14 +308,46 @@ function makeBullet(index, className) {
     return `<span class="${className}">${menu[index]}</span>`;
 }
 
+function handleScroll() {
+    const video = document.querySelector(".video");
+    if (!video) return;
+
+    const maxScroll = 300; // 효과 구간
+    const scrollTop = Math.min(window.scrollY, maxScroll);
+
+    const progress = scrollTop / maxScroll; // 0 ~ 1 사이 진행도
+    const rotate = 15 - 15 * progress; // 15deg → 0deg로 변화 (뒤로 → 정면)
+
+    video.style.transform = `perspective(1000px) rotateX(${rotate}deg)`;
+}
+
 onMounted(() => {
     window.addEventListener("resize", setSwiperImageWidth);
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
     document.body.style.backgroundColor = "#111112"; // 최상단, 최하단에서 스크롤시 배경색이 흰색으로 보이는 문제를 방지하기 위해 설정
+
+    const heroArea = document.querySelector(".hero");
+    if (heroArea) {
+        requestAnimationFrame(() => {
+            heroArea.classList.add("active");
+        });
+    }
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener("scroll", handleScroll);
 });
 
 onUnmounted(() => {
     window.removeEventListener("resize", setSwiperImageWidth);
     document.body.style.backgroundColor = "#ffffff"; // 페이지가 언마운트될 때 배경색을 원래대로 되돌림
+
+    const heroArea = document.querySelector(".hero");
+    if (heroArea) {
+        heroArea.classList.remove("active");
+    }
 });
 </script>
 
@@ -402,8 +434,14 @@ section {
 .hero {
     position: relative;
     padding-top: 8.125rem;
-    padding-bottom: 6.25rem;
+    padding-bottom: 4.25rem;
     z-index: 1;
+    opacity: 0;
+    transition: opacity 1s ease, transform 1s ease;
+
+    &.active {
+        opacity: 1;
+    }
 
     .title {
         font-size: 4rem;
@@ -436,6 +474,12 @@ section {
     position: relative;
     margin-bottom: 4.625rem;
     z-index: 1;
+
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transform: perspective(1000px) rotateX(15deg); /* 초기 기울기 */
+    transition: transform 0.1s linear;
+    will-change: transform;
 
     .wrap {
         max-width: 1200px;

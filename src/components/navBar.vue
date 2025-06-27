@@ -107,7 +107,8 @@ nav#navBar(ref="navBar")
                                 .prof
                                     template(v-if="user?.user_id" )
                                         .img-profile(@click.stop="(e)=>{showDropDown(e)}")
-                                            img(src="@/assets/img/landingpage/icon_profile.svg" style="width: 2.5rem; height: 2.5rem;")
+                                            .img-wrap
+                                                img(src="@/assets/img/landingpage/icon_profile.svg" style="width: 2.5rem; height: 2.5rem;")
                                             .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                                 .account 
                                                     span.user-id {{ userEmail.split("@")[0] }}
@@ -272,7 +273,7 @@ const scrollSec = (sectionId) => {
 
 const targetClasses = ["section-item", "ser", "mo-item"];
 
-window.addEventListener("mouseover", (event) => {
+const mousehover = (event) => {
     const hoveredElement = event.target.closest(
         ".section-item, .ser, .mo-item"
     );
@@ -288,9 +289,9 @@ window.addEventListener("mouseover", (event) => {
         });
         hoveredElement.style.opacity = 1;
     }
-});
+};
 
-window.addEventListener("mouseout", (event) => {
+const mouseout = (event) => {
     const leftElement = event.target.closest(".section-item, .ser, .mo-item");
 
     if (leftElement) {
@@ -303,7 +304,7 @@ window.addEventListener("mouseout", (event) => {
             el.style.opacity = 1;
         });
     }
-});
+};
 
 window.addEventListener("resize", () => {
     isDesktop.value = window.innerWidth > 800;
@@ -312,11 +313,15 @@ window.addEventListener("resize", () => {
 onMounted(() => {
     setAutoHide(navBar.value, 3);
     window.addEventListener("serviceChanged", updateServiceName);
+    window.addEventListener("mouseover", mousehover);
+    window.addEventListener("mouseout", mouseout);
 });
 
 onBeforeUnmount(() => {
     removeListener();
     window.removeEventListener("serviceChanged", updateServiceName);
+    window.addEventListener("mouseover", mousehover);
+    window.addEventListener("mouseout", mouseout);
 });
 
 watch(
@@ -500,9 +505,29 @@ img.symbol.mobile {
                     cursor: pointer;
                     padding-right: 0;
                     padding-left: 1.25rem;
+                    position: relative;
+
+                    img {
+                        overflow: hidden;
+                    }
 
                     &::after {
                         display: none;
+                    }
+
+                    &:hover {
+                        &::after {
+                            content: "";
+                            display: inline-block;
+                            width: 100%;
+                            height: 100%;
+                            background-color: rgba(255, 255, 255, 0.05);
+                            position: absolute;
+                            top: 50%;
+                            left: 0;
+                            transform: translateY(-50%);
+                            z-index: 1;
+                        }
                     }
                 }
             }
@@ -544,7 +569,6 @@ img.symbol.mobile {
             .go-login {
                 border-radius: 100px;
                 border: 1px solid rgba(255, 255, 255, 0.2);
-                padding: 0.5rem 1.125rem 0.5rem 1rem;
                 margin-left: 1.25rem;
                 height: initial !important;
 
@@ -555,6 +579,7 @@ img.symbol.mobile {
                     gap: 0.5rem;
                     cursor: pointer;
                     height: 100%;
+                    padding: 0.5rem 1.125rem 0.5rem 1rem;
 
                     &:hover {
                         text-decoration: none;
@@ -563,6 +588,10 @@ img.symbol.mobile {
 
                 &:after {
                     content: none;
+                }
+
+                &:hover {
+                    background-color: #1c1b1b;
                 }
             }
         }
@@ -770,6 +799,31 @@ img.symbol.mobile {
                     top: 0.25rem;
                 }
 
+                .img-profile {
+                    .img-wrap {
+                        position: relative;
+
+                        img {
+                            display: block;
+                        }
+
+                        &:hover {
+                            &::after {
+                                content: "";
+                                display: inline-block;
+                                width: 100%;
+                                height: 100%;
+                                position: absolute;
+                                background-color: rgba(255, 255, 255, 0.05);
+                                top: 50%;
+                                left: 0;
+                                transform: translateY(-50%);
+                                z-index: 1;
+                            }
+                        }
+                    }
+                }
+
                 .profile {
                     top: 4rem;
                     right: 1.25rem;
@@ -779,6 +833,7 @@ img.symbol.mobile {
                     display: flex;
                     align-items: center;
                     gap: 0.5rem;
+                    padding: 0.5rem 1.125rem 0.5rem 1rem;
 
                     &:hover {
                         text-decoration: none;
