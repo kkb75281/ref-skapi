@@ -107,7 +107,8 @@ nav#navBar(ref="navBar")
                                 .prof
                                     template(v-if="user?.user_id" )
                                         .img-profile(@click.stop="(e)=>{showDropDown(e)}")
-                                            img(src="@/assets/img/landingpage/icon_profile.svg" style="width: 2.5rem; height: 2.5rem;")
+                                            .img-wrap
+                                                img(src="@/assets/img/landingpage/icon_profile.svg" style="width: 2.5rem; height: 2.5rem;")
                                             .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                                 .account 
                                                     span.user-id {{ userEmail.split("@")[0] }}
@@ -798,22 +799,30 @@ img.symbol.mobile {
                     top: 0.25rem;
                 }
 
-                // .img-profile {
-                //     &:hover {
-                //         &::after {
-                //             content: "";
-                //             display: inline-block;
-                //             width: 100%;
-                //             height: 100%;
-                //             position: absolute;
-                //             background-color: rgba(255, 255, 255, 0.05);
-                //             top: 50%;
-                //             left: 0;
-                //             transform: translateY(-50%);
-                //             z-index: 1;
-                //         }
-                //     }
-                // }
+                .img-profile {
+                    .img-wrap {
+                        position: relative;
+
+                        img {
+                            display: block;
+                        }
+
+                        &:hover {
+                            &::after {
+                                content: "";
+                                display: inline-block;
+                                width: 100%;
+                                height: 100%;
+                                position: absolute;
+                                background-color: rgba(255, 255, 255, 0.05);
+                                top: 50%;
+                                left: 0;
+                                transform: translateY(-50%);
+                                z-index: 1;
+                            }
+                        }
+                    }
+                }
 
                 .profile {
                     top: 4rem;

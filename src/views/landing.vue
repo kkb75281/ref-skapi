@@ -4,7 +4,7 @@ main.landing-page-root
 		section.hero
 			.title #[span.linear-gradient Zero-Setup] #[span.wordset Backend API]
 			.desc Skapi is a serverless backend platform that gives frontend developers,no-coders, and product teams everything they need: auth, database,file storage, and real-time APIs.  Launch your app in minutes.
-			button Get Started
+			button(data-aos="fade-up" data-aos-duration="500") Get Started
 
 		section.video
 			.wrap
@@ -259,7 +259,7 @@ main.landing-page-root
 </template>
 
 <script setup>
-import { onMounted, ref, watch, onUnmounted } from "vue";
+import { onMounted, ref, watch, onUnmounted, onBeforeUnmount } from "vue";
 import { npmVersion } from "@/main.ts";
 import { user } from "@/code/user";
 
@@ -308,14 +308,46 @@ function makeBullet(index, className) {
     return `<span class="${className}">${menu[index]}</span>`;
 }
 
+function handleScroll() {
+    const video = document.querySelector(".video");
+    if (!video) return;
+
+    const maxScroll = 300; // 효과 구간
+    const scrollTop = Math.min(window.scrollY, maxScroll);
+
+    const progress = scrollTop / maxScroll; // 0 ~ 1 사이 진행도
+    const rotate = 15 - 15 * progress; // 15deg → 0deg로 변화 (뒤로 → 정면)
+
+    video.style.transform = `perspective(1000px) rotateX(${rotate}deg)`;
+}
+
 onMounted(() => {
     window.addEventListener("resize", setSwiperImageWidth);
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
     document.body.style.backgroundColor = "#111112"; // 최상단, 최하단에서 스크롤시 배경색이 흰색으로 보이는 문제를 방지하기 위해 설정
+
+    const heroArea = document.querySelector(".hero");
+    if (heroArea) {
+        requestAnimationFrame(() => {
+            heroArea.classList.add("active");
+        });
+    }
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener("scroll", handleScroll);
 });
 
 onUnmounted(() => {
     window.removeEventListener("resize", setSwiperImageWidth);
     document.body.style.backgroundColor = "#ffffff"; // 페이지가 언마운트될 때 배경색을 원래대로 되돌림
+
+    const heroArea = document.querySelector(".hero");
+    if (heroArea) {
+        heroArea.classList.remove("active");
+    }
 });
 </script>
 
@@ -402,8 +434,14 @@ section {
 .hero {
     position: relative;
     padding-top: 8.125rem;
-    padding-bottom: 6.25rem;
+    padding-bottom: 4.25rem;
     z-index: 1;
+    opacity: 0;
+    transition: opacity 1s ease, transform 1s ease;
+
+    &.active {
+        opacity: 1;
+    }
 
     .title {
         font-size: 4rem;
@@ -436,6 +474,12 @@ section {
     position: relative;
     margin-bottom: 4.625rem;
     z-index: 1;
+
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transform: perspective(1000px) rotateX(15deg); /* 초기 기울기 */
+    transition: transform 0.1s linear;
+    will-change: transform;
 
     .wrap {
         max-width: 1200px;
