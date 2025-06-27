@@ -30,20 +30,26 @@ footer#footer
 		.bottom-inner
 			span BROADWAYINC PTE. LTD. Singapore.
 			.icon-wrap
-				img(src="@/assets/img/landingpage/icon_discord.svg")
-				img(src="@/assets/img/landingpage/icon_instagram.svg")
-				img(src="@/assets/img/landingpage/icon_youtube.svg")
-				img(src="@/assets/img/landingpage/icon_x.svg")
-				img(src="@/assets/img/landingpage/icon_linkedin.svg")
-				img(src="@/assets/img/landingpage/icon_facebook.svg")
+				a.link(href="#" target="_blank")
+					img(src="@/assets/img/landingpage/icon_discord.svg")
+				a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+					img(src="@/assets/img/landingpage/icon_instagram.svg")
+				a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+					img(src="@/assets/img/landingpage/icon_youtube.svg")
+				a.link(href="https://x.com/skapi_api" target="_blank")
+					img(src="@/assets/img/landingpage/icon_x.svg")
+				a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+					img(src="@/assets/img/landingpage/icon_linkedin.svg")
+				a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+					img(src="@/assets/img/landingpage/icon_facebook.svg")
 </template>
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const router = useRouter();
 const route = useRoute();
-const hoveredMenu = ref('');
+const hoveredMenu = ref("");
 
 const scrollSec = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -56,7 +62,7 @@ const scrollSec = (sectionId) => {
 };
 
 function setFooterHeight() {
-    const footerElement = document.getElementById('footer');
+    const footerElement = document.getElementById("footer");
 
     if (!footerElement) {
         return;
@@ -65,17 +71,17 @@ function setFooterHeight() {
     const height = footerElement.offsetHeight;
 
     if (height) {
-        document.body.style.setProperty('--footer-height', height + 'px');
+        document.body.style.setProperty("--footer-height", height + "px");
     }
 }
 
 onMounted(() => {
     setFooterHeight();
-    window.addEventListener('resize', setFooterHeight);
-})
+    window.addEventListener("resize", setFooterHeight);
+});
 
 onUnmounted(() => {
-    window.removeEventListener('resize', setFooterHeight);
+    window.removeEventListener("resize", setFooterHeight);
 });
 </script>
 <style lang="less" scoped>
@@ -226,7 +232,6 @@ onUnmounted(() => {
 
 @media (max-width: 1560px) {
     #footer {
-
         .top-inner,
         .bottom-inner {
             margin: 0 80px;
@@ -236,7 +241,6 @@ onUnmounted(() => {
 
 @media (max-width: 800px) {
     #footer {
-
         .top-inner,
         .bottom-inner {
             margin: 0 60px;
@@ -286,7 +290,6 @@ onUnmounted(() => {
 
 @media (max-width: 430px) {
     #footer {
-
         .top-inner,
         .bottom-inner {
             margin: 0 40px;

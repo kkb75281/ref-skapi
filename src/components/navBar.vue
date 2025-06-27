@@ -26,17 +26,23 @@ nav#navBar(ref="navBar")
                                 .moreVert.community(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                     ul.list-wrap
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_discord.svg")
+                                            a.link(href="#" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_discord.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                            a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_instagram.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                            a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_youtube.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_x.svg")
+                                            a.link(href="https://x.com/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_x.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                            a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_linkedin.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_facebook.svg")
+                                            a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_facebook.svg")
                         li.list.go-docs
                             a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
                                 img(src="@/assets/img/landingpage/icon_docs.svg")
@@ -73,17 +79,23 @@ nav#navBar(ref="navBar")
                                 .moreVert.community(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                     ul.list-wrap
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_discord.svg")
+                                            a.link(href="#" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_discord.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                            a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_instagram.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                            a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_youtube.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_x.svg")
+                                            a.link(href="https://x.com/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_x.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                            a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_linkedin.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_facebook.svg")
+                                            a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_facebook.svg")
                         li.list.go-docs
                             a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
                                 img(src="@/assets/img/landingpage/icon_docs.svg")
@@ -153,17 +165,23 @@ nav#navBar(ref="navBar")
                             span.text Community
                             ul.list-wrap
                                 li.item.mo-item
-                                    img(src="@/assets/img/landingpage/icon_discord.svg")
+                                    a.link(href="#" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_discord.svg")
                                 li.item.mo-item
-                                    img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                    a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_instagram.svg")
                                 li.item.mo-item
-                                    img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                    a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_youtube.svg")
                                 li.item.mo-item
-                                    img(src="@/assets/img/landingpage/icon_x.svg")
+                                    a.link(href="https://x.com/skapi_api" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_x.svg")
                                 li.item.mo-item
-                                    img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                    a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_linkedin.svg")
                                 li.item.mo-item
-                                    img(src="@/assets/img/landingpage/icon_facebook.svg")
+                                    a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_facebook.svg")
 #proceeding(v-if="running")
     .inner    
         .loader(style="--loader-color:black; --loader-size: 20px")
