@@ -251,8 +251,32 @@ main.landing-page-root
 						p.text Your data will be retained for 30 days after your subscription ends.
 						p.text  If you don’t reactivate within that window, all data will be permanently deleted.
 
+	.bg-blue
+		section#section4.contents
+			.title Contents
+			.tab-cont-wrap
+				TabMenu(v-model="activeTabs.contents" :tabs="['Articles', 'Videos']")
+				.tab-cont
+					template(v-if="activeTabs.contents === 0")
+						.tab-item
+							.title Built a Mini Instagram
+							.desc You can easily build a mini Instagram web app—complete with photo uploads and gallery—using only ChatGPT and Skapi, no coding skills needed
+							a.btn-read-more(href="#") Read more
+						.tab-item
+							.title Chat Box Application
+							.desc Build a ChatGPT wrapper with just HTML, CSS & Skapi - a deployable, serverless AI chat app.
+							a.btn-read-more(href="#") Read more
+						.tab-item
+							.title Data security
+							.desc How we implement real frontend-level security using Skapi - lessons from actual projects.
+							a.btn-read-more(href="#") Read more
+
+					template(v-else-if="activeTabs.contents === 1")
+						.tab-item 유튜브 영상 3개 추가 예정
+
+	.bg-dark
 		section.banner
-			.banner-inner.bg-colorful
+			.banner-inner
 				.title.black(data-aos="fade-up" data-aos-delay="300") Start Building Today!
 				.desc.black(data-aos="fade-up" data-aos-delay="300") Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
 				button(data-aos="fade-up" data-aos-delay="500") Get Started
@@ -268,6 +292,11 @@ import { Pagination, Navigation } from "swiper/modules";
 import "swiper/css"; // import Swiper styles
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import TabMenu from "@/components/tab.vue";
+
+let activeTabs = ref({
+    contents: 0,
+});
 
 function setSwiperImageWidth() {
     let swiperImage = document.getElementById("reviewerImg");
@@ -815,6 +844,7 @@ section {
 
                 button {
                     width: 100%;
+                    max-width: 100%;
                     background-color: #242529;
                 }
             }
@@ -1040,24 +1070,138 @@ section {
     }
 }
 
+.contents {
+    padding: 4.375rem 0;
+
+    .title {
+        margin-bottom: 2.25rem;
+    }
+
+    .tab-cont-wrap {
+        max-width: 63.75rem;
+        margin: 0 auto;
+    }
+
+    :deep(.tab-menu) {
+        margin-bottom: 3.125rem;
+
+        ul {
+            box-shadow: none;
+            gap: 0.625rem;
+            padding: 0;
+            border-radius: 0;
+            background-color: transparent;
+
+            li {
+                padding: 0.875rem 1.875rem;
+                border: 1px solid #fff;
+                border-radius: 2.5rem;
+                font-size: 1.25rem;
+                font-weight: 500;
+                color: #fff;
+
+                &.active {
+                    background-color: #fff;
+                    color: #000;
+                }
+            }
+        }
+
+        .active-menu {
+            display: none;
+        }
+    }
+
+    .tab-cont {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.875rem;
+        flex-wrap: wrap;
+    }
+
+    .tab-item {
+        padding: 2.25rem 2.5rem;
+        border-radius: 1rem;
+        flex: 1;
+        text-align: left;
+        min-height: 26.25rem;
+        display: flex;
+        flex-direction: column;
+        border-radius: 1rem;
+        background: url("@/assets/img/landingpage/bg_contents1.png") lightgray
+            50% / cover no-repeat;
+        color: #000;
+
+        &:nth-child(2) {
+            background-image: url("@/assets/img/landingpage/bg_contents2.png");
+        }
+
+        &:nth-child(3) {
+            background-image: url("@/assets/img/landingpage/bg_contents3.png");
+        }
+
+        .title {
+            font-size: 2.125rem;
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 1.25rem;
+        }
+
+        .desc {
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 3rem;
+        }
+
+        .btn-read-more {
+            margin-top: auto;
+            max-width: fit-content;
+            padding: 0.875rem 1.375rem;
+            border-radius: 2.5rem;
+            border: 1px solid #000;
+            background: transparent;
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #000;
+
+            &:hover {
+                text-decoration: none;
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+        }
+    }
+}
+
 .banner {
-    padding: 5rem 0 6.25rem 0;
+    padding: 7.5rem 0;
     margin: 0 5rem;
 
     .banner-inner {
         max-width: 1600px;
         margin: 0 auto 0;
-        border-radius: 25px;
-        padding: 7.625rem 3.4375rem;
 
         .title {
-            font-size: 3.25rem;
+            background-image: linear-gradient(
+                92.16deg,
+                #0156ff 3.64%,
+                #079af2 37.09%,
+                #49c48d 51.65%,
+                #e0fa1c 80%
+            );
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            font-size: 3.125rem;
+            font-weight: 500;
+            line-height: 1.4;
             margin-bottom: 0.625rem;
         }
 
         .desc {
             line-height: 1.4;
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.875rem;
+            color: rgba(255, 255, 255, 0.7);
 
             .wordset {
                 display: block;
@@ -1108,6 +1252,20 @@ section {
             max-width: 600px;
             margin: 0 auto;
             grid-template-columns: repeat(1, 1fr);
+        }
+    }
+}
+
+@media (max-width: 900px) {
+    .contents {
+        .tab-cont {
+            flex-direction: column;
+            gap: 1.375rem;
+        }
+
+        .tab-item {
+            min-height: 18.375rem;
+            width: 100%;
         }
     }
 }
@@ -1272,6 +1430,15 @@ section {
         .item-cont {
             padding: 0.25rem 1.5rem 1.875rem;
             font-size: 0.875rem;
+        }
+    }
+
+    .contents {
+        .tab-item {
+            .btn-read-more {
+                font-size: 0.9375rem;
+                padding: 0.625rem 1rem;
+            }
         }
     }
 }
@@ -1497,6 +1664,40 @@ section {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    .contents {
+        padding: 3.75rem 0 2.5rem;
+
+        .title {
+            margin-bottom: 1.875rem;
+        }
+
+        :deep(.tab-menu) {
+            margin-bottom: 3.75rem;
+
+            ul {
+                gap: 0.375rem;
+
+                li {
+                    padding: 0.625rem 1rem;
+                    font-size: 0.9375rem;
+                }
+            }
+        }
+
+        .tab-item {
+            min-height: 23.75rem;
+
+            .title {
+                font-size: 1.75rem;
+            }
+
+            .desc {
+                font-size: 0.875rem;
+                margin-bottom: 2rem;
             }
         }
     }
