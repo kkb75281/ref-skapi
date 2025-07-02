@@ -4,7 +4,7 @@ main.landing-page-root
 		section.hero
 			.title #[span.linear-gradient Zero-Setup] #[span.wordset Backend API]
 			.desc Skapi is a serverless backend platform that gives frontend developers,no-coders, and product teams everything they need: auth, database,file storage, and real-time APIs.  Launch your app in minutes.
-			button(data-aos="fade-up" data-aos-duration="500") Get Started
+			router-link.btn-start(to="/signup" data-aos="fade-up" data-aos-delay="500") Get Started
 
 		section.video
 			.wrap
@@ -253,10 +253,10 @@ main.landing-page-root
 
 	.bg-blue
 		section#section4.contents
-			.title Contents
+			.title(data-aos="fade-up" data-aos-delay="300") Contents
 			.tab-cont-wrap
-				TabMenu(v-model="activeTabs.contents" :tabs="['Articles', 'Videos']")
-				.tab-cont
+				TabMenu(v-model="activeTabs.contents" :tabs="['Articles', 'Videos']" data-aos="fade-up" data-aos-delay="500")
+				.tab-cont(data-aos="fade-up" data-aos-delay="700")
 					template(v-if="activeTabs.contents === 0")
 						.tab-item
 							.title Built a Mini Instagram
@@ -272,14 +272,43 @@ main.landing-page-root
 							a.btn-read-more(href="#") Read more
 
 					template(v-else-if="activeTabs.contents === 1")
-						.tab-item 유튜브 영상 3개 추가 예정
+						.tab-item.videos
+							.videos-wrap
+								iframe(
+									src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1",
+									title="video1",
+									allow="autoplay",
+									allowfullscreen,
+									frameborder="0"
+								)
+							.title HOW TO USE SKAPI INDEXES
+						.tab-item.videos
+							.videos-wrap
+								iframe(
+									src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1",
+									title="video2",
+									allow="autoplay",
+									allowfullscreen,
+									frameborder="0"
+								)
+							.title Building the Next Reddit with Skapi: Is It Possible?
+						.tab-item.videos
+							.videos-wrap
+								iframe(
+									src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1",
+									title="video3",
+									allow="autoplay",
+									allowfullscreen,
+									frameborder="0"
+								)
+							.title Build a Movie Review App - Part 2 (THE SEARCH ENGINE) Build a Movie Review App - Part 2 (THE SEARCH ENGINE)
 
 	.bg-dark
 		section.banner
 			.banner-inner
 				.title.black(data-aos="fade-up" data-aos-delay="300") Start Building Today!
 				.desc.black(data-aos="fade-up" data-aos-delay="300") Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
-				button(data-aos="fade-up" data-aos-delay="500") Get Started
+				router-link.btn-start(to="/signup" data-aos="fade-up" data-aos-delay="500") Get Started
 </template>
 
 <script setup>
@@ -700,20 +729,12 @@ section {
             position: relative;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             padding: 50px;
             gap: 50px;
             text-align: left;
             background: #121214;
             border-radius: 17px;
             box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.05);
-
-            // &:nth-child(1) {
-            // 	.img {
-            // 		right: 20px;
-            // 		top: 30px;
-            // 	}
-            // }
 
             &:nth-child(3),
             &:nth-child(4) {
@@ -746,6 +767,7 @@ section {
                 font-size: 2rem;
                 line-height: 1.2;
                 z-index: 1;
+                height: 4.875rem;
             }
 
             .content {
@@ -997,7 +1019,6 @@ section {
     padding: 5rem 0 5.625rem;
 
     .title {
-        font-size: 3rem;
         font-weight: 400;
         margin-bottom: 3.125rem;
     }
@@ -1093,7 +1114,7 @@ section {
             background-color: transparent;
 
             li {
-                padding: 0.875rem 1.875rem;
+                padding: 0.75rem 1.875rem;
                 border: 1px solid #fff;
                 border-radius: 2.5rem;
                 font-size: 1.25rem;
@@ -1170,6 +1191,53 @@ section {
                 background-color: rgba(255, 255, 255, 0.05);
             }
         }
+
+        &.videos {
+            background: none;
+            padding: 0;
+            color: #fff;
+
+            .videos-wrap {
+                border-radius: 1rem;
+                overflow: hidden;
+
+                position: relative;
+                width: 100%;
+
+                &::before {
+                    content: "";
+                    display: block;
+                    padding-bottom: 56.25%;
+                }
+            }
+
+            iframe {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                background: #eee;
+
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .title {
+                font-size: 1.25rem;
+                line-height: 1.5;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                margin-bottom: 0;
+                margin-top: 1rem;
+            }
+        }
     }
 }
 
@@ -1207,6 +1275,21 @@ section {
                 display: block;
             }
         }
+    }
+}
+
+.btn-start {
+    padding: 0.875rem 4.375rem;
+    background-color: #0a4df1;
+    border-radius: 0.875rem;
+    display: inline-block;
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #fff;
+
+    &:hover {
+        text-decoration: none;
+        background-color: #1656f2;
     }
 }
 
@@ -1252,6 +1335,12 @@ section {
             max-width: 600px;
             margin: 0 auto;
             grid-template-columns: repeat(1, 1fr);
+
+            .feature-item {
+                .title {
+                    height: initial;
+                }
+            }
         }
     }
 }
@@ -1266,6 +1355,11 @@ section {
         .tab-item {
             min-height: 18.375rem;
             width: 100%;
+
+            &.videos {
+                min-height: fit-content;
+                margin-bottom: 1.75rem;
+            }
         }
     }
 }
@@ -1409,11 +1503,6 @@ section {
 
     .faq {
         padding: 3.125rem 0 3.75rem;
-
-        .title {
-            font-size: 1.875rem;
-            margin-bottom: 1.875rem;
-        }
 
         .item-title {
             padding: 1rem 4rem 1rem 1.5rem;
@@ -1668,6 +1757,12 @@ section {
         }
     }
 
+    .faq {
+        .title {
+            margin-bottom: 1.875rem;
+        }
+    }
+
     .contents {
         padding: 3.75rem 0 2.5rem;
 
@@ -1676,8 +1771,6 @@ section {
         }
 
         :deep(.tab-menu) {
-            margin-bottom: 3.75rem;
-
             ul {
                 gap: 0.375rem;
 

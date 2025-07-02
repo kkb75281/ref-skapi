@@ -26,7 +26,7 @@ nav#navBar(ref="navBar")
                                 .moreVert.community(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                     ul.list-wrap
                                         li.item
-                                            a.link(href="#" target="_blank")
+                                            a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
                                                 img(src="@/assets/img/landingpage/icon_discord.svg")
                                         li.item
                                             a.link(href="https://www.instagram.com/skapi_api" target="_blank")
@@ -79,7 +79,7 @@ nav#navBar(ref="navBar")
                                 .moreVert.community(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                     ul.list-wrap
                                         li.item
-                                            a.link(href="#" target="_blank")
+                                            a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
                                                 img(src="@/assets/img/landingpage/icon_discord.svg")
                                         li.item
                                             a.link(href="https://www.instagram.com/skapi_api" target="_blank")
@@ -165,7 +165,7 @@ nav#navBar(ref="navBar")
                             span.text Community
                             ul.list-wrap
                                 li.item.mo-item
-                                    a.link(href="#" target="_blank")
+                                    a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
                                         img(src="@/assets/img/landingpage/icon_discord.svg")
                                 li.item.mo-item
                                     a.link(href="https://www.instagram.com/skapi_api" target="_blank")
@@ -944,6 +944,12 @@ img.symbol.mobile {
 
                 .go-github {
                     padding-left: 0;
+                }
+            }
+
+            .mo-item {
+                &:hover {
+                    background: transparent;
                 }
             }
         }
