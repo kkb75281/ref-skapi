@@ -258,10 +258,18 @@ main.landing-page-root
 				TabMenu(v-model="activeTabs.contents" :tabs="['Articles', 'Videos']" data-aos="fade-up" data-aos-delay="500")
 				.tab-cont(data-aos="fade-up" data-aos-delay="700")
 					template(v-if="activeTabs.contents === 0")
-						.tab-item(v-for="article in articles" :key="article.id")
-							.title {{ article.title }}
-							.desc {{ article.description }}
-							a.btn-read-more(:href="article.url" target="_blank") Read more
+						.tab-item
+							.title Built a Mini Instagram
+							.desc You can easily build a mini Instagram web app—complete with photo uploads and gallery—using only ChatGPT and Skapi, no coding skills needed
+							a.btn-read-more(href="#") Read more
+						.tab-item
+							.title Chat Box Application
+							.desc Build a ChatGPT wrapper with just HTML, CSS & Skapi - a deployable, serverless AI chat app.
+							a.btn-read-more(href="#") Read more
+						.tab-item
+							.title Data security
+							.desc How we implement real frontend-level security using Skapi - lessons from actual projects.
+							a.btn-read-more(href="#") Read more
 
 					template(v-else-if="activeTabs.contents === 1")
 						.tab-item.videos
@@ -315,10 +323,9 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import TabMenu from "@/components/tab.vue";
 
-const activeTabs = ref({
+let activeTabs = ref({
     contents: 0,
 });
-const articles = ref([]);
 
 function setSwiperImageWidth() {
     let swiperImage = document.getElementById("reviewerImg");
@@ -372,7 +379,7 @@ function handleScroll() {
     video.style.transform = `perspective(1000px) rotateX(${rotate}deg)`;
 }
 
-onMounted(async () => {
+onMounted(() => {
     window.addEventListener("resize", setSwiperImageWidth);
     window.addEventListener("scroll", handleScroll);
     handleScroll();
@@ -385,31 +392,6 @@ onMounted(async () => {
             heroArea.classList.add("active");
         });
     }
-
-    // contents > articles (Dev.to api 사용)
-    try {
-        const response = await fetch(
-            "https://dev.to/api/articles?username=skapi_api&per_page=3"
-        );
-        if (!response.ok) throw new Error("Fetch failed");
-        articles.value = await response.json();
-    } catch (err) {
-        console.error(err);
-    }
-
-    // skapi youtube api
-    // youtube "channelIds":["UC0e4MITESMr3OaUiyWHpdYA"]
-    // const API_KEY = "YOUR_API_KEY";
-    // const CHANNEL_ID = "UC0e4MITESMr3OaUiyWHpdYA";
-
-    // fetch(
-    //     `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&order=date&maxResults=3&type=video`
-    // )
-    //     .then((res) => res.json())
-    //     .then((data) => {
-    //         console.log(data.items); // 최신 영상 3개
-    //     })
-    //     .catch((err) => console.error(err));
 });
 
 onBeforeUnmount(() => {
@@ -1184,11 +1166,6 @@ section {
             font-weight: 500;
             line-height: 1.3;
             margin-bottom: 1.25rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
         }
 
         .desc {
@@ -1252,6 +1229,11 @@ section {
             .title {
                 font-size: 1.25rem;
                 line-height: 1.5;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
                 margin-bottom: 0;
                 margin-top: 1rem;
             }
