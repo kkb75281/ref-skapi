@@ -4,7 +4,7 @@ main.landing-page-root
 		section.hero
 			.title #[span.linear-gradient Zero-Setup] #[span.wordset Backend API]
 			.desc Skapi is a serverless backend platform that gives frontend developers,no-coders, and product teams everything they need: auth, database,file storage, and real-time APIs.  Launch your app in minutes.
-			router-link.btn-start(to="/signup" data-aos="fade-up" data-aos-delay="500") Get Started
+			router-link.btn.btn-start(to="/signup" data-aos="fade-up" data-aos-delay="500") Get Started
 
 		section.video
 			.wrap
@@ -264,43 +264,23 @@ main.landing-page-root
 							a.btn-read-more(:href="article.url" target="_blank") Read more
 
 					template(v-else-if="activeTabs.contents === 1")
-						.tab-item.videos
+						.tab-item.videos(v-for="video in videos" :key="video.id")
 							.videos-wrap
 								iframe(
-									src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1",
-									title="video1",
-									allow="autoplay",
-									allowfullscreen,
+									:src="`https://www.youtube.com/embed/${video.id}`"
+									:title="video.title"
+									allow="encrypted-media"
+									allowfullscreen
 									frameborder="0"
 								)
-							.title HOW TO USE SKAPI INDEXES
-						.tab-item.videos
-							.videos-wrap
-								iframe(
-									src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1",
-									title="video2",
-									allow="autoplay",
-									allowfullscreen,
-									frameborder="0"
-								)
-							.title Building the Next Reddit with Skapi: Is It Possible?
-						.tab-item.videos
-							.videos-wrap
-								iframe(
-									src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1",
-									title="video3",
-									allow="autoplay",
-									allowfullscreen,
-									frameborder="0"
-								)
-							.title Build a Movie Review App - Part 2 (THE SEARCH ENGINE) Build a Movie Review App - Part 2 (THE SEARCH ENGINE)
+							.title {{ video.title }}
 
 	.bg-dark
 		section.banner
 			.banner-inner
 				.title.black(data-aos="fade-up" data-aos-delay="300") Start Building Today!
 				.desc.black(data-aos="fade-up" data-aos-delay="300") Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
-				router-link.btn-start(to="/signup" data-aos="fade-up" data-aos-delay="500") Get Started
+				router-link.btn.btn-start(to="/signup" data-aos="fade-up" data-aos-delay="500") Get Started
 </template>
 
 <script setup>
@@ -319,6 +299,7 @@ const activeTabs = ref({
     contents: 0,
 });
 const articles = ref([]);
+const videos = ref([]);
 
 function setSwiperImageWidth() {
     let swiperImage = document.getElementById("reviewerImg");
@@ -397,19 +378,53 @@ onMounted(async () => {
         console.error(err);
     }
 
-    // skapi youtube api
-    // youtube "channelIds":["UC0e4MITESMr3OaUiyWHpdYA"]
-    // const API_KEY = "YOUR_API_KEY";
-    // const CHANNEL_ID = "UC0e4MITESMr3OaUiyWHpdYA";
+    // skapi youtube api 호출
+    // skapi's youtube channelIds : UC0e4MITESMr3OaUiyWHpdYA
+    // mina's google console api_key : AIzaSyC6PGYZWVYqPO7ItsTVBarYW_htT1kaXW0
+    const API_KEY = "AIzaSyC6PGYZWVYqPO7ItsTVBarYW_htT1kaXW0";
+    const CHANNEL_ID = "UC0e4MITESMr3OaUiyWHpdYA";
 
-    // fetch(
-    //     `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&order=date&maxResults=3&type=video`
-    // )
-    //     .then((res) => res.json())
-    //     .then((data) => {
-    //         console.log(data.items); // 최신 영상 3개
-    //     })
-    //     .catch((err) => console.error(err));
+    try {
+        // 최신 영상 검색
+        const searchRes = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&order=date&maxResults=10&type=video`
+        );
+        const searchData = await searchRes.json();
+        const videoIds = searchData.items
+            .map((item) => item.id.videoId)
+            .join(",");
+
+        // 영상 상세 조회 (duration 얻기)
+        const videosRes = await fetch(
+            `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${videoIds}&part=snippet,contentDetails`
+        );
+        const videosData = await videosRes.json();
+
+        // shorts 제외 (60초 이하 제외) 후 3개만 선택
+        const filtered = videosData.items
+            .filter((item) => {
+                const duration = item.contentDetails.duration;
+                // ISO 8601 duration에서 PT60S 이하인지 파싱
+                const match = duration.match(/PT((\d+)M)?(\d+)S/);
+                let totalSeconds = 0;
+                if (match) {
+                    const minutes = match[2] ? parseInt(match[2], 10) : 0;
+                    const seconds = match[3] ? parseInt(match[3], 10) : 0;
+                    totalSeconds = minutes * 60 + seconds;
+                }
+                return totalSeconds > 60; // shorts는 60초 이하이므로 초과만 포함
+            })
+            .slice(0, 3)
+            .map((item) => ({
+                id: item.id,
+                title: item.snippet.title,
+                description: item.snippet.description,
+            }));
+
+        videos.value = filtered;
+    } catch (error) {
+        console.error("영상 정보를 가져오는 중 오류:", error);
+    }
 });
 
 onBeforeUnmount(() => {
@@ -489,7 +504,7 @@ section {
 }
 
 .bg-colorful {
-    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% /
+    background: url("@/assets/img/landingpage/bg_price.png") lightgray 50% /
         cover no-repeat;
 }
 
@@ -1296,7 +1311,7 @@ section {
     }
 }
 
-.btn-start {
+.btn {
     padding: 0.875rem 4.375rem;
     background-color: #0a4df1;
     border-radius: 0.875rem;
@@ -1565,6 +1580,13 @@ section {
     button {
         font-size: 1rem;
         padding: 0 0.75rem;
+    }
+
+    .btn {
+        font-size: 1rem;
+        padding: 0.875rem;
+        width: 14.375rem;
+        max-width: 100%;
     }
 
     section {
