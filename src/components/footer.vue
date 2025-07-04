@@ -28,7 +28,7 @@ footer#footer
 			span BROADWAYINC PTE. LTD. Singapore.
 			.icon-wrap
 				a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-					img(src="@/assets/img/landingpage/icon_discord.svg")
+					img(src="@/assets/img/landingpage/icon_tiktok.svg")
 				a.link(href="https://www.instagram.com/skapi_api" target="_blank")
 					img(src="@/assets/img/landingpage/icon_instagram.svg")
 				a.link(href="https://www.youtube.com/@skapi_official" target="_blank")

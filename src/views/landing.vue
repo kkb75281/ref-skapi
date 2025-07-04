@@ -367,7 +367,7 @@ onMounted(async () => {
         });
     }
 
-    // contents > articles (Dev.to api 사용)
+    // contents > articles (Dev.to api 호출)
     try {
         const response = await fetch(
             "https://dev.to/api/articles?username=skapi_api&per_page=3"
@@ -378,9 +378,9 @@ onMounted(async () => {
         console.error(err);
     }
 
-    // skapi youtube api 호출
-    // skapi's youtube channelIds : UC0e4MITESMr3OaUiyWHpdYA
-    // mina's google console api_key : AIzaSyC6PGYZWVYqPO7ItsTVBarYW_htT1kaXW0
+    // contents > videos (youtube api 호출)
+    // skapi's youtube channelId : UC0e4MITESMr3OaUiyWHpdYA
+    // mina's googleConsole api_key : AIzaSyC6PGYZWVYqPO7ItsTVBarYW_htT1kaXW0
     const API_KEY = "AIzaSyC6PGYZWVYqPO7ItsTVBarYW_htT1kaXW0";
     const CHANNEL_ID = "UC0e4MITESMr3OaUiyWHpdYA";
 
@@ -1234,6 +1234,7 @@ section {
             background: none;
             padding: 0;
             color: #fff;
+            min-height: fit-content;
 
             .videos-wrap {
                 border-radius: 1rem;

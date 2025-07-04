@@ -27,7 +27,7 @@ nav#navBar(ref="navBar")
                                     ul.list-wrap
                                         li.item
                                             a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_discord.svg")
+                                                img(src="@/assets/img/landingpage/icon_tiktok.svg")
                                         li.item
                                             a.link(href="https://www.instagram.com/skapi_api" target="_blank")
                                                 img(src="@/assets/img/landingpage/icon_instagram.svg")
@@ -80,7 +80,7 @@ nav#navBar(ref="navBar")
                                     ul.list-wrap
                                         li.item
                                             a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_discord.svg")
+                                                img(src="@/assets/img/landingpage/icon_tiktok.svg")
                                         li.item
                                             a.link(href="https://www.instagram.com/skapi_api" target="_blank")
                                                 img(src="@/assets/img/landingpage/icon_instagram.svg")
@@ -166,7 +166,7 @@ nav#navBar(ref="navBar")
                             ul.list-wrap
                                 li.item.mo-item
                                     a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                                        img(src="@/assets/img/landingpage/icon_discord.svg")
+                                        img(src="@/assets/img/landingpage/icon_tiktok.svg")
                                 li.item.mo-item
                                     a.link(href="https://www.instagram.com/skapi_api" target="_blank")
                                         img(src="@/assets/img/landingpage/icon_instagram.svg")
