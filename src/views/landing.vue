@@ -4,11 +4,15 @@ main.landing-page-root
 		section.hero
 			.title #[span.linear-gradient Zero-Setup] #[span.wordset Backend API]
 			.desc Skapi is a serverless backend platform that gives frontend developers,no-coders, and product teams everything they need: auth, database,file storage, and real-time APIs.  Launch your app in minutes.
-			router-link.btn.btn-start(to="/signup" data-aos="fade-up" data-aos-delay="500") Get Started
+			template(v-if="user?.user_id")
+				button(type="button" data-aos="fade-up" data-aos-duration="500" @click="$router.push('/my-services')") Go to My Services
+			router-link(v-else to="/signup")
+				button(type="button" data-aos="fade-up" data-aos-duration="500") Get Started
 
 		section.video
 			.wrap
 				.inner
+					img(src="@/assets/img/landingpage/bg_hero.png", alt="Skapi Video")
 
 		section.why
 			.title(data-aos="fade-up") Why Skapi?
@@ -135,7 +139,7 @@ main.landing-page-root
 					:spaceBetween="30"
 					:slideActiveClass="'on'"
 					:pagination="{ el: '.plan-swiper-pagination', clickable: true, bulletActiveClass: 'on', renderBullet: makeBullet }"
-					:breakpoints="{ 0: { slidesPerView: 1, enabled: true, loop: true }, 801: { slidesPerView: 3, enabled: false } }"
+					:breakpoints="{ 0: { slidesPerView: 1, enabled: true, loop: true }, 801: { slidesPerView: 3, enabled: false, loop: false } }"
 					:modules="[Pagination]"
 				)
 					swiper-slide.plan-item.blue
@@ -146,7 +150,8 @@ main.landing-page-root
 							.desc Best for testing and prototypingwwwwwwww
 						.middle
 							.price Free
-							button Get
+							router-link(:to="user?.user_id ? '/create' : '/signup'")
+								button(type="button") Get
 						.bottom
 							p Core includes:
 							ul
@@ -165,7 +170,8 @@ main.landing-page-root
 						.middle
 							.price $19
 								span /mon
-							button Get
+							router-link(:to="user?.user_id ? '/create' : { path: '/signup', query: { suc_redirect: '/create' } }")
+								button(type="button") Get
 						.bottom
 							p Includes all Trial Plan features, but more functions:
 							ul
@@ -184,7 +190,8 @@ main.landing-page-root
 						.middle
 							.price $89
 								span /mon
-							button Get
+							router-link(:to="user?.user_id ? '/create' : { path: '/signup', query: { suc_redirect: '/create' } }")
+								button(type="button") Get
 						.bottom
 							p Includes all Standard Plan features, but more data:
 							ul
@@ -280,7 +287,10 @@ main.landing-page-root
 			.banner-inner
 				.title.black(data-aos="fade-up" data-aos-delay="700") Start Building Today!
 				.desc.black(data-aos="fade-up" data-aos-delay="700") Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
-				router-link.btn.btn-start(to="/signup" data-aos="fade-up" data-aos-delay="1000") Get Started
+				template(v-if="user?.user_id")
+					button(type="button" data-aos="fade-up" data-aos-delay="1000" @click="$router.push('/my-services')") Go to My Services
+				router-link(v-else to="/signup")
+					button(type="button" data-aos="fade-up" data-aos-delay="1000") Get Started
 </template>
 
 <script setup>
@@ -336,7 +346,6 @@ function faqToggle(index) {
 
 function makeBullet(index, className) {
     let menu = ["Trial", "Standard", "Premium"];
-    console.log("makeBullet", index, className);
     return `<span class="${className}">${menu[index]}</span>`;
 }
 
@@ -472,6 +481,7 @@ section {
 
     .title {
         font-size: 3rem;
+        margin-bottom: 20px;
 
         &.black {
             font-weight: 500;
@@ -568,7 +578,8 @@ section {
 
     perspective: 1000px;
     transform-style: preserve-3d;
-    transform: perspective(1000px) rotateX(15deg); /* 초기 기울기 */
+    transform: perspective(1000px) rotateX(15deg);
+    /* 초기 기울기 */
     transition: transform 0.1s linear;
     will-change: transform;
 
@@ -576,16 +587,24 @@ section {
         max-width: 1200px;
         // height: 853px;
         margin: 0 auto;
-        border-radius: 1.5rem;
+        border-radius: 0.625rem;
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.1);
-        aspect-ratio: 16/9;
+        // aspect-ratio: 16/9;
+        max-height: 46.875rem;
 
         .inner {
             width: 100%;
             height: 100%;
             background-color: #1c1c1c;
             object-fit: cover;
+
+            img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
         }
     }
 }
@@ -744,10 +763,6 @@ section {
 .feature {
     padding: 5rem 0;
 
-    .title {
-        margin-bottom: 1.25rem;
-    }
-
     .desc {
         line-height: 1.4;
         margin-bottom: 5rem;
@@ -762,6 +777,7 @@ section {
             position: relative;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             padding: 50px;
             gap: 50px;
             text-align: left;
@@ -769,10 +785,22 @@ section {
             border-radius: 17px;
             box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.05);
 
-            &:nth-child(3),
-            &:nth-child(4) {
-                .img {
-                    right: 0px;
+            .feature-item {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                padding: 50px;
+                gap: 50px;
+                text-align: left;
+                background: #121214;
+                border-radius: 17px;
+                box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.05);
+
+                &:nth-child(3),
+                &:nth-child(4) {
+                    .img {
+                        right: 0px;
+                    }
                 }
             }
 
@@ -800,7 +828,7 @@ section {
                 font-size: 2rem;
                 line-height: 1.2;
                 z-index: 1;
-                height: 4.875rem;
+                // height: 4.875rem;
             }
 
             .content {
@@ -814,10 +842,6 @@ section {
 
 .plan {
     padding: 5rem 0 6.25rem 0;
-
-    .title {
-        margin-bottom: 1.25rem;
-    }
 
     .desc {
         margin-bottom: 1.875rem;
@@ -1454,6 +1478,16 @@ section {
 
     .banner {
         margin: 0 3.75rem;
+
+        .banner-inner {
+            .title {
+                font-size: 2.875rem;
+            }
+
+            .desc {
+                font-size: 1.125rem;
+            }
+        }
     }
 }
 
@@ -1538,6 +1572,10 @@ section {
     .faq {
         padding: 3.125rem 0 3.75rem;
 
+        .title {
+            margin-bottom: 1.875rem;
+        }
+
         .item-title {
             padding: 1rem 4rem 1rem 1.5rem;
             font-size: 1rem;
@@ -1595,6 +1633,7 @@ section {
 
         .title {
             font-size: 1.875rem;
+            margin-bottom: 1rem;
         }
 
         .desc {
