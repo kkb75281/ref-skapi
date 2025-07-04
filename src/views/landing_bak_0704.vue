@@ -4,11 +4,15 @@ main.landing-page-root
 		section.hero
 			.title #[span.linear-gradient Zero-Setup] #[span.wordset Backend API]
 			.desc Skapi is a serverless backend platform that gives frontend developers,no-coders, and product teams everything they need: auth, database,file storage, and real-time APIs.  Launch your app in minutes.
-			router-link.btn-start(to="/signup" data-aos="fade-up" data-aos-delay="500") Get Started
+			template(v-if="user?.user_id")
+				button(type="button" data-aos="fade-up" data-aos-duration="500" @click="$router.push('/my-services')") Go to My Services
+			router-link(v-else to="/signup")
+				button(type="button" data-aos="fade-up" data-aos-duration="500") Get Started
 
 		section.video
 			.wrap
 				.inner
+					img(src="@/assets/img/landingpage/bg_hero.png", alt="Skapi Video")
 
 		section.why
 			.title(data-aos="fade-up") Why Skapi?
@@ -87,9 +91,9 @@ main.landing-page-root
 					img(src="@/assets/img/landingpage/arrow_right.svg", alt="Arrow Right")
 	.bg-blue
 		section#section1.feature
-			.title(data-aos="fade-up") Features
-			.desc(data-aos="fade-up") All You Need for Modern Web Apps. #[br]Discover 6 Unique Advantages Only Skapi Delivers.
-			.feature-wrap(data-aos="fade-up" data-aos-delay="300")
+			.title(data-aos="fade-up" data-aos-delay="300") Features
+			.desc(data-aos="fade-up" data-aos-delay="300") All You Need for Modern Web Apps. #[br]Discover 6 Unique Advantages Only Skapi Delivers.
+			.feature-wrap(data-aos="fade-up" data-aos-delay="500")
 				.feature-item
 					.img
 						img(src="@/assets/img/landingpage/feature1.svg", alt="Feature Icon1")
@@ -127,15 +131,15 @@ main.landing-page-root
 					.content Skapi uses JWT-based authentication, pre-configured to securely handle user data, file access, and third-party API connections via Skapi’s API Bridge. No complex setup — just secure, reliable access out of the box.
 	.bg-colorful
 		section#section2.plan
-			.title.black(data-aos="fade-up") Pricing Plans
-			.desc.black(data-aos="fade-up") Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
-			.plan-swiper(data-aos="fade-up" data-aos-delay="300")
+			.title.black(data-aos="fade-up" data-aos-delay="300") Pricing Plans
+			.desc.black(data-aos="fade-up" data-aos-delay="300") Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
+			.plan-swiper(data-aos="fade-up" data-aos-delay="500")
 				.plan-swiper-pagination
 				swiper(
 					:spaceBetween="30"
 					:slideActiveClass="'on'"
 					:pagination="{ el: '.plan-swiper-pagination', clickable: true, bulletActiveClass: 'on', renderBullet: makeBullet }"
-					:breakpoints="{ 0: { slidesPerView: 1, enabled: true, loop: true }, 801: { slidesPerView: 3, enabled: false } }"
+					:breakpoints="{ 0: { slidesPerView: 1, enabled: true, loop: true }, 801: { slidesPerView: 3, enabled: false, loop: false } }"
 					:modules="[Pagination]"
 				)
 					swiper-slide.plan-item.blue
@@ -146,7 +150,8 @@ main.landing-page-root
 							.desc Best for testing and prototypingwwwwwwww
 						.middle
 							.price Free
-							button Get
+							router-link(:to="user?.user_id ? '/create' : '/signup'")
+								button(type="button") Get
 						.bottom
 							p Core includes:
 							ul
@@ -165,7 +170,8 @@ main.landing-page-root
 						.middle
 							.price $19
 								span /mon
-							button Get
+							router-link(:to="user?.user_id ? '/create' : { path: '/signup', query: { suc_redirect: '/create' } }")
+								button(type="button") Get
 						.bottom
 							p Includes all Trial Plan features, but more functions:
 							ul
@@ -184,7 +190,8 @@ main.landing-page-root
 						.middle
 							.price $89
 								span /mon
-							button Get
+							router-link(:to="user?.user_id ? '/create' : { path: '/signup', query: { suc_redirect: '/create' } }")
+								button(type="button") Get
 						.bottom
 							p Includes all Standard Plan features, but more data:
 							ul
@@ -195,8 +202,8 @@ main.landing-page-root
 
 	.bg-dark
 		section#section3.faq
-			.title(data-aos="fade-up") FAQ
-			ul.faq-list(data-aos="fade-up" data-aos-delay="300")
+			.title(data-aos="fade-up" data-aos-delay="300") FAQ
+			ul.faq-list(data-aos="fade-up" data-aos-delay="500")
 				li.faq-item
 					.item-title(:class="{ open: openStates[0]}" @click="faqToggle(0)") How does Skapi make your app more secure?
 					.item-cont(v-show="openStates[0]")
@@ -258,57 +265,32 @@ main.landing-page-root
 				TabMenu(v-model="activeTabs.contents" :tabs="['Articles', 'Videos']" data-aos="fade-up" data-aos-delay="500")
 				.tab-cont(data-aos="fade-up" data-aos-delay="700")
 					template(v-if="activeTabs.contents === 0")
-						.tab-item
-							.title Built a Mini Instagram
-							.desc You can easily build a mini Instagram web app—complete with photo uploads and gallery—using only ChatGPT and Skapi, no coding skills needed
-							a.btn-read-more(href="#") Read more
-						.tab-item
-							.title Chat Box Application
-							.desc Build a ChatGPT wrapper with just HTML, CSS & Skapi - a deployable, serverless AI chat app.
-							a.btn-read-more(href="#") Read more
-						.tab-item
-							.title Data security
-							.desc How we implement real frontend-level security using Skapi - lessons from actual projects.
-							a.btn-read-more(href="#") Read more
+						.tab-item(v-for="article in articles" :key="article.id")
+							.title {{ article.title }}
+							.desc {{ article.description }}
+							a.btn-read-more(:href="article.url" target="_blank") Read more
 
 					template(v-else-if="activeTabs.contents === 1")
-						.tab-item.videos
+						.tab-item.videos(v-for="video in videos" :key="video.id")
 							.videos-wrap
 								iframe(
-									src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1",
-									title="video1",
-									allow="autoplay",
-									allowfullscreen,
+									:src="`https://www.youtube.com/embed/${video.id}`"
+									:title="video.title"
+									allow="encrypted-media"
+									allowfullscreen
 									frameborder="0"
 								)
-							.title HOW TO USE SKAPI INDEXES
-						.tab-item.videos
-							.videos-wrap
-								iframe(
-									src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1",
-									title="video2",
-									allow="autoplay",
-									allowfullscreen,
-									frameborder="0"
-								)
-							.title Building the Next Reddit with Skapi: Is It Possible?
-						.tab-item.videos
-							.videos-wrap
-								iframe(
-									src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1",
-									title="video3",
-									allow="autoplay",
-									allowfullscreen,
-									frameborder="0"
-								)
-							.title Build a Movie Review App - Part 2 (THE SEARCH ENGINE) Build a Movie Review App - Part 2 (THE SEARCH ENGINE)
+							.title {{ video.title }}
 
 	.bg-dark
 		section.banner
 			.banner-inner
-				.title.black(data-aos="fade-up" data-aos-delay="300") Start Building Today!
-				.desc.black(data-aos="fade-up" data-aos-delay="300") Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
-				router-link.btn-start(to="/signup" data-aos="fade-up" data-aos-delay="500") Get Started
+				.title.black(data-aos="fade-up" data-aos-delay="700") Start Building Today!
+				.desc.black(data-aos="fade-up" data-aos-delay="700") Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
+				template(v-if="user?.user_id")
+					button(type="button" data-aos="fade-up" data-aos-delay="1000" @click="$router.push('/my-services')") Go to My Services
+				router-link(v-else to="/signup")
+					button(type="button" data-aos="fade-up" data-aos-delay="1000") Get Started
 </template>
 
 <script setup>
@@ -323,9 +305,11 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import TabMenu from "@/components/tab.vue";
 
-let activeTabs = ref({
+const activeTabs = ref({
     contents: 0,
 });
+const articles = ref([]);
+const videos = ref([]);
 
 function setSwiperImageWidth() {
     let swiperImage = document.getElementById("reviewerImg");
@@ -362,7 +346,6 @@ function faqToggle(index) {
 
 function makeBullet(index, className) {
     let menu = ["Trial", "Standard", "Premium"];
-    console.log("makeBullet", index, className);
     return `<span class="${className}">${menu[index]}</span>`;
 }
 
@@ -379,7 +362,7 @@ function handleScroll() {
     video.style.transform = `perspective(1000px) rotateX(${rotate}deg)`;
 }
 
-onMounted(() => {
+onMounted(async () => {
     window.addEventListener("resize", setSwiperImageWidth);
     window.addEventListener("scroll", handleScroll);
     handleScroll();
@@ -391,6 +374,65 @@ onMounted(() => {
         requestAnimationFrame(() => {
             heroArea.classList.add("active");
         });
+    }
+
+    // contents > articles (Dev.to api 호출)
+    try {
+        const response = await fetch(
+            "https://dev.to/api/articles?username=skapi_api&per_page=3"
+        );
+        if (!response.ok) throw new Error("Fetch failed");
+        articles.value = await response.json();
+    } catch (err) {
+        console.error(err);
+    }
+
+    // contents > videos (youtube api 호출)
+    // skapi's youtube channelId : UC0e4MITESMr3OaUiyWHpdYA
+    // mina's googleConsole api_key : AIzaSyC6PGYZWVYqPO7ItsTVBarYW_htT1kaXW0
+    const API_KEY = "AIzaSyC6PGYZWVYqPO7ItsTVBarYW_htT1kaXW0";
+    const CHANNEL_ID = "UC0e4MITESMr3OaUiyWHpdYA";
+
+    try {
+        // 최신 영상 검색
+        const searchRes = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&order=date&maxResults=10&type=video`
+        );
+        const searchData = await searchRes.json();
+        const videoIds = searchData.items
+            .map((item) => item.id.videoId)
+            .join(",");
+
+        // 영상 상세 조회 (duration 얻기)
+        const videosRes = await fetch(
+            `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${videoIds}&part=snippet,contentDetails`
+        );
+        const videosData = await videosRes.json();
+
+        // shorts 제외 (60초 이하 제외) 후 3개만 선택
+        const filtered = videosData.items
+            .filter((item) => {
+                const duration = item.contentDetails.duration;
+                // ISO 8601 duration에서 PT60S 이하인지 파싱
+                const match = duration.match(/PT((\d+)M)?(\d+)S/);
+                let totalSeconds = 0;
+                if (match) {
+                    const minutes = match[2] ? parseInt(match[2], 10) : 0;
+                    const seconds = match[3] ? parseInt(match[3], 10) : 0;
+                    totalSeconds = minutes * 60 + seconds;
+                }
+                return totalSeconds > 60; // shorts는 60초 이하이므로 초과만 포함
+            })
+            .slice(0, 3)
+            .map((item) => ({
+                id: item.id,
+                title: item.snippet.title,
+                description: item.snippet.description,
+            }));
+
+        videos.value = filtered;
+    } catch (error) {
+        console.error("영상 정보를 가져오는 중 오류:", error);
     }
 });
 
@@ -439,6 +481,7 @@ section {
 
     .title {
         font-size: 3rem;
+        margin-bottom: 20px;
 
         &.black {
             font-weight: 500;
@@ -471,7 +514,7 @@ section {
 }
 
 .bg-colorful {
-    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% /
+    background: url("@/assets/img/landingpage/bg_price.png") lightgray 50% /
         cover no-repeat;
 }
 
@@ -535,7 +578,8 @@ section {
 
     perspective: 1000px;
     transform-style: preserve-3d;
-    transform: perspective(1000px) rotateX(15deg); /* 초기 기울기 */
+    transform: perspective(1000px) rotateX(15deg);
+    /* 초기 기울기 */
     transition: transform 0.1s linear;
     will-change: transform;
 
@@ -543,16 +587,24 @@ section {
         max-width: 1200px;
         // height: 853px;
         margin: 0 auto;
-        border-radius: 1.5rem;
+        border-radius: 0.625rem;
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.1);
-        aspect-ratio: 16/9;
+        // aspect-ratio: 16/9;
+        max-height: 46.875rem;
 
         .inner {
             width: 100%;
             height: 100%;
             background-color: #1c1c1c;
             object-fit: cover;
+
+            img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
         }
     }
 }
@@ -711,10 +763,6 @@ section {
 .feature {
     padding: 5rem 0;
 
-    .title {
-        margin-bottom: 1.25rem;
-    }
-
     .desc {
         line-height: 1.4;
         margin-bottom: 5rem;
@@ -729,6 +777,7 @@ section {
             position: relative;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             padding: 50px;
             gap: 50px;
             text-align: left;
@@ -736,10 +785,22 @@ section {
             border-radius: 17px;
             box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.05);
 
-            &:nth-child(3),
-            &:nth-child(4) {
-                .img {
-                    right: 0px;
+            .feature-item {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                padding: 50px;
+                gap: 50px;
+                text-align: left;
+                background: #121214;
+                border-radius: 17px;
+                box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.05);
+
+                &:nth-child(3),
+                &:nth-child(4) {
+                    .img {
+                        right: 0px;
+                    }
                 }
             }
 
@@ -767,7 +828,7 @@ section {
                 font-size: 2rem;
                 line-height: 1.2;
                 z-index: 1;
-                height: 4.875rem;
+                // height: 4.875rem;
             }
 
             .content {
@@ -781,10 +842,6 @@ section {
 
 .plan {
     padding: 5rem 0 6.25rem 0;
-
-    .title {
-        margin-bottom: 1.25rem;
-    }
 
     .desc {
         margin-bottom: 1.875rem;
@@ -1166,6 +1223,11 @@ section {
             font-weight: 500;
             line-height: 1.3;
             margin-bottom: 1.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
 
         .desc {
@@ -1196,6 +1258,7 @@ section {
             background: none;
             padding: 0;
             color: #fff;
+            min-height: fit-content;
 
             .videos-wrap {
                 border-radius: 1rem;
@@ -1229,11 +1292,6 @@ section {
             .title {
                 font-size: 1.25rem;
                 line-height: 1.5;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
                 margin-bottom: 0;
                 margin-top: 1rem;
             }
@@ -1278,7 +1336,7 @@ section {
     }
 }
 
-.btn-start {
+.btn {
     padding: 0.875rem 4.375rem;
     background-color: #0a4df1;
     border-radius: 0.875rem;
@@ -1420,6 +1478,16 @@ section {
 
     .banner {
         margin: 0 3.75rem;
+
+        .banner-inner {
+            .title {
+                font-size: 2.875rem;
+            }
+
+            .desc {
+                font-size: 1.125rem;
+            }
+        }
     }
 }
 
@@ -1504,6 +1572,10 @@ section {
     .faq {
         padding: 3.125rem 0 3.75rem;
 
+        .title {
+            margin-bottom: 1.875rem;
+        }
+
         .item-title {
             padding: 1rem 4rem 1rem 1.5rem;
             font-size: 1rem;
@@ -1549,11 +1621,19 @@ section {
         padding: 0 0.75rem;
     }
 
+    .btn {
+        font-size: 1rem;
+        padding: 0.875rem;
+        width: 14.375rem;
+        max-width: 100%;
+    }
+
     section {
         margin: 0 1.875rem;
 
         .title {
             font-size: 1.875rem;
+            margin-bottom: 1rem;
         }
 
         .desc {

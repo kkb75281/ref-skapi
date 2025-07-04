@@ -2,14 +2,15 @@
 nav#navBar(ref="navBar")
     .wrap
         .left
-            template(v-if="route.name != 'home' && user?.user_id && route.path !== '/my-services' && route.path !== '/account-setting'")
-                img.symbol(src="@/assets/img/logo/icon_logo.svg" @click="router.push('/')")
-                .router
-                    span.small(@click="router.push('/my-services')") My Services/
-                    p.big {{ serviceName }}
+            template(v-if="route.name != 'home'")
+                .logo-wrap
+                    router-link.logo(to="/")
+                        img.symbol(src="@/assets/img/logo/icon_logo_symbol.svg")
+                    router-link.myservice(to="/my-services")
+                        img.symbol(src="@/assets/img/logo/icon_logo_text_myservices.svg")
             template(v-else)
                 router-link.logo(to="/")
-                    img.symbol(src="@/assets/img/logo/icon_logo.svg" @click="router.push('/')")
+                    img.symbol(src="@/assets/img/logo/icon_logo.svg")
                 ul.section-list(v-if="route.name === 'home'")
                     li.section-item(@click="scrollSec('section1')") Features
                     li.section-item(@click="scrollSec('section2')") Price
@@ -51,7 +52,7 @@ nav#navBar(ref="navBar")
                             a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank")
                                 img(src="@/assets/img/landingpage/icon_github.svg")
                                 | Github
-                        li.list.go-service
+                        li.list.go-service(v-if="route.name === 'home'")
                             router-link.ser(to="/my-services") 
                                 img(src="@/assets/img/logo/symbol-logo-white.svg")
                                 | My Services
@@ -447,11 +448,16 @@ img.symbol.mobile {
             gap: 3.75rem;
             height: 100%;
 
-            .symbol {
-                width: 6.25rem;
-                cursor: pointer;
-                vertical-align: top;
-                image-orientation: none;
+            .logo-wrap {
+                display: flex;
+                align-items: center;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    display: block;
+                }
             }
 
             .logo {
@@ -459,38 +465,6 @@ img.symbol.mobile {
                 gap: 10px;
                 color: #000;
                 text-decoration: none;
-            }
-
-            .router {
-                position: relative;
-                flex-grow: 1;
-
-                p {
-                    margin: 0;
-                }
-
-                .small {
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    font-size: 0.7rem;
-                    cursor: pointer;
-                    white-space: nowrap;
-                    opacity: 0.7;
-
-                    &:hover {
-                        text-decoration: underline;
-                    }
-                }
-
-                .big {
-                    width: 100%;
-                    font-weight: bold;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    margin-top: 0.7rem;
-                }
             }
 
             .section-list {
