@@ -87,9 +87,9 @@ main.landing-page-root
 					img(src="@/assets/img/landingpage/arrow_right.svg", alt="Arrow Right")
 	.bg-blue
 		section#section1.feature
-			.title(data-aos="fade-up") Features
-			.desc(data-aos="fade-up") All You Need for Modern Web Apps. #[br]Discover 6 Unique Advantages Only Skapi Delivers.
-			.feature-wrap(data-aos="fade-up" data-aos-delay="300")
+			.title(data-aos="fade-up" data-aos-delay="300") Features
+			.desc(data-aos="fade-up" data-aos-delay="300") All You Need for Modern Web Apps. #[br]Discover 6 Unique Advantages Only Skapi Delivers.
+			.feature-wrap(data-aos="fade-up" data-aos-delay="500")
 				.feature-item
 					.img
 						img(src="@/assets/img/landingpage/feature1.svg", alt="Feature Icon1")
@@ -127,9 +127,9 @@ main.landing-page-root
 					.content Skapi uses JWT-based authentication, pre-configured to securely handle user data, file access, and third-party API connections via Skapi’s API Bridge. No complex setup — just secure, reliable access out of the box.
 	.bg-colorful
 		section#section2.plan
-			.title.black(data-aos="fade-up") Pricing Plans
-			.desc.black(data-aos="fade-up") Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
-			.plan-swiper(data-aos="fade-up" data-aos-delay="300")
+			.title.black(data-aos="fade-up" data-aos-delay="300") Pricing Plans
+			.desc.black(data-aos="fade-up" data-aos-delay="300") Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
+			.plan-swiper(data-aos="fade-up" data-aos-delay="500")
 				.plan-swiper-pagination
 				swiper(
 					:spaceBetween="30"
@@ -195,8 +195,8 @@ main.landing-page-root
 
 	.bg-dark
 		section#section3.faq
-			.title(data-aos="fade-up") FAQ
-			ul.faq-list(data-aos="fade-up" data-aos-delay="300")
+			.title(data-aos="fade-up" data-aos-delay="300") FAQ
+			ul.faq-list(data-aos="fade-up" data-aos-delay="500")
 				li.faq-item
 					.item-title(:class="{ open: openStates[0]}" @click="faqToggle(0)") How does Skapi make your app more secure?
 					.item-cont(v-show="openStates[0]")
@@ -278,9 +278,9 @@ main.landing-page-root
 	.bg-dark
 		section.banner
 			.banner-inner
-				.title.black(data-aos="fade-up" data-aos-delay="300") Start Building Today!
-				.desc.black(data-aos="fade-up" data-aos-delay="300") Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
-				router-link.btn.btn-start(to="/signup" data-aos="fade-up" data-aos-delay="500") Get Started
+				.title.black(data-aos="fade-up" data-aos-delay="700") Start Building Today!
+				.desc.black(data-aos="fade-up" data-aos-delay="700") Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
+				router-link.btn.btn-start(to="/signup" data-aos="fade-up" data-aos-delay="1000") Get Started
 </template>
 
 <script setup>

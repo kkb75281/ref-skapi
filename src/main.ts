@@ -54,8 +54,8 @@ export const skapi = new Skapi(
                 app.mixin({
                     mounted() {
                         AOS.init({
-                            offset: 20,
-                            duration: 300,
+                            offset: 30,
+                            duration: 500,
                             easing: "ease-in-out",
                             once: true,
                         }); // AOS 초기화
