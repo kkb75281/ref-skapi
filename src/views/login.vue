@@ -2,6 +2,9 @@
 br
 br
 br
+br
+br
+br
 
 #login
     router-link(to="/")
@@ -63,18 +66,21 @@ br
                     span No account?&nbsp;
                     router-link(to="/signup") Sign up
     
-    br
-    br
-    br
+br
+br
+br
+br
+br
+br
     
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
-import { skapi } from '@/main'
-import { user } from '@/code/user'
-import { onMounted, ref } from 'vue';
-import Checkbox from '@/components/checkbox.vue';
+import { useRoute, useRouter } from "vue-router";
+import { skapi } from "@/main";
+import { user } from "@/code/user";
+import { onMounted, ref } from "vue";
+import Checkbox from "@/components/checkbox.vue";
 const router = useRouter();
 const route = useRoute();
 skapi.logout().then(() => {
@@ -87,63 +93,66 @@ let remVal = ref(false); // dom 업데이트시 checkbox value 유지하기 위�
 let promiseRunning = ref(false);
 let error = ref(null);
 let form = {
-    email: '',
-    password: '',
+    email: "",
+    password: "",
 };
 let enableAccount = ref(false);
 
 onMounted(() => {
-    if (window.localStorage.getItem('remember') === 'true') {
+    if (window.localStorage.getItem("remember") === "true") {
         remVal.value = true;
     } else {
         remVal.value = false;
     }
-})
+});
 let setLocalStorage = (e) => {
-    localStorage.setItem('remember', e.target.checked ? 'true' : 'false');
-}
+    localStorage.setItem("remember", e.target.checked ? "true" : "false");
+};
 
 let login = (e) => {
     promiseRunning.value = true;
 
     let params = {
         email: form.email,
-        password: form.password
-    }
+        password: form.password,
+    };
 
-    skapi.login(params).then(u => {
-        for(let k in u) {
-            user[k] = u[k];
-        }
-		if(route.query?.suc_redirect) {
-			router.push(route.query?.suc_redirect);
-		} else {
-			router.push('/my-services');
-		}
-    }).catch(err => {
-        for (let k in user) {
-            delete user[k];
-        }
-        if (err.code === "SIGNUP_CONFIRMATION_NEEDED") {
-            router.push({ path: '/confirmation', query: { email: form.email } });
-        }
-        else if (err.code === "USER_IS_DISABLED") {
-            error.value = "This account is disabled.";
-            enableAccount.value = true;
-        }
-        else if (err.code === "INCORRECT_USERNAME_OR_PASSWORD") {
-            error.value = "Incorrect email or password."
-        }
-        else if (err.code === "NOT_EXISTS") {
-            error.value = "Incorrect email or password."
-        }
-        else {
-            error.value = err.message;
-        }
-    }).finally(() => {
-        promiseRunning.value = false;
-    })
-}
+    skapi
+        .login(params)
+        .then((u) => {
+            for (let k in u) {
+                user[k] = u[k];
+            }
+            if (route.query?.suc_redirect) {
+                router.push(route.query?.suc_redirect);
+            } else {
+                router.push("/my-services");
+            }
+        })
+        .catch((err) => {
+            for (let k in user) {
+                delete user[k];
+            }
+            if (err.code === "SIGNUP_CONFIRMATION_NEEDED") {
+                router.push({
+                    path: "/confirmation",
+                    query: { email: form.email },
+                });
+            } else if (err.code === "USER_IS_DISABLED") {
+                error.value = "This account is disabled.";
+                enableAccount.value = true;
+            } else if (err.code === "INCORRECT_USERNAME_OR_PASSWORD") {
+                error.value = "Incorrect email or password.";
+            } else if (err.code === "NOT_EXISTS") {
+                error.value = "Incorrect email or password.";
+            } else {
+                error.value = err.message;
+            }
+        })
+        .finally(() => {
+            promiseRunning.value = false;
+        });
+};
 </script>
 
 <style scoped lang="less">
@@ -155,8 +164,8 @@ let login = (e) => {
 
 form {
     padding: 8px;
-    
-    >label {
+
+    > label {
         margin-bottom: 16px;
     }
 
@@ -164,7 +173,7 @@ form {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        align-items: center
+        align-items: center;
     }
 
     .bottom {

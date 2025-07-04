@@ -1,49 +1,80 @@
 <template lang="pug">
 footer#footer
-	.top
-		.top-inner
-			.left(:class="{ 'has-sections': route.name === 'home' }")
-				.logo
-					img(src="@/assets/img/logo/logo-white.svg", alt="Skapi Logo")
-				ul.sections(v-if="route.name === 'home'")
-					li(@click="scrollSec('section1')") Features
-					li(@click="scrollSec('section2')") Price
-					li(@click="scrollSec('section3')") FAQ
-					li(@click="scrollSec('section4')") Contents
-				ul.nav
-					li
-						a(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
-							img(src="@/assets/img/landingpage/icon_docs.svg", alt="GitHub")
-							span Docs
-					li
-						a(href="https://github.com/broadwayinc/skapi-js" target="_blank") 
-							img(src="@/assets/img/landingpage/icon_github.svg", alt="GitHub")
-							span Github
-					li
-						router-link(to="/my-services")
-							img(src="@/assets/img/logo/symbol-logo-white.svg", alt="Skapi Symbol Logo")
-							span My services
-			.right
-				p support@broadwayinc.com
-				p.small Terms of service / Privacy policy
-	.bottom
-		.bottom-inner
-			span BROADWAYINC PTE. LTD. Singapore.
-			.icon-wrap
-				img(src="@/assets/img/landingpage/icon_discord.svg")
-				img(src="@/assets/img/landingpage/icon_instagram.svg")
-				img(src="@/assets/img/landingpage/icon_youtube.svg")
-				img(src="@/assets/img/landingpage/icon_x.svg")
-				img(src="@/assets/img/landingpage/icon_linkedin.svg")
-				img(src="@/assets/img/landingpage/icon_facebook.svg")
+    //- template(v-if="route.name === 'home'")
+    .top
+        .top-inner
+            .left(:class="{ 'has-sections': route.name === 'home' }")
+                .logo
+                    img(src="@/assets/img/logo/logo-white.svg", alt="Skapi Logo")
+                ul.sections(v-if="route.name === 'home'")
+                    li(@click="scrollSec('section1')") Features
+                    li(@click="scrollSec('section2')") Price
+                    li(@click="scrollSec('section3')") FAQ
+                    li(@click="scrollSec('section4')") Contents
+                ul.nav
+                    li
+                        a(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
+                            img(src="@/assets/img/landingpage/icon_docs.svg", alt="GitHub")
+                            span Docs
+                    li
+                        a(href="https://github.com/broadwayinc/skapi-js" target="_blank") 
+                            img(src="@/assets/img/landingpage/icon_github.svg", alt="GitHub")
+                            span Github
+                    li
+                        router-link(to="/my-services")
+                            img(src="@/assets/img/logo/symbol-logo-white.svg", alt="Skapi Symbol Logo")
+                            span My services
+            .right
+                p support@broadwayinc.com
+                a.terms(href="https://www.skapi.com/pp.html" target="_blank") Terms of service / Privacy policy
+    .bottom
+        .bottom-inner
+            span BROADWAYINC PTE. LTD. Singapore.
+            .icon-wrap
+                a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
+                    img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                    img(src="@/assets/img/landingpage/icon_instagram.svg")
+                a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                    img(src="@/assets/img/landingpage/icon_youtube.svg")
+                a.link(href="https://x.com/skapi_api" target="_blank")
+                    img(src="@/assets/img/landingpage/icon_x.svg")
+                a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                    img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                    img(src="@/assets/img/landingpage/icon_facebook.svg")
+    //- template(v-else)
+        .footer-wrap
+            .left
+                .logo
+                    img(src="@/assets/img/logo/logo-white.svg", alt="Skapi Logo")
+                .company-info
+                    a.terms(href="https://www.skapi.com/pp.html" target="_blank") Terms of service / Privacy policy
+                    span.address BROADWAYINC PTE. LTD. Singapore.
+            .right
+                span.email support@broadwayinc.com
+                .icon-wrap
+                    a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                    a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_instagram.svg")
+                    a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_youtube.svg")
+                    a.link(href="https://x.com/skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_x.svg")
+                    a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                    a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_facebook.svg")
+            
 </template>
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const router = useRouter();
 const route = useRoute();
-const hoveredMenu = ref('');
+const hoveredMenu = ref("");
 
 const scrollSec = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -56,7 +87,7 @@ const scrollSec = (sectionId) => {
 };
 
 function setFooterHeight() {
-    const footerElement = document.getElementById('footer');
+    const footerElement = document.getElementById("footer");
 
     if (!footerElement) {
         return;
@@ -65,25 +96,60 @@ function setFooterHeight() {
     const height = footerElement.offsetHeight;
 
     if (height) {
-        document.body.style.setProperty('--footer-height', height + 'px');
+        document.body.style.setProperty("--footer-height", height + "px");
     }
 }
 
+const targetClasses = ["link"];
+
+const mousehover = (event) => {
+    const hoveredElement = event.target.closest(".link");
+
+    if (hoveredElement) {
+        const hoveredClass = targetClasses.find((cls) =>
+            hoveredElement.classList.contains(cls)
+        );
+
+        const elements = document.querySelectorAll(`.${hoveredClass}`);
+        elements.forEach((el) => {
+            el.style.opacity = 0.5;
+        });
+        hoveredElement.style.opacity = 1;
+    }
+};
+
+const mouseout = (event) => {
+    const leftElement = event.target.closest(".link");
+
+    if (leftElement) {
+        const leftClass = targetClasses.find((cls) =>
+            leftElement.classList.contains(cls)
+        );
+
+        const elements = document.querySelectorAll(`.${leftClass}`);
+        elements.forEach((el) => {
+            el.style.opacity = 1;
+        });
+    }
+};
+
 onMounted(() => {
     setFooterHeight();
-    window.addEventListener('resize', setFooterHeight);
-})
+    window.addEventListener("resize", setFooterHeight);
+    window.addEventListener("mouseover", mousehover);
+    window.addEventListener("mouseout", mouseout);
+});
 
 onUnmounted(() => {
-    window.removeEventListener('resize', setFooterHeight);
+    window.removeEventListener("resize", setFooterHeight);
+    window.addEventListener("mouseover", mousehover);
+    window.addEventListener("mouseout", mouseout);
 });
 </script>
 <style lang="less" scoped>
 #footer {
     position: relative;
     height: 100%;
-    // height: var(--footer-height);
-    // transform: translateY(-100%);
     background-color: #000;
     color: #fff;
     z-index: 999;
@@ -192,10 +258,16 @@ onUnmounted(() => {
                 font-size: 17px;
                 font-weight: 300;
                 opacity: 0.7;
+                text-align: right;
 
                 &.small {
                     font-size: 15px;
                     opacity: 0.5;
+                    cursor: pointer;
+
+                    &:hover {
+                        opacity: 1;
+                    }
                 }
 
                 &:last-child {
@@ -218,15 +290,82 @@ onUnmounted(() => {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            justify-content: center;
-            gap: 1rem;
+        }
+    }
+
+    .link {
+        padding-right: 1rem;
+        display: inline-block;
+
+        &:last-of-type {
+            padding-right: 0;
+        }
+
+        img {
+            display: block;
+        }
+    }
+
+    .terms {
+        display: block;
+        font-size: 0.9375rem;
+        font-weight: 300;
+        cursor: pointer;
+        color: rgba(255, 255, 255, 0.5);
+
+        &:hover {
+            color: #fff;
+            text-decoration: none;
+        }
+    }
+
+    // !home footer
+    .footer-wrap {
+        padding: 1.875rem 5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 1rem;
+
+        .logo {
+            width: 7.5rem;
+            height: 2.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .company-info {
+            a,
+            span {
+                display: block;
+                font-size: 0.875rem;
+                font-weight: 400;
+                color: rgba(255, 255, 255, 0.5);
+            }
+
+            .terms {
+                margin-bottom: 0.375rem;
+            }
+        }
+
+        .email {
+            font-size: 1.125rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.5);
+            display: block;
+            text-align: right;
+            margin-bottom: 0.625rem;
+        }
+
+        .icon-wrap {
+            position: relative;
+            right: -7px;
         }
     }
 }
 
 @media (max-width: 1560px) {
     #footer {
-
         .top-inner,
         .bottom-inner {
             margin: 0 80px;
@@ -236,10 +375,14 @@ onUnmounted(() => {
 
 @media (max-width: 800px) {
     #footer {
-
         .top-inner,
         .bottom-inner {
             margin: 0 60px;
+        }
+
+        .bottom-inner {
+            flex-direction: column-reverse;
+            gap: 1.25rem;
         }
 
         .top {
@@ -251,6 +394,52 @@ onUnmounted(() => {
                     &.small {
                         font-size: 13px;
                     }
+                }
+            }
+        }
+
+        .footer-wrap {
+            padding-left: 2.5rem;
+            padding-right: 2.5rem;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2rem;
+
+            .logo {
+                width: 5.625rem;
+                height: 1.6875rem;
+            }
+
+            .company-info {
+                a,
+                span {
+                    font-size: 0.75rem;
+                }
+            }
+
+            .email {
+                text-align: left;
+                font-size: 0.8125rem;
+                margin-bottom: 1rem;
+            }
+
+            .icon-wrap {
+                left: -7px;
+            }
+        }
+    }
+}
+
+@media (max-width: 741px) {
+    #footer {
+        .top {
+            .right {
+                p {
+                    text-align: left;
+                }
+
+                .terms {
+                    font-size: 0.75rem;
                 }
             }
         }
@@ -286,7 +475,6 @@ onUnmounted(() => {
 
 @media (max-width: 430px) {
     #footer {
-
         .top-inner,
         .bottom-inner {
             margin: 0 40px;

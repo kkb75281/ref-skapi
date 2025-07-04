@@ -16,17 +16,16 @@ Footer
 </template>
 
 <script setup>
-import { useRoute, useRouter } from 'vue-router';
-import { onMounted, onUnmounted, ref } from 'vue';
-import { connected } from '@/main';
+import { useRoute, useRouter } from "vue-router";
+import { onMounted, onUnmounted, ref } from "vue";
+import { connected } from "@/main";
 
-import Footer from '@/components/footer.vue';
+import Footer from "@/components/footer.vue";
 
 const router = useRouter();
 const route = useRoute();
-
 </script>
-<style lang='less'>
+<style lang="less">
 ._root {
     height: auto;
     min-height: 100%;
@@ -44,7 +43,7 @@ const route = useRoute();
     }
 
     .swiper-pagination-bullet {
-        background: #3F3F3F;
+        background: #3f3f3f;
 
         &:hover {
             background: #999;

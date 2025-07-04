@@ -2,14 +2,15 @@
 nav#navBar(ref="navBar")
     .wrap
         .left
-            template(v-if="route.name != 'home' && user?.user_id && route.path !== '/my-services' && route.path !== '/account-setting'")
-                img.symbol(src="@/assets/img/logo/icon_logo.svg" @click="router.push('/')")
-                .router
-                    span.small(@click="router.push('/my-services')") My Services/
-                    p.big {{ serviceName }}
+            template(v-if="route.name != 'home'")
+                .logo-wrap
+                    router-link.logo(to="/")
+                        img.symbol(src="@/assets/img/logo/icon_logo_symbol.svg")
+                    router-link.myservice(to="/my-services")
+                        img.symbol(src="@/assets/img/logo/icon_logo_text_myservices.svg")
             template(v-else)
                 router-link.logo(to="/")
-                    img.symbol(src="@/assets/img/logo/icon_logo.svg" @click="router.push('/')")
+                    img.symbol(src="@/assets/img/logo/icon_logo.svg")
                 ul.section-list(v-if="route.name === 'home'")
                     li.section-item(@click="scrollSec('section1')") Features
                     li.section-item(@click="scrollSec('section2')") Price
@@ -17,26 +18,32 @@ nav#navBar(ref="navBar")
                     li.section-item(@click="scrollSec('section4')") Contents
 
         .right
-            ul.menu-wrap
+            ul.menu-wrap(ref="navMenuEl")
                 template(v-if="isDesktop")
                     template(v-if="user?.user_id")
-                        li.list.go-community
+                        li.list.go-community(ref="communityEl")
                             .ser.dropdown(@click.stop="(e)=>{showDropDown(e)}") Community
                                 img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
                                 .moreVert.community(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                     ul.list-wrap
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_discord.svg")
+                                            a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_tiktok.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                            a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_instagram.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                            a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_youtube.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_x.svg")
+                                            a.link(href="https://x.com/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_x.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                            a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_linkedin.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_facebook.svg")
+                                            a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_facebook.svg")
                         li.list.go-docs
                             a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
                                 img(src="@/assets/img/landingpage/icon_docs.svg")
@@ -45,7 +52,7 @@ nav#navBar(ref="navBar")
                             a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank")
                                 img(src="@/assets/img/landingpage/icon_github.svg")
                                 | Github
-                        li.list.go-service
+                        li.list.go-service(v-if="route.name === 'home'")
                             router-link.ser(to="/my-services") 
                                 img(src="@/assets/img/logo/symbol-logo-white.svg")
                                 | My Services
@@ -67,23 +74,29 @@ nav#navBar(ref="navBar")
                                         img(src="@/assets/img/landingpage/icon_logout.svg")
                                         span Logout
                     template(v-else)
-                        li.list.go-community
+                        li.list.go-community(ref="communityEl")
                             .ser.dropdown(@click.stop="(e)=>{showDropDown(e)}") Community
                                 img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
                                 .moreVert.community(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                     ul.list-wrap
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_discord.svg")
+                                            a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_tiktok.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                            a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_instagram.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                            a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_youtube.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_x.svg")
+                                            a.link(href="https://x.com/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_x.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                            a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_linkedin.svg")
                                         li.item
-                                            img(src="@/assets/img/landingpage/icon_facebook.svg")
+                                            a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_facebook.svg")
                         li.list.go-docs
                             a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
                                 img(src="@/assets/img/landingpage/icon_docs.svg")
@@ -152,18 +165,24 @@ nav#navBar(ref="navBar")
                         .community
                             span.text Community
                             ul.list-wrap
-                                li.item.mo-item
-                                    img(src="@/assets/img/landingpage/icon_discord.svg")
-                                li.item.mo-item
-                                    img(src="@/assets/img/landingpage/icon_instagram.svg")
-                                li.item.mo-item
-                                    img(src="@/assets/img/landingpage/icon_youtube.svg")
-                                li.item.mo-item
-                                    img(src="@/assets/img/landingpage/icon_x.svg")
-                                li.item.mo-item
-                                    img(src="@/assets/img/landingpage/icon_linkedin.svg")
-                                li.item.mo-item
-                                    img(src="@/assets/img/landingpage/icon_facebook.svg")
+                                li.item
+                                    a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                                li.item
+                                    a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                li.item
+                                    a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                li.item
+                                    a.link(href="https://x.com/skapi_api" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_x.svg")
+                                li.item
+                                    a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                li.item
+                                    a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_facebook.svg")
 #proceeding(v-if="running")
     .inner    
         .loader(style="--loader-color:black; --loader-size: 20px")
@@ -188,6 +207,8 @@ let running = ref(false);
 let serviceName = ref(currentService?.service?.name || "");
 const userEmail = ref(user?.email || "");
 const isDesktop = ref(window.innerWidth > 800);
+const navMenuEl = ref(null);
+const communityEl = ref(null);
 
 const updateServiceName = () => {
     serviceName.value = currentService?.service?.name || "loading...";
@@ -272,40 +293,46 @@ const scrollSec = (sectionId) => {
     closeMobileMenu();
 };
 
-const targetClasses = ["section-item", "ser", "mo-item"];
+function handleMouseOver(container, selector, event) {
+    const hovered = event.target.closest(selector);
+    if (hovered) {
+        if (
+            hovered.classList.contains("go-login") ||
+            hovered.classList.contains("user-profile")
+        ) {
+            // go-login hover면: 모두 opacity 1 유지
+            const elements = container.querySelectorAll(selector);
+            elements.forEach((el) => (el.style.opacity = 1));
+            return;
+        }
 
-const mousehover = (event) => {
-    const hoveredElement = event.target.closest(
-        ".section-item, .ser, .mo-item"
-    );
-
-    if (hoveredElement) {
-        const hoveredClass = targetClasses.find((cls) =>
-            hoveredElement.classList.contains(cls)
-        );
-
-        const elements = document.querySelectorAll(`.${hoveredClass}`);
+        // 일반 리스트 hover 처리
+        const elements = container.querySelectorAll(selector);
         elements.forEach((el) => {
-            el.style.opacity = 0.5;
+            if (
+                el.classList.contains("go-login") ||
+                el.classList.contains("user-profile")
+            ) {
+                el.style.opacity = 1; // go-login은 항상 1 유지
+            } else {
+                el.style.opacity = 0.5;
+            }
         });
-        hoveredElement.style.opacity = 1;
+        hovered.style.opacity = 1;
     }
-};
+}
 
-const mouseout = (event) => {
-    const leftElement = event.target.closest(".section-item, .ser, .mo-item");
+function handleMouseOut(container, selector, event) {
+    const currentTarget = event.currentTarget;
+    const related = event.relatedTarget;
 
-    if (leftElement) {
-        const leftClass = targetClasses.find((cls) =>
-            leftElement.classList.contains(cls)
-        );
-
-        const elements = document.querySelectorAll(`.${leftClass}`);
-        elements.forEach((el) => {
-            el.style.opacity = 1;
-        });
+    if (currentTarget && related && currentTarget.contains(related)) {
+        return; // 컨테이너 내부 이동 → 무시
     }
-};
+
+    const elements = container.querySelectorAll(selector);
+    elements.forEach((el) => (el.style.opacity = 1));
+}
 
 window.addEventListener("resize", () => {
     isDesktop.value = window.innerWidth > 800;
@@ -314,15 +341,46 @@ window.addEventListener("resize", () => {
 onMounted(() => {
     setAutoHide(navBar.value, 3);
     window.addEventListener("serviceChanged", updateServiceName);
-    window.addEventListener("mouseover", mousehover);
-    window.addEventListener("mouseout", mouseout);
+
+    if (navMenuEl.value) {
+        navMenuEl.value.addEventListener("mouseover", (e) =>
+            handleMouseOver(navMenuEl.value, ".list", e)
+        );
+        navMenuEl.value.addEventListener("mouseout", (e) =>
+            handleMouseOut(navMenuEl.value, ".list", e)
+        );
+    }
+
+    if (communityEl.value) {
+        communityEl.value.addEventListener("mouseover", (e) =>
+            handleMouseOver(communityEl.value, ".link", e)
+        );
+        communityEl.value.addEventListener("mouseout", (e) =>
+            handleMouseOut(communityEl.value, ".link", e)
+        );
+    }
 });
 
 onBeforeUnmount(() => {
     removeListener();
     window.removeEventListener("serviceChanged", updateServiceName);
-    window.addEventListener("mouseover", mousehover);
-    window.addEventListener("mouseout", mouseout);
+
+    if (navMenuEl.value) {
+        navMenuEl.value.removeEventListener("mouseover", (e) =>
+            handleMouseOver(navMenuEl.value, ".list", e)
+        );
+        navMenuEl.value.removeEventListener("mouseout", (e) =>
+            handleMouseOut(navMenuEl.value, ".list", e)
+        );
+    }
+    if (communityEl.value) {
+        communityEl.value.removeEventListener("mouseover", (e) =>
+            handleMouseOver(communityEl.value, ".link", e)
+        );
+        communityEl.value.removeEventListener("mouseout", (e) =>
+            handleMouseOut(communityEl.value, ".link", e)
+        );
+    }
 });
 
 watch(
@@ -390,11 +448,16 @@ img.symbol.mobile {
             gap: 3.75rem;
             height: 100%;
 
-            .symbol {
-                width: 6.25rem;
-                cursor: pointer;
-                vertical-align: top;
-                image-orientation: none;
+            .logo-wrap {
+                display: flex;
+                align-items: center;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    display: block;
+                }
             }
 
             .logo {
@@ -402,38 +465,6 @@ img.symbol.mobile {
                 gap: 10px;
                 color: #000;
                 text-decoration: none;
-            }
-
-            .router {
-                position: relative;
-                flex-grow: 1;
-
-                p {
-                    margin: 0;
-                }
-
-                .small {
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    font-size: 0.7rem;
-                    cursor: pointer;
-                    white-space: nowrap;
-                    opacity: 0.7;
-
-                    &:hover {
-                        text-decoration: underline;
-                    }
-                }
-
-                .big {
-                    width: 100%;
-                    font-weight: bold;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    margin-top: 0.7rem;
-                }
             }
 
             .section-list {
@@ -668,11 +699,21 @@ img.symbol.mobile {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                padding: 0.375rem;
+
+                .link {
+                    display: inline-block;
+                    padding: 0.375rem;
+                }
 
                 img {
                     width: 2.25rem;
                     height: 2.25rem;
+                }
+
+                &.mo-item {
+                    .link {
+                        padding: 0.25rem 1rem 0.25rem 0;
+                    }
                 }
             }
         }
@@ -758,15 +799,7 @@ img.symbol.mobile {
                 }
 
                 .item {
-                    padding: 0.25rem 1rem 0.25rem 0;
-
-                    &:first-child {
-                        padding-left: 0;
-                    }
-
-                    &:last-child {
-                        padding-right: 0;
-                    }
+                    padding: 0;
                 }
             }
         }
@@ -926,6 +959,12 @@ img.symbol.mobile {
 
                 .go-github {
                     padding-left: 0;
+                }
+            }
+
+            .mo-item {
+                &:hover {
+                    background: transparent;
                 }
             }
         }
