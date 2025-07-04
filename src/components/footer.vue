@@ -75,21 +75,56 @@ function setFooterHeight() {
     }
 }
 
+const targetClasses = ["link"];
+
+const mousehover = (event) => {
+    const hoveredElement = event.target.closest(".link");
+
+    if (hoveredElement) {
+        const hoveredClass = targetClasses.find((cls) =>
+            hoveredElement.classList.contains(cls)
+        );
+
+        const elements = document.querySelectorAll(`.${hoveredClass}`);
+        elements.forEach((el) => {
+            el.style.opacity = 0.5;
+        });
+        hoveredElement.style.opacity = 1;
+    }
+};
+
+const mouseout = (event) => {
+    const leftElement = event.target.closest(".link");
+
+    if (leftElement) {
+        const leftClass = targetClasses.find((cls) =>
+            leftElement.classList.contains(cls)
+        );
+
+        const elements = document.querySelectorAll(`.${leftClass}`);
+        elements.forEach((el) => {
+            el.style.opacity = 1;
+        });
+    }
+};
+
 onMounted(() => {
     setFooterHeight();
     window.addEventListener("resize", setFooterHeight);
+    window.addEventListener("mouseover", mousehover);
+    window.addEventListener("mouseout", mouseout);
 });
 
 onUnmounted(() => {
     window.removeEventListener("resize", setFooterHeight);
+    window.addEventListener("mouseover", mousehover);
+    window.addEventListener("mouseout", mouseout);
 });
 </script>
 <style lang="less" scoped>
 #footer {
     position: relative;
     height: 100%;
-    // height: var(--footer-height);
-    // transform: translateY(-100%);
     background-color: #000;
     color: #fff;
     z-index: 999;
@@ -202,6 +237,11 @@ onUnmounted(() => {
                 &.small {
                     font-size: 15px;
                     opacity: 0.5;
+                    cursor: pointer;
+
+                    &:hover {
+                        opacity: 0.7;
+                    }
                 }
 
                 &:last-child {
@@ -224,8 +264,14 @@ onUnmounted(() => {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            justify-content: center;
-            gap: 1rem;
+        }
+    }
+
+    .link {
+        padding-right: 1rem;
+
+        &:last-child {
+            padding-right: 0;
         }
     }
 }
