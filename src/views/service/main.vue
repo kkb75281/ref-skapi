@@ -1,107 +1,106 @@
 <template lang="pug">
+#serviceMain.service-page-main(v-if="serviceMainLoaded")
+    nav.left 
+        .service-plan-name
+            span.plan(:class="currentService.plan.toLowerCase()") {{ currentService.plan }}
+            .name {{ currentService.service.name }}
+        router-link.router(:to="`/my-services/${currentService.id}`" :class="{'active': route.name == 'service'}")
+            //- span.material-symbols-outlined.notranslate.nohover(:class="{'fill': route.name == 'service'}") home
+            //- conditionally render svg
+            svg(v-if="route.name === 'service'")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-home-fill")
+            svg(v-else)
+                use(xlink:href="@/assets/img/material-icon.svg#icon-home")
+            //- render svg  
+            span.name Getting Started
+            
+        router-link.router(:to="`/my-services/${currentService.id}/dashboard`" :class="{'active': route.name == 'dashboard'}")
+            //- span.material-symbols-outlined.notranslate.nohover(:class="{'fill': route.name == 'dashboard'}") settings
+            svg(v-if="route.name === 'dashboard'")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-settings-fill")
+            svg(v-else)
+                use(xlink:href="@/assets/img/material-icon.svg#icon-settings")
+            span.name Service Settings
 
-#serviceMain(v-if="serviceMainLoaded")
-    #leftNav(style='position:relative')
-        div(style='position: sticky; top: calc(56px + var(--nav-top, 0));')
-            br
-            nav.left 
-                router-link.router(:to="`/my-services/${currentService.id}`" :class="{'active': route.name == 'service'}")
-                    //- span.material-symbols-outlined.notranslate.nohover(:class="{'fill': route.name == 'service'}") home
-                    //- conditionally render svg
-                    svg(v-if="route.name === 'service'")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-home-fill")
-                    svg(v-else)
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-home")
-                    //- render svg  
-                    span.name Getting Started
-                    
-                router-link.router(:to="`/my-services/${currentService.id}/dashboard`" :class="{'active': route.name == 'dashboard'}")
-                    //- span.material-symbols-outlined.notranslate.nohover(:class="{'fill': route.name == 'dashboard'}") settings
-                    svg(v-if="route.name === 'dashboard'")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-settings-fill")
-                    svg(v-else)
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-settings")
-                    span.name Service Settings
+        router-link.router(:to="`/my-services/${currentService.id}/users`" :class="{'active': route.name == 'users'}")
+            //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'users'}") supervisor_account
+            svg(v-if="route.name === 'users'")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-supervisor-account-fill")
+            svg(v-else)
+                use(xlink:href="@/assets/img/material-icon.svg#icon-supervisor-account")
+            span.name Users
+        
+        router-link.router(:to="`/my-services/${currentService.id}/openid`" :class="{'active': route.name == 'openid'}")
+            //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'users'}") supervisor_account
+            svg(v-if="route.name === 'openid'")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-openid-fill")
+            svg(v-else)
+                use(xlink:href="@/assets/img/material-icon.svg#icon-openid")
+            span.name OpenID Logger
 
-                router-link.router(:to="`/my-services/${currentService.id}/users`" :class="{'active': route.name == 'users'}")
-                    //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'users'}") supervisor_account
-                    svg(v-if="route.name === 'users'")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-supervisor-account-fill")
-                    svg(v-else)
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-supervisor-account")
-                    span.name Users
-                
-                router-link.router(:to="`/my-services/${currentService.id}/openid`" :class="{'active': route.name == 'openid'}")
-                    //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'users'}") supervisor_account
-                    svg(v-if="route.name === 'openid'")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-openid-fill")
-                    svg(v-else)
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-openid")
-                    span.name OpenID Logger
+        router-link.router(:to="`/my-services/${currentService.id}/clientsecret`" :class="{'active': route.name == 'clientsecret'}")
+            //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'clientsecret'}") key
+            svg(v-if="route.name === 'clientsecret'")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-key-fill")
+            svg(v-else)
+                use(xlink:href="@/assets/img/material-icon.svg#icon-key")
+            span.name Client Secret Key
 
-                router-link.router(:to="`/my-services/${currentService.id}/clientsecret`" :class="{'active': route.name == 'clientsecret'}")
-                    //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'clientsecret'}") key
-                    svg(v-if="route.name === 'clientsecret'")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-key-fill")
-                    svg(v-else)
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-key")
-                    span.name Client Secret Key
+        router-link.router(:to="`/my-services/${currentService.id}/records`" :class="{'active': route.name == 'records'}")
+            //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'records'}") database
+            svg(v-if="route.name === 'records'")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-database-fill")
+            svg(v-else)
+                use(xlink:href="@/assets/img/material-icon.svg#icon-database")
+            span.name Database
 
-                router-link.router(:to="`/my-services/${currentService.id}/records`" :class="{'active': route.name == 'records'}")
-                    //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'records'}") database
-                    svg(v-if="route.name === 'records'")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-database-fill")
-                    svg(v-else)
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-database")
-                    span.name Database
+        router-link.router(:to="`/my-services/${currentService.id}/mail`" :class="{'active': route.name == 'mail'}")
+            //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'mail'}") email
+            svg(v-if="route.name === 'mail'")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-mail-fill")
+            svg(v-else)
+                use(xlink:href="@/assets/img/material-icon.svg#icon-mail")                        
+            span.name Automated Email
 
-                router-link.router(:to="`/my-services/${currentService.id}/mail`" :class="{'active': route.name == 'mail'}")
-                    //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'mail'}") email
-                    svg(v-if="route.name === 'mail'")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-mail-fill")
-                    svg(v-else)
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-mail")                        
-                    span.name Automated Email
+        div(v-if='currentService.service.group <= 1' @click='()=>openOffer=true')
+            .router.deact(:to="`/my-services/${currentService.id}/newsletter`" :class="{'active': route.name == 'newsletter'}")
+                //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'newsletter'}") stacked_email
+                svg(v-if="route.name === 'newsletter'")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-stacked-email-fill")
+                svg(v-else)
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-stacked-email") 
+                span.name Bulk Email
 
-                div(v-if='currentService.service.group <= 1' @click='()=>openOffer=true')
-                    .router.deact(:to="`/my-services/${currentService.id}/newsletter`" :class="{'active': route.name == 'newsletter'}")
-                        //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'newsletter'}") stacked_email
-                        svg(v-if="route.name === 'newsletter'")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-stacked-email-fill")
-                        svg(v-else)
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-stacked-email") 
-                        span.name Bulk Email
+            .router.deact(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}")
+                //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'hosting'}") language
+                svg(v-if="route.name === 'hosting'")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-language")
+                svg(v-else)
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-language") 
+                span.name File Hosting
 
-                    .router.deact(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}")
-                        //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'hosting'}") language
-                        svg(v-if="route.name === 'hosting'")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-language")
-                        svg(v-else)
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-language") 
-                        span.name File Hosting
+        template(v-else)
+            router-link.router(:to="`/my-services/${currentService.id}/newsletter`" :class="{'active': route.name == 'newsletter'}")
+                //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'newsletter'}") stacked_email
+                svg(v-if="route.name === 'newsletter'")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-stacked-email-fill")
+                svg(v-else)
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-stacked-email") 
+                span.name Bulk Email
 
-                template(v-else)
-                    router-link.router(:to="`/my-services/${currentService.id}/newsletter`" :class="{'active': route.name == 'newsletter'}")
-                        //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'newsletter'}") stacked_email
-                        svg(v-if="route.name === 'newsletter'")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-stacked-email-fill")
-                        svg(v-else)
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-stacked-email") 
-                        span.name Bulk Email
-
-                    router-link.router(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}")
-                        //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'hosting'}") language
-                        svg(v-if="route.name === 'hosting'")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-language")
-                        svg(v-else)
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-language") 
-                        span.name File Hosting
+            router-link.router(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}")
+                //- span.material-symbols-outlined.notranslatel.nohover(:class="{'fill': route.name == 'hosting'}") language
+                svg(v-if="route.name === 'hosting'")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-language")
+                svg(v-else)
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-language") 
+                span.name File Hosting
     main.right
         router-view
-        br
-        br
+        //- br
+        //- br
         //- hr
-        nav.bottom 
+        //- nav.bottom 
             .link
                 router-link.prev(v-if="currentRouter && titleList[index-1]" :to="`/my-services/${currentService.id}/${prevRouter}`")
                     .desc Prev Page
@@ -158,7 +157,7 @@ let routerList = [
     "service",
     "dashboard",
     "users",
-	"openid",
+    "openid",
     "clientsecret",
     "records",
     "mail",
@@ -169,7 +168,7 @@ let titleList = [
     "Getting Started",
     "Service Settings",
     "Users",
-	"OpenID Logger",
+    "OpenID Logger",
     "Client Secret Key",
     "Database",
     "Automated Email",
@@ -201,31 +200,31 @@ watch(() => route, nv => {
     index = routerList.indexOf(currentRouter.value);
     plan.value = currentService?.plan;
 
-        if (plan.value == "Trial") {
-            routerList = ["service", "dashboard", "users", "openid", "clientsecret", "records", "mail"];
-            titleList = [
-                "Getting Started",
-                "Dashboard & Settings",
-                "Users",
-				"OpenID Logger",
-                "Client Secret Key",
-                "Database",
-                "Automated Email"
-            ];
-        }
+    if (plan.value == "Trial") {
+        routerList = ["service", "dashboard", "users", "openid", "clientsecret", "records", "mail"];
+        titleList = [
+            "Getting Started",
+            "Dashboard & Settings",
+            "Users",
+            "OpenID Logger",
+            "Client Secret Key",
+            "Database",
+            "Automated Email"
+        ];
+    }
 
-        if (index == -1) {
-            nextRouter.value = "dashboard";
-            titleList[0] = "Dashboard & Settings";
-        } else if (index == 1) {
-            prevRouter.value = "";
-            titleList[0] = "Getting Started";
-            nextRouter.value = routerList[index + 1];
-        } else {
-            prevRouter.value = routerList[index - 1];
-            nextRouter.value = routerList[index + 1];
-        }
-    },
+    if (index == -1) {
+        nextRouter.value = "dashboard";
+        titleList[0] = "Dashboard & Settings";
+    } else if (index == 1) {
+        prevRouter.value = "";
+        titleList[0] = "Getting Started";
+        nextRouter.value = routerList[index + 1];
+    } else {
+        prevRouter.value = routerList[index - 1];
+        nextRouter.value = routerList[index + 1];
+    }
+},
     { immediate: true, deep: true }
 );
 </script>
@@ -233,26 +232,65 @@ watch(() => route, nv => {
 <style lang="less" scoped>
 .deact {
     background-color: transparent !important;
-    fill: rgba(0,0,0,0.5) !important;
+    fill: rgba(0, 0, 0, 0.5) !important;
     cursor: pointer;
-    color: rgba(0,0,0,0.5) !important;
+    color: rgba(0, 0, 0, 0.5) !important;
 }
+
 #serviceMain {
     position: relative;
-    max-width: 1400px;
+    // max-width: 1400px;
     display: flex;
     flex-wrap: nowrap;
     margin: 0 auto;
     gap: 1em;
-    nav.left {
-        margin-right: 8px;
-        margin-left: 8px;
+    background-color: #16171A;
+    color: #F5F5F5;
+
+    .left {
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        width: 260px;
+        height: 100%;
+        background-color: #000;
+
+        .service-plan-name {
+            padding: 40px 0;
+            text-align: center;
+
+            .plan {
+                color: #000;
+                font-size: 11px;
+                padding: 4px 8px;
+                border-radius: 5px;
+                font-weight: 500;
+
+                &.trial {
+                    background-color: #3C94FF;
+                }
+
+                &.standard {
+                    background-color: #77DFA2;
+                }
+
+                &.premium {
+                    background-color: #F0E577;
+                }
+            }
+
+            .name {
+                font-size: 16px;
+                margin-top: 8px;
+            }
+        }
     }
 
     .right {
         width: 50%;
         flex-grow: 1;
-        // padding: 8px 0;
+        padding: 60px;
+        padding-left: 320px;
     }
 
     .bottom {
@@ -263,12 +301,14 @@ watch(() => route, nv => {
         gap: 20px;
         // padding: 20px 8px 40px;
         padding: 20px 20px 40px;
+
         .link {
             // width: calc(50% - 10px);
             flex-grow: 1;
             flex-shrink: 0;
             min-width: 320px;
             width: 0; // flex 매직
+
             a {
                 display: block;
                 border: 1px solid rgba(0, 0, 0, 0.15);
@@ -280,13 +320,16 @@ watch(() => route, nv => {
                 &:hover {
                     border: 1px solid rgba(41, 63, 230, 0.6);
                 }
+
                 &.next {
                     text-align: right;
                 }
+
                 .desc {
                     color: rgba(0, 0, 0, 0.4);
                     font-size: 0.8rem;
                 }
+
                 .title {
                     color: var(--main-color);
                 }
@@ -296,61 +339,36 @@ watch(() => route, nv => {
 }
 
 .router {
-    display: block;
-    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 36px;
     // border-radius: 6px;
     text-decoration: none;
-    color: var(--main-color);
+    color: #F5F5F5;
     white-space: nowrap;
-    fill: var(--main-color); // for svg icon
-    
-    // border-radius: 12px;
-    // margin-bottom: 16px;
+    fill: #F5F5F5;
 
     &.active {
-        background: #293fe60d;
-        box-shadow: 0 0 0 1px var(--main-color) inset;
-
-        // background-color: #344054;
-        // color: #fff;
-        // fill: #fff;
-
-        .name {
-            font-weight: 700;
-        }
-
-        // &:hover {
-        //     background-color: #344054;
-        // }
+        background: #0D0D0D;
     }
 
     &:hover {
-        background: #293fe60d;
-        // background-color: #34405521;
-        // box-shadow: -1px -1px 0px 0px rgba(0, 0, 0, 0.1) inset;
-    }
-
-    // &:last-child {
-    //     margin-bottom: 0;
-    // }
-
-    span {
-        vertical-align: middle;
+        background: #0D0D0D;
     }
 
     .material-symbols-outlined {
-        font-size: 32px;
+        font-size: 18px;
     }
 
     svg {
-        height: 32px;
-        width: 32px;
+        height: 18px;
+        width: 18px;
     }
 
     .name {
-        font-weight: 500;
-        margin-left: 13px;
-        padding-right: 0.25em;
+        flex-grow: 1;
+        font-size: 15px;
     }
 }
 
