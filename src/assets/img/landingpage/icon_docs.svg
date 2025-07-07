@@ -1,0 +1,20 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g opacity="0.01">
+<rect width="20" height="20" fill="white"/>
+<rect opacity="0.7" x="1.66602" y="1.66675" width="16.6667" height="16.6667" fill="white"/>
+</g>
+<path d="M5.81331 11.9685L2.30664 13.6685L10.005 17.851L17.7033 13.6685L13.4908 11.686" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+<mask id="mask0_1_2660" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="20" height="20">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M0 20H20V0H0M4.18167 6.83917C4.08917 6.55417 4.24583 6.24917 4.53083 6.1575L15.2442 2.705C15.5275 2.61667 15.8342 2.77083 15.9258 3.055C16.0175 3.33917 15.8608 3.645 15.5758 3.73667L4.8625 7.18917C4.8075 7.20667 4.75167 7.21583 4.69667 7.21583C4.46667 7.21583 4.255 7.06833 4.18167 6.83917Z" fill="white"/>
+</mask>
+<g mask="url(#mask0_1_2660)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12.8027 3.58393C11.1777 2.92226 9.56107 2.26059 9.29023 2.14893C8.57773 3.35726 7.8919 4.49226 7.30273 5.35643" fill="white"/>
+<path d="M12.8027 3.58393C11.1777 2.92226 9.56107 2.26059 9.29023 2.14893C8.57773 3.35726 7.8919 4.49226 7.30273 5.35643" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<mask id="mask1_1_2660" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="20" height="20">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M0 20H20V0H0V20ZM4.18167 6.83917C4.08917 6.55417 4.24583 6.24917 4.53083 6.1575L15.2442 2.705C15.5275 2.61667 15.8342 2.77083 15.9258 3.055C16.0175 3.33917 15.8608 3.645 15.5758 3.73667L4.8625 7.18917C4.8075 7.20667 4.75167 7.21583 4.69667 7.21583C4.46667 7.21583 4.255 7.06833 4.18167 6.83917Z" fill="white"/>
+</mask>
+<g mask="url(#mask1_1_2660)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2.29688 9.96584L9.99937 14.3608C14.836 11.5108 16.7544 7.31417 17.576 5.50834C17.0802 5.31667 15.971 4.87084 14.7185 4.3625C12.4352 3.4375 9.67521 2.30834 9.28937 2.14917C7.99021 4.35417 7.11854 5.82334 5.85687 7.15C4.96354 8.09 3.87437 8.95834 2.29688 9.96584Z" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

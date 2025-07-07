@@ -1,5 +1,5 @@
 <template lang="pug">
-main#serviceList
+.service-list
 	section.section
 		.title.faktum My Services
 
@@ -95,182 +95,182 @@ const router = useRouter();
 console.log('serviceList', serviceList);
 
 let goServiceDashboard = (service: { [key: string]: any }) => {
-	router.push('/my-services/' + service.id);
+    router.push('/my-services/' + service.id);
 }
 
 let newServiceName = ref('')
-let createService = ()=>{
-	let regex = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
-	if (newServiceName.value.match(regex)) {
-		alert('Special characters are not allowed');
+let createService = () => {
+    let regex = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
+    if (newServiceName.value.match(regex)) {
+        alert('Special characters are not allowed');
 
-		return
-	}
-	router.push('/create/' + newServiceName.value);
+        return
+    }
+    router.push('/create/' + newServiceName.value);
 }
 
 let getClass = (service: ServiceSpec, what: string) => {
-	let percentage: number | string;
+    let percentage: number | string;
 
-	if (!service) {
-		return 'grey';
-	}
+    if (!service) {
+        return 'grey';
+    }
 
-	if(service?.plan === 'Unlimited') {
-		return 'purple';
-	}
+    if (service?.plan === 'Unlimited') {
+        return 'purple';
+    }
 
-	percentage = service.dataPercent[what];
-	
-	if (percentage === 'N/A') {
-		return 'grey';
-	} else if (typeof percentage === 'number') {
-		if (percentage >= 0 && percentage < 51) {
-			return 'green';
-		}
-		else if (percentage >= 51 && percentage < 81) {
-			return 'orange';
-		}
-		else if (percentage >= 81 && percentage < 101) {
-			return 'red';
-		}
-	}
-	return 'grey';
+    percentage = service.dataPercent[what];
+
+    if (percentage === 'N/A') {
+        return 'grey';
+    } else if (typeof percentage === 'number') {
+        if (percentage >= 0 && percentage < 51) {
+            return 'green';
+        }
+        else if (percentage >= 51 && percentage < 81) {
+            return 'orange';
+        }
+        else if (percentage >= 81 && percentage < 101) {
+            return 'red';
+        }
+    }
+    return 'grey';
 }
 </script>
 
 <style lang="less" scoped>
-#serviceList {
-	max-width: 1200px;
-	margin: 8px auto 0;
+.service-list {
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .section {
-	max-width: 570px;
-	margin: 0 auto;
-	padding: 6rem 20px;
-	text-align: center;
+    max-width: 570px;
+    margin: 0 auto;
+    padding: 6rem 20px;
+    text-align: center;
 
-	.title {
-		// font-size: 1.4rem;
-		font-size: 2.4rem;
-		margin-bottom: 1rem;
-		line-height: 1.5;
-	}
+    .title {
+        // font-size: 1.4rem;
+        font-size: 2.4rem;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
 
-	.desc {
-		margin-bottom: 1rem;
-		line-height: 1.9;
-		color: #000;
-	}
+    .desc {
+        margin-bottom: 1rem;
+        line-height: 1.9;
+        color: #000;
+    }
 }
 
 .tableMenu {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-top: 5rem;
-	padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 5rem;
+    padding: 0 10px;
 
-	.pageName {
-		font-size: 1.4rem;
-		font-weight: 500;
-	}
+    .pageName {
+        font-size: 1.4rem;
+        font-weight: 500;
+    }
 }
 
 .iconbutton {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	background-color: var(--main-color);
-	color: #fff;
-	font-weight: 500;
-  	font-size: 0.8rem;
-	border-radius: 12px;
-	padding: 0.6rem 1.2rem;
-	cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--main-color);
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.8rem;
+    border-radius: 12px;
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
 
-	svg {
-		width: 20px;
-		height: 20px;
-		fill: #fff;
-	}
+    svg {
+        width: 20px;
+        height: 20px;
+        fill: #fff;
+    }
 }
 
 // table style below
 
 td {
-	.percent {
-		position: relative;
-		display: inline-block;
-		padding: 3px 12px 3px 24px;
-		border-radius: 8px;
-		// box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.15) inset;
-		border: 1px solid rgba(0, 0, 0, 0.15);
-		color: #fff;
-		font-size: 0.7rem;
-		font-weight: 500;
+    .percent {
+        position: relative;
+        display: inline-block;
+        padding: 3px 12px 3px 24px;
+        border-radius: 8px;
+        // box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.15) inset;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 500;
 
-		&::before {
-			content: '';
-			position: absolute;
-			top: 50%;
-			left: 11px;
-			transform: translateY(-50%);
-			width: 6px;
-			height: 6px;
-			border-radius: 50%;
-			background-color: #000;
-		}
+        &::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 11px;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #000;
+        }
 
-		&.green {
-			color: #52D687;
-			border-color: #52D687;
-			background-color: #52d6870e;
+        &.green {
+            color: #52D687;
+            border-color: #52D687;
+            background-color: #52d6870e;
 
-			&::before {
-				background-color: #52D687;
-			}
-		}
+            &::before {
+                background-color: #52D687;
+            }
+        }
 
-		&.orange {
-			color: #FCA642;
-			border-color: #FCA642;
-			background-color: #FCA6420e;
+        &.orange {
+            color: #FCA642;
+            border-color: #FCA642;
+            background-color: #FCA6420e;
 
-			&::before {
-				background-color: #FCA642;
-			}
-		}
+            &::before {
+                background-color: #FCA642;
+            }
+        }
 
-		&.red {
-			border-color: var(--caution-color);
+        &.red {
+            border-color: var(--caution-color);
 
-			&::before {
-				background-color: var(--caution-color);
-			}
-		}
+            &::before {
+                background-color: var(--caution-color);
+            }
+        }
 
-		&.purple {
-			color: #B881FF;
-			border-color: #B881FF;
-			background-color: #B881FF0e;
+        &.purple {
+            color: #B881FF;
+            border-color: #B881FF;
+            background-color: #B881FF0e;
 
-			&::before {
-				background-color: #B881FF;
-			}
-		}
+            &::before {
+                background-color: #B881FF;
+            }
+        }
 
-		&.grey {
-			padding: 3px 12px;
-			color: #bbb;
-			border-color: #bbb;
-			background-color: #cccccc0e;
+        &.grey {
+            padding: 3px 12px;
+            color: #bbb;
+            border-color: #bbb;
+            background-color: #cccccc0e;
 
-			&::before {
-				display: none;
-			}
-		}
-	}
+            &::before {
+                display: none;
+            }
+        }
+    }
 }
 </style>

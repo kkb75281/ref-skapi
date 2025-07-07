@@ -1,9 +1,11 @@
 <template lang="pug">
-div._root(style='min-height: calc(100vh - 1rem - 1px - var(--footer-height, 0));' :style='{"--footer-height": footerHeight+"px"}')
+div._root(style='min-height: calc(100vh - 1rem - 1px - var(--footer-height, 0));')
     //- router-view(v-if='route.name === "home" || loaded')
     router-view(v-if='connected')
 
-footer#footer.new
+Footer
+
+//- footer#footer.new
     //- img(src="@/assets/img/logo/logo-white.svg" style="height:.88rem;")
     .logo(style="display:flex;align-items:center;gap:0.5rem;")
         img.symbol(src="@/assets/img/logo/symbol-logo.png" style="height:.88rem;margin:0")
@@ -13,68 +15,116 @@ footer#footer.new
     
 </template>
 
-<script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
-import { onMounted, onUnmounted, ref } from 'vue';
-import { connected } from '@/main';
+<script setup>
+import { useRoute, useRouter } from "vue-router";
+import { onMounted, onUnmounted, ref } from "vue";
+import { connected } from "@/main";
+
+import Footer from "@/components/footer.vue";
 
 const router = useRouter();
 const route = useRoute();
-
-let footerHeight = ref('0');
-
-onMounted(() => {
-    // this is to make footer stick to bottom
-    // get footer height
-    footerHeight.value = document.getElementById('footer').offsetHeight.toString(); // number
-    console.log('footerHeight', footerHeight.value);
-    // detect window width change
-    window.addEventListener('resize', () => {
-        window.requestAnimationFrame(() => {
-            footerHeight.value = document.getElementById('footer').offsetHeight.toString();
-        });
-    });
-})
-
 </script>
-<style lang='less'>
-footer {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: center;
-    box-shadow: 0px 2px black; // compensate offset calc
+<style lang="less">
+._root {
+    height: auto;
+    min-height: 100%;
+}
 
-    // background-color: #101828;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    height: 2.5rem;
-    overflow-y: hidden;
+.review-swiper {
+    .swiper {
+        padding-bottom: 8rem;
+    }
 
-    &.new {
-        background-color: rgb(247, 249, 252);
-        border: 0;
-        // border: 1px solid rgba(0,0,0,0.1);
-        // background-color: #fff;
+    .swiper-pagination {
+        width: unset !important;
+        bottom: unset !important;
+        top: 39.5rem !important;
+    }
+
+    .swiper-pagination-bullet {
+        background: #3f3f3f;
+
+        &:hover {
+            background: #999;
+        }
+    }
+
+    .swiper-pagination-bullet-active {
+        background: #fff;
+    }
+}
+
+.plan-swiper {
+    .swiper-pagination-bullet {
+        width: unset;
         height: unset;
-        box-shadow: unset;
-        border-radius: 12px;
-        margin: 0.5rem;
-        padding: 0.5rem;
+        flex-grow: 1;
+        flex-basis: 100px;
+        background-color: unset;
+        border: 1px solid #000;
+        border-radius: 40px;
+        padding: 14px 0;
+        margin: 0 !important;
+        font-size: 20px;
+        font-weight: 500;
+        opacity: 1;
+        color: #000;
+
+        &.on {
+            background-color: #000;
+            color: #fff;
+
+            &:hover {
+                background-color: #000;
+            }
+        }
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
     }
 
-    &>* {
-        font-size: 0.8rem;
-        // color: #fff;
-        margin: .5rem 18px;
+    .swiper-wrapper {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px 0;
+    }
+}
+
+@media (max-width: 800px) {
+    .review-swiper {
+        .swiper {
+            padding-bottom: 6rem;
+        }
+
+        .swiper-pagination {
+            left: 50% !important;
+            top: var(--swiper-pagination-translate-y, 0) !important;
+            transform: translateX(-50%) !important;
+        }
     }
 
-    img {
-        margin-top: .88em;
+    .plan-swiper {
+        .swiper-wrapper {
+            flex-wrap: unset;
+            justify-content: unset;
+            gap: unset;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .review-swiper {
+        .swiper {
+            padding-bottom: 0;
+        }
     }
 
-    .hideOnMobile {
-        @media (max-width: 606px) {
-            display: none;
+    .plan-swiper {
+        .swiper-pagination-bullet {
+            font-size: 15px;
+            padding: 10px 0;
         }
     }
 }
