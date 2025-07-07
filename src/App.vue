@@ -1,9 +1,10 @@
 <template lang="pug">
+//- div._root
 div._root(style='min-height: calc(100vh - 1rem - 1px - var(--footer-height, 0));')
     //- router-view(v-if='route.name === "home" || loaded')
     router-view(v-if='connected')
 
-Footer
+    Footer
 
 //- footer#footer.new
     //- img(src="@/assets/img/logo/logo-white.svg" style="height:.88rem;")
@@ -16,20 +17,23 @@ Footer
 </template>
 
 <script setup>
-import { useRoute, useRouter } from 'vue-router';
-import { onMounted, onUnmounted, ref } from 'vue';
-import { connected } from '@/main';
+import { useRoute, useRouter } from "vue-router";
+import { onMounted, onUnmounted, ref } from "vue";
+import { connected } from "@/main";
 
-import Footer from '@/components/footer.vue';
+import Footer from "@/components/footer.vue";
 
 const router = useRouter();
 const route = useRoute();
-
 </script>
-<style lang='less'>
+<style lang="less">
 ._root {
     height: auto;
     min-height: 100%;
+
+    // display: flex;
+    // flex-direction: column;
+    // height: 100vh;
 }
 
 .review-swiper {
@@ -44,7 +48,7 @@ const route = useRoute();
     }
 
     .swiper-pagination-bullet {
-        background: #3F3F3F;
+        background: #3f3f3f;
 
         &:hover {
             background: #999;
