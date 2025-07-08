@@ -1,5 +1,5 @@
 <template lang="pug">
-section(style="background-color: #16171A; color: #fff;")
+section
     .page-title Getting Started
 
     hr
@@ -56,10 +56,6 @@ import { currentService } from '@/views/service/main';
 .middle-title {
     font-size: 26px;
     margin-bottom: 16px;
-}
-
-hr {
-    background: rgba(255, 255, 255, 0.1);
 }
 
 p {

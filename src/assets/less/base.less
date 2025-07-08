@@ -18,10 +18,6 @@
 
 :root {
     --main-color: rgb(20, 99, 255);
-    //   --main-color: #293fe6;
-    // --main-color: #101828;
-    // --main-color: #344054;
-    //  --main-color: rgb(29, 41, 57);
     --caution-color: #f04e4e;
     --black-8: rgba(0, 0, 0, 0.88);
     --black-6: rgba(0, 0, 0, 0.66);
@@ -29,10 +25,31 @@
     --black-2: rgba(0, 0, 0, 0.22);
     --text-green: #00a020;
     --green: #5ad858;
+    --background-color: #fff;
+    --background-color-rgb: 255, 255, 255;
+    --font-color: #000;
+    --sidebar-bg: #fff;
+    --sidebar-color: #1f1f1f;
+    --sidebar-hover-rgb: 0, 0, 0;
 }
 
 * {
     box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #16171a;
+        --background-color-rgb: 22, 23, 26;
+        --font-color: #f5f5f5;
+        --sidebar-bg: #000;
+        --sidebar-color: #f5f5f5;
+        --sidebar-hover-rgb: 255, 255, 255;
+    }
+
+    hr {
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
 }
 
 @media all and (min-width: 1200px) {
@@ -285,8 +302,8 @@ body {
     width: 100%;
     margin: 0;
     padding: 0;
-    // background-color: #fafaff;
-    background-color: #fff;
+    background-color: var(--background-color);
+    color: var(--font-color);
     font-family: "Inter", "Faktum", -apple-system, BlinkMacSystemFont,
         "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
         "Helvetica Neue", sans-serif;
@@ -294,7 +311,6 @@ body {
     // font-family: 'Noto Sans', sans-serif, 'Radio Canada', serif, 'Space Mono', monospace, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue";
     // font-family: 'Noto Sans', sans-serif, serif, 'Space Mono', monospace, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue";
     font-weight: 400; // 기본 굵기 400 - 특정 모니터에서 폰트가 너무 얇아 보이는 경우가 있었음
-
     font-optical-sizing: auto;
     font-style: normal;
     font-variation-settings: "wdth" 100;

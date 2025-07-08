@@ -220,8 +220,6 @@ button {
     flex-wrap: nowrap;
     margin: 0 auto;
     gap: 1em;
-    background-color: #16171A;
-    color: #F5F5F5;
 
     .left {
         position: fixed;
@@ -230,7 +228,8 @@ button {
         width: 260px;
         height: calc(100% - 4rem);
         overflow-y: auto;
-        background-color: #000;
+        background-color: var(--sidebar-bg);
+        box-shadow: 1px 0px 0.5px 0px #00000014;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -276,11 +275,11 @@ button {
             gap: 8px;
             padding: 12px 36px;
             text-decoration: none;
-            color: #F5F5F5;
+            color: var(--sidebar-color);
             white-space: nowrap;
 
             &.active {
-                background: #0D0D0D;
+                background: rgba(var(--sidebar-hover-rgb), 0.05);
             }
 
             &.deact {
@@ -294,7 +293,7 @@ button {
             }
 
             &:hover {
-                background: #0D0D0D;
+                background: rgba(var(--sidebar-hover-rgb), 0.05);
             }
 
             img {
