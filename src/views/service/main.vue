@@ -310,7 +310,7 @@ button {
             svg {
                 width: 18px;
                 height: 18px;
-                fill: #F5F5F5;
+                fill: var(--sidebar-color);
             }
 
             .name {
@@ -322,14 +322,14 @@ button {
         .advanced-router {
             padding: 24px 0;
             margin-top: 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(var(--sidebar-hover-rgb), 0.1);
         }
 
         .upgrade {
             margin: 0 20px;
             margin-bottom: 40px;
             padding: 30px 20px;
-            background-color: #16171A;
+            background-color: rgba(var(--sidebar-hover-rgb), 0.08);
             text-align: center;
             border-radius: 15px;
 
@@ -344,7 +344,7 @@ button {
                 font-weight: 300;
                 font-size: 12px;
                 line-height: 1.3;
-                color: rgba(255, 255, 255, 0.7);
+                color: var(--font-color);
                 margin-bottom: 30px;
             }
         }

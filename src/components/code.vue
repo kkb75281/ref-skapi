@@ -55,6 +55,7 @@ let copy = (e) => {
         text-align: right;
         font-size: 15px;
         font-weight: 400;
+        color: #fff;
         cursor: pointer;
 
         svg {
@@ -71,7 +72,7 @@ let copy = (e) => {
         margin-top: 8px;
         border-radius: 6px;
         box-shadow: 2px 2px 3px 0px rgba(0, 0, 0, 0.15);
-        color: #FFF;
+        color: #fff;
         overflow-x: auto;
         background: #121214;
 
