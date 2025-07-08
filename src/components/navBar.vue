@@ -2,71 +2,187 @@
 nav#navBar(ref="navBar")
     .wrap
         .left
-            template(v-if="route.name != 'home' && user?.user_id && route.path !== '/my-services' && route.path !== '/account-setting'")
-                img.symbol(src="@/assets/img/logo/symbol-logo.png" @click="router.push('/')")
-                .router
-                    span.small(@click="router.push('/my-services')") My Services/
-                    p.big {{ serviceName }}
-            router-link.logo(to="/" v-else)
-                img.symbol(src="@/assets/img/logo/symbol-logo.png" @click="router.push('/')")
-                span.faktum.desktop(style="font-size:1.4rem;") skapi
+            template(v-if="route.name != 'home'")
+                .logo-wrap
+                    router-link.logo(to="/")
+                        img.symbol(src="@/assets/img/logo/icon_logo_symbol.svg")
+                    router-link.myservice(to="/my-services")
+                        img.symbol(src="@/assets/img/logo/icon_logo_text_myservices.svg")
+            template(v-else)
+                router-link.logo(to="/")
+                    img.symbol(src="@/assets/img/logo/icon_logo.svg")
+                ul.section-list(v-if="route.name === 'home'")
+                    li.section-item(@click="scrollSec('section1')") Features
+                    li.section-item(@click="scrollSec('section2')") Price
+                    li.section-item(@click="scrollSec('section3')") FAQ
+                    li.section-item(@click="scrollSec('section4')") Contents
+
         .right
-            ul.menu-wrap
-                template(v-if="user?.user_id")
-                    li.go-github
-                        a(href="https://github.com/broadwayinc/skapi-js" target="_blank")
-                            img(src="@/assets/img/icon/icon_github.svg" style="filter: invert(1);")
-                    li
-                        a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") Docs
-                        
-                    li(v-if="route.name == 'home'")
-                        router-link(to="/my-services") My Services
-                    //- li(v-else="route.name != 'home'")
-                    //-     a.doc(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank" style="color:white")
-                    //-         //- .material-symbols-outlined.notranslate menu_book
-                    //-         svg(width="24" height="24" style="fill:white")
-                    //-             //- use(xlink:href="@/assets/img/material-icon.svg#icon-menu-book")
-                    //-         | &nbsp;Docs
-
-                    li
-                        .prof(@click.stop="(e)=>{showDropDown(e)}")
-                            //- .material-symbols-outlined.notranslate.notranslate.fill(style="margin: 0 .5rem 0 1rem;font-size:32px;") account_circle
-                            svg(width="32" height="32")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-account-circle-fill")
+            ul.menu-wrap(ref="navMenuEl")
+                template(v-if="isDesktop")
+                    template(v-if="user?.user_id")
+                        li.list.go-community(ref="communityEl")
+                            .ser.dropdown(@click.stop="(e)=>{showDropDown(e)}") Community
+                                img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
+                                .moreVert.community(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
+                                    ul.list-wrap
+                                        li.item
+                                            a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                                        li.item
+                                            a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                        li.item
+                                            a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                        li.item
+                                            a.link(href="https://x.com/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_x.svg")
+                                        li.item
+                                            a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                        li.item
+                                            a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_facebook.svg")
+                        li.list.go-docs
+                            a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
+                                img(src="@/assets/img/landingpage/icon_docs.svg")
+                                | Docs
+                        li.list.go-github
+                            a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank")
+                                img(src="@/assets/img/landingpage/icon_github.svg")
+                                | Github
+                        li.list.go-service(v-if="route.name === 'home'")
+                            router-link.ser(to="/my-services") 
+                                img(src="@/assets/img/logo/symbol-logo-white.svg")
+                                | My Services
+                        li.list.user-profile(@click.stop="(e)=>{showDropDown(e)}")
+                            .img-profile-wrap
+                                img(src="@/assets/img/landingpage/icon_profile.svg")
                             .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
-                                .inner(style="padding:0")
-                                    .account {{ user.email }}
-                                    ul.menu
-                                        li(@click="openBillingPage")
-                                            //- .material-symbols-outlined.notranslate credit_card
-                                            svg
-                                                use(xlink:href="@/assets/img/material-icon.svg#icon-credit-card")
-                                            span Billing
-                                        li(@click="navigateToPage")
-                                            //- .material-symbols-outlined.notranslate settings
-                                            svg
-                                                use(xlink:href="@/assets/img/material-icon.svg#icon-settings")
-                                            span Account Settings
-                                        li(@click="logout")
-                                            //- .material-symbols-outlined.notranslate logout
-                                            svg
-                                                use(xlink:href="@/assets/img/material-icon.svg#icon-logout")
-                                            span Logout
-                                    //- .policy
-                                    //-     router-link(to="/pp.html" target="_blank") Terms of service • Privacy policy
-                template(v-else)
-                    li.go-github
-                        a(href="https://github.com/broadwayinc/skapi-js" target="_blank")
-                            img(src="@/assets/img/icon/icon_github.svg" style="filter: invert(1);")
-                    li
-                        a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") Docs
-                    li
-                        router-link.ser(to="/login") Login
-                    li
-                        router-link(to="/signup")
-                            button.final Sign-up
+                                .account 
+                                    span.user-id {{ userEmail.split("@")[0] }}
+                                    | @{{ userEmail.split("@")[1] }}
+                                ul.dropdown-menu
+                                    li.dropdown-list(@click="openBillingPage")
+                                        img(src="@/assets/img/landingpage/icon_billing.svg")
+                                        span Billing
+                                    li.dropdown-list(@click="navigateToPage")
+                                        img(src="@/assets/img/landingpage/icon_setting.svg")
+                                        span Account Settings
+                                    li.dropdown-list(@click="logout")
+                                        img(src="@/assets/img/landingpage/icon_logout.svg")
+                                        span Logout
+                    template(v-else)
+                        li.list.go-community(ref="communityEl")
+                            .ser.dropdown(@click.stop="(e)=>{showDropDown(e)}") Community
+                                img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
+                                .moreVert.community(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
+                                    ul.list-wrap
+                                        li.item
+                                            a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                                        li.item
+                                            a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                        li.item
+                                            a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                        li.item
+                                            a.link(href="https://x.com/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_x.svg")
+                                        li.item
+                                            a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                        li.item
+                                            a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_facebook.svg")
+                        li.list.go-docs
+                            a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
+                                img(src="@/assets/img/landingpage/icon_docs.svg")
+                                | Docs
+                        li.list.go-github
+                            a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank") 
+                                img(src="@/assets/img/landingpage/icon_github.svg")
+                                | Github
+                        li.list.go-login
+                            router-link(to="/login") 
+                                img(src="@/assets/img/landingpage/icon_login.svg")
+                                | Login
 
+                template(v-else :class="{ 'mo' : true }")
+                    button.btn-open-menu(@click="openMoMenu")
+                        img(src="@/assets/img/landingpage/icon_menubar.svg")
+                    .mo-menu-wrap
+                        .top-area
+                            .logo
+                                img.symbol.mobile(src="@/assets/img/logo/icon_logo.svg" @click="router.push('/')")
+                            .right-area
+                                .prof
+                                    template(v-if="user?.user_id" )
+                                        .img-profile(@click.stop="(e)=>{showDropDown(e)}")
+                                            .img-wrap
+                                                img(src="@/assets/img/landingpage/icon_profile.svg" style="width: 2.5rem; height: 2.5rem;")
+                                            .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
+                                                .account 
+                                                    span.user-id {{ userEmail.split("@")[0] }}
+                                                    | @{{ userEmail.split("@")[1] }}
+                                                ul.dropdown-menu
+                                                    li.dropdown-list(@click="openBillingPage")
+                                                        img(src="@/assets/img/landingpage/icon_billing.svg")
+                                                        span Billing
+                                                    li.dropdown-list(@click="navigateToPage")
+                                                        img(src="@/assets/img/landingpage/icon_setting.svg")
+                                                        span Account Settings
+                                                    li.dropdown-list(@click="logout")
+                                                        img(src="@/assets/img/landingpage/icon_logout.svg")
+                                                        span Logout
+                                    template(v-else)
+                                        router-link.go-login(to="/login") 
+                                            img(src="@/assets/img/landingpage/icon_login.svg")
+                                            | Login
+                                button.btn-close(@click="openMoMenu")
+                                    img(src="@/assets/img/landingpage/icon_close.svg")
 
+                        ul.section-list(v-if="route.name === 'home'")
+                            li.section-item(@click="scrollSec('section1')") Features
+                            li.section-item(@click="scrollSec('section2')") Price
+                            li.section-item(@click="scrollSec('section3')") FAQ
+                            li.section-item(@click="scrollSec('section4')") Contents
+                        ul.menu-list
+                            li.list.go-docs
+                                a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank" @click="closeMobileMenu") 
+                                    img(src="@/assets/img/landingpage/icon_docs.svg")
+                                    | Docs
+                            li.list.go-github
+                                a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank" @click="closeMobileMenu")
+                                    img(src="@/assets/img/landingpage/icon_github.svg")
+                                    | Github
+                            li.list.go-service
+                                router-link.ser(to="/my-services" @click="closeMobileMenu") 
+                                    img(src="@/assets/img/logo/symbol-logo-white.svg")
+                                    | My Services
+                        .community
+                            span.text Community
+                            ul.list-wrap
+                                li.item
+                                    a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                                li.item
+                                    a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                li.item
+                                    a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                li.item
+                                    a.link(href="https://x.com/skapi_api" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_x.svg")
+                                li.item
+                                    a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                li.item
+                                    a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_facebook.svg")
 #proceeding(v-if="running")
     .inner    
         .loader(style="--loader-color:black; --loader-size: 20px")
@@ -77,7 +193,7 @@ nav#navBar(ref="navBar")
 import { useRoute, useRouter } from "vue-router";
 import { onMounted, onBeforeUnmount, ref, watch } from "vue";
 import { skapi } from "@/main";
-import { serviceMainLoaded, currentService } from '@/views/service/main';
+import { serviceMainLoaded, currentService } from "@/views/service/main";
 import { user, customer } from "@/code/user";
 import { showDropDown } from "@/assets/js/event.js";
 import { setAutoHide, removeListener, routeName } from "./navBar-autohide.ts";
@@ -89,6 +205,10 @@ let navBar = ref(null);
 let moreVert = ref(null);
 let running = ref(false);
 let serviceName = ref(currentService?.service?.name || "");
+const userEmail = ref(user?.email || "");
+const isDesktop = ref(window.innerWidth > 800);
+const navMenuEl = ref(null);
+const communityEl = ref(null);
 
 const updateServiceName = () => {
     serviceName.value = currentService?.service?.name || "loading...";
@@ -123,37 +243,155 @@ let openBillingPage = async () => {
 
 let navigateToPage = () => {
     moreVert.value.style.display = "none";
+
+    const moMenuWrap = document.querySelector(".right");
+    const body = document.querySelector("body");
+
+    if (moMenuWrap.classList.contains("open")) {
+        moMenuWrap.classList.remove("open");
+        body.style.overflow = "auto";
+    }
+
     router.push({ path: "/account-setting" });
 };
 
 let logout = () => {
     skapi.logout().then(() => {
-        router.push({ path: "/login" });
+        router.push({ path: "/" });
     });
 };
 
+const openMoMenu = () => {
+    const moMenuWrap = document.querySelector(".right");
+    const body = document.querySelector("body");
+
+    moMenuWrap.classList.toggle("open");
+    body.style.overflow = moMenuWrap.classList.contains("open")
+        ? "hidden"
+        : "auto";
+};
+
+const closeMobileMenu = () => {
+    const moMenuWrap = document.querySelector(".right");
+    const body = document.querySelector("body");
+
+    if (moMenuWrap && moMenuWrap.classList.contains("open")) {
+        moMenuWrap.classList.remove("open");
+        body.style.overflow = "auto";
+    }
+};
+
+const scrollSec = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        const remOffset =
+            4 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+        const scrollY = section.offsetTop - remOffset;
+        window.scrollTo({ top: scrollY, behavior: "smooth" });
+    }
+
+    closeMobileMenu();
+};
+
+function handleMouseOver(container, selector, event) {
+    const hovered = event.target.closest(selector);
+    if (hovered) {
+        if (
+            hovered.classList.contains("go-login") ||
+            hovered.classList.contains("user-profile")
+        ) {
+            // go-login hover면: 모두 opacity 1 유지
+            const elements = container.querySelectorAll(selector);
+            elements.forEach((el) => (el.style.opacity = 1));
+            return;
+        }
+
+        // 일반 리스트 hover 처리
+        const elements = container.querySelectorAll(selector);
+        elements.forEach((el) => {
+            if (
+                el.classList.contains("go-login") ||
+                el.classList.contains("user-profile")
+            ) {
+                el.style.opacity = 1; // go-login은 항상 1 유지
+            } else {
+                el.style.opacity = 0.5;
+            }
+        });
+        hovered.style.opacity = 1;
+    }
+}
+
+function handleMouseOut(container, selector, event) {
+    const currentTarget = event.currentTarget;
+    const related = event.relatedTarget;
+
+    if (currentTarget && related && currentTarget.contains(related)) {
+        return; // 컨테이너 내부 이동 → 무시
+    }
+
+    const elements = container.querySelectorAll(selector);
+    elements.forEach((el) => (el.style.opacity = 1));
+}
+
+window.addEventListener("resize", () => {
+    isDesktop.value = window.innerWidth > 800;
+});
+
 onMounted(() => {
     setAutoHide(navBar.value, 3);
-    window.addEventListener('serviceChanged', updateServiceName);
+    window.addEventListener("serviceChanged", updateServiceName);
+
+    if (navMenuEl.value) {
+        navMenuEl.value.addEventListener("mouseover", (e) =>
+            handleMouseOver(navMenuEl.value, ".list", e)
+        );
+        navMenuEl.value.addEventListener("mouseout", (e) =>
+            handleMouseOut(navMenuEl.value, ".list", e)
+        );
+    }
+
+    if (communityEl.value) {
+        communityEl.value.addEventListener("mouseover", (e) =>
+            handleMouseOver(communityEl.value, ".link", e)
+        );
+        communityEl.value.addEventListener("mouseout", (e) =>
+            handleMouseOut(communityEl.value, ".link", e)
+        );
+    }
 });
 
 onBeforeUnmount(() => {
     removeListener();
-    window.removeEventListener('serviceChanged', updateServiceName);
+    window.removeEventListener("serviceChanged", updateServiceName);
+
+    if (navMenuEl.value) {
+        navMenuEl.value.removeEventListener("mouseover", (e) =>
+            handleMouseOver(navMenuEl.value, ".list", e)
+        );
+        navMenuEl.value.removeEventListener("mouseout", (e) =>
+            handleMouseOut(navMenuEl.value, ".list", e)
+        );
+    }
+    if (communityEl.value) {
+        communityEl.value.removeEventListener("mouseover", (e) =>
+            handleMouseOver(communityEl.value, ".link", e)
+        );
+        communityEl.value.removeEventListener("mouseout", (e) =>
+            handleMouseOut(communityEl.value, ".link", e)
+        );
+    }
 });
 
-watch(() => route.name, (nv, ov) => {
-    if (nv) {
-        routeName.value = typeof nv === 'string' ? nv : '';
-    }
-    // if(nv !== 'home') {
-    // 	document.body.style.setProperty('--nav-position', 'sticky');
-    // 	document.body.style.setProperty('--nav-top', '0px');
-    // } else {
-    // 	document.body.style.setProperty('--nav-position', 'fixed');
-    // 	document.body.style.setProperty('--nav-top', '20px');
-    // }
-}, { immediate: true });
+watch(
+    () => route.name,
+    (nv, ov) => {
+        if (nv) {
+            routeName.value = typeof nv === "string" ? nv : "";
+        }
+    },
+    { immediate: true }
+);
 </script>
 
 <style lang="less" scoped>
@@ -177,55 +415,49 @@ img.symbol.mobile {
 }
 
 #navBar {
-    position: var(--nav-position, fixed);
+    position: fixed;
+    top: 0;
     left: 0;
-    top: var(--nav-top, 20);
     z-index: 99999;
     width: 100%;
-    display: flex;
-    align-items: center;
-    fill: #333; // for svg
-    justify-content: center;
-    // background-color: #fff;
-    // border-radius: 12px;
+    height: 4rem;
+    background-color: #000;
+    font-size: 1.125rem;
+    color: #fff;
+    fill: #fff; // for svg
 
-    font-size: 20px;
-    // border-bottom: 1px solid rgba(0,0,0,0.1);
+    a {
+        color: #fff;
+    }
 
     .wrap {
+        max-width: 100rem;
         width: 100%;
+        height: 100%;
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        gap: 10px;
-
-        max-width: 80rem;
-        padding: 16px 20px;
-        // background-color: #fff;
-        background-color: rgba(255, 255, 255, 0.8);
-        // border: 1px solid rgba(0, 0, 0, 0.05);
-        border: 1.5px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        border-radius: 12px;
-        // box-shadow: rgba(66, 62, 121, 0.06) 0px 48px 96px -24px;
-        // box-shadow: rgba(66, 62, 121, 0.1) 0px 0px 90px -14px;
-        box-shadow: rgba(66, 62, 121, 0.25) 0px 0px 90px -14px;
-        margin: 0 var(--nav-top);
-        border-color: #f7f9fc;
+        align-items: center;
+        gap: 1rem;
+        padding: 0 2.5rem;
+        margin: 0 auto;
 
         .left {
-            // flex-shrink: 0;
             flex-grow: 1;
             display: flex;
             align-items: center;
-            gap: 10px;
-            // vertical-align: middle;
+            gap: 3.75rem;
+            height: 100%;
 
-            .symbol {
-                width: 26px;
-                cursor: pointer;
-                vertical-align: top;
-                image-orientation: none;
+            .logo-wrap {
+                display: flex;
+                align-items: center;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    display: block;
+                }
             }
 
             .logo {
@@ -235,38 +467,25 @@ img.symbol.mobile {
                 text-decoration: none;
             }
 
-            .router {
-                position: relative;
-                flex-grow: 1;
+            .section-list {
+                display: flex;
+                align-items: center;
+                padding-left: 0;
+                margin: 0;
+                height: 100%;
 
-                p {
-                    margin: 0;
-                }
-
-                .small {
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    // line-height: 0.7;
-                    font-size: 0.7rem;
+                .section-item {
+                    list-style: none;
                     cursor: pointer;
-                    white-space: nowrap;
-                    opacity: 0.7;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    padding-right: 2.75rem;
 
-                    &:hover {
-                        text-decoration: underline;
+                    &:last-child {
+                        padding-right: 0;
                     }
-                }
-
-                .big {
-                    width: 100%;
-                    // min-width: 60px;
-                    // line-height: 1.2;
-                    font-weight: bold;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    margin-top: 0.7rem;
                 }
             }
         }
@@ -274,212 +493,513 @@ img.symbol.mobile {
         .right {
             display: inline-block;
             vertical-align: middle;
-            // flex-grow: 1;
-            // font-weight: bold;
-            // font-size: 0.9rem;
+            height: 100%;
 
-            ul {
-                position: relative;
-                text-align: right;
-                margin: 0;
-                padding: 0;
-                white-space: nowrap;
-
+            .menu-wrap {
                 display: flex;
                 justify-content: flex-end;
                 align-items: center;
-                gap: 24px;
-
-                &.menu-wrap {
-                    height: 40px;
-                }
+                padding-left: 0;
+                margin: 0;
+                height: 100%;
 
                 li {
-                    display: inline-block;
-                    vertical-align: middle;
                     list-style: none;
+                    vertical-align: middle;
                     user-select: none;
-                    cursor: pointer;
-                    display: flex;
-
-                    a {
-                        // color: rgb(83, 84, 121);
-                        color: #333;
-                    }
+                    position: relative;
+                    height: 100%;
                 }
             }
 
-            .go-github {
-                margin-right: 1.25rem;
+            .list {
+                &:first-child {
+                    .ser {
+                        padding-left: 0;
+                    }
+                }
 
-                a {
-                    width: 20px;
+                &::after {
+                    content: "";
+                    display: inline-block;
+                    width: 1px;
                     height: 20px;
+                    background-color: rgba(225, 225, 225, 0.2);
+                    position: absolute;
+                    top: 50%;
+                    right: 0;
+                    transform: translateY(-50%);
+                }
+
+                &.user-profile {
+                    display: flex;
+                    align-items: center;
+                    cursor: pointer;
+                    padding-right: 0;
+                    padding-left: 1.25rem;
                     position: relative;
 
+                    .img-profile-wrap {
+                        overflow: hidden;
+                        position: relative;
+
+                        &:hover {
+                            &::after {
+                                content: "";
+                                display: inline-block;
+                                width: 100%;
+                                height: 100%;
+                                background-color: rgba(255, 255, 255, 0.05);
+                                position: absolute;
+                                top: 50%;
+                                left: 0;
+                                transform: translateY(-50%);
+                                z-index: 1;
+                                border-radius: 50%;
+                            }
+                        }
+                    }
+
+                    img {
+                        display: block;
+                        overflow: hidden;
+                    }
+
                     &::after {
-                        content: "";
-                        display: inline-block;
-                        width: 1px;
-                        height: 20px;
-                        // background-color: rgba(255, 255, 255, 0.4);
-                        background-color: rgba(0, 0, 0, 0.4);
-                        position: absolute;
-                        right: -24px;
+                        display: none;
                     }
                 }
             }
-        }
 
-        @media all and (pointer: fine) {
-            .prof:hover {
-                &>.material-symbols-outlined:first-child {
-                    box-shadow: inset 0px 0px 0 4px rgba(255, 255, 255, 0.5);
-                    border-radius: 50%;
+            .ser {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                cursor: pointer;
+                height: 100%;
+                padding: 0 1.25rem;
+
+                &:hover {
+                    text-decoration: none;
+                }
+
+                img {
+                    width: 1.25rem;
+                    height: 1.25rem;
                 }
             }
 
-            .prof>svg:hover {
-                box-shadow: inset 0px 0px 0 4px rgba(255, 255, 255, 0.5);
-                border-radius: 50%;
+            .go-community {
+                .btn-dropdown {
+                    background: none;
+                    border: none;
+                    padding: 0;
+                    margin: 0;
+                    font: inherit;
+                    color: inherit;
+                    height: auto;
+                }
+
+                .item {
+                    cursor: pointer;
+                }
+            }
+
+            .go-login {
+                border-radius: 100px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                margin-left: 1.25rem;
+                height: initial !important;
+
+                a {
+                    padding: 0;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    cursor: pointer;
+                    height: 100%;
+                    padding: 0.5rem 1.125rem 0.5rem 1rem;
+
+                    &:hover {
+                        text-decoration: none;
+                    }
+                }
+
+                &:after {
+                    content: none;
+                }
+
+                &:hover {
+                    background-color: #1c1b1b;
+                }
             }
         }
 
         .profile {
+            max-width: 19.375rem;
             text-align: left;
-            color: #000;
-            font-size: 16px;
-            font-weight: normal;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 400;
             user-select: none;
+            background-color: #16171a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.875rem;
 
             .account {
                 padding: 14px 20px;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                display: flex;
+                align-items: center;
             }
 
-            ul {
-                display: block;
-                text-align: left;
-                padding: 10px 20px;
-                color: var(--main-color);
+            .user-id {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
 
-                li {
-                    display: block;
-                    padding: 8px 0;
+        .dropdown-menu {
+            display: block;
+            text-align: left;
+            padding: 0.625rem 0 1.25rem;
 
-                    span {
-                        font-weight: 500;
-                    }
+            .dropdown-list {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.625rem 1.25rem;
 
-                    &:hover {
-                        span {
-                            text-decoration: underline;
-                        }
-                    }
+                span {
+                    font-size: 1.0625rem;
+                    font-weight: 500;
                 }
 
-                .material-symbols-outlined {
-                    font-size: 24px;
-                    color: var(--main-color);
-                    margin-right: 8px;
-                }
-
-                svg {
-                    height: 24px;
-                    width: 24px;
-                    fill: var(--main-color);
-                    margin-right: 8px;
+                &:hover {
+                    background: rgba(255, 255, 255, 0.05);
+                    cursor: pointer;
                 }
             }
-
-            // .policy {
-            //     border-top: 1px solid rgba(0, 0, 0, 0.15);
-            //     font-size: 14px;
-            //     font-weight: bold;
-            //     text-align: center;
-            //     padding: 12px 30px;
-            //     white-space: nowrap;
-
-            //     a {
-            //         color: var(--black-4);
-            //         font-weight: 300;
-            //     }
-            // }
         }
 
-        a:not(.policy a) {
-            // color: #fff;
+        .community {
+            background-color: #16171a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.875rem;
+
+            .list-wrap {
+                padding: 1rem 1.25rem;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                // gap: 0.75rem 0;
+            }
+
+            .item {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                .link {
+                    display: inline-block;
+                    padding: 0.375rem;
+                }
+
+                img {
+                    width: 2.25rem;
+                    height: 2.25rem;
+                }
+
+                &.mo-item {
+                    .link {
+                        padding: 0.25rem 1rem 0.25rem 0;
+                    }
+                }
+            }
         }
-    }
-
-    // 241024 추가
-    .final {
-        // min-width: 128px;
-        height: 40px;
-        // color: #293FE6;
-        // background-color: #fff;
-        padding: 0px 16px;
-    }
-
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: conver;
     }
 }
 
-@media (max-width: 600px) {
-    .desktop {
-        display: none;
-    }
-
-    img.symbol.mobile {
-        display: block;
-    }
-
+@media (max-width: 1199px) {
     #navBar {
         .wrap {
             .left {
-                .router {
-                    .big {
-                        width: calc(100vw - 215px);
-                    }
-                }
-            }
-
-            .right {
-                ul {
-                    gap: 0.9rem;
-
-                    li {
-                        font-size: 0.9rem;
-                    }
-                }
-
-                .go-github {
-                    margin-right: 0.9rem;
-
-                    a {
-                        width: 16px;
-                        height: 16px;
-
-                        &::after {
-                            height: 0.9rem;
-                            right: -0.9rem;
-                        }
-                    }
+                .section-list {
+                    display: none;
                 }
             }
         }
     }
 }
 
-@media (max-width: 476px) {
+@media (max-width: 800px) {
     #navBar {
         .wrap {
-            .right {
-                .go-github {
+            padding: 0 1.25rem;
+
+            .left {
+                .section-list {
                     display: none;
+                }
+            }
+
+            .right {
+                .mo {
+                    padding-right: 0;
+
+                    &:after {
+                        content: none;
+                    }
+                }
+
+                .btn-open-menu {
+                    background: none;
+                    border: none;
+                    padding: 0;
+                    margin: 0;
+                    font: inherit;
+                    color: inherit;
+                    height: 100%;
+
+                    img {
+                        width: 2rem;
+                        height: 2rem;
+                    }
+                }
+
+                &.open {
+                    .mo-menu-wrap {
+                        right: 0;
+                    }
+                }
+            }
+
+            .community {
+                border: none;
+                background-color: inherit;
+                border-radius: 0;
+                padding: 1.25rem 1.25rem 0.75rem 1.25rem;
+                position: absolute;
+                width: 100%;
+                bottom: 60px;
+
+                .text {
+                    font-size: 0.875rem;
+                    font-weight: 400;
+                    color: rgba(225, 225, 225, 0.7);
+                    display: inline-block;
+                    margin-bottom: 1.25rem;
+                }
+
+                .list-wrap {
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    padding: 0;
+                }
+
+                .item {
+                    padding: 0;
+                }
+            }
+        }
+
+        .mo-menu-wrap {
+            position: absolute;
+            right: -110%;
+            top: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            padding-bottom: 3.75rem;
+            transition: right 0.3s ease-in-out;
+            z-index: 9999;
+
+            .top-area {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                height: 4rem;
+                padding: 0 1.25rem;
+
+                img.symbol.mobile {
+                    display: block;
+                }
+            }
+
+            .right-area {
+                display: flex;
+                align-items: center;
+                height: 100%;
+                gap: 1.25rem;
+
+                .prof {
+                    display: flex;
+                    cursor: pointer;
+                    top: 0.25rem;
+                }
+
+                .img-profile {
+                    .img-wrap {
+                        position: relative;
+                        overflow: hidden;
+
+                        img {
+                            display: block;
+                        }
+
+                        &:hover {
+                            &::after {
+                                content: "";
+                                display: inline-block;
+                                width: 100%;
+                                height: 100%;
+                                position: absolute;
+                                background-color: rgba(255, 255, 255, 0.05);
+                                top: 50%;
+                                left: 0;
+                                transform: translateY(-50%);
+                                z-index: 1;
+                                border-radius: 50%;
+                            }
+                        }
+                    }
+                }
+
+                .profile {
+                    top: 4rem;
+                    right: 1.25rem;
+                }
+
+                .go-login {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 0.5rem 1.125rem 0.5rem 1rem;
+
+                    &:hover {
+                        text-decoration: none;
+                    }
+
+                    img {
+                        width: 1.25rem;
+                        height: 1.25rem;
+                    }
+                }
+            }
+
+            .btn-close {
+                background: none;
+                border: none;
+                padding: 0;
+                margin: 0;
+                font: inherit;
+                color: inherit;
+                height: 100%;
+                display: flex;
+                align-items: center;
+
+                img {
+                    width: 2rem;
+                    height: 2rem;
+                }
+            }
+
+            ul {
+                height: initial;
+                font-size: 1.25rem;
+                font-weight: 400;
+                padding-left: 0;
+            }
+
+            li {
+                padding: 1rem 1.5rem;
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.05);
+                    cursor: pointer;
+                }
+            }
+
+            .section-list {
+                &:after {
+                    content: "";
+                    display: inline-block;
+                    width: calc(100% - 3rem);
+                    height: 1px;
+                    background-color: rgba(255, 255, 255, 0.1);
+                    position: relative;
+                    bottom: -0.375rem;
+                    left: 50%;
+                    transform: translateX(-50%);
+                }
+            }
+
+            .menu-list {
+                padding-top: 1.25rem;
+
+                .list {
+                    padding: 0;
+
+                    &:first-child {
+                        .ser {
+                            padding-left: 1.5rem;
+                        }
+                    }
+
+                    &::after {
+                        content: none;
+                    }
+                }
+
+                .ser {
+                    padding: 1rem 1.5rem;
+                }
+
+                .go-github {
+                    padding-left: 0;
+                }
+            }
+
+            .mo-item {
+                &:hover {
+                    background: transparent;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 430px) {
+    #navBar {
+        .mo-menu-wrap {
+            .right-area {
+                .profile {
+                    max-width: calc(100% - 2rem);
+                }
+
+                .dropdown-list {
+                    img {
+                        width: 1.25rem;
+                        height: 1.25rem;
+                    }
+                }
+
+                .go-login {
+                    font-size: 1.0625rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+
+                    &:hover {
+                        text-decoration: none;
+                    }
+
+                    img {
+                        width: 1.25rem;
+                        height: 1.25rem;
+                    }
                 }
             }
         }
