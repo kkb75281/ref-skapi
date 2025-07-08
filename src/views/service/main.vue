@@ -6,50 +6,61 @@
                 span.plan(:class="currentService.plan.toLowerCase()") {{ currentService.plan }}
                 .name {{ currentService.service.name }}
             router-link.router(:to="`/my-services/${currentService.id}`" :class="{'active': route.name == 'service'}")
-                img(src="@/assets/img/servicemain/home.svg" alt="Home Icon")
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-home")
                 span.name Getting Started
                 
             router-link.router(:to="`/my-services/${currentService.id}/dashboard`" :class="{'active': route.name == 'dashboard'}")
-                img(src="@/assets/img/servicemain/setting.svg" alt="Setting Icon")
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-setting")
                 span.name Service Settings
 
             router-link.router(:to="`/my-services/${currentService.id}/users`" :class="{'active': route.name == 'users'}")
-                img(src="@/assets/img/servicemain/users.svg" alt="Users Icon")
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-users")
                 span.name Users
             
             router-link.router(:to="`/my-services/${currentService.id}/openid`" :class="{'active': route.name == 'openid'}")
-                img(src="@/assets/img/servicemain/user_shield.svg" alt="OpenID Icon")
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-user-shield")
                 span.name OpenID Logger
 
             router-link.router(:to="`/my-services/${currentService.id}/clientsecret`" :class="{'active': route.name == 'clientsecret'}")
-                img(src="@/assets/img/servicemain/lock.svg" alt="Client Secret Icon")
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-lock")
                 span.name Client Secret Key
 
             router-link.router(:to="`/my-services/${currentService.id}/records`" :class="{'active': route.name == 'records'}")
-                img(src="@/assets/img/servicemain/cloud.svg" alt="Database Icon")
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-cloud")
                 span.name Database
 
             router-link.router(:to="`/my-services/${currentService.id}/mail`" :class="{'active': route.name == 'mail'}")
-                img(src="@/assets/img/servicemain/mail.svg" alt="Automated Email Icon")                      
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-mail")
                 span.name Automated Email
 
             .advanced-router
                 div(v-if='currentService.service.group <= 1' @click='()=>openOffer=true')
                     .router.deact(:to="`/my-services/${currentService.id}/newsletter`" :class="{'active': route.name == 'newsletter'}")
-                        img(src="@/assets/img/servicemain/mail.svg" alt="Bulk Email Icon")
+                        svg
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-mail")
                         span.name Bulk Email
 
                     .router.deact(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}")
-                        img(src="@/assets/img/servicemain/hosting.svg" alt="File Hosting Icon")
+                        svg
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-hosting")
                         span.name File Hosting
 
                 template(v-else)
                     router-link.router(:to="`/my-services/${currentService.id}/newsletter`" :class="{'active': route.name == 'newsletter'}")
-                        img(src="@/assets/img/servicemain/mail.svg" alt="Bulk Email Icon")
+                        svg
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-mail")
                         span.name Bulk Email
 
                     router-link.router(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}")
-                        img(src="@/assets/img/servicemain/hosting.svg" alt="File Hosting Icon")
+                        svg
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-hosting")
                         span.name File Hosting
         .upgrade
             .title Hey, {{ user?.name ? user.name : user.email.split('@')[0] }}
@@ -297,9 +308,10 @@ button {
                 background: #0D0D0D;
             }
 
-            img {
-                height: 18px;
+            svg {
                 width: 18px;
+                height: 18px;
+                fill: #F5F5F5;
             }
 
             .name {
