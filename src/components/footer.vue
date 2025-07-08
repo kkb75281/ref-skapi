@@ -399,8 +399,8 @@ onUnmounted(() => {
         }
 
         .footer-wrap {
-            padding-left: 2.5rem;
-            padding-right: 2.5rem;
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
             flex-direction: column;
             align-items: flex-start;
             gap: 2rem;
