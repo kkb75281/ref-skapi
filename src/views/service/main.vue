@@ -226,11 +226,6 @@ button {
 
 #serviceMain {
     position: relative;
-    // max-width: 1400px;
-    display: flex;
-    flex-wrap: nowrap;
-    margin: 0 auto;
-    gap: 1em;
     background-color: #16171A;
     color: #F5F5F5;
 
@@ -352,7 +347,7 @@ button {
     }
 
     .right {
-        width: 50%;
+        // width: 50%;
         flex-grow: 1;
         padding: 60px;
         padding-left: 320px;

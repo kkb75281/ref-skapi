@@ -1,5 +1,5 @@
 <template lang="pug">
-section(style="background-color: #16171A; color: #fff;")
+section
     .page-title Getting Started
 
     hr
