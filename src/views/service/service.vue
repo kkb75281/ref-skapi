@@ -137,31 +137,6 @@ section
                         :disabled='updatingValue.freeze_database'
                         @click="changeFreezeDatabase(!currentService.service.freeze_database)"
                     )
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-    br
-
 
 </template>
 
