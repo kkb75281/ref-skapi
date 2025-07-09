@@ -2,6 +2,8 @@
 br
 br
 br
+br
+br
 
 #forgot
     template(v-if="step < 4")
@@ -157,83 +159,87 @@ br
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
-import { ref, nextTick } from 'vue';
-import { skapi } from '@/main';
+import { useRoute, useRouter } from "vue-router";
+import { ref, nextTick } from "vue";
+import { skapi } from "@/main";
 
 const router = useRouter();
 const route = useRoute();
 
 let step = ref(1);
-let error = ref('');
+let error = ref("");
 let promiseRunning = ref(false);
 let resending = ref(false);
 let showPassword = ref(false);
 
 let newPasswordField = ref(null);
 let confirmNewPasswordField = ref(null);
-let email = '';
-let newPassword = '';
-let newPasswordConfirm = '';
-let code = '';
+let email = "";
+let newPassword = "";
+let newPasswordConfirm = "";
+let code = "";
 
 let back = () => {
-    code = '';
-    error.value = '';
+    code = "";
+    error.value = "";
     step.value--;
-}
+};
 let resend = () => {
     resending.value = true;
-    
-    skapi.forgotPassword({ email }).catch(err => {
+
+    skapi.forgotPassword({ email }).catch((err) => {
         error.value = err.message;
         step.value = 1;
-    })
+    });
 
     setTimeout(() => {
         resending.value = false;
     }, 30000);
-}
+};
 let validateNewPassword = () => {
     if (newPassword.length < 6 || newPassword.length > 60) {
-        newPasswordField.value.setCustomValidity('Min 6 characters and Max 60 characters');
+        newPasswordField.value.setCustomValidity(
+            "Min 6 characters and Max 60 characters"
+        );
         newPasswordField.value.reportValidity();
     } else if (newPasswordConfirm !== newPassword) {
-        confirmNewPasswordField.value.setCustomValidity('Password does not match');
+        confirmNewPasswordField.value.setCustomValidity(
+            "Password does not match"
+        );
         confirmNewPasswordField.value.reportValidity();
     }
-}
+};
 let forgotPassword = async () => {
     promiseRunning.value = true;
-    error.value = '';
+    error.value = "";
     try {
         await skapi.forgotPassword({ email });
         step.value++;
-    }
-    catch (err:any) {
+    } catch (err: any) {
         error.value = err.message;
-    }
-    finally {
+    } finally {
         promiseRunning.value = false;
     }
-}
+};
 let changePassword = async () => {
     promiseRunning.value = true;
-    error.value = '';
+    error.value = "";
     try {
-        await skapi.resetPassword({ email: email, code: code, new_password: newPassword })
+        await skapi.resetPassword({
+            email: email,
+            code: code,
+            new_password: newPassword,
+        });
         step.value++;
-    }
-    catch (err:any) {
+    } catch (err: any) {
         step.value--;
         nextTick(() => {
             error.value = err.message;
         });
-    }
-    finally {
+    } finally {
         promiseRunning.value = false;
     }
-}
+};
 </script>
 
 <style scoped lang="less">
@@ -241,6 +247,7 @@ let changePassword = async () => {
     max-width: 480px;
     padding: 0 20px;
     margin: 0 auto;
+    width: 100%;
 }
 // .passwordInput {
 //     position: relative;
@@ -261,7 +268,7 @@ let changePassword = async () => {
         height: 12px;
         width: 12px;
         border-radius: 50%;
-        background-color: #D9D9D9;
+        background-color: #d9d9d9;
         margin-right: 12px;
 
         &.active {
@@ -276,8 +283,8 @@ let changePassword = async () => {
 
 form {
     padding: 8px;
-    
-    >label {
+
+    > label {
         margin-bottom: 16px;
     }
 

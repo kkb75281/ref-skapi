@@ -13,6 +13,7 @@ import NavBar from "@/components/navBar.vue";
     padding-top: 4rem; // height of the navbar
     background-color: #16171a;
 
-    // flex: 1;
+    display: flex;
+    flex: 1;
 }
 </style>

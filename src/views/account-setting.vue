@@ -58,14 +58,14 @@ Modal(:open="proceedVerification" @close="proceedVerification=false")
 </template>
 
 <script setup lang="ts">
-import { skapi } from '@/main';
-import { user, emailSubscribed } from '@/code/user';
-import router from '@/router';
-import { computed, ref, nextTick, watch, onMounted } from 'vue';
-import Modal from '@/components/modal.vue';
-import Checkbox from '@/components/checkbox.vue';
+import { skapi } from "@/main";
+import { user, emailSubscribed } from "@/code/user";
+import router from "@/router";
+import { computed, ref, nextTick, watch, onMounted } from "vue";
+import Modal from "@/components/modal.vue";
+import Checkbox from "@/components/checkbox.vue";
 
-let activeBar = ref('email');
+let activeBar = ref("email");
 let modifyMode = ref(false);
 let updatingValue = ref(false);
 let inputEmail = ref(user.email);
@@ -78,29 +78,27 @@ let editEmail = () => {
     nextTick(() => {
         emailInp.value.focus();
     });
-}
+};
 let sendEmail = async () => {
     sendingEmail.value = true;
     try {
         await skapi.verifyEmail();
-        router.push('/verification');
+        router.push("/verification");
     } catch (err) {
         window.alert(err.message);
+    } finally {
+        proceedVerification.value = false;
     }
-    finally {
-        proceedVerification.value = false
-    }
-}
+};
 let changeEmail = async () => {
     updatingValue.value = true;
     try {
         await skapi.updateProfile({
-            email: inputEmail.value
+            email: inputEmail.value,
         });
         updatingValue.value = false;
         modifyMode.value = false;
-    }
-    catch (err) {
+    } catch (err) {
         updatingValue.value = false;
         nextTick(() => {
             emailInp.value.focus();
@@ -108,25 +106,24 @@ let changeEmail = async () => {
             emailInp.value.reportValidity();
         });
     }
-}
+};
 
 let proceedVerification = ref(false);
 
 watch(emailSubscribed, async (n, o) => {
     if (o === null) return;
 
-    subing_email.value = true
+    subing_email.value = true;
     if (n) {
         await skapi.subscribeNewsletter({
-            group: 'authorized'
+            group: "authorized",
         });
-    }
-    else {
+    } else {
         await skapi.unsubscribeNewsletter({
-            group: 'authorized'
+            group: "authorized",
         });
     }
-    subing_email.value = false
+    subing_email.value = false;
 });
 watch(activeBar, (n, o) => {
     if (n && n !== o) {
@@ -143,12 +140,14 @@ watch(activeBar, (n, o) => {
     margin: 0 auto;
     padding: 0 10px;
     padding-top: 3rem;
+    width: 100%;
 }
 
 .title {
     position: relative;
     font-size: 1.3rem;
     margin-bottom: 8px;
+    color: #fff;
 
     .delete-icon {
         position: absolute;
@@ -159,7 +158,7 @@ watch(activeBar, (n, o) => {
             width: 24px;
             height: 24px;
             cursor: pointer;
-            fill: #ccc
+            fill: #ccc;
         }
 
         &:hover {
@@ -172,6 +171,7 @@ watch(activeBar, (n, o) => {
 
 .desc {
     font-size: 0.9rem;
+    color: #fff;
 }
 
 .bar-wrap {
@@ -216,6 +216,7 @@ watch(activeBar, (n, o) => {
 
     .form-title {
         margin-bottom: 8px;
+        color: #fff;
     }
 
     input {
@@ -246,4 +247,5 @@ watch(activeBar, (n, o) => {
 //         border-radius: 50%;
 //         background-color: rgba(41, 63, 230, 0.1);
 //     }
-// }</style>
+// }
+</style>

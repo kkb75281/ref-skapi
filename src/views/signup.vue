@@ -89,11 +89,11 @@ br
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
-import { skapi } from '@/main'
-import { user } from '@/code/user'
-import { onMounted, ref } from 'vue';
-import Checkbox from '@/components/checkbox.vue';
+import { useRoute, useRouter } from "vue-router";
+import { skapi } from "@/main";
+import { user } from "@/code/user";
+import { onMounted, ref } from "vue";
+import Checkbox from "@/components/checkbox.vue";
 const router = useRouter();
 const route = useRoute();
 
@@ -103,56 +103,66 @@ let passwordField = ref(null);
 let confirmPasswordField = ref(null);
 let error = ref(null);
 let form = ref({
-    email: '',
-    password: '',
-    password_confirm: '',
+    email: "",
+    password: "",
+    password_confirm: "",
     subscribe: true,
 });
 let routeQuery = route.query;
 onMounted(() => {
-	console.log({routeQuery})
+    console.log({ routeQuery });
 });
 
 let validatePassword = () => {
     if (form.value.password_confirm !== form.value.password) {
-        confirmPasswordField.value.setCustomValidity('Password does not match');
+        confirmPasswordField.value.setCustomValidity("Password does not match");
         confirmPasswordField.value.reportValidity();
     }
-}
+};
 
 let signup = (e) => {
-    error.value = '';
+    error.value = "";
     promiseRunning.value = true;
 
     let params = {
         email: form.value.email,
         password: form.value.password,
-    }
+    };
     let options = {
-        signup_confirmation: '/success',
-        email_subscription: form.value.subscribe
+        signup_confirmation: "/success",
+        email_subscription: form.value.subscribe,
+    };
+
+    if (routeQuery?.suc_redirect) {
+        options.signup_confirmation =
+            options.signup_confirmation +
+            "?suc_redirect=" +
+            routeQuery.suc_redirect;
     }
 
-	if(routeQuery?.suc_redirect) {
-		options.signup_confirmation = options.signup_confirmation + '?suc_redirect=' + routeQuery.suc_redirect
-	}
+    skapi
+        .signup(params, options)
+        .then((res) => {
+            router.push({
+                path: "/confirmation",
+                query: { email: form.value.email },
+            });
+        })
+        .catch((err) => {
+            promiseRunning.value = false;
 
-    skapi.signup(params, options).then(res => {
-        router.push({ path: '/confirmation', query: { email: form.value.email } })
-    }).catch(err => {
-        promiseRunning.value = false;
-
-        switch (err.code) {
-            case 'EXISTS':
-            case 'UsernameExistsException' :
-                error.value = "This email is already in use";
-                break;
-            default:
-                error.value = "Something went wrong please contact an administrator.";
-                throw e;
-        }
-    });
-}
+            switch (err.code) {
+                case "EXISTS":
+                case "UsernameExistsException":
+                    error.value = "This email is already in use";
+                    break;
+                default:
+                    error.value =
+                        "Something went wrong please contact an administrator.";
+                    throw e;
+            }
+        });
+};
 </script>
 
 <style scoped lang="less">
@@ -160,12 +170,13 @@ let signup = (e) => {
     max-width: 480px;
     padding: 0 20px;
     margin: 0 auto;
+    width: 100%;
 }
 
 form {
     padding: 8px;
 
-    >label {
+    > label {
         margin-bottom: 16px;
     }
 
@@ -173,7 +184,7 @@ form {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        align-items: center
+        align-items: center;
     }
 
     .bottom {

@@ -1,10 +1,9 @@
 <template lang="pug">
-//- div._root
-div._root(style='min-height: calc(100vh - 1rem - 1px - var(--footer-height, 0));')
+div._root(style='min-height: calc(100vh - var(--footer-height, 0));')
     //- router-view(v-if='route.name === "home" || loaded')
     router-view(v-if='connected')
 
-    Footer
+Footer
 
 //- footer#footer.new
     //- img(src="@/assets/img/logo/logo-white.svg" style="height:.88rem;")
@@ -29,11 +28,9 @@ const route = useRoute();
 <style lang="less">
 ._root {
     height: auto;
-    min-height: 100%;
 
-    // display: flex;
-    // flex-direction: column;
-    // height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .review-swiper {

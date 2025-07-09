@@ -34,31 +34,18 @@
 				span Create
 			modalCreateService(:visible="showCreateModal" :isFirstService="!hasNoServices" @close="showCreateModal = false")
 	section.section.my-services-list
-		//- .title.faktum My Services
-
-		//- .iconbutton(@click="router.push('/create')")
-		//- 	svg.svgIcon
-		//- 		use(xlink:href="@/assets/img/material-icon.svg#icon-add") 
-		//- 	span &nbsp;&nbsp;Create New Service
 		.title My Services
 
 		Table.tb-services-list(resizable style="width:100%;")
 			template(v-slot:head)
 				tr
 					th.th.overflow Service Name
-						
 					th.th.overflow Plan
-						
 					th.th.overflow State
-						
 					th.th.overflow Users
-						
 					th.th.overflow Database
-						
 					th.th.overflow File Storage
-						
 					th.th.overflow File Hosting
-						
 					th.th.overflow Email
 
 			template(v-slot:body)
@@ -100,11 +87,6 @@
 
 						td.email
 							span.value(:class="getClass(serviceSpecList[id], 'email')") {{ typeof(serviceSpecList[id]?.dataPercent?.email) === 'string' ? serviceSpecList[id]?.dataPercent?.email : serviceSpecList[id]?.dataPercent?.email + '%' }}
-
-	br
-	br
-	br
-	br
 </template>
 
 <script setup lang="ts">
@@ -207,6 +189,7 @@ a {
     margin: 0 auto;
     padding: 3.75rem 4.5rem;
     height: 100%;
+    flex: 1;
 }
 
 // top area
@@ -214,7 +197,6 @@ a {
     display: flex;
     align-items: center;
     gap: 1.25rem;
-    // flex-wrap: wrap;
     margin-bottom: 3.75rem;
 }
 
@@ -226,7 +208,6 @@ a {
     position: relative;
     background: url("@/assets/img/myservice/bg_blue.png") no-repeat center;
     flex: 1;
-    // max-width: 24.125rem;
     max-width: 27.125rem;
 
     .title {
