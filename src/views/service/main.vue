@@ -62,7 +62,7 @@
                         svg
                             use(xlink:href="@/assets/img/material-icon.svg#icon-nav-hosting")
                         span.name File Hosting
-        .upgrade
+        .upgrade(v-if="currentService.service.group <= 1")
             .title Hey, {{ user?.name ? user.name : user.email.split('@')[0] }}
             .desc This service is currently in a free version. Upgrade to enjoy more convenient features!
             button Upgrade
@@ -350,8 +350,9 @@ button {
     .right {
         // width: 50%;
         flex-grow: 1;
-        padding: 60px;
-        padding-left: 320px;
+        padding: 40px;
+        padding-top: 60px;
+        padding-left: 300px;
         max-width: 1600px;
         margin: 0 auto;
     }
@@ -409,10 +410,27 @@ button {
 //     }
 // }
 
-// @media (max-width: 767px) {
-//     #serviceMain {
-//         #leftNav {
-//             display: none;
-//         }
-//     }
-// }</style>
+@media (max-width: 1280px) {
+    // #serviceMain {
+    //     .right {
+    //         padding: 40px;
+    //         padding-top: 60px;
+    //         padding-left: 300px;
+    //     }
+    // }
+}
+
+@media (max-width: 800px) {
+    #serviceMain {
+        // #leftNav {
+        //     display: none;
+        // }
+
+        .right {
+            padding: 20px;
+            padding-top: 60px;
+            padding-left: 280px;
+        }
+    }
+}
+</style>

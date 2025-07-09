@@ -167,6 +167,15 @@ onUnmounted(() => {
 
     &.service-main-footer {
         margin-left: 260px;
+        background-color: #16171A;
+
+        .footer-wrap {
+            padding: 1.875rem 2.5rem;
+
+            .right {
+                flex-grow: 1;
+            }
+        }
     }
 
     .top-inner,
@@ -269,7 +278,7 @@ onUnmounted(() => {
         .right {
             p {
                 margin: 0;
-                margin-bottom: 12px;
+                margin-bottom: 4px;
                 font-size: 17px;
                 font-weight: 300;
                 opacity: 0.7;
@@ -370,12 +379,13 @@ onUnmounted(() => {
             color: rgba(255, 255, 255, 0.5);
             display: block;
             text-align: right;
-            margin-bottom: 0.625rem;
         }
 
         .icon-wrap {
             position: relative;
             right: -7px;
+            bottom: -8px;
+            text-align: end;
         }
     }
 }
@@ -392,6 +402,12 @@ onUnmounted(() => {
 
 @media (max-width: 800px) {
     #footer {
+
+        &.service-main-footer {
+            .footer-wrap {
+                padding: 1.875rem 1.25rem;
+            }
+        }
 
         .top-inner,
         .bottom-inner {
@@ -439,7 +455,6 @@ onUnmounted(() => {
             .email {
                 text-align: left;
                 font-size: 0.8125rem;
-                margin-bottom: 1rem;
             }
 
             .icon-wrap {
