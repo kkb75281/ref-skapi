@@ -62,7 +62,7 @@
 						td.plan
 							.state(v-if="serviceList[id].service.subs_id && !serviceList[id].subscription")
 								.loader(style="--loader-color:black; --loader-size:12px")
-							span.badge(v-else :class="serviceList[id].service.plan?.toLowerCase() === 'trial' ? 'trial' : serviceList[id].service.plan?.toLowerCase() === 'standard' ? 'standard' : serviceList[id].service.plan?.toLowerCase() === 'premium' ? 'premium' : serviceList[id].service.plan === 'Canceled' ? 'canceled' : ''") {{ serviceList[id].service.plan || serviceList[id].plan }}
+							span.badge(v-else :class="serviceList[id].plan?.toLowerCase().split(' ')[0]") {{ serviceList[id].service.plan || serviceList[id].plan }}
 						td.state
 							span.running(v-if="serviceList[id].service.active > 0") Running
 							span.disabled(v-else-if="serviceList[id].service.active == 0") Disabled
@@ -188,6 +188,7 @@ a {
     max-width: 90rem;
     margin: 0 auto;
     padding: 3.75rem 4.5rem;
+    width: 100%;
     height: 100%;
     flex: 1;
 }
