@@ -41,14 +41,25 @@ let copy = (e) => {
 ._codeWrap {
     position: relative;
     margin-top: 8px;
-    
+
 
     .copy {
-        display: inline-block;
+        position: absolute;
+        bottom: 22px;
+        right: 28px;
+        background-color: #1E1E20;
+        padding: 9px 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 7px;
+        // display: inline-block;
         text-align: right;
-        font-size: 14px;
+        font-size: 15px;
         font-weight: 400;
         cursor: pointer;
+
+        svg {
+            fill: #fff;
+        }
     }
 
     .copyMsg {
@@ -62,17 +73,15 @@ let copy = (e) => {
         box-shadow: 2px 2px 3px 0px rgba(0, 0, 0, 0.15);
         color: #FFF;
         overflow-x: auto;
-
-        background: #344054;
-        border: 1px solid #475467;
+        background: #121214;
 
         pre {
             font-family: 'Space Mono', monospace;
             // display: flex;
-            align-items: center;    
+            align-items: center;
             font-size: 16px;
             margin: 0;
-            padding: 1rem;
+            padding: 28px 0 52px 32px;
             min-height: 44px;
         }
     }

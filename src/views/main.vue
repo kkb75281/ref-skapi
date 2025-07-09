@@ -5,11 +5,15 @@ main#main
 </template>
 
 <script setup>
-import NavBar from '@/components/navBar.vue';
+import NavBar from "@/components/navBar.vue";
 </script>
 
 <style lang="less">
 #main {
     padding-top: 4rem; // height of the navbar
+    background-color: #16171a;
+
+    display: flex;
+    flex: 1;
 }
 </style>

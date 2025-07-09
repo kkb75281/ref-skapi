@@ -1,114 +1,112 @@
 <template lang="pug">
-main#create
-    .step-wrap
-        router-link(to="/my-services")
-            img.symbol(src="@/assets/img/logo/symbol-logo.png" alt="Skapi logo")
-            span.list service-list
+template(v-if="visible")
+    .modal-overlay(:class="{ 'first-service': isFirstService }" @click="$emit('close')")
+    .modal-content(@click.stop)
+        button.btn-close(@click="$emit('close')")
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+                
+        main#create
+            .form(v-if="step === 1")
+                h3.title {{ isFirstService ? 'Welcome! Create your first service' : 'Create your service' }}
+                span.desc Create your service to get started. <br> You can create and manage multiple projects.
+                .input-wrap
+                    .infoValue
+                        input.big(placeholder="Service name (Max 40 chars)" maxlength="40" required v-model="newServiceName" style="width: 100%;")
+                    button.final(type="button" :class="{'disabled': !newServiceName}" @click="step++") Next
 
-        span >
-        
-        .route(@click="step = 1") create service
-
-        template(v-if="step === 2") 
-            span > 
-
-            .route choose plan
-
-    .form(v-if="step === 1")
-        .infoValue(style="flex-grow:1")
-            .smallTitle Service Name
-            input.big(placeholder="New service name (Max 40 chars)" maxlength="40" required v-model="newServiceName" style="width: 100%;")
-        button.final(type="button" :class="{'disabled': !newServiceName}" @click="step++") Next
-
-    .plan-wrap.card-wrap(v-else-if="step === 2")
-        .plan(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
-            .card
-                .title Trial
-                //- .option 
-                    TabMenu(v-model="activeTabs.trial" :tabs="['basic']")
-                .price
-                    .faktum {{ '$' + planSpec['Trial'].price }}
-                    span /mo
-                .desc Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
-                button.final(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('trial')") 
-                    template(v-if="serviceMode == 'trial' && promiseRunning")
-                        .loader(style="--loader-color:white; --loader-size: 12px")
-                    template(v-else) Select
-            ul.provides
-                li(v-for="(des) in planSpec['Trial'].description") {{ des }}
-                li.warning(v-for="(des) in planSpec['Trial'].description_warning") {{ des }}
-        .plan(:class="{'selected' : (serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'standard' && serviceMode !== 'standard-perpetual') && promiseRunning}")
-            .card
-                .title Standard 
-                //- .option 
-                    TabMenu(v-model="activeTabs.standard" :tabs="['basic', 'perpetual']")
-                .price
-                    template(v-if="activeTabs.standard === 0") 
-                        .faktum {{ '$' + planSpec['Standard'].price }}
-                        span /mo
-                    template(v-else)
-                        .faktum {{ '$' + planSpec['Standard (Perpetual License)'].price }}
-                        span /only-once
-                .desc 
-                    template(v-if="activeTabs.standard === 0") Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
-                    template(v-else) Get lifetime access to the Standard plan for just $300—upgrade anytime as your needs grow.
-                button.final(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('standard')")
-                    template(v-if="(serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning")
-                        .loader(style="--loader-color:white; --loader-size: 12px")
-                    template(v-else) Select
-            ul.provides
-                li(v-for="(des) in planSpec['Standard'].description") {{ des }}
-        .plan(:class="{'selected' : (serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'premium' && serviceMode !== 'premium-perpetual') && promiseRunning}")
-            .card
-                .title Premium 
-                //- .option 
-                    TabMenu(v-model="activeTabs.premium" :tabs="['basic', 'perpetual']")
-                .price
-                    template(v-if="activeTabs.premium === 0") 
-                        .faktum {{ '$' + planSpec['Premium'].price }}
-                        span /mo
-                    template(v-else)
-                        .faktum {{ '$' + planSpec['Premium (Perpetual License)'].price }}
-                        span /only-once
-                .desc Empower your business with formcarry, #[span.wordset for big businesses]
-                button.final(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('premium')")
-                    template(v-if="(serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning")
-                        .loader(style="--loader-color:white; --loader-size: 12px")
-                    template(v-else) Select
-            ul.provides
-                li(v-for="(des) in planSpec['Premium'].description") {{ des }}
-
-br
-br
-br
+            .plan-wrap.card-wrap(v-else-if="step === 2")
+                .plan(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
+                    .card
+                        .title Trial
+                        //- .option 
+                            TabMenu(v-model="activeTabs.trial" :tabs="['basic']")
+                        .price
+                            .faktum {{ '$' + planSpec['Trial'].price }}
+                            span /mo
+                        .desc Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
+                        button.final(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('trial')") 
+                            template(v-if="serviceMode == 'trial' && promiseRunning")
+                                .loader(style="--loader-color:white; --loader-size: 12px")
+                            template(v-else) Select
+                    ul.provides
+                        li(v-for="(des) in planSpec['Trial'].description") {{ des }}
+                        li.warning(v-for="(des) in planSpec['Trial'].description_warning") {{ des }}
+                .plan(:class="{'selected' : (serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'standard' && serviceMode !== 'standard-perpetual') && promiseRunning}")
+                    .card
+                        .title Standard 
+                        //- .option 
+                            TabMenu(v-model="activeTabs.standard" :tabs="['basic', 'perpetual']")
+                        .price
+                            template(v-if="activeTabs.standard === 0") 
+                                .faktum {{ '$' + planSpec['Standard'].price }}
+                                span /mo
+                            template(v-else)
+                                .faktum {{ '$' + planSpec['Standard (Perpetual License)'].price }}
+                                span /only-once
+                        .desc 
+                            template(v-if="activeTabs.standard === 0") Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
+                            template(v-else) Get lifetime access to the Standard plan for just $300—upgrade anytime as your needs grow.
+                        button.final(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('standard')")
+                            template(v-if="(serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning")
+                                .loader(style="--loader-color:white; --loader-size: 12px")
+                            template(v-else) Select
+                    ul.provides
+                        li(v-for="(des) in planSpec['Standard'].description") {{ des }}
+                .plan(:class="{'selected' : (serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'premium' && serviceMode !== 'premium-perpetual') && promiseRunning}")
+                    .card
+                        .title Premium 
+                        //- .option 
+                            TabMenu(v-model="activeTabs.premium" :tabs="['basic', 'perpetual']")
+                        .price
+                            template(v-if="activeTabs.premium === 0") 
+                                .faktum {{ '$' + planSpec['Premium'].price }}
+                                span /mo
+                            template(v-else)
+                                .faktum {{ '$' + planSpec['Premium (Perpetual License)'].price }}
+                                span /only-once
+                        .desc Empower your business with formcarry, #[span.wordset for big businesses]
+                        button.final(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('premium')")
+                            template(v-if="(serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning")
+                                .loader(style="--loader-color:white; --loader-size: 12px")
+                            template(v-else) Select
+                    ul.provides
+                        li(v-for="(des) in planSpec['Premium'].description") {{ des }}
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
-import { ref } from 'vue';
-import { serviceIdList, serviceList } from '@/views/service-list'
-import { skapi } from '@/main';
-import { customer } from '@/code/user';
+import { useRoute, useRouter } from "vue-router";
+import { ref } from "vue";
+import { serviceIdList, serviceList } from "@/views/service-list";
+import { skapi } from "@/main";
+import { customer } from "@/code/user";
 import { planSpec } from "@/views/service/service-spec";
 
-import Service from '@/code/service';
-import TabMenu from '@/components/tab.vue';
+import Service from "@/code/service";
+import TabMenu from "@/components/tab.vue";
 
 const router = useRouter();
 const route = useRoute();
 
+defineProps({
+    visible: Boolean,
+    isFirstService: Boolean,
+});
+
+defineEmits(["close"]);
+
 let service = {
     active: 1,
-    name: 'service name',
-    cors: 'service cors',
+    name: "service name",
+    cors: "service cors",
     timestamp: 1709102706561,
     group: 1,
-    service: 'ap226E8TXhYtbcXRgi5D',
-    users: 10
-}
+    service: "ap226E8TXhYtbcXRgi5D",
+    users: 10,
+};
 let promiseRunning = ref(false);
-let serviceMode = ref('standard');
-let newServiceName = ref('');
+let serviceMode = ref("standard");
+let newServiceName = ref("");
 let activeTabs = ref({
     trial: 0,
     standard: 0,
@@ -116,8 +114,12 @@ let activeTabs = ref({
 });
 let step = ref(1);
 
-let createSubscription = async (ticket_id, service_info, isPerpetual = false) => {
-    if (serviceMode.value.includes('perpetual')) {
+let createSubscription = async (
+    ticket_id,
+    service_info,
+    isPerpetual = false
+) => {
+    if (serviceMode.value.includes("perpetual")) {
         isPerpetual = true;
     }
 
@@ -129,41 +131,42 @@ let createSubscription = async (ticket_id, service_info, isPerpetual = false) =>
     let data = {
         client_reference_id: service_info.owner,
         customer: customer_id,
-        'customer_update[name]': 'auto',
-        'customer_update[address]': 'auto',
+        "customer_update[name]": "auto",
+        "customer_update[address]": "auto",
 
-        cancel_url: currentUrl.origin + '/my-services',
+        cancel_url: currentUrl.origin + "/my-services",
         "line_items[0][quantity]": 1,
-        'line_items[0][price]': product[ticket_id],
-        "success_url": currentUrl.origin + '/my-services/' + service_info.id,
-        'tax_id_collection[enabled]': true,
-    }
+        "line_items[0][price]": product[ticket_id],
+        success_url: currentUrl.origin + "/my-services/" + service_info.id,
+        "tax_id_collection[enabled]": true,
+    };
 
     if (isPerpetual) {
         Object.assign(data, {
-            'metadata[service]': service_info.id,
-            'metadata[owner]': service_info.owner,
-            'metadata[price]': product[ticket_id],
-            'mode': 'payment',
-        })
+            "metadata[service]": service_info.id,
+            "metadata[owner]": service_info.owner,
+            "metadata[price]": product[ticket_id],
+            mode: "payment",
+        });
     } else {
         Object.assign(data, {
-            'subscription_data[metadata][service]': service_info.id,
-            'subscription_data[metadata][owner]': service_info.owner,
-            'mode': 'subscription',
-            'subscription_data[description]': 'Subscription plan for service ID: "' + service_info.id + '"',
-        })
+            "subscription_data[metadata][service]": service_info.id,
+            "subscription_data[metadata][owner]": service_info.owner,
+            mode: "subscription",
+            "subscription_data[description]":
+                'Subscription plan for service ID: "' + service_info.id + '"',
+        });
     }
 
     let response = await skapi.clientSecretRequest({
-        clientSecretName: 'stripe_test',
-        url: 'https://api.stripe.com/v1/checkout/sessions',
-        method: 'POST',
+        clientSecretName: "stripe_test",
+        url: "https://api.stripe.com/v1/checkout/sessions",
+        method: "POST",
         headers: {
-            Authorization: 'Bearer $CLIENT_SECRET',
-            'Content-Type': 'application/x-www-form-urlencoded'
+            Authorization: "Bearer $CLIENT_SECRET",
+            "Content-Type": "application/x-www-form-urlencoded",
         },
-        data
+        data,
     });
 
     if (response.error) {
@@ -172,48 +175,42 @@ let createSubscription = async (ticket_id, service_info, isPerpetual = false) =>
     }
 
     window.location = response.url;
-}
+};
 
 let createService = () => {
     promiseRunning.value = true;
 
     Service.create({ name: newServiceName.value })
         .then(async (s) => {
-            if (serviceMode.value == 'trial') {
+            if (serviceMode.value == "trial") {
                 serviceIdList.push(s.id);
                 serviceList[s.id] = s;
-                location.href = '/my-services/' + s.id;
+                location.href = "/my-services/" + s.id;
             } else {
                 let service_info = s;
                 let ticket_id = serviceMode.value;
                 await createSubscription(ticket_id, service_info);
             }
-        }).catch(err => {
+        })
+        .catch((err) => {
             promiseRunning.value = false;
             alert(err.message);
-        })
-}
+        });
+};
 
 let selectedPlan = (plan: string) => {
-    if (plan !== 'trial') {
+    if (plan !== "trial") {
         if (activeTabs.value[plan] == 1) {
-            plan = plan + '-perpetual';
+            plan = plan + "-perpetual";
         }
     }
 
     serviceMode.value = plan;
     createService();
-}
+};
 </script>
 
 <style scoped lang="less">
-#create {
-    max-width: 1000px;
-    padding: 0 8px;
-    margin: 0 auto;
-    padding-top: 10px;
-}
-
 .smallTitle {
     font-size: 0.8rem;
     color: #333;
@@ -257,19 +254,6 @@ let selectedPlan = (plan: string) => {
     }
 }
 
-.form {
-    max-width: 570px;
-    width: 100%;
-    height: calc((100vh - var(--footer-height) - 50px) / 2);
-    padding: 0 20px;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 1rem;
-}
-
 input {
     width: unset;
     flex-grow: 1;
@@ -279,7 +263,7 @@ input {
     max-width: 100%;
     margin: 0 auto;
     display: flex;
-    flex-wrap: wrap;
+    // flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: 1rem;
@@ -292,7 +276,7 @@ input {
         border: 1px solid rgba(0, 0, 0, 0.1);
         border-radius: 12px;
         padding: 1rem;
-        transition: all .3s;
+        transition: all 0.3s;
         cursor: pointer;
         background-color: #fff;
 
@@ -331,13 +315,12 @@ input {
 
 .plan-wrap {
     align-items: start;
-    padding-top: 7rem;
 
     .plan {
         width: 31%;
         min-width: 250px;
         flex-grow: 1;
-        transition: all .3s;
+        transition: all 0.3s;
         scale: 1;
 
         &.selected {
@@ -393,10 +376,11 @@ input {
         .faktum {
             font-size: 2.4rem;
             margin-right: 0.5rem;
+            color: #000;
         }
 
         span {
-            color: #888
+            color: #888;
         }
     }
 
@@ -423,15 +407,136 @@ input {
 
         &::before {
             position: absolute;
-            content: '';
+            content: "";
             left: -1.3rem;
             top: 0.1rem;
-            background: url('@/assets/img/icon/check.svg') no-repeat;
+            background: url("@/assets/img/icon/check.svg") no-repeat;
             background-size: cover;
             width: 16px;
             height: 16px;
             opacity: 0.8;
         }
+    }
+}
+
+// 모달 스타일 추가 :: s
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999999;
+
+    &.first-service {
+        background: url("@/assets/img/myservice/bg_gradation.png") no-repeat
+            center center;
+        background-size: cover;
+        top: 4rem;
+    }
+}
+
+.modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 62.5rem;
+    width: fit-content;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #16171a;
+    border-radius: 12px;
+    padding: 5rem 5.25rem 6.25rem;
+    z-index: 999999;
+
+    .title {
+        font-size: 1.875rem;
+        font-weight: 500;
+        color: #fff;
+        margin-bottom: 0.625rem;
+        margin-top: 0;
+        text-align: center;
+    }
+
+    .desc {
+        font-size: 0.9375rem;
+        font-weight: 400;
+        color: #666666;
+        line-height: 1.2;
+        margin-bottom: 3.125rem;
+        display: block;
+    }
+}
+
+.btn-close {
+    outline: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    top: 1.5rem;
+    right: 2.5rem;
+
+    .svgIcon {
+        fill: #fff;
+    }
+}
+
+.form {
+    max-width: 22rem;
+    min-width: 22rem;
+}
+
+.input-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    input {
+        border-radius: 0.5rem;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        background: linear-gradient(
+                0deg,
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0.05) 100%
+            ),
+            #16171a;
+        outline: none;
+        color: #fff;
+        padding: 0.625rem 1rem;
+
+        &:focus,
+        &:hover,
+        &:active {
+            border-color: rgba(255, 255, 255, 0.5);
+            outline: none !important;
+        }
+
+        &::placeholder {
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: #999;
+        }
+    }
+}
+
+.provides {
+    color: #666666;
+}
+// 모달 스타일 추가 :: e
+
+@media (max-width: 992px) {
+    .card-wrap {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .modal-content {
+        padding: 3rem 2rem 2rem;
+    }
+
+    .btn-close {
+        top: 1rem;
+        right: 1.875rem;
     }
 }
 
@@ -442,21 +547,10 @@ input {
         }
     }
 
-    .form {
-        height: unset;
-        padding: 0 10px;
-        padding-top: 20px;
-
-        button {
-            width: 100%;
-        }
-    }
-
     .plan-wrap {
         padding-top: 20px;
 
         .plan {
-
             &:hover,
             &.selected {
                 scale: 1;
@@ -466,6 +560,17 @@ input {
                 scale: 0.95;
             }
         }
+    }
+}
+
+@media (max-width: 430px) {
+    .modal-content {
+        width: calc(100% - 1rem);
+    }
+
+    .form {
+        max-width: 100%;
+        min-width: 100%;
     }
 }
 </style>
