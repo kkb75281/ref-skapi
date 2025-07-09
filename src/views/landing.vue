@@ -367,8 +367,6 @@ onMounted(async () => {
     window.addEventListener("scroll", handleScroll);
     handleScroll();
 
-    document.body.style.backgroundColor = "#111112"; // 최상단, 최하단에서 스크롤시 배경색이 흰색으로 보이는 문제를 방지하기 위해 설정
-
     const heroArea = document.querySelector(".hero");
     if (heroArea) {
         requestAnimationFrame(() => {
@@ -442,7 +440,6 @@ onBeforeUnmount(() => {
 
 onUnmounted(() => {
     window.removeEventListener("resize", setSwiperImageWidth);
-    document.body.style.backgroundColor = "#ffffff"; // 페이지가 언마운트될 때 배경색을 원래대로 되돌림
 
     const heroArea = document.querySelector(".hero");
     if (heroArea) {
@@ -452,28 +449,6 @@ onUnmounted(() => {
 </script>
 
 <style lang="less" scoped>
-button {
-    display: inline-flex;
-    max-width: 240px;
-    padding: 0 0.875rem;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 13px;
-    background: #0a4df1;
-    border: 0;
-    color: #fff;
-    font-size: 1.125rem;
-    font-weight: 500;
-    line-height: 1.5;
-    white-space: nowrap;
-
-    &:hover {
-        background-color: #1656f2;
-    }
-}
-
 section {
     margin: 0 2.5rem;
     color: #fff;
@@ -1605,11 +1580,6 @@ section {
 }
 
 @media (max-width: 430px) {
-    button {
-        font-size: 1rem;
-        padding: 0 0.75rem;
-    }
-
     .btn {
         font-size: 1rem;
         padding: 0.875rem;

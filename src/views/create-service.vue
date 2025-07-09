@@ -2,7 +2,7 @@
 template(v-if="visible")
     .modal-overlay(:class="{ 'first-service': isFirstService }" @click="$emit('close')")
     .modal-content(@click.stop)
-        button.btn-close(@click="$emit('close')")
+        //- .btn-close(@click="$emit('close')")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-close")
                 
@@ -10,10 +10,11 @@ template(v-if="visible")
             .form(v-if="step === 1")
                 h3.title {{ isFirstService ? 'Welcome! Create your first service' : 'Create your service' }}
                 span.desc Create your service to get started. <br> You can create and manage multiple projects.
-                .input-wrap
-                    .infoValue
-                        input.big(placeholder="Service name (Max 40 chars)" maxlength="40" required v-model="newServiceName" style="width: 100%;")
-                    button.final(type="button" :class="{'disabled': !newServiceName}" @click="step++") Next
+                input.block(placeholder="Service name (Max 40 chars)" maxlength="40" required v-model="newServiceName" style="margin-bottom: 0.75rem;")
+                button.block.icon-text(type="button" :class="{'disabled': !newServiceName}" :style="!newServiceName ? { backgroundColor: 'rgba(34, 35, 37, 1)' } : {}" @click="step++")
+                    svg
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-add") 
+                    span Create
 
             .plan-wrap.card-wrap(v-else-if="step === 2")
                 .plan(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
@@ -25,7 +26,7 @@ template(v-if="visible")
                             .faktum {{ '$' + planSpec['Trial'].price }}
                             span /mo
                         .desc Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
-                        button.final(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('trial')") 
+                        button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('trial')") 
                             template(v-if="serviceMode == 'trial' && promiseRunning")
                                 .loader(style="--loader-color:white; --loader-size: 12px")
                             template(v-else) Select
@@ -47,7 +48,7 @@ template(v-if="visible")
                         .desc 
                             template(v-if="activeTabs.standard === 0") Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
                             template(v-else) Get lifetime access to the Standard plan for just $300—upgrade anytime as your needs grow.
-                        button.final(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('standard')")
+                        button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('standard')")
                             template(v-if="(serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning")
                                 .loader(style="--loader-color:white; --loader-size: 12px")
                             template(v-else) Select
@@ -66,7 +67,7 @@ template(v-if="visible")
                                 .faktum {{ '$' + planSpec['Premium (Perpetual License)'].price }}
                                 span /only-once
                         .desc Empower your business with formcarry, #[span.wordset for big businesses]
-                        button.final(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('premium')")
+                        button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('premium')")
                             template(v-if="(serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning")
                                 .loader(style="--loader-color:white; --loader-size: 12px")
                             template(v-else) Select
@@ -254,11 +255,6 @@ let selectedPlan = (plan: string) => {
     }
 }
 
-input {
-    width: unset;
-    flex-grow: 1;
-}
-
 .card-wrap {
     max-width: 100%;
     margin: 0 auto;
@@ -427,8 +423,7 @@ input {
     z-index: 999999;
 
     &.first-service {
-        background: url("@/assets/img/myservice/bg_gradation.png") no-repeat
-            center center;
+        background: url("@/assets/img/myservice/bg_gradation.png") no-repeat center center;
         background-size: cover;
         top: 4rem;
     }
@@ -468,10 +463,6 @@ input {
 }
 
 .btn-close {
-    outline: none;
-    border: none;
-    padding: 0;
-    margin: 0;
     position: absolute;
     top: 1.5rem;
     right: 2.5rem;
@@ -486,42 +477,10 @@ input {
     min-width: 22rem;
 }
 
-.input-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-
-    input {
-        border-radius: 0.5rem;
-        border: 1px solid rgba(0, 0, 0, 0.5);
-        background: linear-gradient(
-                0deg,
-                rgba(255, 255, 255, 0.05) 0%,
-                rgba(255, 255, 255, 0.05) 100%
-            ),
-            #16171a;
-        outline: none;
-        color: #fff;
-        padding: 0.625rem 1rem;
-
-        &:focus,
-        &:hover,
-        &:active {
-            border-color: rgba(255, 255, 255, 0.5);
-            outline: none !important;
-        }
-
-        &::placeholder {
-            font-size: 0.875rem;
-            font-weight: 400;
-            color: #999;
-        }
-    }
-}
-
 .provides {
     color: #666666;
 }
+
 // 모달 스타일 추가 :: e
 
 @media (max-width: 992px) {
@@ -551,6 +510,7 @@ input {
         padding-top: 20px;
 
         .plan {
+
             &:hover,
             &.selected {
                 scale: 1;
