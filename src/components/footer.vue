@@ -1,5 +1,5 @@
 <template lang="pug">
-footer#footer
+footer#footer(:class="{ 'service-main-footer': currentRoutePath === 'my-services' && serviceMainLoaded }")
     template(v-if="route.name === 'home'")
         .top
             .top-inner
@@ -69,12 +69,14 @@ footer#footer
             
 </template>
 <script setup>
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { serviceMainLoaded } from "@/views/service/main";
 
 const router = useRouter();
 const route = useRoute();
 const hoveredMenu = ref("");
+let currentRoutePath = ref(route.path);
 
 const scrollSec = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -133,6 +135,15 @@ const mouseout = (event) => {
     }
 };
 
+watch(() => route.path, (nv) => {
+    let splitPath = nv.split("/");
+
+    currentRoutePath.value = splitPath.length > 2 ? splitPath[1] : '';
+    // console.log("Route changed:", nv);
+    console.log("Split Path:", splitPath);
+    console.log("Current Route Path:", currentRoutePath.value);
+}, { immediate: true });
+
 onMounted(() => {
     setFooterHeight();
     window.addEventListener("resize", setFooterHeight);
@@ -153,6 +164,10 @@ onUnmounted(() => {
     background-color: #000;
     color: #fff;
     z-index: 999;
+
+    &.service-main-footer {
+        margin-left: 260px;
+    }
 
     .top-inner,
     .bottom-inner {
@@ -335,6 +350,7 @@ onUnmounted(() => {
         }
 
         .company-info {
+
             a,
             span {
                 display: block;
@@ -366,6 +382,7 @@ onUnmounted(() => {
 
 @media (max-width: 1560px) {
     #footer {
+
         .top-inner,
         .bottom-inner {
             margin: 0 80px;
@@ -375,6 +392,7 @@ onUnmounted(() => {
 
 @media (max-width: 800px) {
     #footer {
+
         .top-inner,
         .bottom-inner {
             margin: 0 60px;
@@ -411,6 +429,7 @@ onUnmounted(() => {
             }
 
             .company-info {
+
                 a,
                 span {
                     font-size: 0.75rem;
@@ -475,6 +494,7 @@ onUnmounted(() => {
 
 @media (max-width: 430px) {
     #footer {
+
         .top-inner,
         .bottom-inner {
             margin: 0 40px;

@@ -103,8 +103,8 @@
             button.noLine(type="button" @click="openOffer=false;") No
             router-link(:to='`/subscription/${currentService.id}`')
                 button.final(type="button") Yes
-div(v-else style='text-align: center;margin-top: 100px;')
-    .loader(style="--loader-color:blue; --loader-size:12px")
+div(v-else style='width:100%;text-align: center;margin-top: 100px;')
+    .loader(style="--loader-color:white; --loader-size:12px")
 
 
 </template>
@@ -226,6 +226,7 @@ button {
 
 #serviceMain {
     position: relative;
+    width: 100%;
     background-color: #16171A;
     color: #F5F5F5;
 
