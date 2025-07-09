@@ -147,7 +147,7 @@ main.landing-page-root(style="width:100%;")
 							use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
 						.top
 							.title Trial
-							.desc Best for testing and prototypingwwwwwwww
+							.desc Best for testing and prototyping.
 						.middle
 							.price Free
 							router-link(:to="user?.user_id ? '/create' : '/signup'")
