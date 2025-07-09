@@ -1,166 +1,166 @@
 <template lang="pug">
-//- section
-//-     .page-title Service Settings
+section
+    //- .page-title Service Settings
 
-//-     hr
+    //- hr
 
-//-     .flex-wrap.space-between
-//-         div
-//-             .middle-title {{ currentService.service.name }}
-//-             //- .desc {{ currentService.service.description || 'No description provided.' }}
-//-         .flex-wrap(style="gap:10px")
-//-             button.inline-btn Rename
-//-             button.inline-btn CORS
-//-             button.inline-btn Secret Key
-//-             button.inline-btn.blue Change Plan
+    .flex-wrap.space-between
+        div
+            .page-title {{ currentService.service.name }}
+            //- .desc {{ currentService.service.description || 'No description provided.' }}
+        .flex-wrap(style="gap:10px")
+            button.inline-btn Rename
+            button.inline-btn CORS
+            button.inline-btn Secret Key
+            button.inline-btn.blue Change Plan
 
-//-     br
+    hr
 
-//-     .flex-wrap.space-between(style="gap: 20px;")
-//-         .card-wrap(style="flex: 1;")
-//-             .card
-//-                 .title Toggle Switches
+    .flex-wrap.space-between(style="gap: 20px;")
+        .card-wrap(style="flex: 2;")
+            //- .card(style="background-color: #77DFA2; color: #121214;")
+            .card
+                //- .title Plan
+                .plan-name 
+                    span {{ currentService.service.plan + ' Plan' }}
+                .flex-wrap.space-between
+                    div
+                        .data Renewal Date 
+                        .date {{ currentService.subscription?.current_period_end ? dateFormat(currentService.subscription?.current_period_end * 1000) : '-' }}
+                    div
+                        .data Date Created 
+                        .date {{ dateFormat(currentService.dateCreated) }}
 
-//-                 .flex-wrap.space-between
-//-                     .data(style="position:relative; margin:0; font-size: 16px;") Disable/Enable
-//-                         //- .tooltip-icon
-//-                             Tooltip(tip-background-color="var(--main-color)" text-color="white")
-//-                                 template(v-slot:tip)
-//-                                     | When the service is disabled, users cannot access the service.
-//-                     Toggle(
-//-                         style='display:inline-flex;align-items:center;'
-//-                         :disabled="!user?.email_verified || currentService.service.suspended || updatingValue.enableDisable"
-//-                         :active="currentService.service.active >= 1"
-//-                         @click="enableDisable"
-//-                     )
+                //- br
+
+                //- button(style="max-width: unset") Change Subscription
+
+                //- hr(style="background: rgba(0, 0, 0, 0.1);")
+                hr
+
+                .flex-wrap.space-between
+                    .tit Users
+                    .data {{ currentServiceSpec.dataSize?.users || 0 }} / {{ currentServiceSpec.servicePlan.users }}
+                .bar-wrap
+                    .bar(:style='{width: currentServiceSpec.dataPercent.users * 100 + "%"}')
+
+                br
+
+                .flex-wrap.space-between
+                    .tit Database
+                    .data {{ currentServiceSpec.dataSize?.database || 0 }} / {{ currentServiceSpec.servicePlan.storage.database }}
+                .bar-wrap
+                    .bar(:style='{width: currentServiceSpec.dataPercent.database * 100 + "%"}')
+
+                br
+
+                .flex-wrap.space-between
+                    .tit File Storage
+                    .data {{ currentServiceSpec.dataSize?.cloud || 0 }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
+                .bar-wrap
+                    .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
+
+                //- .card-wrap
+                    .card
+                        .title Users
+                        .data {{ currentServiceSpec.dataSize?.users || 0 }} / {{ currentServiceSpec.servicePlan.users }}
+                        .bar-wrap
+                            .bar(:style='{width: currentServiceSpec.dataPercent.users * 100 + "%"}')
+                    .card
+                        .title Database
+                        .data {{ currentServiceSpec.dataSize?.database || 0 }} / {{ currentServiceSpec.servicePlan.storage.database }}
+                        .bar-wrap
+                            .bar(:style='{width: currentServiceSpec.dataPercent.database * 100 + "%"}')
+                    .card
+                        .title File Storage
+                        .data {{ currentServiceSpec.dataSize?.cloud || 0 }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
+                        .bar-wrap
+                            .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
+        .card-wrap(style="flex: 1;")
+            .card
+                //- .title Toggle Switches
+
+                .flex-wrap.space-between
+                    .data(style="position:relative; margin:0; font-size: 16px;") Disable/Enable
+                        //- .tooltip-icon
+                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                                template(v-slot:tip)
+                                    | When the service is disabled, users cannot access the service.
+                    Toggle(
+                        style='display:inline-flex;align-items:center;'
+                        :disabled="!user?.email_verified || currentService.service.suspended || updatingValue.enableDisable"
+                        :active="currentService.service.active >= 1"
+                        @click="enableDisable"
+                    )
                 
-//-                 br
+                br
 
-//-                 .flex-wrap.space-between
-//-                     .data(style="position:relative; margin:0; font-size: 16px;") Allow Signup
-//-                         //- .tooltip-icon
-//-                             Tooltip(tip-background-color="var(--main-color)" text-color="white")
-//-                                 template(v-slot:tip)
-//-                                     | When signup is disallowed, only the administrator can create accounts.
-//-                     Toggle(
-//-                         style='display:inline-flex;align-items:center;'
-//-                         :active='!currentService.service.prevent_signup'
-//-                         :disabled='updatingValue.prevent_signup'
-//-                         @click="changeCreateUserMode(!currentService.service.prevent_signup)"
-//-                     )
+                .flex-wrap.space-between
+                    .data(style="position:relative; margin:0; font-size: 16px;") Allow Signup
+                        //- .tooltip-icon
+                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                                template(v-slot:tip)
+                                    | When signup is disallowed, only the administrator can create accounts.
+                    Toggle(
+                        style='display:inline-flex;align-items:center;'
+                        :active='!currentService.service.prevent_signup'
+                        :disabled='updatingValue.prevent_signup'
+                        @click="changeCreateUserMode(!currentService.service.prevent_signup)"
+                    )
 
-//-                 br
+                br
 
-//-                 .flex-wrap.space-between
-//-                     .data(style="position:relative; margin:0; font-size: 16px;") Prevent Inquiry
-//-                         //- .tooltip-icon
-//-                             Tooltip(tip-background-color="var(--main-color)" text-color="white")
-//-                                 template(v-slot:tip)
-//-                                     | You can prevent users from sending inquiries via sendInquiry() to the service.
-//-                     Toggle(
-//-                         style='display:inline-flex;align-items:center;'
-//-                         :active='currentService.service.prevent_inquiry'
-//-                         :disabled='updatingValue.prevent_inquiry'
-//-                         @click="changePreventInquiry(!currentService.service.prevent_inquiry)"
-//-                     )
+                .flex-wrap.space-between
+                    .data(style="position:relative; margin:0; font-size: 16px;") Prevent Inquiry
+                        //- .tooltip-icon
+                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                                template(v-slot:tip)
+                                    | You can prevent users from sending inquiries via sendInquiry() to the service.
+                    Toggle(
+                        style='display:inline-flex;align-items:center;'
+                        :active='currentService.service.prevent_inquiry'
+                        :disabled='updatingValue.prevent_inquiry'
+                        @click="changePreventInquiry(!currentService.service.prevent_inquiry)"
+                    )
 
-//-                 br
+                br
 
-//-                 .flex-wrap.space-between
-//-                     .data(style="position:relative; margin:0; font-size: 16px;") Freeze Database
-//-                         //- .tooltip-icon
-//-                             Tooltip(tip-background-color="var(--main-color)" text-color="white")
-//-                                 template(v-slot:tip)
-//-                                     | You can prevent users from uploading any data to the database by freezing the database.
-//-                     Toggle(
-//-                         style='display:inline-flex;align-items:center;'
-//-                         :active='currentService.service.freeze_database'
-//-                         :disabled='updatingValue.freeze_database'
-//-                         @click="changeFreezeDatabase(!currentService.service.freeze_database)"
-//-                     )
-//-         div
-//-             .card-wrap
-//-                 .card(style="background-color: #77DFA2; color: #121214;")
-//-                     //- .title Plan
-//-                     .plan-name 
-//-                         span {{ currentService.service.plan }}
-//-                     .flex-wrap.space-between
-//-                         div
-//-                             .data Renewal Date 
-//-                             .date {{ currentService.subscription?.current_period_end ? dateFormat(currentService.subscription?.current_period_end * 1000) : '-' }}
-//-                         div
-//-                             .data Date Created 
-//-                             .date {{ dateFormat(currentService.dateCreated) }}
-
-//-                     //- br
-
-//-                     //- button(style="max-width: unset") Change Subscription
-
-//-                     //- hr
-
-//-                     //- .flex-wrap.space-between
-//-                     //-     .tit Users
-//-                     //-     .data {{ currentServiceSpec.dataSize?.users || 0 }} / {{ currentServiceSpec.servicePlan.users }}
-//-                     //- .bar-wrap
-//-                     //-     .bar(:style='{width: currentServiceSpec.dataPercent.users * 100 + "%"}')
-
-//-                     //- br
-
-//-                     //- .flex-wrap.space-between
-//-                     //-     .tit Database
-//-                     //-     .data {{ currentServiceSpec.dataSize?.database || 0 }} / {{ currentServiceSpec.servicePlan.storage.database }}
-//-                     //- .bar-wrap
-//-                     //-     .bar(:style='{width: currentServiceSpec.dataPercent.database * 100 + "%"}')
-
-//-                     //- br
-
-//-                     //- .flex-wrap.space-between
-//-                     //-     .tit File Storage
-//-                     //-     .data {{ currentServiceSpec.dataSize?.cloud || 0 }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
-//-                     //- .bar-wrap
-//-                     //-     .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
-
-//-             .card-wrap
-//-                 .card
-//-                     .title Users
-//-                     .data {{ currentServiceSpec.dataSize?.users || 0 }} / {{ currentServiceSpec.servicePlan.users }}
-//-                     .bar-wrap
-//-                         .bar(:style='{width: currentServiceSpec.dataPercent.users * 100 + "%"}')
-//-                 .card
-//-                     .title Database
-//-                     .data {{ currentServiceSpec.dataSize?.database || 0 }} / {{ currentServiceSpec.servicePlan.storage.database }}
-//-                     .bar-wrap
-//-                         .bar(:style='{width: currentServiceSpec.dataPercent.database * 100 + "%"}')
-//-                 .card
-//-                     .title File Storage
-//-                     .data {{ currentServiceSpec.dataSize?.cloud || 0 }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
-//-                     .bar-wrap
-//-                         .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
-
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
-//-     br
+                .flex-wrap.space-between
+                    .data(style="position:relative; margin:0; font-size: 16px;") Freeze Database
+                        //- .tooltip-icon
+                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                                template(v-slot:tip)
+                                    | You can prevent users from uploading any data to the database by freezing the database.
+                    Toggle(
+                        style='display:inline-flex;align-items:center;'
+                        :active='currentService.service.freeze_database'
+                        :disabled='updatingValue.freeze_database'
+                        @click="changeFreezeDatabase(!currentService.service.freeze_database)"
+                    )
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
 
 
 </template>
@@ -441,8 +441,8 @@ button {
     margin-bottom: 20px;
 
     span {
-        background-color: #77DFA2;
-        color: #121214;
+        // background-color: #77DFA2;
+        // color: #121214;
         font-size: 18px;
         border-radius: 5px;
         font-weight: bold;

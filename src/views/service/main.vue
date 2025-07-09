@@ -351,6 +351,8 @@ button {
         flex-grow: 1;
         padding: 60px;
         padding-left: 320px;
+        max-width: 1600px;
+        margin: 0 auto;
     }
 
     .bottom {
