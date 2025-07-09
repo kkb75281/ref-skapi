@@ -1,217 +1,167 @@
 <template lang="pug">
+section
+    //- .page-title Service Settings
 
-section.infoBox
-    h2 Service Settings
+    //- hr
+
+    .flex-wrap.space-between
+        div
+            .page-title {{ currentService.service.name }}
+            //- .desc {{ currentService.service.description || 'No description provided.' }}
+        .flex-wrap(style="gap:10px")
+            button.inline-btn Rename
+            button.inline-btn CORS
+            button.inline-btn Secret Key
+            button.inline-btn.blue Change Plan
 
     hr
 
-    
-    .error(v-if='!user?.email_verified')
-        //- .material-symbols-outlined.notranslate.fill warning
-        svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-        router-link(to="/account-setting") Please verify your email address to modify settings.
-        br
-        br
+    .flex-wrap.space-between(style="gap: 20px;")
+        .card-wrap(style="flex: 2;")
+            //- .card(style="background-color: #77DFA2; color: #121214;")
+            .card
+                //- .title Plan
+                .plan-name 
+                    span {{ currentService.service.plan + ' Plan' }}
+                .flex-wrap.space-between
+                    div
+                        .data Renewal Date 
+                        .date {{ currentService.subscription?.current_period_end ? dateFormat(currentService.subscription?.current_period_end * 1000) : '-' }}
+                    div
+                        .data Date Created 
+                        .date {{ dateFormat(currentService.dateCreated) }}
 
-    .error(v-else-if='currentService.service.active == 0')
-        //- .material-symbols-outlined.notranslate.fill warning
-        svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-        span This service is currently disabled.
-        br
-        br
+                //- br
 
-    .error(v-else-if='currentService.service.active < 0')
-        //- .material-symbols-outlined.notranslate.fill warning
-        svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-        span This service is currently suspended.
-        br
-        br
+                //- button(style="max-width: unset") Change Subscription
 
-    //- .state 
-    //-     .smallTitle State
-    //-     .smallValue
-    //-         span(v-if="currentService.service.active == 0" style="color:var(--caution-color);") Disabled
-    //-         span(v-else-if="currentService.service.active <= -1" style="color:var(--caution-color);") Suspended
-    //-         span(v-else-if="currentService.service.active >= 1") Running
-    //-         span(v-else) -
+                //- hr(style="background: rgba(0, 0, 0, 0.1);")
+                hr
 
-    .state
-        .smallTitle Service ID
-        .smallValue {{ currentService.id }}
+                .flex-wrap.space-between
+                    .tit Users
+                    .data {{ currentServiceSpec.dataSize?.users || 0 }} / {{ currentServiceSpec.servicePlan.users }}
+                .bar-wrap
+                    .bar(:style='{width: currentServiceSpec.dataPercent.users * 100 + "%"}')
 
+                br
 
-    .state
-        .smallTitle Subscription
-        .smallValue(:style='{fontWeight:currentService.service.plan == "Canceled" ? "normal" : null, color:currentService.service.plan == "Canceled" ? "var(--caution-color)" : null}')
-            span {{ currentService.service.plan || currentService.plan }}&nbsp;
-            router-link.editHandle(v-if="currentService.service.group !== 51 && currentService.service.group !== 52" :to='`/subscription/${currentService.id}`') [CHANGE]
+                .flex-wrap.space-between
+                    .tit Database
+                    .data {{ currentServiceSpec.dataSize?.database || 0 }} / {{ currentServiceSpec.servicePlan.storage.database }}
+                .bar-wrap
+                    .bar(:style='{width: currentServiceSpec.dataPercent.database * 100 + "%"}')
 
-    .state 
-        .smallTitle {{currentService.service.plan == "Canceled" ? '-' : 'Renewal Date'}}
-        .smallValue(:style='{color: (currentService.service.plan == "Canceled" || currentService.plan == "Trial") ? "var(--caution-color)" : null, fontWeight: (currentService.service.plan == "Canceled" || currentService.plan == "Trial") ? "normal" : null}' )
-            template(v-if="currentService.plan == 'Trial'" style="color:var(--caution-color)") All Data will reset on {{ resetTime(currentService.service.timestamp) }}
-            template(v-else-if='currentService.service.plan == "Canceled" && !currentService.service.suspended' style="color:var(--caution-color)") Suspends on {{ dateFormat(currentService.subscription?.current_period_end * 1000) }}
-            template(v-else-if='currentService.service.suspended' style="color:var(--caution-color)") Terminates on {{ dateFormat(2592000000 + currentService.subscription.cancel_at * 1000) }}
-            template(v-else) {{currentService.subscription?.current_period_end ? dateFormat(currentService.subscription?.current_period_end * 1000) : '-' }}
+                br
 
+                .flex-wrap.space-between
+                    .tit File Storage
+                    .data {{ currentServiceSpec.dataSize?.cloud || 0 }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
+                .bar-wrap
+                    .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
+
+                //- .card-wrap
+                    .card
+                        .title Users
+                        .data {{ currentServiceSpec.dataSize?.users || 0 }} / {{ currentServiceSpec.servicePlan.users }}
+                        .bar-wrap
+                            .bar(:style='{width: currentServiceSpec.dataPercent.users * 100 + "%"}')
+                    .card
+                        .title Database
+                        .data {{ currentServiceSpec.dataSize?.database || 0 }} / {{ currentServiceSpec.servicePlan.storage.database }}
+                        .bar-wrap
+                            .bar(:style='{width: currentServiceSpec.dataPercent.database * 100 + "%"}')
+                    .card
+                        .title File Storage
+                        .data {{ currentServiceSpec.dataSize?.cloud || 0 }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
+                        .bar-wrap
+                            .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
+        .card-wrap(style="flex: 1;")
+            .card
+                //- .title Toggle Switches
+
+                .flex-wrap.space-between
+                    .data(style="position:relative; margin:0; font-size: 16px;") Disable/Enable
+                        //- .tooltip-icon
+                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                                template(v-slot:tip)
+                                    | When the service is disabled, users cannot access the service.
+                    Toggle(
+                        style='display:inline-flex;align-items:center;'
+                        :disabled="!user?.email_verified || currentService.service.suspended || updatingValue.enableDisable"
+                        :active="currentService.service.active >= 1"
+                        @click="enableDisable"
+                    )
+                
+                br
+
+                .flex-wrap.space-between
+                    .data(style="position:relative; margin:0; font-size: 16px;") Allow Signup
+                        //- .tooltip-icon
+                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                                template(v-slot:tip)
+                                    | When signup is disallowed, only the administrator can create accounts.
+                    Toggle(
+                        style='display:inline-flex;align-items:center;'
+                        :active='!currentService.service.prevent_signup'
+                        :disabled='updatingValue.prevent_signup'
+                        @click="changeCreateUserMode(!currentService.service.prevent_signup)"
+                    )
+
+                br
+
+                .flex-wrap.space-between
+                    .data(style="position:relative; margin:0; font-size: 16px;") Prevent Inquiry
+                        //- .tooltip-icon
+                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                                template(v-slot:tip)
+                                    | You can prevent users from sending inquiries via sendInquiry() to the service.
+                    Toggle(
+                        style='display:inline-flex;align-items:center;'
+                        :active='currentService.service.prevent_inquiry'
+                        :disabled='updatingValue.prevent_inquiry'
+                        @click="changePreventInquiry(!currentService.service.prevent_inquiry)"
+                    )
+
+                br
+
+                .flex-wrap.space-between
+                    .data(style="position:relative; margin:0; font-size: 16px;") Freeze Database
+                        //- .tooltip-icon
+                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                                template(v-slot:tip)
+                                    | You can prevent users from uploading any data to the database by freezing the database.
+                    Toggle(
+                        style='display:inline-flex;align-items:center;'
+                        :active='currentService.service.freeze_database'
+                        :disabled='updatingValue.freeze_database'
+                        @click="changeFreezeDatabase(!currentService.service.freeze_database)"
+                    )
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
     br
 
-    .state
-        .smallTitle Date Created
-        .smallValue {{ currentService.dateCreated }}
-
-
-    .state 
-        .smallTitle Users
-        .smallValue {{ currentServiceSpec.dataSize?.users }} / {{ currentServiceSpec.servicePlan.users }}
-
-    .state 
-        .smallTitle Database
-        .smallValue {{ currentServiceSpec.dataSize?.database }} / {{ currentServiceSpec.servicePlan.storage.database }}
-
-    .state 
-        .smallTitle File Storage
-        .smallValue {{ currentServiceSpec.dataSize?.cloud }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
-
-    template(v-if="currentService.plan !== 'Trial'")
-        .state 
-            .smallTitle File Hosting
-            .smallValue {{ currentServiceSpec.dataSize?.host }} / {{ currentServiceSpec.servicePlan.storage.host }}
-
-        .state 
-            .smallTitle Email Storage
-            .smallValue {{ currentServiceSpec.dataSize?.email }} / {{ currentServiceSpec.servicePlan.storage.email }}
-
-    hr(style='margin-top: 1.5rem;')
-
-    .infoValue(:class="{'nonClickable' : !user?.email_verified && currentService.service.suspended}" style='display: flex;align-items: center;margin-bottom: 0;min-height: 0;gap: 10px;')
-        .smallTitle Disable/Enable
-        Toggle(
-            style='display:inline-flex;align-items:center;'
-            :disabled="!user?.email_verified || currentService.service.suspended || updatingValue.enableDisable"
-            :active="currentService.service.active >= 1"
-            @click="enableDisable"
-        )
-        Tooltip(tip-background-color="var(--main-color)" text-color="white")
-            template(v-slot:tip)
-                | When the service is disabled, users cannot access the service.
-
-    div(:class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}")
-        .infoValue(style='display: flex;align-items: center;min-height: 0; margin-bottom:0;gap: 10px;')
-            .smallTitle Allow Signup
-            Toggle(
-                style='display:inline-flex;align-items:center;'
-                :active='!currentService.service.prevent_signup'
-                :disabled='updatingValue.prevent_signup'
-                @click="changeCreateUserMode(!currentService.service.prevent_signup)"
-            )
-            Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                template(v-slot:tip)
-                    | When signup is disallowed, only the administrator can create accounts.
-
-        .infoValue(style='display: flex;align-items: center;min-height: 0; margin-bottom:0; gap: 10px;')
-            .smallTitle Prevent Inquiry
-            Toggle(
-                style='display:inline-flex;align-items:center;'
-                :active='currentService.service.prevent_inquiry'
-                :disabled='updatingValue.prevent_inquiry'
-                @click="changePreventInquiry(!currentService.service.prevent_inquiry)"
-            )
-            Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                template(v-slot:tip)
-                    | You can prevent users from sending inquiries via sendInquiry() to the service.
-        
-        .infoValue(style='display: flex;align-items: center;min-height: 0;gap: 10px;')
-            .smallTitle Freeze Database
-            Toggle(
-                style='display:inline-flex;align-items:center;'
-                :active='currentService.service.freeze_database'
-                :disabled='updatingValue.freeze_database'
-                @click="changeFreezeDatabase(!currentService.service.freeze_database)"
-            )
-            Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                template(v-slot:tip)
-                    | You can prevent users from uploading any data to the database by freezing the database.
-        
-        br
-
-        .infoValue
-            .smallTitle Service Name:
-            template(v-if="modifyMode.name")
-                form.editValue(@submit.prevent="changeName")
-                    input.big(type="text" ref="focus_name" placeholder="Maximum 40 characters" maxlength="40" :value='inputName' @input="(e) => inputName = e.target.value" :disabled="updatingValue.name" required)
-
-                    template(v-if="updatingValue.name")
-                        .loader(style="--loader-color:blue; --loader-size:12px")
-                    template(v-else)
-                        input#saveHiddenInput(type="submit" hidden)
-                        label(for="saveHiddenInput") <!-- done -->
-                            svg.svgIcon.save(style="height: 30px; width: 30px;")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-check")
-                    //- span.material-symbols-outlined.notranslate.cancel(@click="modifyMode.name = false;") close
-                    svg.svgIcon.cancel(@click="modifyMode.name = false;" style="height: 30px; width: 30px; fill: black")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-close")
-
-            div(v-else)
-                .smallValue
-                    | {{ currentService.service.name }}&nbsp;
-                    span.editHandle(@click="editName") [EDIT]
-
-        .infoValue
-            .smallTitle CORS:
-            template(v-if="modifyMode.cors")
-                form.editValue(@submit.prevent="changeCors")
-                    input#modifyCors.big(ref="focus_cors" :disabled="updatingValue.cors || null" type="text" placeholder='https://your.domain.com, http://second.domain.net, ...' :value='inputCors' @input="(e) => {e.target.setCustomValidity(''); inputCors = e.target.value;}")
-
-                    template(v-if="updatingValue.cors")
-                        .loader(style="--loader-color:blue; --loader-size:12px")
-                    template(v-else)
-                        input#saveHiddenInput2(type="submit" hidden)
-                        label(for="saveHiddenInput2")
-                            svg.svgIcon.save(style="height: 30px; width: 30px;")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-check")
-                    //- span.material-symbols-outlined.notranslate.cancel(@click="modifyMode.cors = false;") close
-                    svg.svgIcon.cancel(@click="modifyMode.cors = false;" style="height: 30px; width: 30px; fill: black")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-close")
-
-            div(v-else)
-                .smallValue {{ currentService.service.cors || '*' }}&nbsp;
-                    span.editHandle(@click="editCors") [EDIT]
-
-        .infoValue
-            .smallTitle Secret Key:
-            template(v-if="modifyMode.api_key")
-                form.editValue(@submit.prevent="changeApiKey")
-                    input.big(ref="focus_key" :disabled="updatingValue.api_key || null" type="text" minlength="4" maxlength="256" placeholder='Maximum 256 characters, At least 4 characters.' :value='inputKey' @input="(e) => inputKey = e.target.value")
-
-                    template(v-if="updatingValue.api_key")
-                        .loader(style="--loader-color:blue; --loader-size:12px")
-                    template(v-else)
-                        input#saveHiddenInput3(type="submit" hidden)
-                        label(for="saveHiddenInput3")
-                            svg.svgIcon.save(style="height: 30px; width: 30px;")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-check")
-                    //- label.material-symbols-outlined.notranslate.save(v-else) done
-                        input(type="submit" hidden)
-                    //- span.material-symbols-outlined.notranslate.cancel(@click="modifyMode.api_key = false;") close
-                    svg.svgIcon.cancel(@click="modifyMode.api_key = false;" style="height: 30px; width: 30px; fill: black")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-close")
-
-            div(v-else)
-                .ellipsis {{ currentService.service.api_key ? currentService.service.api_key.slice(0, 2) + '*'.repeat(currentService.service.api_key.length - 2) + '...' : 'No Secret Key' }}&nbsp;
-                span.editHandle(@click="editApiKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}") [EDIT]
-    
-    template(v-if="currentService.plan == 'Trial' || currentService.plan == 'Unlimited' || currentService.service.plan == 'Canceled'")
-        hr
-        div(style="text-align:right")
-            router-link.iconClick.square(:to='"/delete-service/" + currentService.id' style='color:var(--caution-color);font-size:0.66rem;')
-                //- .material-symbols-outlined.notranslate.fill(style='font-size:24px;') delete
-                svg.svgIcon.cancel(style="height: 22px; width: 22px; fill: var(--caution-color)")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
-                span &nbsp;Delete Service
 
 </template>
 
@@ -248,32 +198,32 @@ let focus_name = ref();
 let focus_cors = ref();
 let focus_key = ref();
 
-let resetTime = (timestamp:number) => {
-  // Convert the timestamp to a Date object
-  let startDate = new Date(timestamp); // assuming the timestamp is in seconds
-  let today = new Date();
-  let resetDay = 14;
+let resetTime = (timestamp: number) => {
+    // Convert the timestamp to a Date object
+    let startDate = new Date(timestamp); // assuming the timestamp is in seconds
+    let today = new Date();
+    let resetDay = 14;
 
-  // Calculate the difference in days
-  const diffInDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+    // Calculate the difference in days
+    const diffInDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
 
-  // Calculate the number of days since the last 7-day cycle
-  const daysSinceLastCycle = diffInDays % resetDay;
+    // Calculate the number of days since the last 7-day cycle
+    const daysSinceLastCycle = diffInDays % resetDay;
 
-  // Calculate the number of days until the next cycle
-  let daysUntilNextCycle = (resetDay - daysSinceLastCycle) % resetDay;
+    // Calculate the number of days until the next cycle
+    let daysUntilNextCycle = (resetDay - daysSinceLastCycle) % resetDay;
 
-  // If the cycle has just started today, then daysUntilNextCycle will be 0.
-  // In that case, we want to return 7 (the next cycle will start in 7 days).
-  if (daysUntilNextCycle === 0) {
-    daysUntilNextCycle = resetDay;
-  }
+    // If the cycle has just started today, then daysUntilNextCycle will be 0.
+    // In that case, we want to return 7 (the next cycle will start in 7 days).
+    if (daysUntilNextCycle === 0) {
+        daysUntilNextCycle = resetDay;
+    }
 
-  // Add the number of days until the next cycle to today's date
-  today.setDate(today.getDate() + daysUntilNextCycle);
+    // Add the number of days until the next cycle to today's date
+    today.setDate(today.getDate() + daysUntilNextCycle);
 
-  // Return the date as a 13-digit timestamp
-  return dateFormat(today.getTime());
+    // Return the date as a 13-digit timestamp
+    return dateFormat(today.getTime());
 }
 
 // edit/change name
@@ -368,16 +318,16 @@ let changeCreateUserMode = async (onlyAdmin: boolean) => {
     updatingValue.prevent_signup = true;
     currentService.setServiceOption({
         prevent_signup: onlyAdmin,
-    }).catch(err=>{
+    }).catch(err => {
         alert(err.message);
     }).finally(() => {
         updatingValue.prevent_signup = false;
     });
 }
-let enableDisable = async ()=>{
+let enableDisable = async () => {
     updatingValue.enableDisable = true;
     try {
-        if(currentService.service.active >= 1)
+        if (currentService.service.active >= 1)
             await currentService.disableService()
         else
             await currentService.enableService()
@@ -394,9 +344,9 @@ let enableDisable = async ()=>{
 // change prevent_inquiry
 let changePreventInquiry = async (onlyAdmin: boolean) => {
     updatingValue.prevent_inquiry = true;
-     currentService.setServiceOption({
+    currentService.setServiceOption({
         prevent_inquiry: onlyAdmin,
-     }).catch(err=>{
+    }).catch(err => {
         alert(err.message);
     }).finally(() => {
         updatingValue.prevent_inquiry = false;
@@ -406,9 +356,9 @@ let changePreventInquiry = async (onlyAdmin: boolean) => {
 // change freeze_database
 let changeFreezeDatabase = async (onlyAdmin: boolean) => {
     updatingValue.freeze_database = true;
-     currentService.setServiceOption({
+    currentService.setServiceOption({
         freeze_database: onlyAdmin,
-     }).catch(err=>{
+    }).catch(err => {
         alert(err.message);
     }).finally(() => {
         updatingValue.freeze_database = false;
@@ -417,21 +367,183 @@ let changeFreezeDatabase = async (onlyAdmin: boolean) => {
 </script>
 
 <style lang="less" scoped>
-.question {
-    display: inline-block;
-    font-size: 14px;
-    color: var(--black-4);
-    vertical-align: middle;
+.page-title {
+    font-size: 38px;
+}
+
+.middle-title {
+    font-size: 26px;
+    margin-bottom: 16px;
+}
+
+hr {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+button {
+    display: inline-flex;
+    max-width: 240px;
+    padding: 0 0.875rem;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 13px;
+    background: #0a4df1;
+    border: 0;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    white-space: nowrap;
 
     &:hover {
-        text-decoration: none;
+        background-color: #1656f2;
     }
 }
-.svgIcon.nohover {
-    background-color: unset;
+
+.inline-btn {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 14px;
+    width: auto;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &.blue {
+        background-color: #0a4df1;
+
+        &:hover {
+            background-color: #1656f2;
+        }
+    }
 }
-.svgIcon:hover {
+
+.tooltip-icon {
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-57%);
+    z-index: 1;
+}
+
+.icon-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 8px;
+    margin: 0 4px;
     border-radius: 50%;
-    background-color: #293FE61A;
+    cursor: pointer;
 }
-</style>
+
+.plan-name {
+    margin-bottom: 20px;
+
+    span {
+        // background-color: #77DFA2;
+        // color: #121214;
+        font-size: 18px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+}
+
+.flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+
+    &.space-between {
+        justify-content: space-between;
+    }
+
+    &.center {
+        justify-content: center;
+    }
+}
+
+.card-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+
+    .card {
+        background-color: #121214;
+        padding: 20px;
+        border-radius: 13px;
+        flex: 1;
+        min-width: 170px;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+
+        .title {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .data {
+            font-size: 14px;
+            font-weight: 300;
+            opacity: 0.6;
+
+            @media (max-width: 600px) {
+                font-size: 12px;
+            }
+        }
+
+        .date {
+            font-size: 14px;
+            margin-top: 5px;
+            opacity: 0.6;
+
+            @media (max-width: 600px) {
+                font-size: 12px;
+            }
+        }
+
+        .bar-wrap {
+            margin-top: 10px;
+            height: 8px;
+            background-color: #2c2c2e;
+            border-radius: 4px;
+            overflow: hidden;
+
+            .bar {
+                height: 100%;
+                background-color: var(--main-color);
+                transition: width 0.3s ease-in-out;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+            }
+
+            span {
+                color: white;
+                font-size: 12px;
+            }
+        }
+    }
+}
+
+// .question {
+//     display: inline-block;
+//     font-size: 14px;
+//     color: var(--black-4);
+//     vertical-align: middle;
+
+//     &:hover {
+//         text-decoration: none;
+//     }
+// }
+
+// .svgIcon.nohover {
+//     background-color: unset;
+// }
+
+// .svgIcon:hover {
+//     border-radius: 50%;
+//     background-color: #293FE61A;
+// }</style>
