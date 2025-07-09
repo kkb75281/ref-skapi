@@ -9,10 +9,10 @@
 				:slidesPerView="1"
 				:spaceBetween="30"
 				:loop="true"
-				:modules="[Pagination]"
+                :autoplay="{ delay: 2000, disableOnInteraction: false }"
 				:pagination="{ clickable: true }"
-				@swiper="onSwiper"
-				@slideChange="onSlideChange"
+				:modules="[Pagination, Autoplay]"
+
 			)
 				swiper-slide.service-swiper-item
 					.title Announcement
@@ -104,7 +104,7 @@ import Table from "@/components/table.vue";
 import modalCreateService from "@/views/create-service.vue";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { Pagination } from "swiper/modules";
+import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css"; // import Swiper styles
 import "swiper/css/pagination";
 
@@ -160,17 +160,6 @@ let getClass = (service: ServiceSpec, what: string) => {
         }
     }
     return "not-applicable";
-};
-
-// 상단 swiper
-// Swiper 인스턴스를 받을 때 실행되는 콜백
-const onSwiper = (swiper: any) => {
-    console.log("Swiper instance:", swiper);
-};
-
-// 슬라이드 변경 이벤트 콜백
-const onSlideChange = () => {
-    console.log("Slide changed");
 };
 </script>
 
@@ -284,6 +273,7 @@ a {
     }
 }
 
+// swiper
 .service-swiper {
     padding: 0;
     flex: none;
@@ -294,14 +284,6 @@ a {
 
     .swiper {
         height: 100%;
-    }
-
-    .swiper-pagination-bullet {
-        opacity: 0.3;
-    }
-
-    .swiper-pagination-bullet-active {
-        opacity: 0.8 !important;
     }
 }
 

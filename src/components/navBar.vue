@@ -1,5 +1,5 @@
 <template lang="pug">
-nav#navBar(ref="navBar")
+nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
     .wrap
         .left
             template(v-if="route.name != 'home'")
@@ -11,7 +11,7 @@ nav#navBar(ref="navBar")
             template(v-else)
                 router-link.logo(to="/")
                     img.symbol(src="@/assets/img/logo/icon_logo.svg")
-                ul.section-list(v-if="route.name === 'home'")
+                ul.section-list(v-if="route.name === 'home'" ref="navSecEl")
                     li.section-item(@click="scrollSec('section1')") Features
                     li.section-item(@click="scrollSec('section2')") Price
                     li.section-item(@click="scrollSec('section3')") FAQ
@@ -22,9 +22,10 @@ nav#navBar(ref="navBar")
                 template(v-if="isDesktop")
                     template(v-if="user?.user_id")
                         li.list.go-community(ref="communityEl")
-                            .ser.dropdown(@click.stop="(e)=>{showDropDown(e)}") Community
-                                img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
-                                .moreVert.community(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
+                            .dropdown-container(@mouseenter="showDropdown" @mouseleave="hideDropdown")
+                                .ser.dropdown Community
+                                    img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
+                                .moreVert.community(ref="moreVert" :style="{ '--moreVert-right': 0, display: communityDropdownVisible ? 'block' : 'none' }")
                                     ul.list-wrap
                                         li.item
                                             a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
@@ -75,28 +76,29 @@ nav#navBar(ref="navBar")
                                         span Logout
                     template(v-else)
                         li.list.go-community(ref="communityEl")
-                            .ser.dropdown(@click.stop="(e)=>{showDropDown(e)}") Community
-                                img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
-                                .moreVert.community(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
-                                    ul.list-wrap
-                                        li.item
-                                            a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_tiktok.svg")
-                                        li.item
-                                            a.link(href="https://www.instagram.com/skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_instagram.svg")
-                                        li.item
-                                            a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_youtube.svg")
-                                        li.item
-                                            a.link(href="https://x.com/skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_x.svg")
-                                        li.item
-                                            a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_linkedin.svg")
-                                        li.item
-                                            a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_facebook.svg")
+                            .dropdown-container(@mouseenter="showDropdown" @mouseleave="hideDropdown")
+                                .ser.dropdown Community
+                                    img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
+                                    .moreVert.community(ref="moreVert" :style="{ '--moreVert-right': 0, display: communityDropdownVisible ? 'block' : 'none' }")
+                                        ul.list-wrap
+                                            li.item
+                                                a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                                            li.item
+                                                a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                            li.item
+                                                a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                            li.item
+                                                a.link(href="https://x.com/skapi_api" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_x.svg")
+                                            li.item
+                                                a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                            li.item
+                                                a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_facebook.svg")
                         li.list.go-docs
                             a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
                                 img(src="@/assets/img/landingpage/icon_docs.svg")
@@ -207,8 +209,12 @@ let running = ref(false);
 let serviceName = ref(currentService?.service?.name || "");
 const userEmail = ref(user?.email || "");
 const isDesktop = ref(window.innerWidth > 800);
+
+const navSecEl = ref(null);
 const navMenuEl = ref(null);
 const communityEl = ref(null);
+const communityDropdownVisible = ref(false);
+let hideTimeout = null;
 
 const updateServiceName = () => {
     serviceName.value = currentService?.service?.name || "loading...";
@@ -334,6 +340,22 @@ function handleMouseOut(container, selector, event) {
     elements.forEach((el) => (el.style.opacity = 1));
 }
 
+// community dropdown
+const showDropdown = () => {
+    if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+    }
+    communityDropdownVisible.value = true;
+};
+
+const hideDropdown = () => {
+    // 약간의 지연을 두어 사용자가 popup으로 마우스를 이동할 시간을 제공
+    hideTimeout = setTimeout(() => {
+        communityDropdownVisible.value = false;
+    }, 100);
+};
+
 window.addEventListener("resize", () => {
     isDesktop.value = window.innerWidth > 800;
 });
@@ -341,6 +363,15 @@ window.addEventListener("resize", () => {
 onMounted(() => {
     setAutoHide(navBar.value, 3);
     window.addEventListener("serviceChanged", updateServiceName);
+
+    if (navSecEl.value) {
+        navSecEl.value.addEventListener("mouseover", (e) =>
+            handleMouseOver(navSecEl.value, ".section-item", e)
+        );
+        navSecEl.value.addEventListener("mouseout", (e) =>
+            handleMouseOut(navSecEl.value, ".section-item", e)
+        );
+    }
 
     if (navMenuEl.value) {
         navMenuEl.value.addEventListener("mouseover", (e) =>
@@ -362,8 +393,21 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+    if (hideTimeout) {
+        clearTimeout(hideTimeout);
+    }
+
     removeListener();
     window.removeEventListener("serviceChanged", updateServiceName);
+
+    if (navSecEl.value) {
+        navSecEl.value.removeEventListener("mouseover", (e) =>
+            handleMouseOver(navSecEl.value, ".section-item", e)
+        );
+        navSecEl.value.removeEventListener("mouseout", (e) =>
+            handleMouseOut(navSecEl.value, ".section-item", e)
+        );
+    }
 
     if (navMenuEl.value) {
         navMenuEl.value.removeEventListener("mouseover", (e) =>
@@ -373,6 +417,7 @@ onBeforeUnmount(() => {
             handleMouseOut(navMenuEl.value, ".list", e)
         );
     }
+
     if (communityEl.value) {
         communityEl.value.removeEventListener("mouseover", (e) =>
             handleMouseOver(communityEl.value, ".link", e)
@@ -430,8 +475,14 @@ img.symbol.mobile {
         color: #fff;
     }
 
+    &.main-nav {
+        .wrap {
+            max-width: 100rem;
+        }
+    }
+
     .wrap {
-        max-width: 100rem;
+        // max-width: 100rem;
         width: 100%;
         height: 100%;
         display: flex;
@@ -716,6 +767,23 @@ img.symbol.mobile {
                     }
                 }
             }
+        }
+    }
+
+    .go-community {
+        .dropdown-container {
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .moreVert.community {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            z-index: 1000;
+            /* 기존 moreVert 스타일 유지 */
         }
     }
 }

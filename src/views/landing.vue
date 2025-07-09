@@ -47,7 +47,8 @@ main.landing-page-root
 					:loop="true"
 					:pagination="{ clickable: true }"
 					:navigation="{ nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }"
-					:modules="[Pagination, Navigation]"
+                    :autoplay="{ delay: 3000, disableOnInteraction: false }"
+					:modules="[Pagination, Navigation, Autoplay]"
 					@swiper="onSwiperReady"
 				)
 					swiper-slide.review-item
@@ -299,7 +300,7 @@ import { npmVersion } from "@/main.ts";
 import { user } from "@/code/user";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { Pagination, Navigation } from "swiper/modules";
+import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css"; // import Swiper styles
 import "swiper/css/pagination";
 import "swiper/css/navigation";
@@ -472,6 +473,10 @@ button {
     &:hover {
         background-color: #1656f2;
     }
+}
+
+.landing-page-root {
+    width: 100%;
 }
 
 section {

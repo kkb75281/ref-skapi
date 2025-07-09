@@ -94,6 +94,35 @@ const route = useRoute();
     }
 }
 
+.service-swiper {
+    .swiper-pagination-fraction,
+    .swiper-pagination-custom,
+    .swiper-horizontal > .swiper-pagination-bullets,
+    .swiper-pagination-bullets.swiper-pagination-horizontal {
+        bottom: 1.25rem;
+        top: initial;
+        left: 1.5625rem;
+        width: fit-content;
+    }
+
+    .swiper-horizontal > .swiper-pagination-bullets .swiper-pagination-bullet,
+    .swiper-pagination-horizontal.swiper-pagination-bullets
+        .swiper-pagination-bullet {
+        margin: 0 0.1875rem;
+    }
+
+    .swiper-pagination-bullet {
+        opacity: 0.3;
+        width: 0.5rem;
+        height: 0.5rem;
+    }
+
+    .swiper-pagination-bullet-active {
+        opacity: 0.8 !important;
+        background: #000;
+    }
+}
+
 @media (max-width: 800px) {
     .review-swiper {
         .swiper {
