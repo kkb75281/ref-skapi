@@ -1,167 +1,365 @@
 <template lang="pug">
 .service-list
-	section.section
-		.title.faktum My Services
+	section.section.top-area
+		a.top-item(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank")
+			.title Documents
+			.desc Refer to the documentation for details, including a dedicated page for training your AI.
+		.top-item.service-swiper
+			swiper(
+				:slidesPerView="1"
+				:spaceBetween="30"
+				:loop="true"
+				:modules="[Pagination]"
+				:pagination="{ clickable: true }"
+				@swiper="onSwiper"
+				@slideChange="onSlideChange"
+			)
+				swiper-slide.service-swiper-item
+					.title Announcement
+					.desc Stable release is live, and services are running smoothly! You’re good to go.
+				swiper-slide.service-swiper-item
+					.title Use Cases
+					.desc Explore our example use cases for more project inspiration.
+					a.btn-more(href="#") See more
+				swiper-slide.service-swiper-item
+					.title New Features
+					.desc A new feature just dropped! Check your dashboard and enjoy the update.
 
-		.iconbutton(@click="router.push('/create')")
-			svg.svgIcon
-				use(xlink:href="@/assets/img/material-icon.svg#icon-add") 
-			span &nbsp;&nbsp;Create New Service
+				.swiper-pagination
+		.top-item.create-service
+			.title Create a new service
+			button.btn-create(@click="openCreateService")
+				svg.svgIcon
+					use(xlink:href="@/assets/img/material-icon.svg#icon-add") 
+				span Create
+			modalCreateService(:visible="showCreateModal" :isFirstService="!hasNoServices" @close="showCreateModal = false")
+	section.section.my-services-list
+		.title My Services
 
-	Table(resizable)
-		template(v-slot:head)
-			tr
-				th.th.overflow(style="width:166px;")
-					| Service Name
-					.resizer
-				th.th.overflow(style="width:150px;")
-					| Plan
-					.resizer
-				th.th.overflow(style="width:120px;")
-					| State
-					.resizer
-				th.th.overflow(style="width:144px;")
-					| Users
-					.resizer
-				th.th.overflow(style="width:144px;")
-					| Database
-					.resizer
-				th.th.overflow(style="width:144px;")
-					| File Storage
-					.resizer
-				th.th.overflow(style="width:144px;")
-					| File Hosting
-					.resizer
-				th.th.overflow(style="width:144px;")
-					| Email
+		Table.tb-services-list(resizable style="width:100%;")
+			template(v-slot:head)
+				tr
+					th.th.overflow Service Name
+					th.th.overflow Plan
+					th.th.overflow State
+					th.th.overflow Users
+					th.th.overflow Database
+					th.th.overflow File Storage
+					th.th.overflow File Hosting
+					th.th.overflow Email
 
-		template(v-slot:body)
-			tr(v-if="fetchingServiceList")
-				td(colspan="8").
-					Loading ... &nbsp;
-					#[.loader(style="--loader-color:black; --loader-size:12px")]
-			tr(v-else-if="!Object.keys(serviceIdList).length")
-				td(colspan="8") You have no services yet.
+			template(v-slot:body)
+				tr(v-if="fetchingServiceList")
+					td(colspan="8").
+						Loading ... &nbsp;
+						#[.loader(style="--loader-color:black; --loader-size:12px")]
+				tr(v-else-if="!Object.keys(serviceIdList).length")
+					td(colspan="8") You have no services yet.
 
-			template(v-else v-for="id in serviceIdList")
-				tr.hoverRow(v-if="serviceList[id]" @click="() => goServiceDashboard(serviceList[id])" @mousedown="(e) => e.currentTarget.classList.add('active')" @mouseleave="(e) => e.currentTarget.classList.remove('active')")
-					td.overflow {{ serviceList[id].service.name }}
-					td.overflow(style="white-space:nowrap")
-						// plans
-						.state(v-if="serviceList[id].service.subs_id && !serviceList[id].subscription")
-							.loader(style="--loader-color:black; --loader-size:12px")
-						span(v-else :style="{fontWeight: serviceList[id].service.plan === 'Canceled' ? 'normal' : null, color: serviceList[id].service.plan === 'Canceled' ? 'var(--caution-color)' : null}") {{ serviceList[id].service.plan || serviceList[id].plan }}
-					td.overflow
-						// active state
-						.state(v-if="serviceList[id].service.active > 0" style="color:var(--text-green);font-weight:normal;") Running
-						.state(v-else-if="serviceList[id].service.active == 0") Disabled
-						.state(v-else-if="serviceList[id].service.suspended" style='color:var(--caution-color);font-weight:normal') Suspended
-						.state(v-else) -
-					td.overflow
-						// users
-						.percent(:class="getClass(serviceSpecList[id], 'users')") {{ serviceSpecList[id]?.plan === 'Unlimited' ? 'Unlimited' : serviceSpecList[id]?.dataSize?.users + '/' + serviceSpecList[id]?.servicePlan?.users }}
+				template(v-else v-for="id in serviceIdList")
+					tr(v-if="serviceList[id]" @click="() => goServiceDashboard(serviceList[id])" @mousedown="(e) => e.currentTarget.classList.add('active')" @mouseleave="(e) => e.currentTarget.classList.remove('active')" :class="{'hidden': serviceList[id].service.active === 0 || serviceList[id].service.suspended}")
+						td.name {{ serviceList[id].service.name }}
+						td.plan
+							.state(v-if="serviceList[id].service.subs_id && !serviceList[id].subscription")
+								.loader(style="--loader-color:black; --loader-size:12px")
+							span.badge(v-else :class="serviceList[id].service.plan?.toLowerCase() === 'trial' ? 'trial' : serviceList[id].service.plan?.toLowerCase() === 'standard' ? 'standard' : serviceList[id].service.plan?.toLowerCase() === 'premium' ? 'premium' : serviceList[id].service.plan === 'Canceled' ? 'canceled' : ''") {{ serviceList[id].service.plan || serviceList[id].plan }}
+						td.state
+							span.running(v-if="serviceList[id].service.active > 0") Running
+							span.disabled(v-else-if="serviceList[id].service.active == 0") Disabled
+							span.suspended(v-else-if="serviceList[id].service.suspended") Suspended
+							span.empty(v-else) -
+						td.users
+							span.value(:class="getClass(serviceSpecList[id], 'users')")
+								template(v-if="serviceSpecList[id]?.plan === 'Unlimited'")
+									| Unlimited
+								template(v-else)
+									span.num {{ serviceSpecList[id]?.dataSize?.users }}
+									|  / {{ serviceSpecList[id]?.servicePlan?.users }}
 
-					td.overflow
-						// database
-						.percent(:class="getClass(serviceSpecList[id], 'database')") {{ typeof(serviceSpecList[id]?.dataPercent?.database) === 'string' ? serviceSpecList[id]?.dataPercent?.database : serviceSpecList[id]?.dataPercent?.database + '%' }}
+						td.database
+							span.value(:class="getClass(serviceSpecList[id], 'database')") {{ typeof(serviceSpecList[id]?.dataPercent?.database) === 'string' ? serviceSpecList[id]?.dataPercent?.database : serviceSpecList[id]?.dataPercent?.database + '%' }}
 
-					td.overflow
-						// cloud storage
-						.percent(:class="getClass(serviceSpecList[id], 'cloud')") {{ typeof(serviceSpecList[id]?.dataPercent?.cloud) === 'string' ? serviceSpecList[id]?.dataPercent?.cloud : serviceSpecList[id]?.dataPercent?.cloud + '%' }}
+						td.file-storage
+							span.value(:class="getClass(serviceSpecList[id], 'cloud')") {{ typeof(serviceSpecList[id]?.dataPercent?.cloud) === 'string' ? serviceSpecList[id]?.dataPercent?.cloud : serviceSpecList[id]?.dataPercent?.cloud + '%' }}
 
-					td.overflow
-						// host storage
-						.percent(:class="getClass(serviceSpecList[id], 'host')") {{ typeof(serviceSpecList[id]?.dataPercent?.host) === 'string' ? serviceSpecList[id]?.dataPercent?.host : serviceSpecList[id]?.dataPercent?.host + '%' }}
+						td.hosting
+							span.value(:class="getClass(serviceSpecList[id], 'host')") {{ typeof(serviceSpecList[id]?.dataPercent?.host) === 'string' ? serviceSpecList[id]?.dataPercent?.host : serviceSpecList[id]?.dataPercent?.host + '%' }}
 
-					td.overflow
-						// email storage
-						.percent(:class="getClass(serviceSpecList[id], 'email')") {{ typeof(serviceSpecList[id]?.dataPercent?.email) === 'string' ? serviceSpecList[id]?.dataPercent?.email : serviceSpecList[id]?.dataPercent?.email + '%' }}
-
-	br
-	br
+						td.email
+							span.value(:class="getClass(serviceSpecList[id], 'email')") {{ typeof(serviceSpecList[id]?.dataPercent?.email) === 'string' ? serviceSpecList[id]?.dataPercent?.email : serviceSpecList[id]?.dataPercent?.email + '%' }}
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { watch, ref } from 'vue';
-import { fetchingServiceList, serviceList, serviceIdList, serviceSpecList } from '@/views/service-list';
-import { user } from '@/code/user';
-import type Service from '@/code/service';
-import Table from '@/components/table.vue';
-import { ServiceSpec } from './service/service-spec';
+import { useRouter } from "vue-router";
+import { watch, ref, computed } from "vue";
+import {
+    fetchingServiceList,
+    serviceList,
+    serviceIdList,
+    serviceSpecList,
+} from "@/views/service-list";
+import { user } from "@/code/user";
+import type Service from "@/code/service";
+import Table from "@/components/table.vue";
+import modalCreateService from "@/views/create-service.vue";
+
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Pagination } from "swiper/modules";
+import "swiper/css"; // import Swiper styles
+import "swiper/css/pagination";
 
 const router = useRouter();
 
-console.log('serviceList', serviceList);
+const showCreateModal = ref(false);
 
-let goServiceDashboard = (service: { [key: string]: any }) => {
-    router.push('/my-services/' + service.id);
+// 최초 서비스 생성 확인 여부
+const hasNoServices = computed(() => !Object.keys(serviceIdList).length);
+
+function openCreateService() {
+    showCreateModal.value = true;
+    // document.body.style.overflow = "hidden";
 }
 
-let newServiceName = ref('')
+let goServiceDashboard = (service: { [key: string]: any }) => {
+    router.push("/my-services/" + service.id);
+};
+
+let newServiceName = ref("");
 let createService = () => {
     let regex = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
     if (newServiceName.value.match(regex)) {
-        alert('Special characters are not allowed');
+        alert("Special characters are not allowed");
 
-        return
+        return;
     }
-    router.push('/create/' + newServiceName.value);
-}
+    router.push("/create/" + newServiceName.value);
+};
 
 let getClass = (service: ServiceSpec, what: string) => {
     let percentage: number | string;
 
     if (!service) {
-        return 'grey';
+        return "not-applicable";
     }
 
-    if (service?.plan === 'Unlimited') {
-        return 'purple';
+    if (service?.plan === "Unlimited") {
+        return "unlimited";
     }
 
     percentage = service.dataPercent[what];
 
-    if (percentage === 'N/A') {
-        return 'grey';
-    } else if (typeof percentage === 'number') {
+    if (percentage === "N/A") {
+        return "not-applicable";
+    } else if (typeof percentage === "number") {
         if (percentage >= 0 && percentage < 51) {
-            return 'green';
-        }
-        else if (percentage >= 51 && percentage < 81) {
-            return 'orange';
-        }
-        else if (percentage >= 81 && percentage < 101) {
-            return 'red';
+            return "green";
+        } else if (percentage >= 51 && percentage < 81) {
+            return "orange";
+        } else if (percentage >= 81 && percentage < 101) {
+            return "red";
         }
     }
-    return 'grey';
-}
+    return "not-applicable";
+};
+
+// 상단 swiper
+// Swiper 인스턴스를 받을 때 실행되는 콜백
+const onSwiper = (swiper: any) => {
+    console.log("Swiper instance:", swiper);
+};
+
+// 슬라이드 변경 이벤트 콜백
+const onSlideChange = () => {
+    console.log("Slide changed");
+};
 </script>
 
 <style lang="less" scoped>
-.service-list {
-    max-width: 1200px;
-    margin: 0 auto;
+a {
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+        text-decoration: none;
+    }
 }
 
-.section {
-    max-width: 570px;
+.service-list {
+    max-width: 90rem;
     margin: 0 auto;
-    padding: 6rem 20px;
-    text-align: center;
+    padding: 3.75rem 4.5rem;
+    height: 100%;
+    flex: 1;
+}
+
+// top area
+.top-area {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 3.75rem;
+}
+
+.top-item {
+    padding: 1.5rem 9rem 1.5rem 1.625rem;
+    border-radius: 0.875rem;
+    overflow: hidden;
+    height: 13.125rem;
+    position: relative;
+    background: url("@/assets/img/myservice/bg_blue.png") no-repeat center;
+    flex: 1;
+    max-width: 27.125rem;
 
     .title {
-        // font-size: 1.4rem;
-        font-size: 2.4rem;
-        margin-bottom: 1rem;
-        line-height: 1.5;
+        font-size: 1.375rem;
+        font-weight: 600;
+        line-height: 1.3;
+        margin-bottom: 0.375rem;
     }
 
     .desc {
-        margin-bottom: 1rem;
-        line-height: 1.9;
-        color: #000;
+        font-size: 0.875rem;
+        font-weight: 300;
+        line-height: 1.4;
+    }
+
+    &::before {
+        content: "";
+        display: block;
+        width: 10.625rem;
+        height: 13.125rem;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: url("@/assets/img/myservice/img_docs.png") no-repeat center
+            right;
+    }
+
+    &:last-child {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #fff;
+        background: #000;
+        padding: 3.375rem 2rem;
+        text-align: center;
+
+        &::before {
+            content: none;
+        }
+
+        .title {
+            font-size: 1.375rem;
+            font-weight: 400;
+            margin-bottom: 1.75rem;
+        }
+
+        .btn-create {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #fff;
+            width: 100%;
+            max-width: 19.875rem;
+            height: 2.75rem;
+            border-radius: 0.5rem;
+            background-color: #0a4df1;
+            border: none;
+            padding: 1rem;
+            margin: 0 auto;
+
+            .svgIcon {
+                fill: #fff;
+                width: 1.125rem;
+                height: 1.125rem;
+            }
+
+            &:hover {
+                background-color: #1656f2;
+            }
+        }
+    }
+}
+
+.service-swiper {
+    padding: 0;
+    flex: none;
+
+    &::before {
+        content: none;
+    }
+
+    .swiper {
+        height: 100%;
+    }
+
+    .swiper-pagination-bullet {
+        opacity: 0.3;
+    }
+
+    .swiper-pagination-bullet-active {
+        opacity: 0.8 !important;
+    }
+}
+
+.service-swiper-item {
+    padding: 1.5rem 9rem 1.5rem 1.625rem;
+    background: url("@/assets/img/myservice/bg_green.png") no-repeat center;
+    position: relative;
+
+    &::before {
+        content: "";
+        display: block;
+        width: 10.625rem;
+        height: 13.125rem;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: url("@/assets/img/myservice/img_announce.png") no-repeat
+            center right;
+    }
+
+    &:nth-child(2) {
+        background-image: url("@/assets/img/myservice/bg_purple.png");
+
+        &::before {
+            background-image: url("@/assets/img/myservice/img_useCase.png");
+        }
+    }
+
+    &:last-child {
+        background-image: url("@/assets/img/myservice/bg_yellow.png");
+
+        &::before {
+            background-image: url("@/assets/img/myservice/img_newFeature.png");
+        }
+    }
+
+    .btn-more {
+        font-size: 1rem;
+        margin-top: 0.75rem;
+        display: block;
+        width: fit-content;
+    }
+
+    .swiper-pagination-fraction,
+    .swiper-pagination-custom,
+    .swiper-horizontal > .swiper-pagination-bullets,
+    .swiper-pagination-bullets.swiper-pagination-horizontal {
+        width: initial;
+    }
+}
+
+// my services list
+.my-services-list {
+    .title {
+        font-size: 1.5rem;
+        font-weight: 400;
+        line-height: 1.3;
+        color: #fff;
+        margin-bottom: 1.25rem;
     }
 }
 
@@ -197,80 +395,225 @@ let getClass = (service: ServiceSpec, what: string) => {
     }
 }
 
-// table style below
+// table style
+.tb-services-list {
+    border: none;
 
-td {
-    .percent {
-        position: relative;
-        display: inline-block;
-        padding: 3px 12px 3px 24px;
-        border-radius: 8px;
-        // box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.15) inset;
-        border: 1px solid rgba(0, 0, 0, 0.15);
-        color: #fff;
-        font-size: 0.7rem;
-        font-weight: 500;
+    ::v-deep(.customTbl) {
+        border-collapse: separate;
+        border-spacing: 0 0.5rem;
+        color: rgba(225, 225, 225, 0.8);
+        width: 100% !important;
+        text-align: center;
+        min-width: 75rem;
 
-        &::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 11px;
-            transform: translateY(-50%);
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background-color: #000;
-        }
+        thead {
+            background-color: #121214;
 
-        &.green {
-            color: #52D687;
-            border-color: #52D687;
-            background-color: #52d6870e;
+            tr {
+                width: 100%;
+                height: 2.625rem;
+                overflow: hidden;
 
-            &::before {
-                background-color: #52D687;
+                &::before {
+                    content: none;
+                }
+            }
+
+            th {
+                font-size: 0.8125rem;
+                font-weight: 400;
+                color: rgba(225, 225, 225, 0.8);
+                text-align: center;
+                width: 100%;
+                padding: 0 0.625rem;
+
+                &:first-child {
+                    padding-left: 3rem;
+                    border-top-left-radius: 0.625rem;
+                    border-bottom-left-radius: 0.625rem;
+                }
+
+                &:last-child {
+                    padding-right: 3rem;
+                    border-top-right-radius: 0.625rem;
+                    border-bottom-right-radius: 0.625rem;
+                }
+
+                &:hover {
+                    background-color: transparent;
+                }
             }
         }
 
-        &.orange {
-            color: #FCA642;
-            border-color: #FCA642;
-            background-color: #FCA6420e;
+        tbody {
+            background-color: #121214;
 
-            &::before {
-                background-color: #FCA642;
+            tr {
+                height: 3.75rem;
+                overflow: hidden;
+
+                &::before,
+                &::after {
+                    content: none;
+                }
+
+                &:hover {
+                    cursor: pointer;
+                    background: linear-gradient(
+                            0deg,
+                            rgba(255, 255, 255, 0.03) 0%,
+                            rgba(255, 255, 255, 0.03) 100%
+                        ),
+                        #141315;
+
+                    td {
+                        border-top: 1px solid rgba(255, 255, 255, 0.1);
+                        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+                        &:first-child {
+                            border-left: 1px solid rgba(255, 255, 255, 0.1);
+                        }
+
+                        &:last-child {
+                            border-right: 1px solid rgba(255, 255, 255, 0.1);
+                        }
+                    }
+                }
+
+                &.hidden {
+                    > *:not(.name) {
+                        opacity: 0.5;
+                    }
+                }
+            }
+
+            td {
+                font-size: 0.9375rem;
+                font-weight: 400;
+                color: #fff;
+                padding: 0 0.625rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+
+                &:first-child {
+                    padding-left: 3rem;
+                    border-top-left-radius: 0.625rem;
+                    border-bottom-left-radius: 0.625rem;
+                }
+
+                &:last-child {
+                    padding-right: 3rem;
+                    border-top-right-radius: 0.625rem;
+                    border-bottom-right-radius: 0.625rem;
+                }
             }
         }
 
-        &.red {
-            border-color: var(--caution-color);
+        .plan {
+            .badge {
+                display: inline-block;
+                padding: 0.25rem 0.5rem;
+                border-radius: 0.375rem;
+                background-color: #888888;
+                font-size: 0.75rem;
+                font-weight: 500;
+                color: #000;
 
-            &::before {
-                background-color: var(--caution-color);
+                &.trial {
+                    background-color: #3c94ff;
+                }
+
+                &.standard {
+                    background-color: #77dfa2;
+                }
+
+                &.premium {
+                    background-color: #f0e577;
+                }
+
+                &.canceled {
+                    background-color: var(--caution-color);
+                    color: #fff;
+                }
             }
         }
 
-        &.purple {
-            color: #B881FF;
-            border-color: #B881FF;
-            background-color: #B881FF0e;
+        .state {
+            span {
+                &::before {
+                    content: "";
+                    display: inline-block;
+                    width: 0.6875rem;
+                    height: 0.6875rem;
+                    background-color: #33d165;
+                    border-radius: 50%;
+                    margin-right: 0.375rem;
+                }
+            }
 
-            &::before {
-                background-color: #B881FF;
+            .disabled {
+                color: rgba(225, 225, 225, 0.5);
+                opacity: 1;
+
+                &::before {
+                    background-color: #888888;
+                }
+            }
+
+            .suspended {
+                &::before {
+                    background-color: #f33838;
+                }
             }
         }
 
-        &.grey {
-            padding: 3px 12px;
-            color: #bbb;
-            border-color: #bbb;
-            background-color: #cccccc0e;
+        .users {
+            .value {
+                color: rgba(225, 225, 225, 0.5);
+            }
 
-            &::before {
-                display: none;
+            .num {
+                color: #fff;
             }
         }
+
+        .value {
+            &.not-applicable {
+                position: relative;
+                font-size: 0;
+                display: flex;
+                justify-content: center;
+
+                &::before {
+                    content: "";
+                    display: block;
+                    width: 1.25rem;
+                    height: 1.25rem;
+                    background: url("@/assets/img/myservice/icon_lock.svg")
+                        no-repeat center;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1080px) {
+    .top-area {
+        flex-direction: column;
+    }
+
+    .top-item {
+        width: 100%;
+        max-width: 100%;
+        flex: auto;
+    }
+}
+
+@media (max-width: 800px) {
+    .service-list {
+        padding: 3.75rem 1.25rem;
     }
 }
 </style>

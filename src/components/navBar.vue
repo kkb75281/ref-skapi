@@ -158,7 +158,7 @@ nav#navBar(ref="navBar")
                                 a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank" @click="closeMobileMenu")
                                     img(src="@/assets/img/landingpage/icon_github.svg")
                                     | Github
-                            li.list.go-service
+                            li.list.go-service(v-if="route.name === 'home'")
                                 router-link.ser(to="/my-services" @click="closeMobileMenu") 
                                     img(src="@/assets/img/logo/symbol-logo-white.svg")
                                     | My Services

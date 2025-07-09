@@ -1,49 +1,49 @@
 <template lang="pug">
 footer#footer
-    //- template(v-if="route.name === 'home'")
-    .top
-        .top-inner
-            .left(:class="{ 'has-sections': route.name === 'home' }")
-                .logo
-                    img(src="@/assets/img/logo/logo-white.svg", alt="Skapi Logo")
-                ul.sections(v-if="route.name === 'home'")
-                    li(@click="scrollSec('section1')") Features
-                    li(@click="scrollSec('section2')") Price
-                    li(@click="scrollSec('section3')") FAQ
-                    li(@click="scrollSec('section4')") Contents
-                ul.nav
-                    li
-                        a(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
-                            img(src="@/assets/img/landingpage/icon_docs.svg", alt="GitHub")
-                            span Docs
-                    li
-                        a(href="https://github.com/broadwayinc/skapi-js" target="_blank") 
-                            img(src="@/assets/img/landingpage/icon_github.svg", alt="GitHub")
-                            span Github
-                    li
-                        router-link(to="/my-services")
-                            img(src="@/assets/img/logo/symbol-logo-white.svg", alt="Skapi Symbol Logo")
-                            span My services
-            .right
-                p support@broadwayinc.com
-                a.terms(href="https://www.skapi.com/pp.html" target="_blank") Terms of service / Privacy policy
-    .bottom
-        .bottom-inner
-            span BROADWAYINC PTE. LTD. Singapore.
-            .icon-wrap
-                a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                    img(src="@/assets/img/landingpage/icon_tiktok.svg")
-                a.link(href="https://www.instagram.com/skapi_api" target="_blank")
-                    img(src="@/assets/img/landingpage/icon_instagram.svg")
-                a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
-                    img(src="@/assets/img/landingpage/icon_youtube.svg")
-                a.link(href="https://x.com/skapi_api" target="_blank")
-                    img(src="@/assets/img/landingpage/icon_x.svg")
-                a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
-                    img(src="@/assets/img/landingpage/icon_linkedin.svg")
-                a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
-                    img(src="@/assets/img/landingpage/icon_facebook.svg")
-    //- template(v-else)
+    template(v-if="route.name === 'home'")
+        .top
+            .top-inner
+                .left(:class="{ 'has-sections': route.name === 'home' }")
+                    .logo
+                        img(src="@/assets/img/logo/logo-white.svg", alt="Skapi Logo")
+                    ul.sections(v-if="route.name === 'home'")
+                        li(@click="scrollSec('section1')") Features
+                        li(@click="scrollSec('section2')") Price
+                        li(@click="scrollSec('section3')") FAQ
+                        li(@click="scrollSec('section4')") Contents
+                    ul.nav
+                        li
+                            a(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
+                                img(src="@/assets/img/landingpage/icon_docs.svg", alt="GitHub")
+                                span Docs
+                        li
+                            a(href="https://github.com/broadwayinc/skapi-js" target="_blank") 
+                                img(src="@/assets/img/landingpage/icon_github.svg", alt="GitHub")
+                                span Github
+                        li
+                            router-link(to="/my-services")
+                                img(src="@/assets/img/logo/symbol-logo-white.svg", alt="Skapi Symbol Logo")
+                                span My services
+                .right
+                    p support@broadwayinc.com
+                    a.terms(href="https://www.skapi.com/pp.html" target="_blank") Terms of service / Privacy policy
+        .bottom
+            .bottom-inner
+                span BROADWAYINC PTE. LTD. Singapore.
+                .icon-wrap
+                    a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                    a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_instagram.svg")
+                    a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_youtube.svg")
+                    a.link(href="https://x.com/skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_x.svg")
+                    a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                    a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_facebook.svg")
+    template(v-else)
         .footer-wrap
             .left
                 .logo
@@ -399,8 +399,8 @@ onUnmounted(() => {
         }
 
         .footer-wrap {
-            padding-left: 2.5rem;
-            padding-right: 2.5rem;
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
             flex-direction: column;
             align-items: flex-start;
             gap: 2rem;

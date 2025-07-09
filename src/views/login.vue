@@ -4,7 +4,6 @@ br
 br
 br
 br
-br
 
 #login
     router-link(to="/")
@@ -65,14 +64,6 @@ br
                 .signup
                     span No account?&nbsp;
                     router-link(to="/signup") Sign up
-    
-br
-br
-br
-br
-br
-br
-    
 </template>
 
 <script setup lang="ts">
@@ -160,6 +151,7 @@ let login = (e) => {
     max-width: 480px;
     padding: 0 20px;
     margin: 0 auto;
+    width: 100%;
 }
 
 form {
