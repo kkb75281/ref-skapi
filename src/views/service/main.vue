@@ -1,72 +1,13 @@
 <template lang="pug">
 #serviceMain.service-page-main(v-if="serviceMainLoaded")
     nav.left 
-        .top
-            .service-plan-name
-                span.plan(:class="currentService.plan.toLowerCase()") {{ currentService.plan }}
-                .name {{ currentService.service.name }}
-            router-link.router(:to="`/my-services/${currentService.id}`" :class="{'active': route.name == 'service'}")
-                svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-home")
-                span.name Getting Started
-                
-            router-link.router(:to="`/my-services/${currentService.id}/dashboard`" :class="{'active': route.name == 'dashboard'}")
-                svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-setting")
-                span.name Service Settings
-
-            router-link.router(:to="`/my-services/${currentService.id}/users`" :class="{'active': route.name == 'users'}")
-                svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-users")
-                span.name Users
-            
-            router-link.router(:to="`/my-services/${currentService.id}/openid`" :class="{'active': route.name == 'openid'}")
-                svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-user-shield")
-                span.name OpenID Logger
-
-            router-link.router(:to="`/my-services/${currentService.id}/clientsecret`" :class="{'active': route.name == 'clientsecret'}")
-                svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-lock")
-                span.name Client Secret Key
-
-            router-link.router(:to="`/my-services/${currentService.id}/records`" :class="{'active': route.name == 'records'}")
-                svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-database")
-                span.name Database
-
-            router-link.router(:to="`/my-services/${currentService.id}/mail`" :class="{'active': route.name == 'mail'}")
-                svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-mail")
-                span.name Automated Email
-
-            .advanced-router
-                div(v-if='currentService.service.group <= 1' @click='()=>openOffer=true' style='cursor:pointer;')
-                    .router.disabled(:to="`/my-services/${currentService.id}/newsletter`" :class="{'active': route.name == 'newsletter'}")
-                        svg
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-bulk-mail")
-                        span.name Bulk Email
-
-                    .router.disabled(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}")
-                        svg
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-hosting")
-                        span.name File Hosting
-
-                template(v-else)
-                    router-link.router(:to="`/my-services/${currentService.id}/newsletter`" :class="{'active': route.name == 'newsletter'}")
-                        svg
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-bulk-mail")
-                        span.name Bulk Email
-
-                    router-link.router(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}")
-                        svg
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-hosting")
-                        span.name File Hosting
+        SideNav
         .upgrade(v-if="currentService.service.group <= 1")
             .title Hey, {{ user?.name ? user.name : user.email.split('@')[0] }}
             .desc This service is currently in a free version. Upgrade to enjoy more convenient features!
             router-link(:to='`/subscription/${currentService.id}`')
                 button.block(type="button") Upgrade
+
     main.right
         router-view
     
@@ -93,42 +34,16 @@ import { ref, watch } from "vue";
 import { user } from '@/code/user';
 import { serviceList } from "@/views/service-list";
 import { currentService, setService, serviceMainLoaded } from "@/views/service/main";
+
+import SideNav from "@/components/sideNav.vue";
 import Modal from "@/components/modal.vue";
 import MaterialIcon from "@/assets/img/material-icon.svg"
 
 const router = useRouter();
 const route = useRoute();
 
-let openOffer = ref(false);
-
 let serviceId = route.path.split("/")[2];
-let currentRouter = ref("");
-let routerList = [
-    "service",
-    "dashboard",
-    "users",
-    "openid",
-    "clientsecret",
-    "records",
-    "mail",
-    "newsletter",
-    "hosting",
-];
-let titleList = [
-    "Getting Started",
-    "Service Settings",
-    "Users",
-    "OpenID Logger",
-    "Client Secret Key",
-    "Database",
-    "Automated Email",
-    "Bulk Email",
-    "File Hosting",
-];
-
-let index = 0;
-let prevRouter = ref("");
-let nextRouter = ref("");
+let openOffer = ref(false);
 let plan = ref("Trial");
 
 watch(serviceList, nv => {
@@ -144,39 +59,6 @@ watch(serviceList, nv => {
         serviceMainLoaded.value = true;
     }
 }, { immediate: true });
-
-watch(() => route, nv => {
-    currentRouter.value = nv.path.split('/')[3];
-    index = routerList.indexOf(currentRouter.value);
-    plan.value = currentService?.plan;
-
-    if (plan.value == "Trial") {
-        routerList = ["service", "dashboard", "users", "openid", "clientsecret", "records", "mail"];
-        titleList = [
-            "Getting Started",
-            "Dashboard & Settings",
-            "Users",
-            "OpenID Logger",
-            "Client Secret Key",
-            "Database",
-            "Automated Email"
-        ];
-    }
-
-    if (index == -1) {
-        nextRouter.value = "dashboard";
-        titleList[0] = "Dashboard & Settings";
-    } else if (index == 1) {
-        prevRouter.value = "";
-        titleList[0] = "Getting Started";
-        nextRouter.value = routerList[index + 1];
-    } else {
-        prevRouter.value = routerList[index - 1];
-        nextRouter.value = routerList[index + 1];
-    }
-},
-    { immediate: true, deep: true }
-);
 </script>
 
 <style lang="less" scoped>
@@ -199,75 +81,6 @@ watch(() => route, nv => {
         flex-direction: column;
         align-items: center;
         justify-content: space-between;
-
-        .top {
-            width: 100%;
-        }
-
-        .service-plan-name {
-            padding: 40px 0;
-            text-align: center;
-
-            .plan {
-                color: #000;
-                font-size: 11px;
-                padding: 4px 8px;
-                border-radius: 5px;
-                font-weight: 500;
-
-                &.trial {
-                    background-color: #3C94FF;
-                }
-
-                &.standard {
-                    background-color: #77DFA2;
-                }
-
-                &.premium {
-                    background-color: #F0E577;
-                }
-            }
-
-            .name {
-                font-size: 16px;
-                margin-top: 8px;
-            }
-        }
-
-        .router {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 36px;
-            text-decoration: none;
-            color: #F5F5F5;
-            white-space: nowrap;
-
-            &.active {
-                background: #0D0D0D;
-            }
-
-            &:hover {
-                background: #0D0D0D;
-            }
-
-            svg {
-                width: 18px;
-                height: 18px;
-                fill: #F5F5F5;
-            }
-
-            .name {
-                flex-grow: 1;
-                font-size: 15px;
-            }
-        }
-
-        .advanced-router {
-            padding: 24px 0;
-            margin-top: 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
 
         .upgrade {
             width: 13.75rem;

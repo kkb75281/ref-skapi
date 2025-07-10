@@ -258,7 +258,7 @@ button {
     outline: none;
     cursor: pointer;
 
-    &:hover {
+    &:hover(:not(.disabled, .nohover)) {
         &::after {
             opacity: 1;
         }

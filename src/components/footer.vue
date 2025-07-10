@@ -139,9 +139,6 @@ watch(() => route.path, (nv) => {
     let splitPath = nv.split("/");
 
     currentRoutePath.value = splitPath.length > 2 ? splitPath[1] : '';
-    // console.log("Route changed:", nv);
-    console.log("Split Path:", splitPath);
-    console.log("Current Route Path:", currentRoutePath.value);
 }, { immediate: true });
 
 onMounted(() => {
