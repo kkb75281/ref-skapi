@@ -28,8 +28,8 @@
 				.swiper-pagination
 		.top-item.create-service
 			.title Create a new service
-			button.btn-create(@click="openCreateService")
-				svg.svgIcon
+			button.icon-text(@click="openCreateService")
+				svg
 					use(xlink:href="@/assets/img/material-icon.svg#icon-add") 
 				span Create
 			modalCreateService(:visible="showCreateModal" :isFirstService="!hasNoServices" @close="showCreateModal = false")
@@ -191,6 +191,7 @@ a {
 }
 
 .top-item {
+    color: #000;
     padding: 1.5rem 9rem 1.5rem 1.625rem;
     border-radius: 0.875rem;
     overflow: hidden;
@@ -221,8 +222,7 @@ a {
         position: absolute;
         bottom: 0;
         right: 0;
-        background: url("@/assets/img/myservice/img_docs.png") no-repeat center
-            right;
+        background: url("@/assets/img/myservice/img_docs.png") no-repeat center right;
     }
 
     &:last-child {
@@ -243,32 +243,9 @@ a {
             margin-bottom: 1.75rem;
         }
 
-        .btn-create {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.25rem;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #fff;
-            width: 100%;
-            max-width: 19.875rem;
-            height: 2.75rem;
-            border-radius: 0.5rem;
-            background-color: #0a4df1;
-            border: none;
-            padding: 1rem;
+        button {
+            max-width: 15.625rem;
             margin: 0 auto;
-
-            .svgIcon {
-                fill: #fff;
-                width: 1.125rem;
-                height: 1.125rem;
-            }
-
-            &:hover {
-                background-color: #1656f2;
-            }
         }
     }
 }
@@ -300,8 +277,7 @@ a {
         position: absolute;
         bottom: 0;
         right: 0;
-        background: url("@/assets/img/myservice/img_announce.png") no-repeat
-            center right;
+        background: url("@/assets/img/myservice/img_announce.png") no-repeat center right;
     }
 
     &:nth-child(2) {
@@ -329,7 +305,7 @@ a {
 
     .swiper-pagination-fraction,
     .swiper-pagination-custom,
-    .swiper-horizontal > .swiper-pagination-bullets,
+    .swiper-horizontal>.swiper-pagination-bullets,
     .swiper-pagination-bullets.swiper-pagination-horizontal {
         width: initial;
     }
@@ -443,11 +419,9 @@ a {
 
                 &:hover {
                     cursor: pointer;
-                    background: linear-gradient(
-                            0deg,
+                    background: linear-gradient(0deg,
                             rgba(255, 255, 255, 0.03) 0%,
-                            rgba(255, 255, 255, 0.03) 100%
-                        ),
+                            rgba(255, 255, 255, 0.03) 100%),
                         #141315;
 
                     td {
@@ -465,7 +439,7 @@ a {
                 }
 
                 &.hidden {
-                    > *:not(.name) {
+                    >*:not(.name) {
                         opacity: 0.5;
                     }
                 }
@@ -574,8 +548,7 @@ a {
                     display: block;
                     width: 1.25rem;
                     height: 1.25rem;
-                    background: url("@/assets/img/myservice/icon_lock.svg")
-                        no-repeat center;
+                    background: url("@/assets/img/myservice/icon_lock.svg") no-repeat center;
                 }
             }
         }

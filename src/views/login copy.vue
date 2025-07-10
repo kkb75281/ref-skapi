@@ -16,11 +16,11 @@ br
     form(@submit.prevent="login")
         label
             | Email
-            input.block(type="email" @input="e=> { form.email = e.target.value; error='';}" :disabled="promiseRunning" placeholder="your@email.com" required)
+            input.big(type="email" @input="e=> { form.email = e.target.value; error='';}" :disabled="promiseRunning" placeholder="your@email.com" required)
 
         label.passwordInput
             | Password
-            input.block(:type='showPassword ? "text" : "password"'
+            input.big(:type='showPassword ? "text" : "password"'
             @input="(e)=>{form.password = e.target.value; error='';}" 
             :disabled="promiseRunning"
             name="password" placeholder="Enter password" required)
@@ -60,7 +60,7 @@ br
             div(v-if="promiseRunning" style="width:100%; text-align:center")
                 .loader(style="--loader-color:blue; --loader-size:12px")
             template(v-else)
-                button.inline Login
+                button.final Login
                 .signup
                     span No account?&nbsp;
                     router-link(to="/signup") Sign up
@@ -157,7 +157,7 @@ let login = (e) => {
 form {
     padding: 8px;
 
-    >label {
+    > label {
         margin-bottom: 16px;
     }
 
