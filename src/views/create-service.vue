@@ -17,27 +17,30 @@ template(v-if="visible")
                     span Create
 
             .plan-wrap.card-wrap(v-else-if="step === 2")
-                .plan(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
-                    .card
+                .plan-item.blue(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
+                    svg.mark
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+                    .top
                         .title Trial
-                        //- .option 
-                            TabMenu(v-model="activeTabs.trial" :tabs="['basic']")
-                        .price
-                            .faktum {{ '$' + planSpec['Trial'].price }}
-                            span /mo
-                        .desc Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
+                        .desc Best for testing and prototypingwwwwwwww
+                    .middle
+                        .price Free
                         button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('trial')") 
                             template(v-if="serviceMode == 'trial' && promiseRunning")
                                 .loader(style="--loader-color:white; --loader-size: 12px")
                             template(v-else) Select
-                    ul.provides
-                        li(v-for="(des) in planSpec['Trial'].description") {{ des }}
-                        li.warning(v-for="(des) in planSpec['Trial'].description_warning") {{ des }}
-                .plan(:class="{'selected' : (serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'standard' && serviceMode !== 'standard-perpetual') && promiseRunning}")
+                    .bottom
+                        p Core includes:
+                        ul
+                            li.user 10K User Accounts
+                            li.data 8GB Database Storage
+                            li.file 100GB File Storage
+                            li.mail(style="margin-bottom: 2.5rem;") Automated Emails
+                            li.forbiden(style="font-size: .9375rem;") All user data is deleted every 14 days
+
+                .plan-item.green(:class="{'selected' : (serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'standard' && serviceMode !== 'standard-perpetual') && promiseRunning}")
                     .card
                         .title Standard 
-                        //- .option 
-                            TabMenu(v-model="activeTabs.standard" :tabs="['basic', 'perpetual']")
                         .price
                             template(v-if="activeTabs.standard === 0") 
                                 .faktum {{ '$' + planSpec['Standard'].price }}
@@ -54,11 +57,9 @@ template(v-if="visible")
                             template(v-else) Select
                     ul.provides
                         li(v-for="(des) in planSpec['Standard'].description") {{ des }}
-                .plan(:class="{'selected' : (serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'premium' && serviceMode !== 'premium-perpetual') && promiseRunning}")
+                .plan-item.yellow(:class="{'selected' : (serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'premium' && serviceMode !== 'premium-perpetual') && promiseRunning}")
                     .card
                         .title Premium 
-                        //- .option 
-                            TabMenu(v-model="activeTabs.premium" :tabs="['basic', 'perpetual']")
                         .price
                             template(v-if="activeTabs.premium === 0") 
                                 .faktum {{ '$' + planSpec['Premium'].price }}
@@ -346,6 +347,7 @@ let selectedPlan = (plan: string) => {
     .title {
         font-size: 1rem;
         margin-bottom: 1rem;
+        text-align: left;
     }
 
     .option {
@@ -364,19 +366,14 @@ let selectedPlan = (plan: string) => {
     }
 
     .price {
-        display: flex;
-        align-items: baseline;
-        justify-content: center;
-        margin-bottom: 1rem;
+        // display: flex;
+        // align-items: baseline;
+        // justify-content: center;
+        // margin-bottom: 1rem;
 
         .faktum {
             font-size: 2.4rem;
             margin-right: 0.5rem;
-            color: #000;
-        }
-
-        span {
-            color: #888;
         }
     }
 
@@ -384,12 +381,217 @@ let selectedPlan = (plan: string) => {
         margin: 0;
         line-height: 1.4;
         font-size: 0.8rem;
-        color: #777;
         margin-bottom: 1rem;
     }
 
     button {
         width: 100% !important;
+    }
+}
+
+// plan-wrap new style
+.plan-wrap {
+    .plan-item {
+        position: relative;
+        flex-grow: 1;
+        background-color: #16171a;
+        border-radius: 1.0625rem;
+        padding: 2.5rem 2.125rem;
+        color: #fff;
+        text-align: left;
+
+        .mark {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 83px;
+            height: 83px;
+        }
+
+        .top {
+            .title {
+                margin-bottom: 10px;
+                font-size: 1.75rem;
+                font-weight: 500;
+            }
+
+            .desc {
+                width: 280px;
+                font-size: 1.0625rem;
+                font-weight: 300;
+                line-height: 1.3;
+                margin: 0;
+                color: rgba(255, 255, 255, 0.7);
+            }
+        }
+
+        .middle {
+            padding: 1.875rem 0;
+            margin: 1.875rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+            .price {
+                font-size: 2.5rem;
+                font-weight: 500;
+                margin-bottom: 1.875rem;
+
+                span {
+                    font-size: 16px;
+                    font-weight: 400;
+                    margin-left: 7px;
+                    opacity: 0.7;
+                    color: rgba(255, 255, 255, 0.7);
+                }
+            }
+
+            button {
+                width: 100%;
+                max-width: 100%;
+                background-color: #242529;
+            }
+        }
+
+        .bottom {
+            font-size: 1rem;
+
+            p {
+                margin: 0;
+            }
+
+            ul {
+                margin: 0;
+                padding: 0;
+                margin-top: 1rem;
+
+                li {
+                    position: relative;
+                    list-style: none;
+                    margin-left: 1.4rem;
+                    margin-bottom: 8px;
+
+                    &::before {
+                        position: absolute;
+                        content: "";
+                        left: -1.6rem;
+                        top: 1px;
+                        background-size: cover;
+                        width: 18px;
+                        height: 18px;
+                        opacity: 0.8;
+                    }
+
+                    &.user {
+                        &::before {
+                            background: url("@/assets/img/landingpage/icon_user.svg")
+                                no-repeat;
+                        }
+                    }
+
+                    &.data {
+                        &::before {
+                            background: url("@/assets/img/landingpage/icon_data.svg")
+                                no-repeat;
+                        }
+                    }
+
+                    &.file {
+                        &::before {
+                            background: url("@/assets/img/landingpage/icon_file.svg")
+                                no-repeat;
+                        }
+                    }
+
+                    &.mail {
+                        &::before {
+                            background: url("@/assets/img/landingpage/icon_mail.svg")
+                                no-repeat;
+                        }
+                    }
+
+                    &.forbiden {
+                        &::before {
+                            background: url("@/assets/img/landingpage/icon_forbiden.svg")
+                                no-repeat;
+                        }
+                    }
+
+                    &.invitation {
+                        &::before {
+                            background: url("@/assets/img/landingpage/icon_invitation.svg")
+                                no-repeat;
+                        }
+                    }
+
+                    &.global {
+                        &::before {
+                            background: url("@/assets/img/landingpage/icon_global.svg")
+                                no-repeat;
+                        }
+                    }
+                }
+            }
+        }
+
+        &.blue {
+            .mark {
+                fill: #0a4df1;
+            }
+
+            .top {
+                .title {
+                    color: #306cff;
+                }
+            }
+
+            .middle {
+                button {
+                    &:hover {
+                        background-color: #0a4df1;
+                    }
+                }
+            }
+        }
+
+        &.green {
+            .mark {
+                fill: #52dfa2;
+            }
+
+            .top {
+                .title {
+                    color: #52dfc7;
+                }
+            }
+
+            .middle {
+                button {
+                    &:hover {
+                        background-color: #3ad08f;
+                    }
+                }
+            }
+        }
+
+        &.yellow {
+            .mark {
+                fill: #fff06c;
+            }
+
+            .top {
+                .title {
+                    color: #fff06c;
+                }
+            }
+
+            .middle {
+                button {
+                    &:hover {
+                        background-color: #e8ba3c;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -423,7 +625,8 @@ let selectedPlan = (plan: string) => {
     z-index: 999999;
 
     &.first-service {
-        background: url("@/assets/img/myservice/bg_gradation.png") no-repeat center center;
+        background: url("@/assets/img/myservice/bg_gradation.png") no-repeat
+            center center;
         background-size: cover;
         top: 4rem;
     }
@@ -475,6 +678,20 @@ let selectedPlan = (plan: string) => {
 .form {
     max-width: 22rem;
     min-width: 22rem;
+
+    button {
+        border-radius: 0.5rem;
+        background-color: #0a4df1;
+
+        &:hover {
+            background-color: #1656f2;
+        }
+
+        &.disabled {
+            opacity: 1;
+            background-color: #222325;
+        }
+    }
 }
 
 .provides {
@@ -510,7 +727,6 @@ let selectedPlan = (plan: string) => {
         padding-top: 20px;
 
         .plan {
-
             &:hover,
             &.selected {
                 scale: 1;
