@@ -1,5 +1,5 @@
 <template lang="pug">
-main.landing-page-root
+main.landing-page-root(style="width:100%;")
 	.bg-blue.hero-bg
 		section.hero
 			.title #[span.linear-gradient Zero-Setup] #[span.wordset Backend API]
@@ -148,7 +148,7 @@ main.landing-page-root
 							use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
 						.top
 							.title Trial
-							.desc Best for testing and prototypingwwwwwwww
+							.desc Best for testing and prototyping.
 						.middle
 							.price Free
 							router-link(:to="user?.user_id ? '/create' : '/signup'")
@@ -368,8 +368,6 @@ onMounted(async () => {
     window.addEventListener("scroll", handleScroll);
     handleScroll();
 
-    document.body.style.backgroundColor = "#111112"; // 최상단, 최하단에서 스크롤시 배경색이 흰색으로 보이는 문제를 방지하기 위해 설정
-
     const heroArea = document.querySelector(".hero");
     if (heroArea) {
         requestAnimationFrame(() => {
@@ -443,7 +441,6 @@ onBeforeUnmount(() => {
 
 onUnmounted(() => {
     window.removeEventListener("resize", setSwiperImageWidth);
-    document.body.style.backgroundColor = "#ffffff"; // 페이지가 언마운트될 때 배경색을 원래대로 되돌림
 
     const heroArea = document.querySelector(".hero");
     if (heroArea) {
@@ -453,32 +450,6 @@ onUnmounted(() => {
 </script>
 
 <style lang="less" scoped>
-button {
-    display: inline-flex;
-    max-width: 240px;
-    padding: 0 0.875rem;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 13px;
-    background: #0a4df1;
-    border: 0;
-    color: #fff;
-    font-size: 1.125rem;
-    font-weight: 500;
-    line-height: 1.5;
-    white-space: nowrap;
-
-    &:hover {
-        background-color: #1656f2;
-    }
-}
-
-.landing-page-root {
-    width: 100%;
-}
-
 section {
     margin: 0 2.5rem;
     color: #fff;
@@ -774,6 +745,7 @@ section {
     }
 
     .feature-wrap {
+        max-width: 1600px;
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         grid-gap: 2.5rem;
@@ -1621,11 +1593,6 @@ section {
 }
 
 @media (max-width: 430px) {
-    button {
-        font-size: 1rem;
-        padding: 0 0.75rem;
-    }
-
     .btn {
         font-size: 1rem;
         padding: 0.875rem;
