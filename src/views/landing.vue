@@ -1,5 +1,5 @@
 <template lang="pug">
-main.landing-page-root(style="width:100%;")
+.landing-page-root
 	.bg-blue.hero-bg
 		section.hero
 			.title #[span.linear-gradient Zero-Setup] #[span.wordset Backend API]

@@ -1,5 +1,5 @@
 <template lang="pug">
-main
+.ui-wrap
     h1 UI guide
     hr
     h2 Buttons
@@ -100,10 +100,11 @@ main
     br
 </template>
 <style lang="less">
-main {
+.ui-wrap {
     margin: 0 auto;
     max-width: 1000px;
 }
+
 form {
     >label {
         margin-bottom: 16px;
