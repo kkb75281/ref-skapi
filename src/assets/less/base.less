@@ -70,7 +70,8 @@ h6 {
 }
 
 hr {
-    background: rgba(0, 0, 0, 0.15);
+    // background: rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.15);
     height: 1px;
     border: 0;
     margin: 1rem 0;
@@ -250,7 +251,7 @@ button {
     background: #0a4df1;
     border: 0;
     color: #fff;
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-weight: 500;
     white-space: nowrap;
     user-select: none;
@@ -275,6 +276,14 @@ button {
         opacity: 0;
     }
 
+    &.gray {
+        background-color: rgba(34, 35, 37, 1);
+    }
+
+    &.red {
+        background-color: var(--caution-color);
+    }
+
     &.block {
         max-width: unset;
     }
@@ -289,7 +298,6 @@ button {
         justify-content: center;
         align-items: center;
         gap: 0.25rem;
-        font-size: 1rem;
 
         svg {
             width: 18px;
@@ -300,7 +308,7 @@ button {
 
     @media (max-width: 430px) {
         padding: 0.75rem 4.375rem;
-        font-size: 1rem;
+        font-size: 0.875rem;
     }
 }
 

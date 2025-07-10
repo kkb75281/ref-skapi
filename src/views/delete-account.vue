@@ -38,9 +38,9 @@ br
         div(v-if="promiseRunning" style="width:100%; text-align:center")
             .loader(style="--loader-color:blue; --loader-size:12px")
         template(v-else)
-            button.noLine.warning(type="button" @click="router.push('/account-setting')") Cancel
+            button.inline.gray(type="button" @click="router.push('/account-setting')") Cancel
             | &nbsp;&nbsp;
-            button.final.warning(:class="{disabled: !iUnderstand}" @click='processDelete') Delete
+            button.inline.red(:class="{disabled: !iUnderstand}" @click='processDelete') Delete
 
 br
 br
@@ -61,7 +61,7 @@ let promiseRunning = ref(false);
 
 let processDelete = async () => {
     promiseRunning.value = true;
-    
+
     try {
         let disables = [];
         let cancelSubs = [];

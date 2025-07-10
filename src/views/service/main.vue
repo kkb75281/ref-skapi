@@ -32,7 +32,7 @@
 
             router-link.router(:to="`/my-services/${currentService.id}/records`" :class="{'active': route.name == 'records'}")
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-cloud")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-database")
                 span.name Database
 
             router-link.router(:to="`/my-services/${currentService.id}/mail`" :class="{'active': route.name == 'mail'}")
@@ -41,13 +41,13 @@
                 span.name Automated Email
 
             .advanced-router
-                div(v-if='currentService.service.group <= 1' @click='()=>openOffer=true')
-                    .router.deact(:to="`/my-services/${currentService.id}/newsletter`" :class="{'active': route.name == 'newsletter'}")
+                div(v-if='currentService.service.group <= 1' @click='()=>openOffer=true' style='cursor:pointer;')
+                    .router.disabled(:to="`/my-services/${currentService.id}/newsletter`" :class="{'active': route.name == 'newsletter'}")
                         svg
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-mail")
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-bulk-mail")
                         span.name Bulk Email
 
-                    .router.deact(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}")
+                    .router.disabled(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}")
                         svg
                             use(xlink:href="@/assets/img/material-icon.svg#icon-nav-hosting")
                         span.name File Hosting
@@ -55,7 +55,7 @@
                 template(v-else)
                     router-link.router(:to="`/my-services/${currentService.id}/newsletter`" :class="{'active': route.name == 'newsletter'}")
                         svg
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-mail")
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-bulk-mail")
                         span.name Bulk Email
 
                     router-link.router(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}")
@@ -65,44 +65,22 @@
         .upgrade(v-if="currentService.service.group <= 1")
             .title Hey, {{ user?.name ? user.name : user.email.split('@')[0] }}
             .desc This service is currently in a free version. Upgrade to enjoy more convenient features!
-            button Upgrade
+            router-link(:to='`/subscription/${currentService.id}`')
+                button.block(type="button") Upgrade
     main.right
         router-view
-        //- br
-        //- br
-        //- hr
-        //- nav.bottom 
-            .link
-                router-link.prev(v-if="currentRouter && titleList[index-1]" :to="`/my-services/${currentService.id}/${prevRouter}`")
-                    .desc Prev Page
-                    .title {{ titleList[index-1] }}
-            .link
-                router-link.next(v-if="currentRouter !== 'hosting' && titleList[index+1]" :to="`/my-services/${currentService.id}/${nextRouter}`")
-                    .desc Next Page
-                    .title {{ titleList[index+1] }}
-
     
     // upgrade service
     Modal(:open="openOffer" @close="openOffer=false")
-        h4(style='margin:.5em 0 0;') Upgrade
+        .modal-title Upgrade
 
-        hr
-
-        div(style='font-size:.8rem;')
-            p.
-                You can access more features like sending newsletters,
-                #[br]
-                inviting users and file hosting by upgrading your service.
-                
-            p Would you like you check out our service plans?
-
+        .modal-desc You can access more features like sending newsletters, inviting users and file hosting by upgrading your service. #[br]Would you like you check out our service plans?
 
         br
-
-        div(style="display: flex; align-items: center; justify-content: space-between;")
-            button.noLine(type="button" @click="openOffer=false;") No
+        div(style='justify-content:space-between;display:flex;align-items:center;')
+            button.inline.gray(type="button" @click="openOffer=false;") No
             router-link(:to='`/subscription/${currentService.id}`')
-                button.final(type="button") Yes
+                button.inline(type="button") Yes, Upgrade Now
 div(v-else style='width:100%;text-align: center;margin-top: 100px;')
     .loader(style="--loader-color:white; --loader-size:12px")
 
@@ -202,28 +180,6 @@ watch(() => route, nv => {
 </script>
 
 <style lang="less" scoped>
-button {
-    display: inline-flex;
-    max-width: 240px;
-    padding: 0 0.875rem;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 13px;
-    background: #0a4df1;
-    border: 0;
-    color: #fff;
-    font-size: .8125rem;
-    font-weight: 500;
-    line-height: 1.5;
-    white-space: nowrap;
-
-    &:hover {
-        background-color: #1656f2;
-    }
-}
-
 #serviceMain {
     position: relative;
     width: 100%;
@@ -234,7 +190,8 @@ button {
         position: fixed;
         top: 4rem;
         left: 0;
-        width: 260px;
+        max-width: 260px;
+        width: 100%;
         height: calc(100% - 4rem);
         overflow-y: auto;
         background-color: #000;
@@ -290,16 +247,6 @@ button {
                 background: #0D0D0D;
             }
 
-            &.deact {
-                background-color: transparent !important;
-                cursor: pointer;
-                color: rgba(255, 255, 255, 0.5) !important;
-
-                img {
-                    opacity: 0.5;
-                }
-            }
-
             &:hover {
                 background: #0D0D0D;
             }
@@ -323,26 +270,26 @@ button {
         }
 
         .upgrade {
-            margin: 0 20px;
-            margin-bottom: 40px;
-            padding: 30px 20px;
+            width: 13.75rem;
+            margin: 0 1.25rem 2.5rem;
+            padding: 1.875rem 1.25rem;
             background-color: #16171A;
             text-align: center;
-            border-radius: 15px;
+            border-radius: .9375rem;
 
             .title {
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
-                margin-bottom: 8px;
+                margin-bottom: .5rem;
             }
 
             .desc {
                 font-weight: 300;
-                font-size: 12px;
+                font-size: .875rem;
                 line-height: 1.3;
                 color: rgba(255, 255, 255, 0.7);
-                margin-bottom: 30px;
+                margin-bottom: 1.875rem;
             }
         }
     }
@@ -402,34 +349,15 @@ button {
     }
 }
 
-// @media (max-width: 1023px) {
-//     .router {
-//         .name {
-//             display: none;
-//         }
-//     }
-// }
-
-@media (max-width: 1280px) {
-    // #serviceMain {
-    //     .right {
-    //         padding: 40px;
-    //         padding-top: 60px;
-    //         padding-left: 300px;
-    //     }
-    // }
-}
-
 @media (max-width: 800px) {
     #serviceMain {
-        // #leftNav {
-        //     display: none;
-        // }
+        .left {
+            display: none;
+        }
 
         .right {
-            padding: 20px;
+            padding: 24px;
             padding-top: 60px;
-            padding-left: 280px;
         }
     }
 }
