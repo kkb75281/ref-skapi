@@ -32,7 +32,7 @@
 				svg
 					use(xlink:href="@/assets/img/material-icon.svg#icon-add") 
 				span Create
-			modalCreateService(:visible="showCreateModal" :isFirstService="!hasNoServices" @close="showCreateModal = false")
+			modalCreateService(:visible="showCreateModal" @close="showCreateModal = false")
 	section.section.my-services-list
 		.title My Services
 
@@ -112,12 +112,8 @@ const router = useRouter();
 
 const showCreateModal = ref(false);
 
-// 최초 서비스 생성 확인 여부
-const hasNoServices = computed(() => !Object.keys(serviceIdList).length);
-
 function openCreateService() {
     showCreateModal.value = true;
-    // document.body.style.overflow = "hidden";
 }
 
 let goServiceDashboard = (service: { [key: string]: any }) => {
@@ -222,7 +218,8 @@ a {
         position: absolute;
         bottom: 0;
         right: 0;
-        background: url("@/assets/img/myservice/img_docs.png") no-repeat center right;
+        background: url("@/assets/img/myservice/img_docs.png") no-repeat center
+            right;
     }
 
     &:last-child {
@@ -277,7 +274,8 @@ a {
         position: absolute;
         bottom: 0;
         right: 0;
-        background: url("@/assets/img/myservice/img_announce.png") no-repeat center right;
+        background: url("@/assets/img/myservice/img_announce.png") no-repeat
+            center right;
     }
 
     &:nth-child(2) {
@@ -305,7 +303,7 @@ a {
 
     .swiper-pagination-fraction,
     .swiper-pagination-custom,
-    .swiper-horizontal>.swiper-pagination-bullets,
+    .swiper-horizontal > .swiper-pagination-bullets,
     .swiper-pagination-bullets.swiper-pagination-horizontal {
         width: initial;
     }
@@ -419,9 +417,11 @@ a {
 
                 &:hover {
                     cursor: pointer;
-                    background: linear-gradient(0deg,
+                    background: linear-gradient(
+                            0deg,
                             rgba(255, 255, 255, 0.03) 0%,
-                            rgba(255, 255, 255, 0.03) 100%),
+                            rgba(255, 255, 255, 0.03) 100%
+                        ),
                         #141315;
 
                     td {
@@ -439,7 +439,7 @@ a {
                 }
 
                 &.hidden {
-                    >*:not(.name) {
+                    > *:not(.name) {
                         opacity: 0.5;
                     }
                 }
@@ -548,7 +548,8 @@ a {
                     display: block;
                     width: 1.25rem;
                     height: 1.25rem;
-                    background: url("@/assets/img/myservice/icon_lock.svg") no-repeat center;
+                    background: url("@/assets/img/myservice/icon_lock.svg")
+                        no-repeat center;
                 }
             }
         }
