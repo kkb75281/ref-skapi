@@ -176,14 +176,14 @@ hr
                     td(:colspan="colspan")
 
     form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
-        .header(style='padding-right:10px;')
-            svg.svgIcon.black.clickable(@click="showDetail=false; selectedRecord=null;" :class="{nonClickable: fetching}")
+        .header
+            svg.svgIcon.clickable(@click="showDetail=false; selectedRecord=null;" :class="{nonClickable: fetching}")
                 use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back")
             .name {{ selectedRecord?.record_id ? selectedRecord?.record_id : 'Create Record' }}
             template(v-if="uploading")
                 .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
             template(v-else)
-                button.noLine.iconClick.square(type="submit" style='padding:0 14px') SAVE
+                button.noLine.iconClick.square(type="submit") SAVE
 
         RecDetails(v-if='showDetail' :data='selectedRecord')
 
@@ -791,6 +791,15 @@ tbody {
 
         > * {
             padding: 0.25rem;
+        }
+    }
+}
+
+.detailRecord {
+    .header {
+        button {
+            width: fit-content;
+            font-size: 0.875rem;
         }
     }
 }
