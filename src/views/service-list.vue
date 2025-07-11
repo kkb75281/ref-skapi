@@ -382,7 +382,8 @@ a {
                 height: 2.625rem;
                 overflow: hidden;
 
-                &::before {
+                &::before,
+                &::after {
                     content: none;
                 }
             }

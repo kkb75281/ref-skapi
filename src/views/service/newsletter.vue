@@ -24,7 +24,7 @@ section.infoBox(v-if='needsEmailAlias' style='max-width:600px;margin:3rem auto;'
         .emailAlias
             input.big(v-model='emailAliasVal' pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' :disabled="registerAliasRunning" placeholder="your-email-alias" required)
 
-        button.final(style='min-width: 124px;' :disabled='registerAliasRunning' :class='{nonClickable: registerAliasRunning}')
+        button.inline( :disabled='registerAliasRunning' :class='{nonClickable: registerAliasRunning}')
             template(v-if="registerAliasRunning")
                 .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else)
@@ -223,18 +223,18 @@ template(v-else)
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import type { Ref } from 'vue';
-import { currentService, serviceBulkMails } from './main';
-import { user } from '@/code/user';
-import Table from '@/components/table.vue';
-import { skapi } from '@/main';
-import { dateFormat } from '@/code/admin';
-import Pager from '@/code/pager';
-import Code from '@/components/code.vue';
-import Modal from '@/components/modal.vue';
-import type { Newsletters } from 'skapi-js/js/Types';
-import Select from '@/components/select.vue';
+import { computed, ref, watch } from "vue";
+import type { Ref } from "vue";
+import { currentService, serviceBulkMails } from "./main";
+import { user } from "@/code/user";
+import Table from "@/components/table.vue";
+import { skapi } from "@/main";
+import { dateFormat } from "@/code/admin";
+import Pager from "@/code/pager";
+import Code from "@/components/code.vue";
+import Modal from "@/components/modal.vue";
+import type { Newsletters } from "skapi-js/js/Types";
+import Select from "@/components/select.vue";
 
 type Newsletter = {
     bounced: number;
@@ -244,30 +244,38 @@ type Newsletter = {
     subject: string;
     timestamp: number;
     url: string;
-}
+};
 
 let pager: Pager = null;
 
 let emailAliasVal = ref("");
-let email_is_unverified_or_service_is_disabled = computed(() => !user?.email_verified || currentService.service.active <= 0);
+let email_is_unverified_or_service_is_disabled = computed(
+    () => !user?.email_verified || currentService.service.active <= 0
+);
 let registerAliasRunning = ref(false);
-function registerAlias(){
+function registerAlias() {
     registerAliasRunning.value = true;
-    currentService.registerSenderEmail({
-        email_alias: emailAliasVal.value,
-    }).catch(err=>{
-        window.alert(err.message);
-    }).finally(()=>{
-        registerAliasRunning.value = false;
-    });
+    currentService
+        .registerSenderEmail({
+            email_alias: emailAliasVal.value,
+        })
+        .catch((err) => {
+            window.alert(err.message);
+        })
+        .finally(() => {
+            registerAliasRunning.value = false;
+        });
 }
 let needsEmailAlias = computed(() => {
-    return currentService.service.active > 0 && !currentService.service.email_alias;
+    return (
+        currentService.service.active > 0 && !currentService.service.email_alias
+    );
 });
 
 // default form input values
 
-let searchFor: Ref<"timestamp" | "read" | "complaint" | "subject"> = ref('timestamp');
+let searchFor: Ref<"timestamp" | "read" | "complaint" | "subject"> =
+    ref("timestamp");
 let group: Ref<0 | 1> = ref(0);
 let ascending: Ref<boolean> = ref(false);
 let emailToDelete: Ref<Newsletter> = ref(null);
@@ -277,25 +285,30 @@ let fetching = ref(false);
 let maxPage = ref(0);
 let currentPage = ref(1);
 let endOfList = ref(false);
-let mailType = computed(() => group.value === 0 ? 'Newsletter' : 'Service Mail');
+let mailType = computed(() =>
+    group.value === 0 ? "Newsletter" : "Service Mail"
+);
 let deleteMailLoad = ref(false);
 // list renderer
 let listDisplay: Ref<Newsletter[]> = ref(null);
 
 // etc
-let newsletterEndpoint: Ref<string> = ref('');
-currentService.newsletterSender[0].then(r => newsletterEndpoint.value = r);
+let newsletterEndpoint: Ref<string> = ref("");
+currentService.newsletterSender[0].then((r) => (newsletterEndpoint.value = r));
 
 // call getPage when currentPage changes
 watch(currentPage, (n, o) => {
-    if (n !== o && n > 0 && (n <= maxPage.value || n > maxPage.value && !endOfList.value)) {
+    if (
+        n !== o &&
+        n > 0 &&
+        (n <= maxPage.value || (n > maxPage.value && !endOfList.value))
+    ) {
         // if new value is different from old value
         // if new value is within maxPage
         // if new value is greater than maxPage but not end of list
 
         getPage();
-    }
-    else {
+    } else {
         currentPage.value = o; // revert back to old value
     }
 });
@@ -303,11 +316,10 @@ watch(currentPage, (n, o) => {
 // initialize the pager when searchFor changes
 watch(searchFor, (n) => {
     if (!fetching.value) {
-        ascending.value = n === 'subject';
+        ascending.value = n === "subject";
         if (endOfList.value) {
             resetIndex();
-        }
-        else {
+        } else {
             init();
         }
     }
@@ -317,16 +329,17 @@ watch(ascending, (n) => {
     if (!fetching.value) {
         if (endOfList.value) {
             resetIndex();
-        }
-        else {
+        } else {
             init();
         }
     }
 });
 
 watch(group, (n) => {
-    newsletterEndpoint.value = '';
-    currentService.newsletterSender[n].then(r => newsletterEndpoint.value = r);
+    newsletterEndpoint.value = "";
+    currentService.newsletterSender[n].then(
+        (r) => (newsletterEndpoint.value = r)
+    );
     init();
 });
 
@@ -335,21 +348,21 @@ let callParams = computed(() => {
     let defaultValues = {
         timestamp: {
             value: 0,
-            condition: '>=',
+            condition: ">=",
         },
         read: {
             value: 0,
-            condition: '>=',
+            condition: ">=",
         },
         complaint: {
             value: 0,
-            condition: '>=',
+            condition: ">=",
         },
         subject: {
-            value: ' ',
-            condition: '>',
+            value: " ",
+            condition: ">",
         },
-    }
+    };
     return {
         params: {
             service: currentService.service.service,
@@ -361,12 +374,12 @@ let callParams = computed(() => {
         },
         options: {
             ascending: ascending.value,
-        }
-    }
+        },
+    };
 });
 
 let getPage = async (refresh?: boolean) => {
-    if(refresh) {
+    if (refresh) {
         endOfList.value = false;
     }
 
@@ -376,12 +389,15 @@ let getPage = async (refresh?: boolean) => {
     }
 
     // group.value 키가 없거나 검색 조건이 있으면 초기화
-    if (!serviceBulkMails[currentService.id][group.value] || (refresh && searchFor.value)) {
+    if (
+        !serviceBulkMails[currentService.id][group.value] ||
+        (refresh && searchFor.value)
+    ) {
         serviceBulkMails[currentService.id][group.value] = await Pager.init({
-            id: 'message_id',
+            id: "message_id",
             resultsPerPage: 10,
             sortBy: searchFor.value,
-            order: ascending.value ? 'asc' : 'desc',
+            order: ascending.value ? "asc" : "desc",
         });
     }
 
@@ -398,18 +414,20 @@ let getPage = async (refresh?: boolean) => {
 
     // pager = serviceBulkMails[currentService.id];
 
-    if (!refresh && maxPage.value >= currentPage.value || endOfList.value) {
+    if ((!refresh && maxPage.value >= currentPage.value) || endOfList.value) {
         // if is not refresh and has page data
-        listDisplay.value = pager.getPage(currentPage.value).list as Newsletter[];
+        listDisplay.value = pager.getPage(currentPage.value)
+            .list as Newsletter[];
         return;
-    }
-
-    else if (!endOfList.value || refresh) {
+    } else if (!endOfList.value || refresh) {
         // if page data needs to be fetched
         fetching.value = true;
 
         // fetch from server
-        let fetchedData = await skapi.getNewsletters(callParams.value.params, Object.assign({ fetchMore: !refresh }, callParams.value.options));
+        let fetchedData = await skapi.getNewsletters(
+            callParams.value.params,
+            Object.assign({ fetchMore: !refresh }, callParams.value.options)
+        );
 
         // save endOfList status
         endOfList.value = fetchedData.endOfList;
@@ -429,17 +447,17 @@ let getPage = async (refresh?: boolean) => {
         listDisplay.value = disp.list as Newsletter[];
         fetching.value = false;
     }
-}
+};
 
 let resetIndex = async () => {
     // reset index is used when index is changed but it's end of list
     currentPage.value = 1;
     await pager.resetIndex({
         sortBy: searchFor.value,
-        order: ascending.value ? 'asc' : 'desc',
+        order: ascending.value ? "asc" : "desc",
     });
     getPage(true);
-}
+};
 
 let init = async () => {
     currentPage.value = 1;
@@ -485,15 +503,15 @@ let init = async () => {
     // });
 
     // getPage(true);
-}
+};
 
 init();
 
 // ux related functions
 
 let openNewsletter = (url: string) => {
-    window.open(url, '_blank');
-}
+    window.open(url, "_blank");
+};
 
 let toggleSort = (search: any) => {
     if (fetching.value) {
@@ -502,11 +520,10 @@ let toggleSort = (search: any) => {
 
     if (searchFor.value === search) {
         ascending.value = !ascending.value;
-    }
-    else {
+    } else {
         searchFor.value = search;
     }
-}
+};
 
 let deleteEmail = (ns: Newsletter) => {
     if (!ns) {
@@ -516,39 +533,45 @@ let deleteEmail = (ns: Newsletter) => {
     let params = {
         message_id: ns.message_id,
         group: group.value,
-    }
+    };
 
     deleteMailLoad.value = true;
-    currentService.deleteNewsletter(params).then(async () => {
-        emailToDelete.value = null;
-        await pager.deleteItem(params.message_id);
-        getPage();
-    }).catch(err => window.alert(err)).finally(() => {
-        deleteMailLoad.value = false;
-    });
-}
+    currentService
+        .deleteNewsletter(params)
+        .then(async () => {
+            emailToDelete.value = null;
+            await pager.deleteItem(params.message_id);
+            getPage();
+        })
+        .catch((err) => window.alert(err))
+        .finally(() => {
+            deleteMailLoad.value = false;
+        });
+};
 
 let converter = (html: string, parsed: boolean, inv: boolean) => {
     if (!parsed) {
         return html;
     }
-    html = html.replaceAll('${code}', '123456');
-    html = html.replaceAll('${email}', user.email);
-    html = html.replaceAll('${name}', user.name || user.email);
-    html = html.replaceAll('${service_name}', service.name);
-    html = html.replaceAll('https://link.skapi', inv ? '/invitation_confirmed_template' : '/signup_confirmed_template');
-    html = html.replaceAll('${password}', 'abc123&&');
-    return html
-}
+    html = html.replaceAll("${code}", "123456");
+    html = html.replaceAll("${email}", user.email);
+    html = html.replaceAll("${name}", user.name || user.email);
+    html = html.replaceAll("${service_name}", service.name);
+    html = html.replaceAll(
+        "https://link.skapi",
+        inv ? "/invitation_confirmed_template" : "/signup_confirmed_template"
+    );
+    html = html.replaceAll("${password}", "abc123&&");
+    return html;
+};
 </script>
 
 <style lang="less" scoped>
 // table style below
 thead {
     th {
-        &>span {
+        & > span {
             @media (pointer: fine) {
-
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -564,7 +587,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -577,7 +600,7 @@ thead {
 form.register {
     display: flex;
     flex-wrap: wrap;
-    gap: .5rem;
+    gap: 0.5rem;
     justify-content: flex-end;
 
     .emailAlias {
@@ -588,7 +611,7 @@ form.register {
         &::after {
             content: "@mail.skapi.com";
             position: absolute;
-            right: 10px;
+            right: 20px;
             line-height: 44px;
             color: #999;
             font-size: 0.8rem;

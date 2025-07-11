@@ -24,7 +24,7 @@ section.infoBox(v-if='needsEmailAlias' style='max-width:600px;margin:3rem auto;'
         .emailAlias
             input.big(v-model='emailAliasVal' pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' :disabled="registerAliasRunning" placeholder="your-email-alias" required)
 
-        button.final(style='min-width: 124px;' :disabled='registerAliasRunning' :class='{nonClickable: registerAliasRunning}')
+        button.inline(:disabled='registerAliasRunning' :class='{nonClickable: registerAliasRunning}')
             template(v-if="registerAliasRunning")
                 .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else)
@@ -323,24 +323,35 @@ type Newsletter = {
 };
 
 let emailAliasVal = ref("");
-let email_is_unverified_or_service_is_disabled = computed(() => !user?.email_verified || currentService.service.active <= 0);
+let email_is_unverified_or_service_is_disabled = computed(
+    () => !user?.email_verified || currentService.service.active <= 0
+);
 let registerAliasRunning = ref(false);
-function registerAlias(){
+function registerAlias() {
     registerAliasRunning.value = true;
-    currentService.registerSenderEmail({
-        email_alias: emailAliasVal.value,
-    }).catch(err=>{
-        window.alert(err.message);
-    }).finally(()=>{
-        registerAliasRunning.value = false;
-    });
+    currentService
+        .registerSenderEmail({
+            email_alias: emailAliasVal.value,
+        })
+        .catch((err) => {
+            window.alert(err.message);
+        })
+        .finally(() => {
+            registerAliasRunning.value = false;
+        });
 }
 let needsEmailAlias = computed(() => {
-    return currentService.service.active > 0 && !currentService.service.email_alias;
+    return (
+        currentService.service.active > 0 && !currentService.service.email_alias
+    );
 });
 
 let emailType: Ref<
-    "Signup Confirmation" | "Welcome Email" | "Verification Email" | "Invitation Email" | "Newsletter Confirmation"
+    | "Signup Confirmation"
+    | "Welcome Email"
+    | "Verification Email"
+    | "Invitation Email"
+    | "Newsletter Confirmation"
 > = ref("Signup Confirmation");
 let emailTypeSelect = [
     {
@@ -438,9 +449,18 @@ watch(emailType, () => {
 let mailEndpoint = ref("");
 
 let group: ComputedRef<
-    "confirmation" | "welcome" | "verification" | "invitation" | "newsletter_subscription"
+    | "confirmation"
+    | "welcome"
+    | "verification"
+    | "invitation"
+    | "newsletter_subscription"
 > = computed(() => {
-    let grp: "confirmation" | "welcome" | "verification" | "invitation" | "newsletter_subscription" = "confirmation";
+    let grp:
+        | "confirmation"
+        | "welcome"
+        | "verification"
+        | "invitation"
+        | "newsletter_subscription" = "confirmation";
     switch (emailType.value) {
         case "Signup Confirmation":
             grp = "confirmation";
@@ -460,9 +480,9 @@ let group: ComputedRef<
             break;
     }
 
-    mailEndpoint.value = (currentService.service.email_triggers.template_setters as any)[
-        grp
-    ];
+    mailEndpoint.value = (
+        currentService.service.email_triggers.template_setters as any
+    )[grp];
     return grp;
 });
 
@@ -501,11 +521,13 @@ let getPage = async (refresh?: boolean) => {
     if (refresh) {
         endOfList.value = false;
 
-        currentService.getEmailTemplate(group.value).then(res => {
+        currentService.getEmailTemplate(group.value).then((res) => {
             if (!res) return;
 
-            (currentService.service as any)["template_" + group.value].url = res.url;
-            (currentService.service as any)["template_" + group.value].subject = res.subject;
+            (currentService.service as any)["template_" + group.value].url =
+                res.url;
+            (currentService.service as any)["template_" + group.value].subject =
+                res.subject;
             getHtml(group.value);
         });
     }
@@ -516,7 +538,10 @@ let getPage = async (refresh?: boolean) => {
     }
 
     // group.value 키가 없거나 검색 조건이 있으면 초기화
-    if (!serviceAutoMails[currentService.id][group.value] || (refresh && searchFor.value)) {
+    if (
+        !serviceAutoMails[currentService.id][group.value] ||
+        (refresh && searchFor.value)
+    ) {
         serviceAutoMails[currentService.id][group.value] = await Pager.init({
             id: "message_id",
             resultsPerPage: 10,
@@ -529,7 +554,8 @@ let getPage = async (refresh?: boolean) => {
 
     if ((!refresh && maxPage.value >= currentPage.value) || endOfList.value) {
         // if is not refresh and has page data
-        listDisplay.value = pager.getPage(currentPage.value).list as Newsletter[];
+        listDisplay.value = pager.getPage(currentPage.value)
+            .list as Newsletter[];
         return;
     } else if (!endOfList.value || refresh) {
         // if page data needs to be fetched
@@ -605,7 +631,10 @@ let deleteEmail = (ns: Newsletter) => {
         .then(async () => {
             emailToDelete.value = null;
 
-            if ((currentService.service as any)?.["template_" + group]?.url === ns.url) {
+            if (
+                (currentService.service as any)?.["template_" + group]?.url ===
+                ns.url
+            ) {
                 delete (currentService.service as any)?.["template_" + group];
             }
 
@@ -637,14 +666,17 @@ let useEmail = (ns: Newsletter) => {
         .setTemplate(params)
         .then(async () => {
             if (!(currentService.service as any)["template_" + group.value])
-                (currentService.service as any)["template_" + group.value] = reactive({
-                    url: ns.url,
-                    subject: ns.subject,
-                });
+                (currentService.service as any)["template_" + group.value] =
+                    reactive({
+                        url: ns.url,
+                        subject: ns.subject,
+                    });
             else {
-                (currentService.service as any)["template_" + group.value].url = ns.url;
-                (currentService.service as any)["template_" + group.value].subject =
-                    ns.subject;
+                (currentService.service as any)["template_" + group.value].url =
+                    ns.url;
+                (currentService.service as any)[
+                    "template_" + group.value
+                ].subject = ns.subject;
             }
 
             getHtml(group.value);
@@ -688,12 +720,19 @@ let subjects = computed(() => {
     let s = currentService.service;
     return {
         confirmation:
-            s?.template_confirmation?.subject || "[${service_name}] Signup Confirmation",
-        welcome: s?.template_welcome?.subject || "Thank you for joining ${service_name}",
+            s?.template_confirmation?.subject ||
+            "[${service_name}] Signup Confirmation",
+        welcome:
+            s?.template_welcome?.subject ||
+            "Thank you for joining ${service_name}",
         verification:
-            s?.template_verification?.subject || "[${service_name}] Verification code",
-        invitation: s?.template_invitation?.subject || "[${service_name}] Invitation",
-        newsletter_subscription: s?.template_newsletter_subscription?.subject || "[${service_name}] Thank you for subscribing to our newsletter.",
+            s?.template_verification?.subject ||
+            "[${service_name}] Verification code",
+        invitation:
+            s?.template_invitation?.subject || "[${service_name}] Invitation",
+        newsletter_subscription:
+            s?.template_newsletter_subscription?.subject ||
+            "[${service_name}] Thank you for subscribing to our newsletter.",
     };
 });
 
@@ -835,7 +874,7 @@ thead {
 form.register {
     display: flex;
     flex-wrap: wrap;
-    gap: .5rem;
+    gap: 0.5rem;
     justify-content: flex-end;
 
     .emailAlias {
@@ -846,7 +885,7 @@ form.register {
         &::after {
             content: "@mail.skapi.com";
             position: absolute;
-            right: 10px;
+            right: 20px;
             line-height: 44px;
             color: #999;
             font-size: 0.8rem;

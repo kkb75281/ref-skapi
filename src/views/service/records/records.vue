@@ -1,19 +1,19 @@
 <template lang="pug">
 section.infoBox
     .titleHead
-        h2 Database
+        h2.page-title Database
             
         span.moreInfo(@click="showGuide = !showGuide" @mouseover="hovering = true" @mouseleave="hovering = false")
-            span More Info&nbsp;
+            span More Info&nbsp;&nbsp;
             template(v-if="showGuide")
-                svg(v-if="hovering" style="width: 25px; height: 25px; fill: black;")
+                svg(v-if="hovering" style="width: 20px; height: 20px; fill: #fff;")
                     use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up-fill")
-                svg(v-else style="width: 25px; height: 25px; fill: black;")
+                svg(v-else style="width: 20px; height: 20px; fill: #fff;")
                     use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up")
             template(v-else) 
-                svg(v-if="hovering" style="width: 25px; height: 25px; fill: black;")
+                svg(v-if="hovering" style="width: 20px; height: 20px; fill: #fff;")
                     use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down-fill")
-                svg(v-else style="width: 25px; height: 25px; fill: black;")
+                svg(v-else style="width: 20px; height: 20px; fill: #fff;")
                     use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down")
 
     template(v-if="showGuide")
@@ -137,13 +137,13 @@ hr
 
                     td.overflow(v-if="filterOptions.table") 
                         span
-                            svg.svgIcon(v-if="rc.table.access_group == 'private' || rc.table.access_group == 99 || rc.table.access_group === 'admin'" style="fill:black; margin-bottom: 2px")
+                            svg.svgIcon(v-if="rc.table.access_group == 'private' || rc.table.access_group == 99 || rc.table.access_group === 'admin'" style="margin-bottom: 2px")
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-vpn-key-fill")
                         span
-                            svg.svgIcon(v-if="rc.table.access_group == 'authorized' || typeof rc.table.access_group === 'number' && rc.table.access_group > 0" style="fill:black; margin-bottom: 2px")
+                            svg.svgIcon(v-if="rc.table.access_group == 'authorized' || typeof rc.table.access_group === 'number' && rc.table.access_group > 0" style="margin-bottom: 2px")
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-person-fill")
                         span
-                            svg.svgIcon(v-if="rc.table.access_group == 'public' || rc.table.access_group === 0" style="fill:black; margin-bottom: 2px")
+                            svg.svgIcon(v-if="rc.table.access_group == 'public' || rc.table.access_group === 0" style="margin-bottom: 2px")
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-language")
                         span(style="margin-left: 8px") {{ rc?.table?.name }}
 
@@ -228,14 +228,14 @@ import Checkbox from "@/components/checkbox.vue";
 import Modal from "@/components/modal.vue";
 import Pager from "@/code/pager";
 import Guide from "./guide.vue";
-import SearchBox from './searchbox.vue'
-import RecDetails from './showDetail.vue'
+import SearchBox from "./searchbox.vue";
+import RecDetails from "./showDetail.vue";
 
 import type { Ref } from "vue";
 import { ref, computed, watch, nextTick } from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
-import { devLog } from "@/code/logger"
+import { devLog } from "@/code/logger";
 import { currentService, serviceRecords } from "@/views/service/main";
 import { showDropDown } from "@/assets/js/event.js";
 
@@ -267,7 +267,10 @@ let showGuide = ref(false);
 let hovering = ref(false);
 
 let colspan = computed(() => {
-    return Object.values(filterOptions.value).filter((value) => value === true).length + 1;
+    return (
+        Object.values(filterOptions.value).filter((value) => value === true)
+            .length + 1
+    );
 });
 
 let countMyFiles = (rc: any) => {
@@ -277,8 +280,8 @@ let countMyFiles = (rc: any) => {
         count += rc.bin[k].length;
     }
 
-    return count
-}
+    return count;
+};
 
 watch(currentPage, (n, o) => {
     if (
@@ -297,7 +300,8 @@ watch(showDetail, (nv) => {
         nextTick(() => {
             let scrollTarget = document.querySelector(".detailRecord .content");
             let detailRecord = document.querySelector(".detailRecord");
-            let targetTop = window.scrollY + detailRecord.getBoundingClientRect().top;
+            let targetTop =
+                window.scrollY + detailRecord.getBoundingClientRect().top;
             scrollTarget.scrollTop = 0;
             window.scrollTo(0, targetTop);
         });
@@ -335,7 +339,7 @@ let callSearch = async (e: HTMLFormElement) => {
     } = skapi.util.extractFormData(e, { ignoreEmpty: true });
 
     if (!toFetch.data?.index?.name) {
-        delete toFetch.data.index
+        delete toFetch.data.index;
     }
 
     if (!toFetch.data?.table?.name) {
@@ -343,13 +347,11 @@ let callSearch = async (e: HTMLFormElement) => {
             callParams = {
                 record_id: toFetch?.data?.record_id || undefined,
                 unique_id: toFetch?.data?.unique_id || undefined,
-            }
-        }
-        else {
+            };
+        } else {
             callParams = {};
         }
-    }
-    else {
+    } else {
         callParams = toFetch.data;
     }
     await setUpNewPageList();
@@ -366,23 +368,28 @@ let setUpNewPageList = async () => {
         resultsPerPage: 10,
         sortBy: callParams?.index?.name || "record_id",
         order:
-            callParams?.index?.name && (callParams?.index?.condition || "").includes("<")
+            callParams?.index?.name &&
+            (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                    ? "asc"
-                    : "desc",
+                ? "asc"
+                : "desc",
     });
-}
+};
 
 let getPage = async (refresh?: boolean) => {
     pager = serviceRecords[currentService.id];
     if (!refresh) {
-        if ((maxPage.value >= currentPage.value) || endOfList.value) {
+        if (maxPage.value >= currentPage.value || endOfList.value) {
             let disp = pager.getPage(currentPage.value);
             maxPage.value = disp.maxPage;
             listDisplay.value = disp.list;
 
-            while (disp.maxPage > 0 && disp.maxPage < currentPage.value && !disp.list.length) {
+            while (
+                disp.maxPage > 0 &&
+                disp.maxPage < currentPage.value &&
+                !disp.list.length
+            ) {
                 currentPage.value--;
             }
 
@@ -392,9 +399,10 @@ let getPage = async (refresh?: boolean) => {
 
     fetching.value = true;
 
-    let fetchedData = await skapi.getRecords(Object.assign({ service: currentService.id }, callParams), {
-        fetchMore: !refresh,
-    })
+    let fetchedData = await skapi
+        .getRecords(Object.assign({ service: currentService.id }, callParams), {
+            fetchMore: !refresh,
+        })
         .catch((err) => {
             alert(err);
             fetching.value = false;
@@ -405,10 +413,10 @@ let getPage = async (refresh?: boolean) => {
         if (r.bin) {
             // remove getFile function from bin data. Pager cannot handle functions.
             for (let k in r.bin) {
-                r.bin[k] = r.bin[k].map(f => {
+                r.bin[k] = r.bin[k].map((f) => {
                     delete f.getFile;
                     return f;
-                })
+                });
             }
         }
     });
@@ -427,22 +435,27 @@ let getPage = async (refresh?: boolean) => {
     maxPage.value = disp.maxPage;
     listDisplay.value = disp.list;
 
-    while (disp.maxPage > 0 && disp.maxPage < currentPage.value && !disp.list.length) {
+    while (
+        disp.maxPage > 0 &&
+        disp.maxPage < currentPage.value &&
+        !disp.list.length
+    ) {
         currentPage.value--;
     }
 
     fetching.value = false;
-
 };
 
 let init = async () => {
     currentPage.value = 1;
 
     // setup pagers
-    if (serviceRecords[currentService.id] && Object.keys(serviceRecords[currentService.id]).length) {
+    if (
+        serviceRecords[currentService.id] &&
+        Object.keys(serviceRecords[currentService.id]).length
+    ) {
         endOfList.value = serviceRecords[currentService.id].endOfList;
         getPage();
-
     } else {
         await setUpNewPageList();
         getPage(true);
@@ -462,10 +475,9 @@ let upload = async (e: SubmitEvent) => {
     let jsonData = data.data || null;
 
     try {
-        if (jsonData)
-            jsonData = JSON.parse(data.data);
+        if (jsonData) jsonData = JSON.parse(data.data);
     } catch (err) {
-        alert('Invalid JSON data');
+        alert("Invalid JSON data");
         uploading.value = false;
         return;
     }
@@ -482,10 +494,10 @@ let upload = async (e: SubmitEvent) => {
         if (r.bin) {
             // remove getFile function from bin data. Pager cannot handle functions.
             for (let k in r.bin) {
-                r.bin[k] = r.bin[k].map(f => {
+                r.bin[k] = r.bin[k].map((f) => {
                     delete f.getFile;
                     return f;
-                })
+                });
             }
         }
 
@@ -509,7 +521,7 @@ let upload = async (e: SubmitEvent) => {
 let deleteRecords = () => {
     promiseRunning.value = true;
 
-    let deleteIds = Object.keys(checked.value)
+    let deleteIds = Object.keys(checked.value);
 
     skapi
         .deleteRecords({ service: currentService.id, record_id: deleteIds })
@@ -551,7 +563,6 @@ let copyID = (e) => {
 
 // checks
 let checked: any = ref({});
-
 </script>
 
 <style scoped lang="less">
@@ -570,13 +581,11 @@ textarea::placeholder {
 
 .moreVert {
     .inner {
-        padding-top: 0.25rem;
+        padding: 0.5rem;
 
-        &>* {
+        & > * {
             padding: 0.25rem 0.5rem;
         }
-
-        padding-bottom: 0.25rem;
     }
 }
 
@@ -711,7 +720,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -767,5 +776,38 @@ tbody {
     flex-wrap: nowrap;
     align-items: center;
     font-size: 0.8rem;
+}
+
+// new style (추후 삭제될 수도 있음)
+.content {
+    .value {
+        margin: 0;
+    }
+}
+
+.moreVert {
+    .inner {
+        margin-top: 0.5rem;
+
+        > * {
+            padding: 0.25rem;
+        }
+    }
+}
+
+.iconClick {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #fff;
+
+    &.square {
+        padding: 0.375rem 0.625rem;
+    }
+
+    .svgIcon {
+        width: 1.125rem;
+        height: 1.125rem;
+        fill: #fff;
+    }
 }
 </style>
