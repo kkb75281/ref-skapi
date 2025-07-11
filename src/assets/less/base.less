@@ -302,6 +302,12 @@ button {
         padding: 0.625rem 1.5rem;
         font-size: 0.875rem;
         width: auto;
+
+        // svg {
+        //     width: 17px;
+        //     height: 17px;
+        //     fill: #fff;
+        // }
     }
 
     &.dark {
@@ -345,9 +351,12 @@ button {
     }
 
     &.only-icon {
-        border-radius: 50%;
         width: auto;
         padding: 12px;
+
+        &.sm {
+            padding: 8px;
+        }
     }
 
     @media (max-width: 430px) {
