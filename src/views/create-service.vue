@@ -1,113 +1,133 @@
 <template lang="pug">
 template(v-if="visible")
-    .modal-overlay(:class="{ 'first-service': !isFirstService }" @click="handleClose")
+    .modal-overlay(:class="{ 'first-service': isFirstService }" @click="handleClose")
     .modal-content(@click.stop)
-        .btn-close(@click="handleClose")
+        .btn-prev(v-if="step > 1")
+            svg.svgIcon(@click="step--")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back-ios")
+
+        .btn-close(@click="handleClose" :style="isFirstService ? {display: 'none'} : {}")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-close")
                 
         #create
             .form(v-if="step === 1")
-                h3.title {{ !isFirstService ? 'Welcome! Create your first service' : 'Create your service' }}
-                span.desc Create your service to get started. <br> You can create and manage multiple projects.
+                h3.title
+                    template(v-if="isFirstService")
+                        | Welcome!
+                        br
+                        | Create your first service
+                    template(v-else)
+                        | Create your service
+                span.desc
+                    template(v-if="isFirstService")
+                        | Create your first service to get started.
+                        br
+                        | You can create and manage multiple projects.
+                    template(v-else)
+                        | Create a service to get started.
+                        br
+                        | You can create and manage multiple projects.
                 input.block(placeholder="Service name (Max 40 chars)" maxlength="40" required v-model="newServiceName" style="margin-bottom: 0.75rem;")
                 button.block.icon-text(type="button" :class="{'disabled': !newServiceName}" :style="!newServiceName ? { backgroundColor: 'rgba(34, 35, 37, 1)' } : {}" @click="step++")
                     svg
                         use(xlink:href="@/assets/img/material-icon.svg#icon-add") 
                     span Create
 
-            .plan-wrap(v-else-if="step === 2")
-                .plan-item.blue(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
-                    svg.mark
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
-                    .top
-                        .title Trial
-                        .desc Best for testing and prototyping.
-                        //- .option 
-                            TabMenu(v-model="activeTabs.trial" :tabs="['basic']")
-                    .middle
-                        .price Free
-                            //- .faktum {{ '$' + planSpec['Trial'].price }}
-                            //- span /mo
-                        button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('trial')") 
-                            template(v-if="serviceMode == 'trial' && promiseRunning")
-                                .loader(style="--loader-color:white; --loader-size: 12px")
-                            template(v-else) Select
-                    .bottom
-                        p Core includes:
-                        ul
-                            li.user 10K User Accounts
-                            li.data 8GB Database Storage
-                            li.file 100GB File Storage
-                            li.mail(style="margin-bottom: 2.5rem;") Automated Emails
-                            li.forbiden(style="font-size: .9375rem;") All user data is deleted every 14 days
-                        //- ul.provides
-                            li(v-for="(des) in planSpec['Trial'].description") {{ des }}
-                            li.warning(v-for="(des) in planSpec['Trial'].description_warning") {{ des }}
+            template(v-else-if="step === 2")
+                h3.title(style="padding-top:3rem; padding-bottom:1rem") Choose a plan
+                .plan-wrap
+                    .plan-item.blue(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
+                        svg.mark
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+                        .top
+                            .title Trial
+                            .desc Best for testing and prototyping.
+                            //- .option 
+                                TabMenu(v-model="activeTabs.trial" :tabs="['basic']")
+                        .middle
+                            .price Free
+                                //- .faktum {{ '$' + planSpec['Trial'].price }}
+                                //- span /mo
+                            button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('trial')") 
+                                template(v-if="serviceMode == 'trial' && promiseRunning")
+                                    .loader(style="--loader-color:white; --loader-size: 12px")
+                                template(v-else) Select
+                        .bottom
+                            p Core includes:
+                            ul
+                                li.user 10K User Accounts
+                                li.data 8GB Database Storage
+                                li.file 100GB File Storage
+                                li.mail(style="margin-bottom: 2.5rem;") Automated Emails
+                                li.forbiden(style="font-size: .9375rem;") All user data is deleted every 14 days
+                            //- ul.provides
+                                li(v-for="(des) in planSpec['Trial'].description") {{ des }}
+                                li.warning(v-for="(des) in planSpec['Trial'].description_warning") {{ des }}
 
-                .plan-item.green(:class="{'selected' : (serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'standard' && serviceMode !== 'standard-perpetual') && promiseRunning}")
-                    svg.mark
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
-                    .top
-                        .title Standard
-                        .desc Suit best for small businesses, MVP, small projects, etc.
-                        //- .option 
-                            TabMenu(v-model="activeTabs.standard" :tabs="['basic', 'perpetual']")
-                    .middle
-                        .price
-                            template(v-if="activeTabs.standard === 0") 
-                                .faktum {{ '$' + planSpec['Standard'].price }}
-                                span /mon
-                            template(v-else)
-                                .faktum {{ '$' + planSpec['Standard (Perpetual License)'].price }}
-                                span /only-once
-                        button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('standard')")
-                            template(v-if="(serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning")
-                                .loader(style="--loader-color:white; --loader-size: 12px")
-                            template(v-else) Select
-                    .bottom
-                        p Includes all Trial Plan features, but more functions:
-                        ul
-                            li.mail 1GB Email Storage
-                            li.invitation User invitation System
-                            li.global Website Hosting
-                            li.global Subdomain Hosting
-                            li.mail Sending Bulk Emails
-                        //- .desc 
-                            template(v-if="activeTabs.standard === 0") Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
-                            template(v-else) Get lifetime access to the Standard plan for just $300—upgrade anytime as your needs grow.
+                    .plan-item.green(:class="{'selected' : (serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'standard' && serviceMode !== 'standard-perpetual') && promiseRunning}")
+                        svg.mark
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+                        .top
+                            .title Standard
+                            .desc Suit best for small businesses, MVP, small projects, etc.
+                            //- .option 
+                                TabMenu(v-model="activeTabs.standard" :tabs="['basic', 'perpetual']")
+                        .middle
+                            .price
+                                template(v-if="activeTabs.standard === 0") 
+                                    .faktum {{ '$' + planSpec['Standard'].price }}
+                                    span /mon
+                                template(v-else)
+                                    .faktum {{ '$' + planSpec['Standard (Perpetual License)'].price }}
+                                    span /only-once
+                            button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('standard')")
+                                template(v-if="(serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning")
+                                    .loader(style="--loader-color:white; --loader-size: 12px")
+                                template(v-else) Select
+                        .bottom
+                            p Includes all Trial Plan features, but more functions:
+                            ul
+                                li.mail 1GB Email Storage
+                                li.invitation User invitation System
+                                li.global Website Hosting
+                                li.global Subdomain Hosting
+                                li.mail Sending Bulk Emails
+                            //- .desc 
+                                template(v-if="activeTabs.standard === 0") Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
+                                template(v-else) Get lifetime access to the Standard plan for just $300—upgrade anytime as your needs grow.
+                            //- ul.provides
+                                li(v-for="(des) in planSpec['Standard'].description") {{ des }}
+                    .plan-item.yellow(:class="{'selected' : (serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'premium' && serviceMode !== 'premium-perpetual') && promiseRunning}")
+                        svg.mark
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+                        .top
+                            .title Premium 
+                            .desc Suit best for huge projects, Saas, social media, AI application, etc.
+                            //- .option 
+                                TabMenu(v-model="activeTabs.premium" :tabs="['basic', 'perpetual']")
+                        .middle
+                            .price
+                                template(v-if="activeTabs.premium === 0") 
+                                    .faktum {{ '$' + planSpec['Premium'].price }}
+                                    span /mon
+                                template(v-else)
+                                    .faktum {{ '$' + planSpec['Premium (Perpetual License)'].price }}
+                                    span /only-once
+                            //- .desc Empower your business with formcarry, #[span.wordset for big businesses]
+                            button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('premium')")
+                                template(v-if="(serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning")
+                                    .loader(style="--loader-color:white; --loader-size: 12px")
+                                template(v-else) Select
                         //- ul.provides
-                            li(v-for="(des) in planSpec['Standard'].description") {{ des }}
-                .plan-item.yellow(:class="{'selected' : (serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'premium' && serviceMode !== 'premium-perpetual') && promiseRunning}")
-                    svg.mark
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
-                    .top
-                        .title Premium 
-                        .desc Suit best for huge projects, Saas, social media, AI application, etc.
-                        //- .option 
-                            TabMenu(v-model="activeTabs.premium" :tabs="['basic', 'perpetual']")
-                    .middle
-                        .price
-                            template(v-if="activeTabs.premium === 0") 
-                                .faktum {{ '$' + planSpec['Premium'].price }}
-                                span /mon
-                            template(v-else)
-                                .faktum {{ '$' + planSpec['Premium (Perpetual License)'].price }}
-                                span /only-once
-                        //- .desc Empower your business with formcarry, #[span.wordset for big businesses]
-                        button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('premium')")
-                            template(v-if="(serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning")
-                                .loader(style="--loader-color:white; --loader-size: 12px")
-                            template(v-else) Select
-                    //- ul.provides
-                        li(v-for="(des) in planSpec['Premium'].description") {{ des }}
-                    .bottom
-                        p Includes all Standard Plan features, but more data:
-                        ul
-                            li.user 100K User Accounts
-                            li.data 10GB Database Storage
-                            li.file 1TB File Storage
-                            li.mail 10GB Email Storage
+                            li(v-for="(des) in planSpec['Premium'].description") {{ des }}
+                        .bottom
+                            p Includes all Standard Plan features, but more data:
+                            ul
+                                li.user 100K User Accounts
+                                li.data 10GB Database Storage
+                                li.file 1TB File Storage
+                                li.mail 10GB Email Storage
 
         //- button.btn-close.inline(v-if="step === 2" type="button" @click="handleClose") Close
 </template>
@@ -300,6 +320,7 @@ watch(
 
 // close 이벤트 핸들러
 const handleClose = () => {
+    resetModalState(); // 모달 상태 초기화
     enableBodyScroll(); // 모달 닫을 때 스크롤 복원
     emit("close");
 };
@@ -354,7 +375,7 @@ const handleClose = () => {
     justify-content: center;
     align-items: start;
     gap: 1.5rem;
-    padding: 4rem;
+    padding: 0 5.25rem 5.25rem;
 
     .option {
         position: relative;
@@ -470,50 +491,43 @@ const handleClose = () => {
 
                     &.user {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_user.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
                         }
                     }
 
                     &.data {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_data.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
                         }
                     }
 
                     &.file {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_file.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
                         }
                     }
 
                     &.mail {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_mail.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
                         }
                     }
 
                     &.forbiden {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_forbiden.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
                         }
                     }
 
                     &.invitation {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_invitation.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
                         }
                     }
 
                     &.global {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_global.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
                         }
                     }
                 }
@@ -612,8 +626,7 @@ const handleClose = () => {
     z-index: 999999;
 
     &.first-service {
-        background: url("@/assets/img/myservice/bg_gradation.png") no-repeat
-            center center;
+        background: url("@/assets/img/myservice/bg_gradation.png") no-repeat center center;
         background-size: cover;
         top: 4rem;
     }
@@ -630,6 +643,7 @@ const handleClose = () => {
     background: #16171a;
     border-radius: 12px;
     z-index: 999999;
+    text-align: center;
 
     .title {
         font-size: 1.875rem;
@@ -682,16 +696,30 @@ const handleClose = () => {
     }
 }
 
-.btn-close {
+.btn-close,
+.btn-prev {
     position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
     cursor: pointer;
 
     .svgIcon {
         width: 1.75rem;
         height: 1.75rem;
         fill: #fff;
+    }
+}
+
+.btn-close {
+    top: 1.5rem;
+    right: 1.5rem;
+}
+
+.btn-prev {
+    top: 1.75rem;
+    left: 1.8rem;
+
+    .svgIcon {
+        width: 1.5rem;
+        height: 1.5rem;
     }
 }
 

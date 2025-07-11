@@ -1,23 +1,40 @@
 <template lang="pug">
 section
-    //- .page-title Service Settings
-
-    //- hr
-
-    .flex-wrap.space-between
-        div
-            .page-title {{ currentService.service.name }}
-            //- .desc {{ currentService.service.description || 'No description provided.' }}
-        .flex-wrap(style="gap:10px")
-            button.inline-btn(type="button" @click="editName") Rename
-            button.inline-btn CORS
-            button.inline-btn Secret Key
-            button.inline-btn.blue Change Plan
+    .flex-wrap.space-between(style="gap:10px")
+        .page-title {{ currentService.service.name }}
+        .flex-wrap.end(style="gap:10px;")
+            //- button.inline.gray.sm(type="button" @click="editName") Rename
+            //- button.inline.gray.sm(type="button" @click="editCors") CORS
+            //- button.inline.gray.sm(type="button" @click="editApiKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}") Secret Key
+            //- button.only-icon.gray(type="button" @click="editName")
+            //-     svg.svgIcon.nohover
+            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+            //- button.only-icon.gray(type="button" @click="editCors")
+            //-     svg.svgIcon.nohover
+            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-add-link")
+            //- button.only-icon.gray(type="button" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" @click="editApiKey")
+            //-     svg.svgIcon.nohover
+            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-key")
+            router-link(:to='`/subscription/${currentService.id}`')
+                button.inline.sm.blue Change Plan
+            router-link(:to='"/delete-service/" + currentService.id')
+                button.inline.sm.gray.caution Delete Service
 
     hr
 
+    //- .flex-wrap.end(style="gap:10px;")
+        button.inline.gray.sm(type="button" @click="editName") Rename
+        button.inline.gray.sm(type="button" @click="editCors") CORS
+        button.inline.gray.sm(type="button" @click="editApiKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}") Secret Key
+        router-link(:to='`/subscription/${currentService.id}`')
+            button.inline.sm.blue Change Plan
+        router-link(:to='"/delete-service/" + currentService.id')
+            button.inline.sm.red Delete Service
+
+    br
+
     .flex-wrap.space-between(style="gap: 20px;")
-        .card-wrap(style="flex: 2;")
+        .card-wrap(style="flex: 2; min-width: 300px;")
             //- .card(style="background-color: #77DFA2; color: #121214;")
             .card
                 //- .title Plan
@@ -31,11 +48,6 @@ section
                         .data Date Created 
                         .date {{ dateFormat(currentService.dateCreated) }}
 
-                //- br
-
-                //- button(style="max-width: unset") Change Subscription
-
-                //- hr(style="background: rgba(0, 0, 0, 0.1);")
                 hr
 
                 .flex-wrap.space-between
@@ -60,25 +72,38 @@ section
                 .bar-wrap
                     .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
 
-                //- .card-wrap
-                    .card
-                        .title Users
-                        .data {{ currentServiceSpec.dataSize?.users || 0 }} / {{ currentServiceSpec.servicePlan.users }}
-                        .bar-wrap
-                            .bar(:style='{width: currentServiceSpec.dataPercent.users * 100 + "%"}')
-                    .card
-                        .title Database
-                        .data {{ currentServiceSpec.dataSize?.database || 0 }} / {{ currentServiceSpec.servicePlan.storage.database }}
-                        .bar-wrap
-                            .bar(:style='{width: currentServiceSpec.dataPercent.database * 100 + "%"}')
-                    .card
-                        .title File Storage
-                        .data {{ currentServiceSpec.dataSize?.cloud || 0 }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
-                        .bar-wrap
-                            .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
-        .card-wrap(style="flex: 1;")
+            //- .card-wrap
+            //-     .card
+            //-         .title Users
+            //-         .data {{ currentServiceSpec.dataSize?.users || 0 }} / {{ currentServiceSpec.servicePlan.users }}
+            //-         .bar-wrap
+            //-             .bar(:style='{width: currentServiceSpec.dataPercent.users * 100 + "%"}')
+            //-     .card
+            //-         .title Database
+            //-         .data {{ currentServiceSpec.dataSize?.database || 0 }} / {{ currentServiceSpec.servicePlan.storage.database }}
+            //-         .bar-wrap
+            //-             .bar(:style='{width: currentServiceSpec.dataPercent.database * 100 + "%"}')
+            //-     .card
+            //-         .title File Storage
+            //-         .data {{ currentServiceSpec.dataSize?.cloud || 0 }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
+            //-         .bar-wrap
+            //-             .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
+        .card-wrap(style="flex: 1; min-width: 300px;")
             .card
                 //- .title Toggle Switches
+
+                .flex-wrap.center(style="gap: 10px; padding: 1rem;")
+                    button.only-icon.gray(type="button" @click="editName")
+                        svg.svgIcon.nohover
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                    button.only-icon.gray(type="button" @click="editCors")
+                        svg.svgIcon.nohover
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-add-link")
+                    button.only-icon.gray(type="button" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" @click="editApiKey")
+                        svg.svgIcon.nohover
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-key")
+
+                hr
 
                 .flex-wrap.space-between
                     .data(style="position:relative; margin:0; font-size: 16px;") Disable/Enable
@@ -137,8 +162,79 @@ section
                         :disabled='updatingValue.freeze_database'
                         @click="changeFreezeDatabase(!currentService.service.freeze_database)"
                     )
+                
+                br
+
+                //- button.inline.gray(type="button" @click="editName") Rename
+                //- br
+                //- button.inline.gray(type="button" @click="editCors") CORS
+                //- br
+                //- button.inline.gray(type="button" @click="editApiKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}") Secret Key
 
 Modal(:open="modifyMode.name")
+    .modal-close(@click="modifyMode.name = false;")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+
+    .modal-title Change Service Name
+
+    .modal-desc
+        | Enter a new name for the service.
+        br
+        | (Maximum 40 characters.)
+
+    form(@submit.prevent="changeName")
+        input.block(type="text" ref="focus_name" placeholder="Maximum 40 characters" maxlength="40" :value='inputName' @input="(e) => inputName = e.target.value" :disabled="updatingValue.name" style="margin-bottom: 0.75rem;" required)
+
+        .flex-wrap.space-between
+            .flex-wrap.center(v-if='updatingValue.name' style="width:100%; height: 46.5px; align-items:center;")
+                .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else)
+                button.block(type="submit") Save
+
+Modal(:open="modifyMode.cors")
+    .modal-close(@click="modifyMode.cors = false;")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+
+    .modal-title Change CORS
+
+    .modal-desc
+        | Enter the CORS settings for the service.
+        br
+        | Leave empty for all origins, or enter a specific origin.
+        br
+        | (https://your.domain.com, http://second.domain.net, ...)
+
+    form(@submit.prevent="changeCors")
+        input#modifyCors.block(ref="focus_cors" :disabled="updatingValue.cors || null" type="text" placeholder='https://your.domain.com, http://second.domain.net, ...' :value='inputCors' @input="(e) => {e.target.setCustomValidity(''); inputCors = e.target.value;}" style="margin-bottom: 0.75rem;")
+
+        .flex-wrap.space-between
+            .flex-wrap.center(v-if='updatingValue.cors' style="width:100%; height: 46.5px; align-items:center;")
+                .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else)
+                button.block(type="submit") Save
+
+Modal(:open="modifyMode.api_key")
+    .modal-close(@click="modifyMode.api_key = false;")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+    
+    .modal-title Change API Key
+
+    .modal-desc
+        | Enter a new API key for the service.
+        br
+        | (Maximum 256 characters, At least 4 characters.)
+
+    form(@submit.prevent="changeApiKey")
+        input.block(ref="focus_key" :disabled="updatingValue.api_key || null" type="text" minlength="4" maxlength="256" placeholder='Maximum 256 characters, At least 4 characters.' :value='inputKey' @input="(e) => inputKey = e.target.value" style="margin-bottom: 0.75rem;")
+
+        .flex-wrap.space-between
+            .flex-wrap.center(v-if='updatingValue.api_key' style="width:100%; height: 46.5px; align-items:center;")
+                .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else)
+                button.block(type="submit") Save
 </template>
 
 <script setup lang="ts">
@@ -259,8 +355,8 @@ let changeCors = () => {
         updatingValue.cors = false;
         nextTick(() => {
             document.getElementById('modifyCors').focus();
-            document.getElementById('modifyCors').setCustomValidity(err.message);
-            document.getElementById('modifyCors').reportValidity();
+            (document.getElementById('modifyCors') as HTMLInputElement).setCustomValidity(err.message);
+            (document.getElementById('modifyCors') as HTMLInputElement).reportValidity();
         });
     });
 }
@@ -344,10 +440,6 @@ let changeFreezeDatabase = async (onlyAdmin: boolean) => {
 </script>
 
 <style lang="less" scoped>
-.page-title {
-    font-size: 38px;
-}
-
 .middle-title {
     font-size: 26px;
     margin-bottom: 16px;
@@ -357,46 +449,46 @@ hr {
     background: rgba(255, 255, 255, 0.1);
 }
 
-button {
-    display: inline-flex;
-    max-width: 240px;
-    padding: 0 0.875rem;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 13px;
-    background: #0a4df1;
-    border: 0;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 1.5;
-    white-space: nowrap;
+// button {
+//     display: inline-flex;
+//     max-width: 240px;
+//     padding: 0 0.875rem;
+//     width: 100%;
+//     justify-content: center;
+//     align-items: center;
+//     gap: 10px;
+//     border-radius: 13px;
+//     background: #0a4df1;
+//     border: 0;
+//     color: #fff;
+//     font-size: 16px;
+//     font-weight: 500;
+//     line-height: 1.5;
+//     white-space: nowrap;
 
-    &:hover {
-        background-color: #1656f2;
-    }
-}
+//     &:hover {
+//         background-color: #1656f2;
+//     }
+// }
 
-.inline-btn {
-    background-color: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 14px;
-    width: auto;
+// .inline-btn {
+//     background-color: rgba(255, 255, 255, 0.03);
+//     border: 1px solid rgba(255, 255, 255, 0.1);
+//     font-size: 14px;
+//     width: auto;
 
-    &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
+//     &:hover {
+//         background-color: rgba(255, 255, 255, 0.1);
+//     }
 
-    &.blue {
-        background-color: #0a4df1;
+//     &.blue {
+//         background-color: #0a4df1;
 
-        &:hover {
-            background-color: #1656f2;
-        }
-    }
-}
+//         &:hover {
+//             background-color: #1656f2;
+//         }
+//     }
+// }
 
 .tooltip-icon {
     position: absolute;
@@ -423,19 +515,6 @@ button {
         font-size: 18px;
         border-radius: 5px;
         font-weight: bold;
-    }
-}
-
-.flex-wrap {
-    display: flex;
-    flex-wrap: wrap;
-
-    &.space-between {
-        justify-content: space-between;
-    }
-
-    &.center {
-        justify-content: center;
     }
 }
 

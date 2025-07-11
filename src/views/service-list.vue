@@ -1,5 +1,9 @@
 <template lang="pug">
-.service-list
+div(v-if="fetchingServiceList" style="display: flex; justify-content: center; align-items: center; padding-top: 3rem;")
+	.loader(style="--loader-color:white; --loader-size:12px")
+.first-service(v-else-if="isFirstService && !fetchingServiceList")
+	modalCreateService(:visible="true")
+.service-list(v-else)
 	section.section.top-area
 		a.top-item(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank")
 			.title Documents
@@ -9,7 +13,7 @@
 				:slidesPerView="1"
 				:spaceBetween="30"
 				:loop="true"
-                :autoplay="{ delay: 2000, disableOnInteraction: false }"
+				:autoplay="{ delay: 2000, disableOnInteraction: false }"
 				:pagination="{ clickable: true }"
 				:modules="[Pagination, Autoplay]"
 
@@ -117,6 +121,16 @@ const router = useRouter();
 const showCreateModal = ref(false);
 const loading = ref(false);
 
+// 첫 번째 서비스인지 계산
+const isFirstService = computed(() => {
+    // 로딩 중이면 false 반환 (로딩 완료 후 판단)
+    if (fetchingServiceList.value) {
+        return false;
+    }
+    // 서비스가 없으면 첫 번째 서비스
+    return serviceIdList.length === 0;
+});
+
 function openCreateService() {
     showCreateModal.value = true;
 }
@@ -177,6 +191,14 @@ a {
     &:hover {
         text-decoration: none;
     }
+}
+
+.first-service {
+    // width: 100%;
+    // height: 100%;
+    // min-height: calc(100vh - var(--footer-height, 0) - 4rem);
+    // background: url("@/assets/img/myservice/bg_gradation.png") no-repeat center center;
+    // background-size: cover;
 }
 
 .service-list {

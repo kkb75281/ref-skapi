@@ -1,51 +1,49 @@
 <template lang="pug">
-br
-br
-br
-
-#confirmation 
-    router-link(:to="'/my-services/' + serviceId")
-        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px;")
-
-    .bottomLineTitle Delete Service
-
-    p Once you delete your service you will not be able to recover it.
-
-    p Please note:
-    ul(style='padding-left: 1em;')
-        li Your website will be disconnected from the service.
-
-        li All your service users and data will be deleted permanently.
-
-        li All your hosted files will be deleted immediately.
-
-        li You will lose your subdomain registration.
-
-        li The remaining subscription cannot be refunded.
+main#confirmation 
+    button.inline.icon-text.dark.btn-prev(type="button" @click="router.push('/my-services/' + serviceId + '/dashboard')")
+        svg
+            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back-ios")
+        span Back
 
     br
 
-    p Are you sure you want to delete your service "#[b {{currentService.service.name}}]"?
+    .inner
+        .page-title Delete Service
 
-    Checkbox(v-model="iUnderstand" :disabled="promiseRunning")
-        b I agree to delete my service "{{currentService.service.name}}".
+        br
 
-    br
-    br
-    br
+        .page-desc Once you delete your service you will not be able to recover it.
 
-    .bottom
-        div(v-if="promiseRunning" style="width:100%; text-align:center")
-            .loader(style="--loader-color:blue; --loader-size:12px")
-        template(v-else)
-            button.noLine.warning(type="button" @click="router.push('/my-services/' + serviceId + '/dashboard')") Cancel
-            | &nbsp;&nbsp;
-            button.final.warning(type="submit" :class="{disabled: !iUnderstand}" @click='deleteService()') Delete
+        .page-desc
+            | Your website will be disconnected from the service.
+            br
+            | All your service users and data will be deleted permanently.
+            br
+            | All your hosted files will be deleted immediately.
+            br
+            | You will lose your subdomain registration.
+            br
+            | The remaining subscription cannot be refunded.
 
-br
-br
-br
-    
+        .page-desc Are you sure you want to delete your service "#[b {{currentService.service.name}}]"?
+
+        Checkbox(v-model="iUnderstand" :disabled="promiseRunning")
+            b I agree to delete my service "{{currentService.service.name}}".
+
+        br
+        br
+        
+        .flex-wrap.end
+            button.inline.gray.btn-cancel(type="submit" :class="{disabled: !iUnderstand, red: iUnderstand}" @click='deleteService()') Delete Service
+
+        //- .bottom
+            div(v-if="promiseRunning" style="width:100%; text-align:center")
+                .loader(style="--loader-color:blue; --loader-size:12px")
+            template(v-else)
+                button.noLine.warning(type="button" @click="router.push('/my-services/' + serviceId + '/dashboard')") Cancel
+                | &nbsp;&nbsp;
+                button.final.warning(type="submit" :class="{disabled: !iUnderstand}" @click='deleteService()') Delete
+
 </template>
 
 <script setup lang="ts">
@@ -79,16 +77,41 @@ let deleteService = async () => {
 
 <style scoped lang="less">
 #confirmation {
-    max-width: 600px;
-    padding: 0 20px;
+    max-width: 1500px;
     margin: 0 auto;
+    padding: 60px 40px;
 
-    .bottom {
-        min-height: 44px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: flex-end;
+    .inner {
+        margin: 0 auto;
+        text-align: center;
+    }
+}
+
+ul {
+    li {
+        list-style: none;
+    }
+}
+
+@media (max-width: 800px) {
+    #confirmation {
+        padding: 60px 20px;
+    }
+
+    .btn-prev {
+        padding: 0.875rem 0;
+
+        &:hover {
+            &::after {
+                opacity: 0;
+            }
+        }
+    }
+}
+
+@media (max-width: 430px) {
+    #confirmation {
+        padding: 30px 20px;
     }
 }
 </style>

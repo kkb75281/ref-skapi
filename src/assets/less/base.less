@@ -280,7 +280,7 @@ button {
     outline: none;
     cursor: pointer;
 
-    &:hover(:not(.disabled, .nohover)) {
+    &:hover {
         &::after {
             opacity: 1;
         }
@@ -298,8 +298,24 @@ button {
         opacity: 0;
     }
 
+    &.sm {
+        padding: 0.625rem 1.5rem;
+        font-size: 0.875rem;
+        width: auto;
+    }
+
+    &.dark {
+        background-color: #16171a;
+    }
+
     &.gray {
         background-color: rgba(34, 35, 37, 1);
+
+        &.caution {
+            &:hover {
+                background-color: var(--caution-color);
+            }
+        }
     }
 
     &.red {
@@ -326,6 +342,12 @@ button {
             height: 18px;
             fill: #fff;
         }
+    }
+
+    &.only-icon {
+        border-radius: 50%;
+        width: auto;
+        padding: 12px;
     }
 
     @media (max-width: 430px) {

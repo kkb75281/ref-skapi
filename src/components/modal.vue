@@ -39,7 +39,27 @@ dialog {
     background-color: rgba(22, 23, 26, 1);
     color: #fff;
     text-align: center;
-    padding: 3rem;
+    padding: 4rem;
+
+    &::backdrop {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        width: 2rem;
+        height: 2rem;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        opacity: 0.8;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
 
     .modal-title {
         font-size: 1.75rem;
@@ -48,7 +68,7 @@ dialog {
     }
 
     .modal-desc {
-        max-width: 350px;
+        // max-width: 350px;
         margin: 0 auto;
         font-weight: 400;
         line-height: 1.3;

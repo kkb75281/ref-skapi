@@ -72,7 +72,8 @@
 
 .svgIcon {
     //svg icon
-    fill: var(--main-color);
+    // fill: var(--main-color);
+    fill: #fff;
     width: 24px;
     height: 24px;
 
@@ -410,5 +411,22 @@
                 width: 100%;
             }
         }
+    }
+}
+
+.flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+
+    &.space-between {
+        justify-content: space-between;
+    }
+
+    &.center {
+        justify-content: center;
+    }
+
+    &.end {
+        justify-content: flex-end;
     }
 }
