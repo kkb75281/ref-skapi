@@ -672,6 +672,10 @@ const handleClose = () => {
         background: rgba(255, 255, 255, 0.5);
         border-radius: 12px 12px 12px 12px;
     }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
 }
 
 .form {

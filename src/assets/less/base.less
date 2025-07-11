@@ -98,16 +98,36 @@ p {
 }
 
 select {
-    box-sizing: border-box;
-    margin: 0;
+    // box-sizing: border-box;
+    // margin: 0;
+    // outline: none;
+    // border: 0;
+    // padding: 4px 8px;
+    // border-radius: 4px;
+    // font-size: 0.8rem;
+    // background-color: rgba(0, 0, 0, 0.05);
+    // font-family: inherit;
+    // font-weight: normal;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: url("@/assets/img/landingpage/icon_dropdown.svg") no-repeat
+            right 0.875rem center,
+        linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.05) 0%,
+            rgba(255, 255, 255, 0.05) 100%
+        ),
+        #16171a;
+    color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 0 2.4rem 0 1.25rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 400;
     outline: none;
-    border: 0;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    background-color: rgba(0, 0, 0, 0.05);
-    font-family: inherit;
-    font-weight: normal;
+    min-height: 3rem;
 
     &:disabled {
         opacity: 0.5;
@@ -118,7 +138,8 @@ select {
     }
 
     &:not(:disabled):hover {
-        text-decoration: underline;
+        // text-decoration: underline;
+        border-color: #0a4df1;
     }
 }
 
@@ -136,6 +157,7 @@ input {
     font-size: 0.875rem;
     font-weight: 400;
     outline: none;
+    width: 100%;
 
     &::placeholder {
         color: #999;

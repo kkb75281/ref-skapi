@@ -243,6 +243,20 @@ let setResize = async () => {
     overflow-y: hidden;
     box-sizing: border-box;
     border-radius: 10px;
+
+    &::-webkit-scrollbar {
+        width: 0.375rem;
+        height: 0.375rem;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba(225, 225, 225, 0.4);
+        border-radius: 12px 12px 12px 12px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
 }
 
 .customTbl {
@@ -288,17 +302,18 @@ let setResize = async () => {
                 content: "";
                 display: block;
                 height: 100%; // 높이는 최소화
-                background-color: #f9f9f9;
+                background-color: #121214;
                 min-width: var(--fakeWidth); // 화면 너비만큼 확장
                 top: 0;
                 right: calc(var(--fakeWidth) * -1);
                 z-index: -1; // 테이블 뒤쪽으로 배치
             }
+
             &::after {
                 position: absolute;
                 content: "";
                 display: block;
-                background-color: rgba(0, 0, 0, 0.05);
+                background-color: #121214;
                 min-width: var(--fakeWidth); // 화면 너비만큼 확장
                 height: 1px;
                 bottom: -0.5px;
@@ -341,7 +356,12 @@ let setResize = async () => {
             &.nohover,
             &.fixed {
                 &:hover {
-                    background-color: #f9f9f9 !important;
+                    background: linear-gradient(
+                            0deg,
+                            rgba(255, 255, 255, 0.03) 0%,
+                            rgba(255, 255, 255, 0.03) 100%
+                        ),
+                        #141315;
 
                     .resizer {
                         display: none;
@@ -361,16 +381,15 @@ let setResize = async () => {
                 border-left: 4px solid transparent;
                 border-right: 12px solid transparent;
                 display: none;
+                height: 20px;
 
                 &::before {
                     content: "";
                     display: block;
                     height: 100%;
                     width: 2px;
-                    background-color: rgba(0, 0, 0, 0.2);
+                    background-color: rgba(225, 225, 225, 0.5);
                 }
-
-                height: 20px;
 
                 &.contrast {
                     background-color: #fff !important;
@@ -400,6 +419,7 @@ let setResize = async () => {
                 right: calc(var(--fakeWidth) * -1);
                 z-index: -1; // 테이블 뒤쪽으로 배치
             }
+
             &::after {
                 position: absolute;
                 content: "";
@@ -451,9 +471,9 @@ let setResize = async () => {
     border-collapse: separate;
     border-spacing: 0 0.5rem;
     color: rgba(225, 225, 225, 0.8);
-    width: 100% !important;
-    text-align: center;
-    min-width: 75rem;
+    // width: 100% !important;
+    // text-align: center;
+    // min-width: 75rem;
 
     thead {
         background-color: #121214;
@@ -462,10 +482,11 @@ let setResize = async () => {
             width: 100%;
             height: 2.625rem;
             overflow: hidden;
+            // border-bottom: 0.5rem solid #16171a;
 
-            &::before {
-                content: none;
-            }
+            // &::before {
+            //     content: none;
+            // }
         }
 
         th {
@@ -477,19 +498,25 @@ let setResize = async () => {
             padding: 0 0.625rem;
 
             &:first-child {
-                padding-left: 3rem;
+                // padding-left: 3rem;
                 border-top-left-radius: 0.625rem;
                 border-bottom-left-radius: 0.625rem;
             }
 
             &:last-child {
-                padding-right: 3rem;
+                // padding-right: 3rem;
                 border-top-right-radius: 0.625rem;
                 border-bottom-right-radius: 0.625rem;
             }
 
             &:hover {
-                background-color: transparent;
+                // background-color: transparent;
+                background: linear-gradient(
+                        0deg,
+                        rgba(255, 255, 255, 0.03) 0%,
+                        rgba(255, 255, 255, 0.03) 100%
+                    ),
+                    #141315;
             }
         }
     }
@@ -500,11 +527,12 @@ let setResize = async () => {
         tr {
             height: 3.75rem;
             overflow: hidden;
+            // border-bottom: 0.5rem solid #16171a;
 
-            &::before,
-            &::after {
-                content: none;
-            }
+            // &::before,
+            // &::after {
+            //     content: none;
+            // }
 
             &:hover {
                 cursor: pointer;
@@ -540,13 +568,13 @@ let setResize = async () => {
             white-space: nowrap;
 
             &:first-child {
-                padding-left: 3rem;
+                // padding-left: 3rem;
                 border-top-left-radius: 0.625rem;
                 border-bottom-left-radius: 0.625rem;
             }
 
             &:last-child {
-                padding-right: 3rem;
+                // padding-right: 3rem;
                 border-top-right-radius: 0.625rem;
                 border-bottom-right-radius: 0.625rem;
             }

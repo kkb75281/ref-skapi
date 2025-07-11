@@ -34,7 +34,7 @@
     form.register(@submit.prevent='registerSubdomain')
         .subdomain
             input.big(v-model='subdomain' pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' minlength="6" maxlength="32" :disabled="registerSubdomainRunning" placeholder="your-subdomain" required)
-        button.final(style='min-width: 124px;' :disabled='registerSubdomainRunning' :class='{nonClickable: registerSubdomainRunning}')
+        button.inline(:disabled='registerSubdomainRunning' :class='{nonClickable: registerSubdomainRunning}')
             template(v-if="registerSubdomainRunning")
                 .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else)
@@ -355,653 +355,689 @@ template(v-else)
 </template>
 
 <script setup lang="ts">
-    import { reactive, ref, computed, watch, nextTick } from 'vue';
-    import type { ComputedRef, Ref } from 'vue';
-    import { currentService } from '@/views/service/main';
-    import Code from '@/components/code.vue';
-    import Table from '@/components/table.vue';
-    import Modal from '@/components/modal.vue';
-    import Pager from '@/code/pager';
-    import { getFileSize } from '@/code/admin';
-    import { skapi } from '@/main';
-    import { user } from '@/code/user';
-    import Checkbox from '@/components/checkbox.vue';
-    import { serviceFolders, uploadFiles, onDrop, currentDirectory, uploadCount, uploadProgress } from '@/views/service/hosting/file';
+import { reactive, ref, computed, watch, nextTick } from "vue";
+import type { ComputedRef, Ref } from "vue";
+import { currentService } from "@/views/service/main";
+import Code from "@/components/code.vue";
+import Table from "@/components/table.vue";
+import Modal from "@/components/modal.vue";
+import Pager from "@/code/pager";
+import { getFileSize } from "@/code/admin";
+import { skapi } from "@/main";
+import { user } from "@/code/user";
+import Checkbox from "@/components/checkbox.vue";
+import {
+    serviceFolders,
+    uploadFiles,
+    onDrop,
+    currentDirectory,
+    uploadCount,
+    uploadProgress,
+} from "@/views/service/hosting/file";
 
-    let folders = {}; // cache folders
+let folders = {}; // cache folders
 
-    let email_is_unverified_or_service_is_disabled = computed(() => !user?.email_verified || currentService.service.active <= 0);
+let email_is_unverified_or_service_is_disabled = computed(
+    () => !user?.email_verified || currentService.service.active <= 0
+);
 
-    let isPending = computed(() => currentService.pending.subdomain || currentService.pending.cdn || !subdomainReady.value);
-    let sdInfo = computed(() => currentService.subdInfo);
+let isPending = computed(
+    () =>
+        currentService.pending.subdomain ||
+        currentService.pending.cdn ||
+        !subdomainReady.value
+);
+let sdInfo = computed(() => currentService.subdInfo);
 
-    let dragHere = ref(false);
-    // fileinputs
-    let uploadFileInp = ref();
-    let uploadFolderInp = ref();
-    let domain = import.meta.env.VITE_DOMAIN;
+let dragHere = ref(false);
+// fileinputs
+let uploadFileInp = ref();
+let uploadFolderInp = ref();
+let domain = import.meta.env.VITE_DOMAIN;
 
-    let registerSubdomainRunning = ref(false);
-    let modalPromise = ref(false);
+let registerSubdomainRunning = ref(false);
+let modalPromise = ref(false);
 
-    let subdomain = ref(''); // register input value. not the actual subdomain
-    let registerSubdomain = async () => {
-        registerSubdomainRunning.value = true;
-        try {
-            await currentService.registerSubdomain({
-                subdomain: subdomain.value, cb: (srvc) => {
-                    registerSubdomainRunning.value = false;
-                    // getInfo();
-                }
-            });
-
-        } catch (err: any) {
-            registerSubdomainRunning.value = false;
-            alert(err.message);
-        }
-    }
-
-    // edit/change
-    let openRefreshCdn = ref(false);
-    let modifyMode = reactive({
-        subdomain: false,
-        page404: false
-    })
-    let updatingValue = reactive({
-        subdomain: false,
-        page404: false
-    });
-    let focus_subdomain = ref();
-
-    let inputSubdomain = '';
-    let editSubdomain = () => {
-        inputSubdomain = hostUrl.value.split('.').slice(0, -2).join('.');
-        modifyMode.subdomain = true;
-        nextTick(() => {
-            focus_subdomain.value.focus();
+let subdomain = ref(""); // register input value. not the actual subdomain
+let registerSubdomain = async () => {
+    registerSubdomainRunning.value = true;
+    try {
+        await currentService.registerSubdomain({
+            subdomain: subdomain.value,
+            cb: (srvc) => {
+                registerSubdomainRunning.value = false;
+                // getInfo();
+            },
         });
+    } catch (err: any) {
+        registerSubdomainRunning.value = false;
+        alert(err.message);
     }
+};
 
-    // modal
-    let focus_404 = ref();
-    let selected404File = ref(null);
-    let open404FileInp = async () => {
-        modifyMode.page404 = true;
-        await nextTick();
-        focus_404.value.click();
+// edit/change
+let openRefreshCdn = ref(false);
+let modifyMode = reactive({
+    subdomain: false,
+    page404: false,
+});
+let updatingValue = reactive({
+    subdomain: false,
+    page404: false,
+});
+let focus_subdomain = ref();
+
+let inputSubdomain = "";
+let editSubdomain = () => {
+    inputSubdomain = hostUrl.value.split(".").slice(0, -2).join(".");
+    modifyMode.subdomain = true;
+    nextTick(() => {
+        focus_subdomain.value.focus();
+    });
+};
+
+// modal
+let focus_404 = ref();
+let selected404File = ref(null);
+let open404FileInp = async () => {
+    modifyMode.page404 = true;
+    await nextTick();
+    focus_404.value.click();
+};
+
+let handle404file = (e: any) => {
+    let file = e.target.files[0];
+    let fileName = file.name;
+    selected404File.value = fileName;
+};
+let progress404 = ref(0);
+let change404 = async (e: any) => {
+    updatingValue.page404 = true;
+
+    try {
+        let up = await currentService.uploadHostFiles(e, {
+            progress: (p) => {
+                progress404.value = Math.floor(p.progress);
+            },
+        });
+
+        // get current 13 digit timestamp
+        let pager = folders["!"].pager;
+
+        await pager.editItem({
+            name: up.completed[0].name,
+            size: up.completed[0].size,
+            upl: Date.now(),
+        });
+
+        getFileList();
+
+        await currentService.set404({
+            path: up.completed[0].name,
+        });
+
+        currentService.subdInfo["404"] = up.completed[0].name;
+
+        modifyMode.page404 = false;
+        updatingValue.page404 = false;
+        progress404.value = 0;
+    } catch (err: any) {
+        updatingValue.page404 = false;
+        alert(err.message);
     }
+};
 
-    let handle404file = (e: any) => {
-        let file = e.target.files[0];
-        let fileName = file.name;
-        selected404File.value = fileName;
+let openRemove404 = ref(false);
+let remove404 = async () => {
+    modalPromise.value = true;
+
+    try {
+        await currentService.set404({
+            path: null,
+        });
+
+        delete currentService.subdInfo["404"];
+        openRemove404.value = false;
+        selected404File.value = null;
+    } catch (err: any) {
+        alert(err.message);
+    } finally {
+        modalPromise.value = false;
     }
-    let progress404 = ref(0);
-    let change404 = async (e: any) => {
-        updatingValue.page404 = true;
+};
 
-        try {
-            let up = await currentService.uploadHostFiles(e, {
-                progress: p => {
-                    progress404.value = Math.floor(p.progress);
-                }
-            })
-
-            // get current 13 digit timestamp
-            let pager = folders['!'].pager;
-
-            await pager.editItem({
-                name: up.completed[0].name,
-                size: up.completed[0].size,
-                upl: Date.now(),
-            });
-
-            getFileList();
-
-            await currentService.set404({
-                path: up.completed[0].name,
-            });
-
-            currentService.subdInfo['404'] = up.completed[0].name;
-
-            modifyMode.page404 = false;
-            updatingValue.page404 = false;
-            progress404.value = 0;
-
-        } catch (err: any) {
-            updatingValue.page404 = false;
-            alert(err.message);
-        }
-    }
-
-    let openRemove404 = ref(false);
-    let remove404 = async () => {
-        modalPromise.value = true;
-
-        try {
-            await currentService.set404({
-                path: null,
-            });
-
-            delete currentService.subdInfo['404'];
-            openRemove404.value = false;
-            selected404File.value = null;
-        }
-        catch (err: any) {
-            alert(err.message);
-        }
-        finally {
+let removeHosting = ref(false);
+let remove = () => {
+    modalPromise.value = true;
+    currentService
+        .registerSubdomain()
+        .then(() => {
+            removeHosting.value = false;
             modalPromise.value = false;
-        }
+        })
+        .catch((err) => {
+            modalPromise.value = false;
+            alert(err.message);
+        });
+};
+
+let changeSubdomain = async () => {
+    if (currentService.service.subdomain === inputSubdomain) {
+        modifyMode.subdomain = false;
+        return;
     }
 
-    let removeHosting = ref(false);
-    let remove = () => {
-        modalPromise.value = true;
-        currentService.registerSubdomain()
-            .then(() => {
-                removeHosting.value = false;
-                modalPromise.value = false;
-            }).catch(err => {
-                modalPromise.value = false;
-                alert(err.message);
-            });
+    if (
+        inputSubdomain.charAt(0) == "-" &&
+        inputSubdomain.charAt(inputSubdomain.length - 1) == "-"
+    ) {
+        alert("Subdomains cannot start or end with a hyphen.");
+        return;
     }
 
-    let changeSubdomain = async () => {
-        if (currentService.service.subdomain === inputSubdomain) {
-            modifyMode.subdomain = false;
-            return;
-        }
-
-        if (inputSubdomain.charAt(0) == '-' && inputSubdomain.charAt(inputSubdomain.length - 1) == '-') {
-            alert("Subdomains cannot start or end with a hyphen.");
-            return;
-        }
-
-        if (/--/.test(inputSubdomain)) {
-            alert('Hyphens cannot be used consecutively.');
-            return;
-        }
-
-        updatingValue.subdomain = true;
-
-        try {
-            await currentService.registerSubdomain({
-                subdomain: inputSubdomain
-            });
-        } catch (err: any) {
-            alert(err?.message || err.toString());
-            throw err;
-        } finally {
-            modifyMode.subdomain = false;
-            updatingValue.subdomain = false;
-        }
+    if (/--/.test(inputSubdomain)) {
+        alert("Hyphens cannot be used consecutively.");
+        return;
     }
 
-    let retriveCachedFolders = () => {
-        let sd = currentService.service.subdomain;
-        if (!sd) {
-            return '';
-        }
+    updatingValue.subdomain = true;
 
-        let subd = '';
-        if (sd && sd[0] === '*' || sd[0] === '+') {
-            subd = sd.slice(1) + '.' + domain;
-        }
-        else {
-            subd = sd + '.' + domain;
-        }
+    try {
+        await currentService.registerSubdomain({
+            subdomain: inputSubdomain,
+        });
+    } catch (err: any) {
+        alert(err?.message || err.toString());
+        throw err;
+    } finally {
+        modifyMode.subdomain = false;
+        updatingValue.subdomain = false;
+    }
+};
 
-        if (serviceFolders?.[sd] && Object.keys(serviceFolders[sd]).length) {
-            folders = serviceFolders[sd];
-        }
-        else {
-            serviceFolders[sd] = folders;
-        }
-
-        return subd
+let retriveCachedFolders = () => {
+    let sd = currentService.service.subdomain;
+    if (!sd) {
+        return "";
     }
 
-    let hostUrl = computed(retriveCachedFolders);
+    let subd = "";
+    if ((sd && sd[0] === "*") || sd[0] === "+") {
+        subd = sd.slice(1) + "." + domain;
+    } else {
+        subd = sd + "." + domain;
+    }
 
-    retriveCachedFolders();
+    if (serviceFolders?.[sd] && Object.keys(serviceFolders[sd]).length) {
+        folders = serviceFolders[sd];
+    } else {
+        serviceFolders[sd] = folders;
+    }
 
-    let listDisplay = ref([]);
-    let sortBy = ref('name');
-    let ascending = ref(true);
-    let currentPage = ref(1);
-    let endOfList: any = reactive({});
-    let maxPage = ref(0);
-    let fetching = ref(true); // init value should be true
+    return subd;
+};
 
-    // checks
-    let checked: any = ref({});
-    // let checkedall = ref(false);
-    // let checkall = () => {
-    //     for (let i in listDisplay.value) {
-    //         checked.value[listDisplay.value[i].name] = checkedall.value;
-    //     }
-    // }
-    // let noSelection = computed(() => {
-    //     for (let i in checked.value) {
-    //         if (checked.value[i]) {
-    //             return false;
-    //         }
-    //     }
-    //     return true;
-    // });
+let hostUrl = computed(retriveCachedFolders);
 
-    let deleteSelected = ref(false);
+retriveCachedFolders();
 
-    let deleteFiles = async () => {
-        modalPromise.value = true;
-        let toDel = [];
-        for (let i in checked.value) {
-            if (checked.value[i]) {
-                toDel.push((() => {
+let listDisplay = ref([]);
+let sortBy = ref("name");
+let ascending = ref(true);
+let currentPage = ref(1);
+let endOfList: any = reactive({});
+let maxPage = ref(0);
+let fetching = ref(true); // init value should be true
+
+// checks
+let checked: any = ref({});
+// let checkedall = ref(false);
+// let checkall = () => {
+//     for (let i in listDisplay.value) {
+//         checked.value[listDisplay.value[i].name] = checkedall.value;
+//     }
+// }
+// let noSelection = computed(() => {
+//     for (let i in checked.value) {
+//         if (checked.value[i]) {
+//             return false;
+//         }
+//     }
+//     return true;
+// });
+
+let deleteSelected = ref(false);
+
+let deleteFiles = async () => {
+    modalPromise.value = true;
+    let toDel = [];
+    for (let i in checked.value) {
+        if (checked.value[i]) {
+            toDel.push(
+                (() => {
                     for (let v of listDisplay.value) {
                         if (v.name === i) {
-                            return v
+                            return v;
                         }
                     }
-                })());
-            }
-        }
-
-        try {
-            let currDir = currentDirectory.value || '!';
-            let pager = folders[currDir].pager;
-            await currentService.deleteHostFiles({
-                paths: toDel.map(v => v.path + '/' + (() => {
-                    let n = v.name;
-                    if (n[0] == '#') {
-                        return n.slice(1) + '/';
-                    }
-                    return n;
-                })())
-            });
-
-            for (let v of toDel) {
-                await pager.deleteItem(v.name);
-            }
-
-            getFileList().then(() => {
-                // when empty, go back a page
-                if (!listDisplay.value.length && currentPage.value > 1) {
-                    currentPage.value--;
-                }
-            });
-
-            deleteSelected.value = false;
-            checked.value = {};
-            // checkedall.value = false;
-        } catch (err: any) {
-            alert(err.message);
-        } finally {
-            modalPromise.value = false;
+                })()
+            );
         }
     }
 
-    // let numberOfSelected = computed(() => {
-    //     let n = 0;
-    //     for (let i in checked.value) {
-    //         if (checked.value[i]) {
-    //             n++;
-    //         }
-    //     }
-    //     return n;
-    // });
+    try {
+        let currDir = currentDirectory.value || "!";
+        let pager = folders[currDir].pager;
+        await currentService.deleteHostFiles({
+            paths: toDel.map(
+                (v) =>
+                    v.path +
+                    "/" +
+                    (() => {
+                        let n = v.name;
+                        if (n[0] == "#") {
+                            return n.slice(1) + "/";
+                        }
+                        return n;
+                    })()
+            ),
+        });
 
-    let subdomainReady = computed(() => {
-        let sd = currentService.service.subdomain;
-        if (!sd) {
-            return 'no-subdomain';
+        for (let v of toDel) {
+            await pager.deleteItem(v.name);
         }
-        return currentService.subdInfo.stat && currentService.subdInfo.stat === 'active' || currentService.subdInfo.stat === 'tracked';
-    });
 
-    if (currentService.dirInfo.path) {
-        fetching.value = false;
+        getFileList().then(() => {
+            // when empty, go back a page
+            if (!listDisplay.value.length && currentPage.value > 1) {
+                currentPage.value--;
+            }
+        });
+
+        deleteSelected.value = false;
+        checked.value = {};
+        // checkedall.value = false;
+    } catch (err: any) {
+        alert(err.message);
+    } finally {
+        modalPromise.value = false;
     }
+};
 
-    watch(() => currentService.dirInfo.path, (n, o) => {
+// let numberOfSelected = computed(() => {
+//     let n = 0;
+//     for (let i in checked.value) {
+//         if (checked.value[i]) {
+//             n++;
+//         }
+//     }
+//     return n;
+// });
+
+let subdomainReady = computed(() => {
+    let sd = currentService.service.subdomain;
+    if (!sd) {
+        return "no-subdomain";
+    }
+    return (
+        (currentService.subdInfo.stat &&
+            currentService.subdInfo.stat === "active") ||
+        currentService.subdInfo.stat === "tracked"
+    );
+});
+
+if (currentService.dirInfo.path) {
+    fetching.value = false;
+}
+
+watch(
+    () => currentService.dirInfo.path,
+    (n, o) => {
         if (n) {
-            getFileList('conditional').then(() => {
+            getFileList("conditional").then(() => {
                 fetching.value = false;
             });
         }
     },
-        {
-            immediate: true
-        });
+    {
+        immediate: true,
+    }
+);
 
-    watch(subdomainReady,
-        (n, o) => {
-            if (n) {
-                if (n !== 'no-subdomain') {
-                    // currentDirectory.value = "";
-                    fetching.value = true;
-                    currentService.getDirInfo();
-                }
+watch(
+    subdomainReady,
+    (n, o) => {
+        if (n) {
+            if (n !== "no-subdomain") {
+                // currentDirectory.value = "";
+                fetching.value = true;
+                currentService.getDirInfo();
             }
-        },
-        {
-            immediate: true
         }
-    );
+    },
+    {
+        immediate: true,
+    }
+);
 
-    let setNewDir = (ns: any) => {
-        let path = ns.path;
-        path = path.split('/');
-        if (path.length > 1) {
-            return path.slice(1).join('/') + '/' + ns.name.slice(1);
-        }
-
-        return ns.name.slice(1);
+let setNewDir = (ns: any) => {
+    let path = ns.path;
+    path = path.split("/");
+    if (path.length > 1) {
+        return path.slice(1).join("/") + "/" + ns.name.slice(1);
     }
 
-    watch(currentDirectory, (n) => {
-        getFileList();
-    });
+    return ns.name.slice(1);
+};
 
-    async function getFileList(refresh: string | boolean = false) {
-        if (!refresh && fetching.value) return;
+watch(currentDirectory, (n) => {
+    getFileList();
+});
 
-        let resultsPerPage = 10;
-        fetching.value = true;
+async function getFileList(refresh: string | boolean = false) {
+    if (!refresh && fetching.value) return;
 
-        let currDir = currentDirectory.value || '!';
-        let hasPage = folders?.[currDir]?.pager;
+    let resultsPerPage = 10;
+    fetching.value = true;
 
-        let pager = null;
+    let currDir = currentDirectory.value || "!";
+    let hasPage = folders?.[currDir]?.pager;
 
-        if (hasPage) {
-            pager = folders[currDir].pager;
-            maxPage.value = Math.ceil(pager.map.length / pager.resultsPerPage);
-        }
+    let pager = null;
 
-        if (!hasPage || refresh && refresh !== 'conditional') {
-            folders[currDir] = {
-                pager: await Pager.init({
-                    id: 'name',
-                    sortBy: sortBy.value,
-                    order: ascending.value ? 'asc' : 'desc',
-                    resultsPerPage,
-                })
-            }
-            maxPage.value = 0;
-            currentPage.value = 1;
-            endOfList[currDir] = false;
-        }
-
+    if (hasPage) {
         pager = folders[currDir].pager;
+        maxPage.value = Math.ceil(pager.map.length / pager.resultsPerPage);
+    }
 
-        if (refresh && refresh !== 'conditional') {
-            checked.value = {};
-        }
+    if (!hasPage || (refresh && refresh !== "conditional")) {
+        folders[currDir] = {
+            pager: await Pager.init({
+                id: "name",
+                sortBy: sortBy.value,
+                order: ascending.value ? "asc" : "desc",
+                resultsPerPage,
+            }),
+        };
+        maxPage.value = 0;
+        currentPage.value = 1;
+        endOfList[currDir] = false;
+    }
 
-        if (refresh && refresh !== 'conditional' || !endOfList[currDir] && currentPage.value > maxPage.value) {
-            try {
-                let l = await currentService.listHostDirectory({ dir: currentDirectory.value }, !(refresh || maxPage.value == 0));
-                if (l.list.length > 0) {
-                    await pager.insertItems(l.list);
-                    let fl = pager.getPage(currentPage.value);
-                    listDisplay.value = fl.list;
-                    maxPage.value = fl.maxPage;
-                    endOfList[currDir] = l.endOfList;
-                }
-                else {
-                    listDisplay.value = [];
-                    endOfList[currDir] = true;
-                }
-            } catch (err: any) {
-                alert(err.message);
-            } finally {
-                fetching.value = false;
+    pager = folders[currDir].pager;
+
+    if (refresh && refresh !== "conditional") {
+        checked.value = {};
+    }
+
+    if (
+        (refresh && refresh !== "conditional") ||
+        (!endOfList[currDir] && currentPage.value > maxPage.value)
+    ) {
+        try {
+            let l = await currentService.listHostDirectory(
+                { dir: currentDirectory.value },
+                !(refresh || maxPage.value == 0)
+            );
+            if (l.list.length > 0) {
+                await pager.insertItems(l.list);
+                let fl = pager.getPage(currentPage.value);
+                listDisplay.value = fl.list;
+                maxPage.value = fl.maxPage;
+                endOfList[currDir] = l.endOfList;
+            } else {
+                listDisplay.value = [];
+                endOfList[currDir] = true;
             }
-        }
-        else if (endOfList[currDir] || maxPage.value && currentPage.value <= maxPage.value) {
-            let fl = pager.getPage(currentPage.value);
-            listDisplay.value = fl.list;
-            maxPage.value = fl.maxPage;
+        } catch (err: any) {
+            alert(err.message);
+        } finally {
             fetching.value = false;
         }
-
-        // let chk: any = {};
-        // for (let lk in listDisplay.value) {
-        //     chk[listDisplay.value[lk].name] = false;
-        // }
-
-        // checked.value = chk;
+    } else if (
+        endOfList[currDir] ||
+        (maxPage.value && currentPage.value <= maxPage.value)
+    ) {
+        let fl = pager.getPage(currentPage.value);
+        listDisplay.value = fl.list;
+        maxPage.value = fl.maxPage;
+        fetching.value = false;
     }
 
-    function openFile(ns: any) {
-        let path = ns.path;
-        let url;
-        if (path.split('/').length > 1) {
-            url = `https://${hostUrl.value}/${path.split('/').slice(1).join('/')}/${ns.name}`;
-        }
-        else {
-            url = `https://${hostUrl.value}/${ns.name}`;
-        }
+    // let chk: any = {};
+    // for (let lk in listDisplay.value) {
+    //     chk[listDisplay.value[lk].name] = false;
+    // }
 
-        window.open(url, '_blank');
+    // checked.value = chk;
+}
+
+function openFile(ns: any) {
+    let path = ns.path;
+    let url;
+    if (path.split("/").length > 1) {
+        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${
+            ns.name
+        }`;
+    } else {
+        url = `https://${hostUrl.value}/${ns.name}`;
     }
 
-    let resetIndex = async () => {
-        let currDir = currentDirectory.value || '!';
-        await folders[currDir].pager.resetIndex({
-            sortBy: sortBy.value,
-            order: ascending.value ? 'asc' : 'desc',
-        });
-        if (currentPage.value !== 1) {
-            currentPage.value = 1;
-        }
-        else {
-            getFileList();
-        }
-    }
+    window.open(url, "_blank");
+}
 
-    let toggleSort = (search: any) => {
-        if (fetching.value || !listDisplay.value.length) {
-            // if no list or fetching no nothing
-            return;
-        }
-
-        if (sortBy.value === search) {
-            ascending.value = !ascending.value;
-        }
-        else {
-            sortBy.value = search;
-        }
-    }
-
-    // call getPage when currentPage changes
-    watch(currentPage, (n, o) => {
-        if (n !== o && n > 0 && (n <= maxPage.value || n > maxPage.value && !endOfList[currentDirectory.value || '!'])) {
-            // if new value is different from old value
-            // if new value is within maxPage
-            // if new value is greater than maxPage but not end of list
-
-            getFileList();
-        }
-        else {
-            currentPage.value = o; // revert back to old value
-        }
+let resetIndex = async () => {
+    let currDir = currentDirectory.value || "!";
+    await folders[currDir].pager.resetIndex({
+        sortBy: sortBy.value,
+        order: ascending.value ? "asc" : "desc",
     });
+    if (currentPage.value !== 1) {
+        currentPage.value = 1;
+    } else {
+        getFileList();
+    }
+};
 
-    // initialize the pager when searchFor changes
-    watch(sortBy, (n) => {
-        if (!fetching.value) {
-            let currDir = currentDirectory.value || '!';
-            if (endOfList[currDir]) {
-                resetIndex();
-            }
-            else {
-                getFileList(true);
-            }
-        }
-    });
+let toggleSort = (search: any) => {
+    if (fetching.value || !listDisplay.value.length) {
+        // if no list or fetching no nothing
+        return;
+    }
 
-    watch(ascending, () => {
-        if (!fetching.value) {
-            let currDir = currentDirectory.value || '!';
-            if (endOfList[currDir]) {
-                resetIndex();
-            }
-            else {
-                getFileList(true);
-            }
+    if (sortBy.value === search) {
+        ascending.value = !ascending.value;
+    } else {
+        sortBy.value = search;
+    }
+};
+
+// call getPage when currentPage changes
+watch(currentPage, (n, o) => {
+    if (
+        n !== o &&
+        n > 0 &&
+        (n <= maxPage.value ||
+            (n > maxPage.value && !endOfList[currentDirectory.value || "!"]))
+    ) {
+        // if new value is different from old value
+        // if new value is within maxPage
+        // if new value is greater than maxPage but not end of list
+
+        getFileList();
+    } else {
+        currentPage.value = o; // revert back to old value
+    }
+});
+
+// initialize the pager when searchFor changes
+watch(sortBy, (n) => {
+    if (!fetching.value) {
+        let currDir = currentDirectory.value || "!";
+        if (endOfList[currDir]) {
+            resetIndex();
+        } else {
+            getFileList(true);
         }
-    });
+    }
+});
+
+watch(ascending, () => {
+    if (!fetching.value) {
+        let currDir = currentDirectory.value || "!";
+        if (endOfList[currDir]) {
+            resetIndex();
+        } else {
+            getFileList(true);
+        }
+    }
+});
 </script>
 
 <style lang="less" scoped>
-    tbody {
-        tr:first-child {
+tbody {
+    tr:first-child {
+        background-color: rgba(0, 0, 255, 0.02);
+
+        &::before {
             background-color: rgba(0, 0, 255, 0.02);
-
-            &::before {
-                background-color: rgba(0, 0, 255, 0.02);
-            }
-        }
-
-        tr {
-            cursor: default;
         }
     }
 
-    form.register {
-        display: flex;
-        flex-wrap: wrap;
-        gap: .5rem;
-        justify-content: flex-end;
+    tr {
+        cursor: default;
+    }
+}
 
-        .subdomain {
-            display: inline-block;
-            position: relative;
-            height: 44px;
+form.register {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-end;
 
-            &::after {
-                content: ".skapi.com";
-                position: absolute;
-                right: 10px;
-                line-height: 44px;
-                color: #999;
-                font-size: 0.8rem;
-                font-weight: 400;
-                pointer-events: none;
-                user-select: none;
-                z-index: 1;
-            }
+    .subdomain {
+        display: inline-block;
+        position: relative;
+        height: 44px;
 
-            input {
-                padding-right: 88px;
-            }
-
-            flex-grow: 1;
+        &::after {
+            content: ".skapi.com";
+            position: absolute;
+            right: 20px;
+            line-height: 44px;
+            color: #999;
+            font-size: 0.8rem;
+            font-weight: 400;
+            pointer-events: none;
+            user-select: none;
+            z-index: 1;
         }
 
-        svg:hover {
-            border-radius: 50%;
-            background-color: rgba(41, 63, 230, 0.1);
+        input {
+            padding-right: 88px;
         }
 
-        button {
-            flex-shrink: 0;
-        }
+        flex-grow: 1;
     }
 
-    // table style below
-    thead {
-        th {
-            &>span {
-                @media (pointer: fine) {
+    svg:hover {
+        border-radius: 50%;
+        background-color: rgba(41, 63, 230, 0.1);
+    }
 
-                    // only for mouse pointer devices
-                    &:hover {
-                        cursor: pointer;
-                        text-decoration: underline;
-                    }
+    button {
+        flex-shrink: 0;
+    }
+}
+
+// table style below
+thead {
+    th {
+        & > span {
+            @media (pointer: fine) {
+                // only for mouse pointer devices
+                &:hover {
+                    cursor: pointer;
+                    text-decoration: underline;
                 }
             }
         }
     }
+}
 
-    .tableMenu {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
+.tableMenu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 
-        &>* {
-            margin-bottom: 8px;
-        }
+    & > * {
+        margin-bottom: 8px;
+    }
+}
+
+.hostingPart {
+    position: relative;
+    overflow: hidden;
+}
+
+#loading {
+    position: absolute;
+    top: 60px;
+    left: 20px;
+    height: 60px;
+    z-index: 2;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    font-size: 0.8rem;
+}
+
+.dragHere {
+    outline: 4px solid var(--main-color);
+    border-radius: 4px;
+    opacity: 0.3;
+}
+
+.dragPopup {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    max-width: 300px;
+    width: 100%;
+    padding: 10px 20px;
+    margin: 8px;
+    border-radius: 6px;
+    transform: translate(-50%, 300px);
+    transition: all 0.15s;
+    background-color: var(--main-color);
+    color: #fff;
+    user-select: none;
+    pointer-events: none;
+
+    &.show {
+        transform: translate(-50%, 0);
+    }
+}
+
+.moving {
+    color: var(--main-color);
+    font-size: 24px;
+    animation: motion 0.3s linear 1s infinite alternate;
+}
+
+@keyframes motion {
+    0% {
+        margin-top: -10px;
     }
 
-    .hostingPart {
-        position: relative;
-        overflow: hidden;
+    100% {
+        margin-top: 0px;
     }
+}
 
-    #loading {
-        position: absolute;
-        top: 60px;
-        left: 20px;
-        height: 60px;
-        z-index: 2;
-        display: flex;
-        flex-wrap: nowrap;
-        align-items: center;
-        font-size: 0.8rem;
+@media (pointer: coarse) {
+    .hide {
+        display: block !important;
     }
-
-    .dragHere {
-        outline: 4px solid var(--main-color);
-        border-radius: 4px;
-        opacity: 0.3;
-    }
-
-    .dragPopup {
-        position: fixed;
-        left: 50%;
-        bottom: 20px;
-        max-width: 300px;
-        width: 100%;
-        padding: 10px 20px;
-        margin: 8px;
-        border-radius: 6px;
-        transform: translate(-50%, 300px);
-        transition: all .15s;
-        background-color: var(--main-color);
-        color: #fff;
-        user-select: none;
-        pointer-events: none;
-
-        &.show {
-            transform: translate(-50%, 0);
-        }
-    }
-
-    .moving {
-        color: var(--main-color);
-        font-size: 24px;
-        animation: motion 0.3s linear 1s infinite alternate;
-    }
-
-    @keyframes motion {
-        0% {
-            margin-top: -10px;
-        }
-
-        100% {
-            margin-top: 0px;
-        }
-    }
-
-    @media (pointer: coarse) {
-        .hide {
-            display: block !important;
-        }
-    }
+}
 </style>

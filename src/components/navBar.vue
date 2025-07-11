@@ -140,7 +140,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                                                         img(src="@/assets/img/landingpage/icon_logout.svg")
                                                         span Logout
                                     template(v-else)
-                                        router-link.go-login(to="/login") 
+                                        router-link.go-login(to="/login" @click="closeMobileMenu") 
                                             img(src="@/assets/img/landingpage/icon_login.svg")
                                             | Login
                                 button.btn-close.nohover(@click="openMoMenu")
@@ -161,7 +161,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                                 a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank" @click="closeMobileMenu")
                                     img(src="@/assets/img/landingpage/icon_github.svg")
                                     | Github
-                            li.list.go-service.mo-item(v-if="route.name === 'home'")
+                            li.list.go-service.mo-item(v-if="user?.user_id")
                                 router-link.ser(to="/my-services" @click="closeMobileMenu") 
                                     img(src="@/assets/img/logo/symbol-logo-white.svg")
                                     | My Services
@@ -865,7 +865,7 @@ img.symbol.mobile {
 
                 &.absolute {
                     position: absolute;
-                    width: 100%;
+                    width: calc(100% - 4.5rem);
                     bottom: 60px;
                 }
 
@@ -1058,7 +1058,8 @@ img.symbol.mobile {
 
             .community {
                 border-top: 1px solid rgba(255, 255, 255, 0.1);
-                padding: 0.75rem 2.25rem;
+                padding: 0.75rem 0;
+                margin: 0 2.25rem;
 
                 .list-wrap {
                     li {
@@ -1135,7 +1136,7 @@ img.symbol.mobile {
             }
 
             .community {
-                padding: 0.75rem 2rem;
+                padding: 0.75rem 0;
             }
 
             li {

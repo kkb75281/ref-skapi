@@ -65,17 +65,21 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { onMounted, onUnmounted, ref } from "vue";
-import { currentService, setService, serviceMainLoaded } from "@/views/service/main";
+import {
+    currentService,
+    setService,
+    serviceMainLoaded,
+} from "@/views/service/main";
 
 const router = useRouter();
 const route = useRoute();
 
-const emit = defineEmits(['closeMobileMenu']);
+const emit = defineEmits(["closeMobileMenu"]);
 const isMobile = ref(false);
 
 const checkMobile = () => {
     isMobile.value = window.innerWidth <= 800;
-}
+};
 
 onMounted(() => {
     checkMobile();
@@ -109,15 +113,15 @@ onUnmounted(() => {
             font-weight: 500;
 
             &.trial {
-                background-color: #3C94FF;
+                background-color: #3c94ff;
             }
 
             &.standard {
-                background-color: #77DFA2;
+                background-color: #77dfa2;
             }
 
             &.premium {
-                background-color: #F0E577;
+                background-color: #f0e577;
             }
         }
 
@@ -131,23 +135,23 @@ onUnmounted(() => {
         display: flex;
         align-items: center;
         gap: 8px;
-        padding: .75rem 2.25rem;
+        padding: 0.75rem 2.25rem;
         text-decoration: none;
-        color: #F5F5F5;
+        color: #f5f5f5;
         white-space: nowrap;
 
         &.active {
-            background: #0D0D0D;
+            background: #0d0d0d;
         }
 
         &:hover {
-            background: #0D0D0D;
+            background: #0d0d0d;
         }
 
         svg {
             width: 18px;
             height: 18px;
-            fill: #F5F5F5;
+            fill: #f5f5f5;
         }
 
         .name {
@@ -158,15 +162,20 @@ onUnmounted(() => {
 
     .advanced-router {
         padding: 24px 0;
-        margin-top: 24px;
+        margin: 1.5rem 2.25rem 0;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+        .router {
+            padding-left: 0;
+            padding-right: 0;
+        }
     }
 }
 
 @media (max-width: 430px) {
     .sideNav {
         .router {
-            padding: .75rem 2rem;
+            padding: 0.75rem 2rem;
         }
     }
 }
