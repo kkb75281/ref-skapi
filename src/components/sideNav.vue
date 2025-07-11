@@ -130,7 +130,7 @@ onUnmounted(() => {
         display: flex;
         align-items: center;
         gap: 8px;
-        padding: 12px 36px;
+        padding: .75rem 2.25rem;
         text-decoration: none;
         color: #F5F5F5;
         white-space: nowrap;
@@ -159,6 +159,14 @@ onUnmounted(() => {
         padding: 24px 0;
         margin-top: 24px;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
+@media (max-width: 430px) {
+    .sideNav {
+        .router {
+            padding: .75rem 2rem;
+        }
     }
 }
 </style>

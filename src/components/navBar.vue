@@ -165,7 +165,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                                 router-link.ser(to="/my-services" @click="closeMobileMenu") 
                                     img(src="@/assets/img/logo/symbol-logo-white.svg")
                                     | My Services
-                        .community
+                        .community(:class="{'absolute': currentRoutePath !== 'my-services'}")
                             span.text Community
                             ul.list-wrap
                                 li.item
@@ -857,9 +857,12 @@ img.symbol.mobile {
                 background-color: inherit;
                 border-radius: 0;
                 padding: 1.25rem 1.25rem 0.75rem 1.25rem;
-                position: absolute;
-                width: 100%;
-                bottom: 60px;
+
+                &.absolute {
+                    position: absolute;
+                    width: 100%;
+                    bottom: 60px;
+                }
 
                 .text {
                     font-size: 0.875rem;
@@ -1053,7 +1056,6 @@ img.symbol.mobile {
             }
 
             .community {
-                position: unset;
                 border-top: 1px solid rgba(255, 255, 255, 0.1);
                 padding: .75rem 2.25rem;
 
@@ -1063,6 +1065,14 @@ img.symbol.mobile {
                             a {
                                 padding-left: 0;
                             }
+                        }
+                    }
+
+                    .item {
+                        margin-right: 12px;
+
+                        .link {
+                            padding: 0;
                         }
                     }
                 }
@@ -1107,6 +1117,24 @@ img.symbol.mobile {
                         height: 1.25rem;
                     }
                 }
+            }
+
+            .menu-list {
+                .list {
+                    &:first-child {
+                        .ser {
+                            padding-left: 2rem;
+                        }
+                    }
+
+                    a {
+                        padding: 0.75rem 2rem;
+                    }
+                }
+            }
+
+            .community {
+                padding: .75rem 2rem;
             }
         }
     }
