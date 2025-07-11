@@ -151,7 +151,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                             li.section-item(@click="scrollSec('section2')") Price
                             li.section-item(@click="scrollSec('section3')") FAQ
                             li.section-item(@click="scrollSec('section4')") Contents
-                        SideNav(v-if="currentRoutePath === 'my-services' && serviceMainLoaded")
+                        SideNav(v-if="currentRoutePath === 'my-services' && serviceMainLoaded" @closeMobileMenu="closeMobileMenu")
                         ul.menu-list
                             li.list.go-docs.mo-item
                                 a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank" @click="closeMobileMenu") 
@@ -192,7 +192,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
         h4 Page Loading
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { useRoute, useRouter } from "vue-router";
 import { onMounted, onBeforeUnmount, ref, watch } from "vue";
 import { skapi } from "@/main";
