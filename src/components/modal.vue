@@ -37,6 +37,7 @@ dialog {
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 
     background-color: rgba(22, 23, 26, 1);
+    // background: rgba(0, 0, 0, 0.7);
     color: #fff;
     text-align: center;
     padding: 3rem;

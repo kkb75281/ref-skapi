@@ -258,7 +258,7 @@ button {
     outline: none;
     cursor: pointer;
 
-    &:hover(:not(.disabled, .nohover)) {
+    &:hover {
         &::after {
             opacity: 1;
         }
@@ -274,6 +274,10 @@ button {
         border-radius: inherit;
         background-color: rgba(255, 255, 255, 0.05);
         opacity: 0;
+    }
+
+    &.dark {
+        background-color: #16171a;
     }
 
     &.gray {

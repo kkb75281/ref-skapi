@@ -242,18 +242,4 @@ watch(activeBar, (n, o) => {
         }
     }
 }
-
-// .infoBox {
-//     max-width: 600px;
-//     margin: 0 auto;
-
-//     .svgIcon {
-//         height: 28px;
-//         width: 28px;
-//     }
-
-//     svg:hover {
-//         border-radius: 50%;
-//         background-color: rgba(41, 63, 230, 0.1);
-//     }
-// }</style>
+</style>

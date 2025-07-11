@@ -9,10 +9,11 @@ section
             .page-title {{ currentService.service.name }}
             //- .desc {{ currentService.service.description || 'No description provided.' }}
         .flex-wrap(style="gap:10px")
-            button.inline-btn(type="button" @click="editName") Rename
-            button.inline-btn CORS
-            button.inline-btn Secret Key
-            button.inline-btn.blue Change Plan
+            button.inline.gray(type="button" @click="editName") Rename
+            button.inline.gray CORS
+            button.inline.gray Secret Key
+            router-link(:to='`/subscription/${currentService.id}`')
+                button.inline.blue(style="height:100%") Change Plan
 
     hr
 
@@ -357,46 +358,46 @@ hr {
     background: rgba(255, 255, 255, 0.1);
 }
 
-button {
-    display: inline-flex;
-    max-width: 240px;
-    padding: 0 0.875rem;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 13px;
-    background: #0a4df1;
-    border: 0;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 1.5;
-    white-space: nowrap;
+// button {
+//     display: inline-flex;
+//     max-width: 240px;
+//     padding: 0 0.875rem;
+//     width: 100%;
+//     justify-content: center;
+//     align-items: center;
+//     gap: 10px;
+//     border-radius: 13px;
+//     background: #0a4df1;
+//     border: 0;
+//     color: #fff;
+//     font-size: 16px;
+//     font-weight: 500;
+//     line-height: 1.5;
+//     white-space: nowrap;
 
-    &:hover {
-        background-color: #1656f2;
-    }
-}
+//     &:hover {
+//         background-color: #1656f2;
+//     }
+// }
 
-.inline-btn {
-    background-color: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 14px;
-    width: auto;
+// .inline-btn {
+//     background-color: rgba(255, 255, 255, 0.03);
+//     border: 1px solid rgba(255, 255, 255, 0.1);
+//     font-size: 14px;
+//     width: auto;
 
-    &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
+//     &:hover {
+//         background-color: rgba(255, 255, 255, 0.1);
+//     }
 
-    &.blue {
-        background-color: #0a4df1;
+//     &.blue {
+//         background-color: #0a4df1;
 
-        &:hover {
-            background-color: #1656f2;
-        }
-    }
-}
+//         &:hover {
+//             background-color: #1656f2;
+//         }
+//     }
+// }
 
 .tooltip-icon {
     position: absolute;
@@ -423,19 +424,6 @@ button {
         font-size: 18px;
         border-radius: 5px;
         font-weight: bold;
-    }
-}
-
-.flex-wrap {
-    display: flex;
-    flex-wrap: wrap;
-
-    &.space-between {
-        justify-content: space-between;
-    }
-
-    &.center {
-        justify-content: center;
     }
 }
 
