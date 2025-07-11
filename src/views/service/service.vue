@@ -149,6 +149,7 @@ import { devLog } from '@/code/logger';
 import { user } from '@/code/user';
 import { currentServiceSpec } from '@/views/service/service-spec';
 
+import Modal from '@/components/modal.vue';
 import Toggle from '@/components/toggle.vue';
 import Tooltip from '@/components/tooltip.vue';
 
