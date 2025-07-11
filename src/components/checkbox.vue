@@ -56,5 +56,9 @@ label._checkbox {
         // color: var(--main-color);
         color: inherit;
     }
+
+    svg {
+        margin-right: 4px;
+    }
 }
 </style>

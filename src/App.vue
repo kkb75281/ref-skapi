@@ -1,18 +1,10 @@
 <template lang="pug">
 div._root(style='min-height: calc(100vh - var(--footer-height, 0));')
-    //- router-view(v-if='route.name === "home" || loaded')
     router-view(v-if='connected')
 
 Footer
 
-//- footer#footer.new
-    //- img(src="@/assets/img/logo/logo-white.svg" style="height:.88rem;")
-    .logo(style="display:flex;align-items:center;gap:0.5rem;")
-        img.symbol(src="@/assets/img/logo/symbol-logo.png" style="height:.88rem;margin:0")
-        span.faktum.desktop(style="font-size:1rem;") skapi
-    router-link(to="/pp.html" target="_blank") Terms of service • Privacy policy
-    span.hideOnMobile BROADWAYINC PTE. LTD. Singapore.
-    
+#code-copy-msg The code copied!
 </template>
 
 <script setup>
@@ -26,11 +18,23 @@ const router = useRouter();
 const route = useRoute();
 </script>
 <style lang="less">
-._root {
-    height: auto;
+#code-copy-msg {
+    position: fixed;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    background-color: #000;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 
-    display: flex;
-    flex-direction: column;
+    &.show {
+        transform: translateX(-50%) translateY(-100px);
+        opacity: 1;
+    }
 }
 
 .review-swiper {
@@ -95,9 +99,10 @@ const route = useRoute();
 }
 
 .service-swiper {
+
     .swiper-pagination-fraction,
     .swiper-pagination-custom,
-    .swiper-horizontal > .swiper-pagination-bullets,
+    .swiper-horizontal>.swiper-pagination-bullets,
     .swiper-pagination-bullets.swiper-pagination-horizontal {
         bottom: 1.25rem;
         top: initial;
@@ -105,9 +110,8 @@ const route = useRoute();
         width: fit-content;
     }
 
-    .swiper-horizontal > .swiper-pagination-bullets .swiper-pagination-bullet,
-    .swiper-pagination-horizontal.swiper-pagination-bullets
-        .swiper-pagination-bullet {
+    .swiper-horizontal>.swiper-pagination-bullets .swiper-pagination-bullet,
+    .swiper-pagination-horizontal.swiper-pagination-bullets .swiper-pagination-bullet {
         margin: 0 0.1875rem;
     }
 

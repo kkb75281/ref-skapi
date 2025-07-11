@@ -31,7 +31,7 @@ br
 
             label.passwordInput
                 | Current Password
-                input.big(
+                input.block(
                     :type='showPassword ? "text" : "password"'
                     @input="e=>currPassword = e.target.value"
                     placeholder="Enter your current password"
@@ -62,7 +62,7 @@ br
                     .loader(style="--loader-color:blue; --loader-size: 12px; margin:0 auto")
                 template(v-else)
                     router-link(to='/account-setting') Back
-                    button.unFinished(type="submit") Continue
+                    button.inline(type="submit") Continue
 
     template(v-else-if="step === 2")
         form(@submit.prevent="changePassword" action="")

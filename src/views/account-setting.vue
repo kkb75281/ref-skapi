@@ -17,43 +17,37 @@
         template(v-if="activeBar === 'email'")
             .form-title Email
             form(@submit.prevent="changeEmail" style='margin-bottom:12px;')
-                input.big(type="email" ref='emailInp' spellcheck="false" :value="inputEmail" :disabled="updatingValue || !user.email_verified" @input="(e) => {e.target.setCustomValidity('');inputEmail = e.target.value;}" placeholder="your@email.com" required)
-                button.final(style="width:100%; margin-bottom:0.5rem" :class="{disabled: updatingValue || inputEmail === user.email}")
+                input.block(type="email" ref='emailInp' spellcheck="false" :value="inputEmail" :disabled="updatingValue || !user.email_verified" @input="(e) => {e.target.setCustomValidity('');inputEmail = e.target.value;}" placeholder="your@email.com" required)
+                button.block(style="width:100%; margin-bottom:0.5rem" :class="{disabled: updatingValue || inputEmail === user.email}")
                     template(v-if="updatingValue")
                         .loader(style="--loader-color:#fff; --loader-size:12px")
                     template(v-else) Change Email
-                button.final.warning(v-if="!user.email_verified" style="width:100%;" @click="proceedVerification = true;") Verify Email
+                button.block.warning(v-if="!user.email_verified" style="width:100%;" @click="proceedVerification = true;") Verify Email
         template(v-else-if="activeBar === 'password'")
             .form-title Password
             form(@submit.prevent="changePassword" style='margin-bottom:12px;')
-                input.big.disabled(type="password" ref='passwordInp' value="********")
-                button.final(style="width:100%" @click="router.push('/change-password')") Change Password
+                input.block.disabled(type="password" ref='passwordInp' value="********")
+                button.block(style="width:100%" @click="router.push('/change-password')") Change Password
         template(v-else-if="activeBar === 'newsletters'")
-            button(:class="{unFinished: emailSubscribed, final: subing_email || !emailSubscribed, disabled: !user.email_verified || subing_email || emailSubscribed === null}" @click="emailSubscribed = !emailSubscribed" style="width:100%; margin-bottom:0.5rem")
+            button.block(:class="{unFinished: emailSubscribed, final: subing_email || !emailSubscribed, disabled: !user.email_verified || subing_email || emailSubscribed === null}" @click="emailSubscribed = !emailSubscribed" style="width:100%; margin-bottom:0.5rem")
                 template(v-if="subing_email")
                     .loader(style="--loader-color:#fff; --loader-size:12px")
                 template(v-else)
                     template(v-if="emailSubscribed") Unsubscribe from newsletters
                     template(v-else) Subscribe to newsletters
-br
-br
-br
-Modal(:open="proceedVerification" @close="proceedVerification=false")
-    h4(style='margin:.5em 0 0;') Email Verification
-    hr
 
-    div(style='font-size:.8rem;')
-        p.
-            Would you like to verify your email address?
-            #[br]
-            The verification code will be sent to #[b {{ user.email }}]
+Modal(:open="proceedVerification" @close="proceedVerification=false")
+    .modal-title Email Verification
+
+    .modal-desc Would you like to verify your email address? #[br] The verification code will be sent to #[b {{ user.email }}]
+
     br
-    div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
+    div(style='justify-content:space-between;display:flex;align-items:center;')
         template(v-if='sendingEmail')
-            .loader(style="--loader-color:blue; --loader-size:12px; margin:0 auto")
+            .loader(style="--loader-color:white; --loader-size:12px; margin:0 auto")
         template(v-else)
-            button.noLine(@click="proceedVerification = false") Cancel
-            button.final(@click="sendEmail") Proceed
+            button.inline.gray(@click="proceedVerification = false") Cancel
+            button.inline(@click="sendEmail") Proceed
 
 </template>
 
@@ -178,20 +172,35 @@ watch(activeBar, (n, o) => {
     width: 100%;
     display: flex;
     align-items: center;
-    background-color: rgb(248, 249, 251);
+    background-color: #222326;
     padding: 4px;
     border-radius: 8px;
     gap: 4px;
 
     .bar {
+        position: relative;
         padding: 8px 30px;
         border-radius: 8px;
         cursor: pointer;
         font-size: 0.9rem;
         user-select: none;
 
+        &::after {
+            position: absolute;
+            content: '';
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            display: none;
+        }
+
         &.active {
-            background-color: #fff;
+            &::after {
+                display: block;
+            }
         }
 
         // flex: 1;
@@ -247,5 +256,4 @@ watch(activeBar, (n, o) => {
 //         border-radius: 50%;
 //         background-color: rgba(41, 63, 230, 0.1);
 //     }
-// }
-</style>
+// }</style>

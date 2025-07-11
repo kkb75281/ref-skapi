@@ -9,7 +9,7 @@ section
             .page-title {{ currentService.service.name }}
             //- .desc {{ currentService.service.description || 'No description provided.' }}
         .flex-wrap(style="gap:10px")
-            button.inline-btn Rename
+            button.inline-btn(type="button" @click="editName") Rename
             button.inline-btn CORS
             button.inline-btn Secret Key
             button.inline-btn.blue Change Plan
@@ -138,6 +138,7 @@ section
                         @click="changeFreezeDatabase(!currentService.service.freeze_database)"
                     )
 
+Modal(:open="modifyMode.name")
 </template>
 
 <script setup lang="ts">
@@ -148,6 +149,7 @@ import { devLog } from '@/code/logger';
 import { user } from '@/code/user';
 import { currentServiceSpec } from '@/views/service/service-spec';
 
+import Modal from '@/components/modal.vue';
 import Toggle from '@/components/toggle.vue';
 import Tooltip from '@/components/tooltip.vue';
 

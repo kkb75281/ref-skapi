@@ -11,15 +11,5 @@ import NavBar from "@/components/navBar.vue";
 <style lang="less">
 #main {
     padding-top: 4rem; // height of the navbar
-    display: flex;
-    flex: 1;
-
-    >div {
-
-        &:first-of-type {
-            width: 100%;
-        }
-    }
-
 }
 </style>
