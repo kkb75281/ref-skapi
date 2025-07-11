@@ -135,11 +135,15 @@ const mouseout = (event) => {
     }
 };
 
-watch(() => route.path, (nv) => {
-    let splitPath = nv.split("/");
+watch(
+    () => route.path,
+    (nv) => {
+        let splitPath = nv.split("/");
 
-    currentRoutePath.value = splitPath.length > 2 ? splitPath[1] : '';
-}, { immediate: true });
+        currentRoutePath.value = splitPath.length > 2 ? splitPath[1] : "";
+    },
+    { immediate: true }
+);
 
 onMounted(() => {
     setFooterHeight();
@@ -164,7 +168,7 @@ onUnmounted(() => {
 
     &.service-main-footer {
         margin-left: 260px;
-        background-color: #16171A;
+        background-color: #16171a;
 
         .footer-wrap {
             padding: 1.875rem 2.5rem;
@@ -356,7 +360,6 @@ onUnmounted(() => {
         }
 
         .company-info {
-
             a,
             span {
                 display: block;
@@ -389,7 +392,6 @@ onUnmounted(() => {
 
 @media (max-width: 1560px) {
     #footer {
-
         .top-inner,
         .bottom-inner {
             margin: 0 80px;
@@ -399,8 +401,9 @@ onUnmounted(() => {
 
 @media (max-width: 800px) {
     #footer {
-
         &.service-main-footer {
+            margin-left: 0;
+
             .footer-wrap {
                 padding: 1.875rem 1.25rem;
             }
@@ -442,7 +445,6 @@ onUnmounted(() => {
             }
 
             .company-info {
-
                 a,
                 span {
                     font-size: 0.75rem;
@@ -506,7 +508,6 @@ onUnmounted(() => {
 
 @media (max-width: 430px) {
     #footer {
-
         .top-inner,
         .bottom-inner {
             margin: 0 40px;
