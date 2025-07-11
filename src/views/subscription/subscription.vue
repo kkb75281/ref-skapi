@@ -2,18 +2,20 @@
 main#subscription
     template(v-if="serviceList[serviceId]?.subscriptionFetched")
         .flex-wrap.space-between
-            button.inline.icon-text.dark.btn-prev(type="button" @click="$router.back()")
+            button.inline.icon-text.dark.btn-prev(type="button" @click="router.push('/my-services/' + serviceId + '/dashboard')")
                 svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back-ios")
                 span Back
 
-            button.inline.gray.btn-cancel(v-if="serviceList[serviceId]?.service.plan !== 'Canceled' && serviceList[serviceId]?.service.plan !== 'Trial'" type="button" :class="{'red' : addRedClass}" @mouseenter="addRedClass = true" @mouseout="addRedClass = false" @click="()=>openCancelplan=true") Cancel Subscription
+            //- button.inline.gray.caution.btn-cancel(v-if="serviceList[serviceId]?.service.plan !== 'Canceled' && serviceList[serviceId]?.service.plan !== 'Trial'" type="button" @click="()=>openCancelplan=true") Cancel Subscription
+
+        br
 
         .page-title.center Subscription Plans
 
         br
 
-        .desc.center {{ currentService.service.name }} is currently on the {{ currentService.service.plan }} plan.
+        .page-desc.center {{ currentService.service.name }} is currently on the {{ currentService.service.plan }} plan.
 
         .plan-wrap
             //- .plan-item.blue
@@ -87,6 +89,12 @@ main#subscription
                         li.file 1TB File Storage
                         li.mail 10GB Email Storage
 
+        br
+        br
+
+        .flex-wrap.end
+            button.inline.gray.caution.btn-cancel(v-if="serviceList[serviceId]?.service.plan !== 'Canceled' && serviceList[serviceId]?.service.plan !== 'Trial'" type="button" @click="()=>openCancelplan=true") Cancel Subscription
+
     .center(v-else)
         .loader(style="--loader-color:white; --loader-size:12px")
 
@@ -150,7 +158,6 @@ let subscrOpt = ref(false);
 let promiseRunning = ref(false);
 let changeMode = "";
 let openCancelplan = ref(false);
-let addRedClass = ref(false);
 
 onMounted(() => {
     console.log(currentServiceSpec.value)
@@ -350,15 +357,6 @@ let updateSubscription = async (ticket_id) => {
 
 .center {
     text-align: center;
-}
-
-.page-title {
-    font-size: 38px;
-}
-
-.desc {
-    color: #888888;
-    margin-bottom: 30px;
 }
 
 .btn-prev,
@@ -564,6 +562,78 @@ let updateSubscription = async (ticket_id) => {
                 button {
                     &:hover {
                         background-color: #e8ba3c;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 800px) {
+    #subscription {
+        padding: 60px 20px;
+    }
+
+    .btn-prev {
+        padding: 0.875rem 0;
+
+        &:hover {
+            &::after {
+                opacity: 0;
+            }
+        }
+    }
+
+    .plan-wrap {
+        max-width: 480px;
+        margin: 0 auto;
+
+        .plan-item {
+            max-width: unset;
+            flex-basis: unset;
+        }
+    }
+}
+
+@media (max-width: 430px) {
+    #subscription {
+        padding: 30px 20px;
+    }
+
+    .plan-wrap {
+        max-width: unset;
+        margin: 0 auto;
+
+        .plan-item {
+            width: 100%;
+            height: unset;
+            padding-bottom: 2.5rem;
+
+            .top {
+                .title {
+                    font-size: 1.5rem;
+                }
+
+                .desc {
+                    font-size: 0.9375rem;
+                    width: unset;
+                }
+            }
+
+            .middle {
+                padding: 0.625rem 0 0.9375rem;
+                margin: 0.625rem 0;
+
+                .price {
+                    font-size: 2rem;
+                    margin-bottom: 0.9375rem;
+                }
+            }
+
+            .bottom {
+                ul {
+                    li {
+                        font-size: 0.875rem;
                     }
                 }
             }

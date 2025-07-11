@@ -49,10 +49,6 @@ import { currentService } from '@/views/service/main';
 </script>
 
 <style lang="less" scoped>
-.page-title {
-    font-size: 38px;
-}
-
 .middle-title {
     font-size: 26px;
     margin-bottom: 16px;

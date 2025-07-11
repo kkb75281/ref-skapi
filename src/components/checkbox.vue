@@ -1,5 +1,5 @@
 <template lang="pug">
-label._checkbox(:class="{'nonClickable' : disabled}" :style='{opacity: disabled ? ".5" : "1", "align-items": "center"}')
+label._checkbox(:class="{'nonClickable' : disabled}" :style='{opacity: disabled ? ".5" : "1"}')
     //- input(type="checkbox" :checked='modelValue' @input="e=>{modelValue = e.target.checked;$emit('update:modelValue', e.target.checked)}" :disabled="disabled" :name="name" hidden)
     input(type="checkbox" :checked='modelValue' @input.stop="e=>{$emit('update:modelValue', e.target.checked)}" :disabled="disabled" :name="name" hidden)
     //- span.material-symbols-outlined.notranslate(:class='{fill:modelValue !== null}' :style='{"margin-top": hasSlotContent ? "-3px" : null}') {{ modelValue === null ? 'indeterminate_check_box' : modelValue ? 'check_box' : 'check_box_outline_blank' }}
@@ -59,6 +59,17 @@ label._checkbox {
 
     svg {
         margin-right: 4px;
+    }
+}
+
+@media (max-width: 430px) {
+    label._checkbox {
+        align-items: unset;
+
+        &>div {
+            white-space: wrap;
+            margin-top: 4px;
+        }
     }
 }
 </style>
