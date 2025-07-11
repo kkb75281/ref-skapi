@@ -139,22 +139,19 @@ watch(() => route.path, (nv) => {
     let splitPath = nv.split("/");
 
     currentRoutePath.value = splitPath.length > 2 ? splitPath[1] : '';
-    // console.log("Route changed:", nv);
-    console.log("Split Path:", splitPath);
-    console.log("Current Route Path:", currentRoutePath.value);
 }, { immediate: true });
 
 onMounted(() => {
     setFooterHeight();
-    window.addEventListener("resize", setFooterHeight);
+    // window.addEventListener("resize", setFooterHeight);
     window.addEventListener("mouseover", mousehover);
     window.addEventListener("mouseout", mouseout);
 });
 
 onUnmounted(() => {
-    window.removeEventListener("resize", setFooterHeight);
-    window.addEventListener("mouseover", mousehover);
-    window.addEventListener("mouseout", mouseout);
+    // window.removeEventListener("resize", setFooterHeight);
+    window.removeEventListener("mouseover", mousehover);
+    window.removeEventListener("mouseout", mouseout);
 });
 </script>
 <style lang="less" scoped>

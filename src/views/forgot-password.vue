@@ -25,7 +25,7 @@ br
 
             label
                 | Email
-                input.big(type="email" 
+                input.block(type="email" 
                 :value="email"
                 @input="(e) => { email = e.target.value; error = ''; }"
                 placeholder="Enter your email address" 
@@ -46,7 +46,7 @@ br
                     .loader(style="--loader-color:blue; --loader-size:12px")
                 template(v-else)
                     router-link(to='/login') Back to Login
-                    button.unFinished(type="submit") Continue
+                    button.inline(type="submit") Continue
 
     template(v-else-if="step === 2")
         form(@submit.prevent="step++")
@@ -57,7 +57,7 @@ br
 
             label
                 | Code
-                input.big(
+                input.block(
                 type="text"
                 :value="code"
                 @input="(e) => { code = e.target.value; error = ''; }"
@@ -83,7 +83,7 @@ br
 
             .bottom
                 a.clickable(@click="back") Back
-                button.unFinished(type="submit") Continue
+                button.inline(type="submit") Continue
 
     template(v-else-if="step === 3")
         form(@submit.prevent="changePassword" action="")
@@ -93,7 +93,7 @@ br
 
             label.passwordInput(style="margin-bottom:16px")
                 | New password
-                input.big(
+                input.block(
                 :type='showPassword ? "text" : "password"'
                 ref="newPasswordField" 
                 :value="newPassword"
@@ -113,7 +113,7 @@ br
 
             label.passwordInput
                 | Confirm new password
-                input.big(
+                input.block(
                 :type='showPassword ? "text" : "password"'
                 ref="confirmNewPasswordField"
                 :value="newPasswordConfirm"
@@ -137,7 +137,7 @@ br
                 div(v-if="promiseRunning" style="width:100%; text-align:center")
                     .loader(style="--loader-color:blue; --loader-size:12px")
                 template(v-else)
-                    button.final(type="submit") Submit
+                    button.inline(type="submit") Submit
 
     template(v-else-if="step === 4")
         p Your password has been successfully changed. Please login with the new password.
@@ -249,6 +249,7 @@ let changePassword = async () => {
     margin: 0 auto;
     width: 100%;
 }
+
 // .passwordInput {
 //     position: relative;
 
@@ -284,7 +285,7 @@ let changePassword = async () => {
 form {
     padding: 8px;
 
-    > label {
+    >label {
         margin-bottom: 16px;
     }
 
@@ -296,6 +297,7 @@ form {
         //     cursor: pointer;
         // }
     }
+
     .bottom {
         min-height: 44px;
         display: flex;

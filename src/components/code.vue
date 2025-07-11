@@ -28,11 +28,15 @@ let copy = (e) => {
     document.execCommand('copy');
     doc.remove();
 
-    let copyMsg = e.currentTarget.querySelector('.copyMsg');
-    copyMsg.textContent = 'Copied!';
+    // let copyMsg = e.currentTarget.querySelector('.copyMsg');
+    // copyMsg.textContent = 'Copied!';
+
+    let copyMsg = document.getElementById('code-copy-msg');
+    copyMsg.classList.add('show');
 
     setTimeout(() => {
-        copyMsg.textContent = 'Copy code';
+        // copyMsg.textContent = 'Copy code';
+        copyMsg.classList.remove('show');
     }, 2000);
 }
 </script>

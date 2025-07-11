@@ -113,7 +113,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                                 | Login
 
                 template(v-else :class="{ 'mo' : true }")
-                    button.btn-open-menu(@click="openMoMenu")
+                    button.btn-open-menu.nohover(@click="openMoMenu")
                         img(src="@/assets/img/landingpage/icon_menubar.svg")
                     .mo-menu-wrap
                         .top-area
@@ -143,7 +143,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                                         router-link.go-login(to="/login") 
                                             img(src="@/assets/img/landingpage/icon_login.svg")
                                             | Login
-                                button.btn-close(@click="openMoMenu")
+                                button.btn-close.nohover(@click="openMoMenu")
                                     img(src="@/assets/img/landingpage/icon_close.svg")
 
                         ul.section-list(v-if="route.name === 'home'")
@@ -151,6 +151,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                             li.section-item(@click="scrollSec('section2')") Price
                             li.section-item(@click="scrollSec('section3')") FAQ
                             li.section-item(@click="scrollSec('section4')") Contents
+                        SideNav(v-if="currentRoutePath === 'my-services' && serviceMainLoaded")
                         ul.menu-list
                             li.list.go-docs.mo-item
                                 a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank" @click="closeMobileMenu") 
@@ -164,7 +165,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                                 router-link.ser(to="/my-services" @click="closeMobileMenu") 
                                     img(src="@/assets/img/logo/symbol-logo-white.svg")
                                     | My Services
-                        .community
+                        .community(:class="{'absolute': currentRoutePath !== 'my-services'}")
                             span.text Community
                             ul.list-wrap
                                 li.item
@@ -200,6 +201,8 @@ import { user, customer } from "@/code/user";
 import { showDropDown } from "@/assets/js/event.js";
 import { setAutoHide, removeListener, routeName } from "./navBar-autohide.ts";
 
+import SideNav from "@/components/sideNav.vue";
+
 const router = useRouter();
 const route = useRoute();
 
@@ -214,6 +217,7 @@ const navSecEl = ref(null);
 const navMenuEl = ref(null);
 const communityEl = ref(null);
 const communityDropdownVisible = ref(false);
+let currentRoutePath = ref('');
 let hideTimeout = null;
 
 const updateServiceName = () => {
@@ -438,6 +442,12 @@ watch(
     },
     { immediate: true }
 );
+
+watch(() => route.path, (nv) => {
+    let splitPath = nv.split("/");
+
+    currentRoutePath.value = splitPath.length > 2 ? splitPath[1] : '';
+}, { immediate: true });
 </script>
 
 <style lang="less" scoped>
@@ -848,9 +858,12 @@ img.symbol.mobile {
                 background-color: inherit;
                 border-radius: 0;
                 padding: 1.25rem 1.25rem 0.75rem 1.25rem;
-                position: absolute;
-                width: 100%;
-                bottom: 60px;
+
+                &.absolute {
+                    position: absolute;
+                    width: 100%;
+                    bottom: 60px;
+                }
 
                 .text {
                     font-size: 0.875rem;
@@ -985,10 +998,10 @@ img.symbol.mobile {
             li {
                 padding: 1rem 1.5rem;
 
-                &:hover {
-                    background: rgba(255, 255, 255, 0.05);
-                    cursor: pointer;
-                }
+                // &:hover {
+                //     background: rgba(255, 255, 255, 0.05);
+                //     cursor: pointer;
+                // }
             }
 
             .section-list {
@@ -1007,18 +1020,30 @@ img.symbol.mobile {
 
             .menu-list {
                 padding-top: 1.25rem;
+                padding-bottom: 1.25rem;
 
                 .list {
                     padding: 0;
+                    font-size: 1rem;
 
                     &:first-child {
                         .ser {
-                            padding-left: 1.5rem;
+                            // padding-left: 1.5rem;
+                            padding-left: 2.25rem;
                         }
                     }
 
                     &::after {
                         content: none;
+                    }
+
+                    &:hover {
+                        background: rgba(255, 255, 255, 0.05);
+                        cursor: pointer;
+                    }
+
+                    a {
+                        padding: .75rem 2.25rem;
                     }
                 }
 
@@ -1028,6 +1053,29 @@ img.symbol.mobile {
 
                 .go-github {
                     padding-left: 0;
+                }
+            }
+
+            .community {
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                padding: .75rem 2.25rem;
+
+                .list-wrap {
+                    li {
+                        &:first-child {
+                            a {
+                                padding-left: 0;
+                            }
+                        }
+                    }
+
+                    .item {
+                        margin-right: 12px;
+
+                        .link {
+                            padding: 0;
+                        }
+                    }
                 }
             }
 
@@ -1070,6 +1118,24 @@ img.symbol.mobile {
                         height: 1.25rem;
                     }
                 }
+            }
+
+            .menu-list {
+                .list {
+                    &:first-child {
+                        .ser {
+                            padding-left: 2rem;
+                        }
+                    }
+
+                    a {
+                        padding: 0.75rem 2rem;
+                    }
+                }
+            }
+
+            .community {
+                padding: .75rem 2rem;
             }
         }
     }

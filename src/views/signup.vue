@@ -16,7 +16,7 @@ br
         
         label
             | Email
-            input.big(type="email" 
+            input.block(type="email" 
             :value='form.email' 
             @input="e=> { form.email = e.target.value; }"
             placeholder="your@email.com" 
@@ -25,7 +25,7 @@ br
 
         label.passwordInput
             | Create Password
-            input.big(:type='showPassword ? "text" : "password"'
+            input.block(:type='showPassword ? "text" : "password"'
             ref="passwordField" 
             @input="e=> { form.password = e.target.value; e.target.setCustomValidity(''); error = '' }"
             minlength="6"
@@ -44,7 +44,7 @@ br
 
         label.passwordInput
             | Confirm password
-            input.big(:type='showPassword ? "text" : "password"'
+            input.block(:type='showPassword ? "text" : "password"'
             ref="confirmPasswordField" 
             @input="e=> { form.password_confirm = e.target.value; e.target.setCustomValidity(''); error = '' }"
             @change="validatePassword"
@@ -78,7 +78,7 @@ br
                 .loader(style="--loader-color:blue; --loader-size:12px")
 
             template(v-else)
-                button.final Sign-up
+                button.inline Sign-up
                 .signup 
                     | Have an account?&nbsp;
                     RouterLink(:to="{name: 'login'}") Login
@@ -176,7 +176,7 @@ let signup = (e) => {
 form {
     padding: 8px;
 
-    > label {
+    >label {
         margin-bottom: 16px;
     }
 
@@ -194,6 +194,7 @@ form {
         justify-content: space-between;
         flex-direction: row-reverse;
         min-height: 44px;
+
         .signup {
             font-size: 16px;
             margin: 16px 0;
