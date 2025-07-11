@@ -87,6 +87,10 @@
 
 						td.email
 							span.value(:class="getClass(serviceSpecList[id], 'email')") {{ typeof(serviceSpecList[id]?.dataPercent?.email) === 'string' ? serviceSpecList[id]?.dataPercent?.email : serviceSpecList[id]?.dataPercent?.email + '%' }}
+
+#loading(v-if="loading")
+	.loader(style="--loader-color:black; --loader-size:12px")
+	span.text Createing service...
 </template>
 
 <script setup lang="ts">
@@ -111,13 +115,19 @@ import "swiper/css/pagination";
 const router = useRouter();
 
 const showCreateModal = ref(false);
+const loading = ref(false);
 
 function openCreateService() {
     showCreateModal.value = true;
 }
 
 let goServiceDashboard = (service: { [key: string]: any }) => {
-    router.push("/my-services/" + service.id);
+    loading.value = true;
+
+    setTimeout(() => {
+        router.push("/my-services/" + service.id);
+        loading.value = false;
+    }, 1000);
 };
 
 let newServiceName = ref("");
@@ -553,6 +563,29 @@ a {
                 }
             }
         }
+    }
+}
+
+// loading style
+#loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+
+    .loader {
+        --loader-color: #fff !important;
+        --loader-size: 1rem !important;
+        width: var(--loader-size);
+        height: var(--loader-size);
     }
 }
 

@@ -152,15 +152,15 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                             li.section-item(@click="scrollSec('section3')") FAQ
                             li.section-item(@click="scrollSec('section4')") Contents
                         ul.menu-list
-                            li.list.go-docs
+                            li.list.go-docs.mo-item
                                 a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank" @click="closeMobileMenu") 
                                     img(src="@/assets/img/landingpage/icon_docs.svg")
                                     | Docs
-                            li.list.go-github
+                            li.list.go-github.mo-item
                                 a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank" @click="closeMobileMenu")
                                     img(src="@/assets/img/landingpage/icon_github.svg")
                                     | Github
-                            li.list.go-service(v-if="route.name === 'home'")
+                            li.list.go-service.mo-item(v-if="route.name === 'home'")
                                 router-link.ser(to="/my-services" @click="closeMobileMenu") 
                                     img(src="@/assets/img/logo/symbol-logo-white.svg")
                                     | My Services
@@ -304,9 +304,9 @@ function handleMouseOver(container, selector, event) {
     if (hovered) {
         if (
             hovered.classList.contains("go-login") ||
-            hovered.classList.contains("user-profile")
+            hovered.classList.contains("user-profile") ||
+            hovered.classList.contains("mo-item")
         ) {
-            // go-login hover면: 모두 opacity 1 유지
             const elements = container.querySelectorAll(selector);
             elements.forEach((el) => (el.style.opacity = 1));
             return;
@@ -317,9 +317,10 @@ function handleMouseOver(container, selector, event) {
         elements.forEach((el) => {
             if (
                 el.classList.contains("go-login") ||
-                el.classList.contains("user-profile")
+                el.classList.contains("user-profile") ||
+                el.classList.contains("mo-item")
             ) {
-                el.style.opacity = 1; // go-login은 항상 1 유지
+                el.style.opacity = 1;
             } else {
                 el.style.opacity = 0.5;
             }
