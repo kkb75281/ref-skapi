@@ -217,7 +217,7 @@ const navSecEl = ref(null);
 const navMenuEl = ref(null);
 const communityEl = ref(null);
 const communityDropdownVisible = ref(false);
-let currentRoutePath = ref('');
+let currentRoutePath = ref("");
 let hideTimeout = null;
 
 const updateServiceName = () => {
@@ -443,11 +443,15 @@ watch(
     { immediate: true }
 );
 
-watch(() => route.path, (nv) => {
-    let splitPath = nv.split("/");
+watch(
+    () => route.path,
+    (nv) => {
+        let splitPath = nv.split("/");
 
-    currentRoutePath.value = splitPath.length > 2 ? splitPath[1] : '';
-}, { immediate: true });
+        currentRoutePath.value = splitPath.length > 2 ? splitPath[1] : "";
+    },
+    { immediate: true }
+);
 </script>
 
 <style lang="less" scoped>
@@ -896,6 +900,7 @@ img.symbol.mobile {
             padding-bottom: 3.75rem;
             transition: right 0.3s ease-in-out;
             z-index: 9999;
+            overflow-y: auto;
 
             .top-area {
                 display: flex;
@@ -990,18 +995,13 @@ img.symbol.mobile {
 
             ul {
                 height: initial;
-                font-size: 1.25rem;
+                font-size: 1rem;
                 font-weight: 400;
                 padding-left: 0;
             }
 
             li {
-                padding: 1rem 1.5rem;
-
-                // &:hover {
-                //     background: rgba(255, 255, 255, 0.05);
-                //     cursor: pointer;
-                // }
+                padding: 0.75rem 2.25rem;
             }
 
             .section-list {
@@ -1043,7 +1043,7 @@ img.symbol.mobile {
                     }
 
                     a {
-                        padding: .75rem 2.25rem;
+                        padding: 0.75rem 2.25rem;
                     }
                 }
 
@@ -1058,7 +1058,7 @@ img.symbol.mobile {
 
             .community {
                 border-top: 1px solid rgba(255, 255, 255, 0.1);
-                padding: .75rem 2.25rem;
+                padding: 0.75rem 2.25rem;
 
                 .list-wrap {
                     li {
@@ -1135,7 +1135,11 @@ img.symbol.mobile {
             }
 
             .community {
-                padding: .75rem 2rem;
+                padding: 0.75rem 2rem;
+            }
+
+            li {
+                padding-left: 2rem;
             }
         }
     }
