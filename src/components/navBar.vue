@@ -153,15 +153,15 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                             li.section-item(@click="scrollSec('section4')") Contents
                         SideNav(v-if="currentRoutePath === 'my-services' && serviceMainLoaded" @closeMobileMenu="closeMobileMenu")
                         ul.menu-list
-                            li.list.go-docs
+                            li.list.go-docs.mo-item
                                 a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank" @click="closeMobileMenu") 
                                     img(src="@/assets/img/landingpage/icon_docs.svg")
                                     | Docs
-                            li.list.go-github
+                            li.list.go-github.mo-item
                                 a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank" @click="closeMobileMenu")
                                     img(src="@/assets/img/landingpage/icon_github.svg")
                                     | Github
-                            li.list.go-service(v-if="route.name === 'home'")
+                            li.list.go-service.mo-item(v-if="route.name === 'home'")
                                 router-link.ser(to="/my-services" @click="closeMobileMenu") 
                                     img(src="@/assets/img/logo/symbol-logo-white.svg")
                                     | My Services
@@ -217,7 +217,7 @@ const navSecEl = ref(null);
 const navMenuEl = ref(null);
 const communityEl = ref(null);
 const communityDropdownVisible = ref(false);
-let currentRoutePath = ref('');
+let currentRoutePath = ref("");
 let hideTimeout = null;
 
 const updateServiceName = () => {
@@ -308,9 +308,9 @@ function handleMouseOver(container, selector, event) {
     if (hovered) {
         if (
             hovered.classList.contains("go-login") ||
-            hovered.classList.contains("user-profile")
+            hovered.classList.contains("user-profile") ||
+            hovered.classList.contains("mo-item")
         ) {
-            // go-login hover면: 모두 opacity 1 유지
             const elements = container.querySelectorAll(selector);
             elements.forEach((el) => (el.style.opacity = 1));
             return;
@@ -321,9 +321,10 @@ function handleMouseOver(container, selector, event) {
         elements.forEach((el) => {
             if (
                 el.classList.contains("go-login") ||
-                el.classList.contains("user-profile")
+                el.classList.contains("user-profile") ||
+                el.classList.contains("mo-item")
             ) {
-                el.style.opacity = 1; // go-login은 항상 1 유지
+                el.style.opacity = 1;
             } else {
                 el.style.opacity = 0.5;
             }
@@ -442,11 +443,15 @@ watch(
     { immediate: true }
 );
 
-watch(() => route.path, (nv) => {
-    let splitPath = nv.split("/");
+watch(
+    () => route.path,
+    (nv) => {
+        let splitPath = nv.split("/");
 
-    currentRoutePath.value = splitPath.length > 2 ? splitPath[1] : '';
-}, { immediate: true });
+        currentRoutePath.value = splitPath.length > 2 ? splitPath[1] : "";
+    },
+    { immediate: true }
+);
 </script>
 
 <style lang="less" scoped>
@@ -895,6 +900,7 @@ img.symbol.mobile {
             padding-bottom: 3.75rem;
             transition: right 0.3s ease-in-out;
             z-index: 9999;
+            overflow-y: auto;
 
             .top-area {
                 display: flex;
@@ -989,18 +995,13 @@ img.symbol.mobile {
 
             ul {
                 height: initial;
-                font-size: 1.25rem;
+                font-size: 1rem;
                 font-weight: 400;
                 padding-left: 0;
             }
 
             li {
-                padding: 1rem 1.5rem;
-
-                // &:hover {
-                //     background: rgba(255, 255, 255, 0.05);
-                //     cursor: pointer;
-                // }
+                padding: 0.75rem 2.25rem;
             }
 
             .section-list {
@@ -1042,7 +1043,7 @@ img.symbol.mobile {
                     }
 
                     a {
-                        padding: .75rem 2.25rem;
+                        padding: 0.75rem 2.25rem;
                     }
                 }
 
@@ -1057,7 +1058,7 @@ img.symbol.mobile {
 
             .community {
                 border-top: 1px solid rgba(255, 255, 255, 0.1);
-                padding: .75rem 2.25rem;
+                padding: 0.75rem 2.25rem;
 
                 .list-wrap {
                     li {
@@ -1134,7 +1135,11 @@ img.symbol.mobile {
             }
 
             .community {
-                padding: .75rem 2rem;
+                padding: 0.75rem 2rem;
+            }
+
+            li {
+                padding-left: 2rem;
             }
         }
     }

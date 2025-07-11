@@ -351,7 +351,7 @@ function makeBullet(index, className) {
 }
 
 function handleScroll() {
-    const video = document.querySelector(".video");
+    const video = document.querySelector(".video .wrap");
     if (!video) return;
 
     const maxScroll = 300; // 효과 구간
@@ -502,7 +502,7 @@ section {
         top: 0;
         left: 0;
         width: 100%;
-        height: 54.25rem;
+        height: 56.25rem;
         background-color: #121214;
     }
 }
@@ -546,25 +546,25 @@ section {
 
 .video {
     position: relative;
-    margin-bottom: 4.625rem;
+    margin: 0;
+    padding: 0 2.5rem;
     z-index: 1;
-
-    perspective: 1000px;
-    transform-style: preserve-3d;
-    transform: perspective(1000px) rotateX(15deg);
-    /* 초기 기울기 */
-    transition: transform 0.1s linear;
-    will-change: transform;
+    overflow: hidden;
+    height: auto;
 
     .wrap {
         max-width: 1200px;
-        // height: 853px;
         margin: 0 auto;
         border-radius: 0.625rem;
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.1);
-        // aspect-ratio: 16/9;
         max-height: 46.875rem;
+
+        perspective: 1000px;
+        transform-style: preserve-3d;
+        transform: perspective(1000px) rotateX(15deg);
+        transition: transform 0.1s linear;
+        will-change: transform;
 
         .inner {
             width: 100%;
@@ -583,6 +583,7 @@ section {
 }
 
 .why {
+    padding-top: 6.25rem;
     padding-bottom: 6.25rem;
 
     .title {
@@ -1604,7 +1605,7 @@ section {
 
     .hero-bg {
         &::before {
-            height: 40rem;
+            height: 43rem;
         }
     }
 
@@ -1624,11 +1625,8 @@ section {
         }
     }
 
-    .video {
-        margin-bottom: 5.125rem;
-    }
-
     .why {
+        padding-top: 5rem;
         padding-bottom: 5rem;
 
         .title {

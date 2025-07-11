@@ -1,14 +1,14 @@
 <template lang="pug">
 template(v-if="visible")
-    .modal-overlay(:class="{ 'first-service': isFirstService }" @click="$emit('close')")
+    .modal-overlay(:class="{ 'first-service': !isFirstService }" @click="handleClose")
     .modal-content(@click.stop)
-        //- .btn-close(@click="$emit('close')")
+        .btn-close(@click="handleClose")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-close")
                 
-        main#create
+        #create
             .form(v-if="step === 1")
-                h3.title {{ isFirstService ? 'Welcome! Create your first service' : 'Create your service' }}
+                h3.title {{ !isFirstService ? 'Welcome! Create your first service' : 'Create your service' }}
                 span.desc Create your service to get started. <br> You can create and manage multiple projects.
                 input.block(placeholder="Service name (Max 40 chars)" maxlength="40" required v-model="newServiceName" style="margin-bottom: 0.75rem;")
                 button.block.icon-text(type="button" :class="{'disabled': !newServiceName}" :style="!newServiceName ? { backgroundColor: 'rgba(34, 35, 37, 1)' } : {}" @click="step++")
@@ -16,15 +16,19 @@ template(v-if="visible")
                         use(xlink:href="@/assets/img/material-icon.svg#icon-add") 
                     span Create
 
-            .plan-wrap.card-wrap(v-else-if="step === 2")
+            .plan-wrap(v-else-if="step === 2")
                 .plan-item.blue(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
                     svg.mark
                         use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
                     .top
                         .title Trial
-                        .desc Best for testing and prototypingwwwwwwww
+                        .desc Best for testing and prototyping.
+                        //- .option 
+                            TabMenu(v-model="activeTabs.trial" :tabs="['basic']")
                     .middle
                         .price Free
+                            //- .faktum {{ '$' + planSpec['Trial'].price }}
+                            //- span /mo
                         button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('trial')") 
                             template(v-if="serviceMode == 'trial' && promiseRunning")
                                 .loader(style="--loader-color:white; --loader-size: 12px")
@@ -37,49 +41,85 @@ template(v-if="visible")
                             li.file 100GB File Storage
                             li.mail(style="margin-bottom: 2.5rem;") Automated Emails
                             li.forbiden(style="font-size: .9375rem;") All user data is deleted every 14 days
+                        //- ul.provides
+                            li(v-for="(des) in planSpec['Trial'].description") {{ des }}
+                            li.warning(v-for="(des) in planSpec['Trial'].description_warning") {{ des }}
 
                 .plan-item.green(:class="{'selected' : (serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'standard' && serviceMode !== 'standard-perpetual') && promiseRunning}")
-                    .card
-                        .title Standard 
+                    svg.mark
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+                    .top
+                        .title Standard
+                        .desc Suit best for small businesses, MVP, small projects, etc.
+                        //- .option 
+                            TabMenu(v-model="activeTabs.standard" :tabs="['basic', 'perpetual']")
+                    .middle
                         .price
                             template(v-if="activeTabs.standard === 0") 
                                 .faktum {{ '$' + planSpec['Standard'].price }}
-                                span /mo
+                                span /mon
                             template(v-else)
                                 .faktum {{ '$' + planSpec['Standard (Perpetual License)'].price }}
                                 span /only-once
-                        .desc 
-                            template(v-if="activeTabs.standard === 0") Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
-                            template(v-else) Get lifetime access to the Standard plan for just $300—upgrade anytime as your needs grow.
                         button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('standard')")
                             template(v-if="(serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning")
                                 .loader(style="--loader-color:white; --loader-size: 12px")
                             template(v-else) Select
-                    ul.provides
-                        li(v-for="(des) in planSpec['Standard'].description") {{ des }}
+                    .bottom
+                        p Includes all Trial Plan features, but more functions:
+                        ul
+                            li.mail 1GB Email Storage
+                            li.invitation User invitation System
+                            li.global Website Hosting
+                            li.global Subdomain Hosting
+                            li.mail Sending Bulk Emails
+                        //- .desc 
+                            template(v-if="activeTabs.standard === 0") Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
+                            template(v-else) Get lifetime access to the Standard plan for just $300—upgrade anytime as your needs grow.
+                        //- ul.provides
+                            li(v-for="(des) in planSpec['Standard'].description") {{ des }}
                 .plan-item.yellow(:class="{'selected' : (serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'premium' && serviceMode !== 'premium-perpetual') && promiseRunning}")
-                    .card
+                    svg.mark
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+                    .top
                         .title Premium 
+                        .desc Suit best for huge projects, Saas, social media, AI application, etc.
+                        //- .option 
+                            TabMenu(v-model="activeTabs.premium" :tabs="['basic', 'perpetual']")
+                    .middle
                         .price
                             template(v-if="activeTabs.premium === 0") 
                                 .faktum {{ '$' + planSpec['Premium'].price }}
-                                span /mo
+                                span /mon
                             template(v-else)
                                 .faktum {{ '$' + planSpec['Premium (Perpetual License)'].price }}
                                 span /only-once
-                        .desc Empower your business with formcarry, #[span.wordset for big businesses]
+                        //- .desc Empower your business with formcarry, #[span.wordset for big businesses]
                         button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('premium')")
                             template(v-if="(serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning")
                                 .loader(style="--loader-color:white; --loader-size: 12px")
                             template(v-else) Select
-                    ul.provides
+                    //- ul.provides
                         li(v-for="(des) in planSpec['Premium'].description") {{ des }}
+                    .bottom
+                        p Includes all Standard Plan features, but more data:
+                        ul
+                            li.user 100K User Accounts
+                            li.data 10GB Database Storage
+                            li.file 1TB File Storage
+                            li.mail 10GB Email Storage
+
+        //- button.btn-close.inline(v-if="step === 2" type="button" @click="handleClose") Close
 </template>
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
-import { ref } from "vue";
-import { serviceIdList, serviceList } from "@/views/service-list";
+import { ref, watch, computed } from "vue";
+import {
+    serviceIdList,
+    serviceList,
+    fetchingServiceList,
+} from "@/views/service-list";
 import { skapi } from "@/main";
 import { customer } from "@/code/user";
 import { planSpec } from "@/views/service/service-spec";
@@ -90,12 +130,22 @@ import TabMenu from "@/components/tab.vue";
 const router = useRouter();
 const route = useRoute();
 
-defineProps({
+const props = defineProps({
     visible: Boolean,
-    isFirstService: Boolean,
+    // isFirstService: Boolean,
 });
 
-defineEmits(["close"]);
+// 첫 번째 서비스인지 계산
+const isFirstService = computed(() => {
+    // 로딩 중이면 false 반환 (로딩 완료 후 판단)
+    if (fetchingServiceList.value) {
+        return false;
+    }
+    // 서비스가 없으면 첫 번째 서비스
+    return serviceIdList.length === 0;
+});
+
+const emit = defineEmits(["close"]);
 
 let service = {
     active: 1,
@@ -210,6 +260,49 @@ let selectedPlan = (plan: string) => {
     serviceMode.value = plan;
     createService();
 };
+
+// 모달 상태 초기화 함수
+const resetModalState = () => {
+    promiseRunning.value = false;
+    serviceMode.value = "standard";
+    newServiceName.value = "";
+    activeTabs.value = {
+        trial: 0,
+        standard: 0,
+        premium: 0,
+    };
+    step.value = 1;
+};
+
+// body 스크롤 제어 함수들
+const disableBodyScroll = () => {
+    document.body.style.overflow = "hidden";
+};
+
+const enableBodyScroll = () => {
+    document.body.style.overflow = "";
+};
+
+// 모달이 열리고 닫힐 때 상태 관리
+watch(
+    () => props.visible,
+    (newVisible) => {
+        if (newVisible) {
+            // 모달이 열릴 때
+            resetModalState(); // 상태 초기화
+            disableBodyScroll(); // body 스크롤 비활성화
+        } else {
+            // 모달이 닫힐 때
+            enableBodyScroll(); // body 스크롤 활성화
+        }
+    }
+);
+
+// close 이벤트 핸들러
+const handleClose = () => {
+    enableBodyScroll(); // 모달 닫을 때 스크롤 복원
+    emit("close");
+};
 </script>
 
 <style scoped lang="less">
@@ -256,99 +349,12 @@ let selectedPlan = (plan: string) => {
     }
 }
 
-.card-wrap {
-    max-width: 100%;
-    margin: 0 auto;
-    display: flex;
-    // flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    // text-align: center;
-
-    .card {
-        flex-grow: 1;
-        width: 48%;
-        min-width: 250px;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        border-radius: 12px;
-        padding: 1rem;
-        transition: all 0.3s;
-        cursor: pointer;
-        background-color: #fff;
-
-        &:hover {
-            // border-color: var(--main-color);
-            box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        a {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            text-decoration: none;
-            color: #333;
-        }
-
-        .icon {
-            width: 3rem;
-            height: 3rem;
-        }
-
-        .content {
-            text-align: left;
-
-            p {
-                margin: 0;
-
-                &.small {
-                    font-size: 0.8rem;
-                    color: rgba(0, 0, 0, 0.5);
-                }
-            }
-        }
-    }
-}
-
 .plan-wrap {
+    display: flex;
+    justify-content: center;
     align-items: start;
-
-    .plan {
-        width: 31%;
-        min-width: 250px;
-        flex-grow: 1;
-        transition: all 0.3s;
-        scale: 1;
-
-        &.selected {
-            scale: 1.05;
-
-            .card {
-                box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.05);
-            }
-        }
-
-        &.disabled {
-            opacity: 0.5;
-            pointer-events: none;
-            cursor: default;
-        }
-
-        &:hover {
-            scale: 1.05;
-        }
-    }
-
-    .card {
-        width: 100%;
-        cursor: default;
-    }
-
-    .title {
-        font-size: 1rem;
-        margin-bottom: 1rem;
-        text-align: left;
-    }
+    gap: 1.5rem;
+    padding: 4rem;
 
     .option {
         position: relative;
@@ -365,40 +371,17 @@ let selectedPlan = (plan: string) => {
         }
     }
 
-    .price {
-        // display: flex;
-        // align-items: baseline;
-        // justify-content: center;
-        // margin-bottom: 1rem;
-
-        .faktum {
-            font-size: 2.4rem;
-            margin-right: 0.5rem;
-        }
-    }
-
-    .desc {
-        margin: 0;
-        line-height: 1.4;
-        font-size: 0.8rem;
-        margin-bottom: 1rem;
-    }
-
-    button {
-        width: 100% !important;
-    }
-}
-
-// plan-wrap new style
-.plan-wrap {
     .plan-item {
         position: relative;
-        flex-grow: 1;
         background-color: #16171a;
         border-radius: 1.0625rem;
         padding: 2.5rem 2.125rem;
         color: #fff;
         text-align: left;
+        max-width: 24.125rem;
+        min-height: 41.75rem;
+        flex: 1;
+        border: 1px solid rgba(255, 255, 255, 0.1);
 
         .mark {
             position: absolute;
@@ -413,15 +396,16 @@ let selectedPlan = (plan: string) => {
                 margin-bottom: 10px;
                 font-size: 1.75rem;
                 font-weight: 500;
+                text-align: left;
             }
 
             .desc {
-                width: 280px;
-                font-size: 1.0625rem;
+                font-size: 1rem;
                 font-weight: 300;
                 line-height: 1.3;
                 margin: 0;
                 color: rgba(255, 255, 255, 0.7);
+                min-height: 3.9375rem;
             }
         }
 
@@ -435,6 +419,9 @@ let selectedPlan = (plan: string) => {
                 font-size: 2.5rem;
                 font-weight: 500;
                 margin-bottom: 1.875rem;
+                display: flex;
+                align-items: baseline;
+                min-height: 3.25rem;
 
                 span {
                     font-size: 16px;
@@ -483,43 +470,50 @@ let selectedPlan = (plan: string) => {
 
                     &.user {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_user.svg")
+                                no-repeat;
                         }
                     }
 
                     &.data {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_data.svg")
+                                no-repeat;
                         }
                     }
 
                     &.file {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_file.svg")
+                                no-repeat;
                         }
                     }
 
                     &.mail {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_mail.svg")
+                                no-repeat;
                         }
                     }
 
                     &.forbiden {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_forbiden.svg")
+                                no-repeat;
                         }
                     }
 
                     &.invitation {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_invitation.svg")
+                                no-repeat;
                         }
                     }
 
                     &.global {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_global.svg")
+                                no-repeat;
                         }
                     }
                 }
@@ -618,7 +612,8 @@ let selectedPlan = (plan: string) => {
     z-index: 999999;
 
     &.first-service {
-        background: url("@/assets/img/myservice/bg_gradation.png") no-repeat center center;
+        background: url("@/assets/img/myservice/bg_gradation.png") no-repeat
+            center center;
         background-size: cover;
         top: 4rem;
     }
@@ -629,13 +624,11 @@ let selectedPlan = (plan: string) => {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-width: 62.5rem;
     width: fit-content;
-    max-height: 90vh;
+    max-height: calc(100% - 4rem);
     overflow-y: auto;
     background: #16171a;
     border-radius: 12px;
-    padding: 5rem 5.25rem 6.25rem;
     z-index: 999999;
 
     .title {
@@ -655,21 +648,20 @@ let selectedPlan = (plan: string) => {
         margin-bottom: 3.125rem;
         display: block;
     }
-}
 
-.btn-close {
-    position: absolute;
-    top: 1.5rem;
-    right: 2.5rem;
+    &::-webkit-scrollbar {
+        width: 0.5rem;
+        height: 20px;
+    }
 
-    .svgIcon {
-        fill: #fff;
+    &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 12px 12px 12px 12px;
     }
 }
 
 .form {
-    max-width: 22rem;
-    min-width: 22rem;
+    padding: 5rem 5.25rem 6.25rem;
 
     button {
         border-radius: 0.5rem;
@@ -686,6 +678,19 @@ let selectedPlan = (plan: string) => {
     }
 }
 
+.btn-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    cursor: pointer;
+
+    .svgIcon {
+        width: 1.75rem;
+        height: 1.75rem;
+        fill: #fff;
+    }
+}
+
 .provides {
     color: #666666;
 }
@@ -693,18 +698,14 @@ let selectedPlan = (plan: string) => {
 // 모달 스타일 추가 :: e
 
 @media (max-width: 992px) {
-    .card-wrap {
+    .plan-wrap {
         flex-direction: column;
         align-items: center;
-    }
+        padding: 4rem;
 
-    .modal-content {
-        padding: 3rem 2rem 2rem;
-    }
-
-    .btn-close {
-        top: 1rem;
-        right: 1.875rem;
+        .plan-item {
+            width: 20.375rem;
+        }
     }
 }
 
@@ -716,19 +717,7 @@ let selectedPlan = (plan: string) => {
     }
 
     .plan-wrap {
-        padding-top: 20px;
-
-        .plan {
-
-            &:hover,
-            &.selected {
-                scale: 1;
-            }
-
-            &.disabled {
-                scale: 0.95;
-            }
-        }
+        padding: 4.5rem 2rem;
     }
 }
 
@@ -740,6 +729,13 @@ let selectedPlan = (plan: string) => {
     .form {
         max-width: 100%;
         min-width: 100%;
+        padding: 5rem 2rem 4.25rem;
+    }
+
+    .plan-wrap {
+        .plan-item {
+            width: 100%;
+        }
     }
 }
 </style>
