@@ -307,6 +307,8 @@ let setResize = async () => {
                 top: 0;
                 right: calc(var(--fakeWidth) * -1);
                 z-index: -1; // 테이블 뒤쪽으로 배치
+                border-top-left-radius: 0.625rem;
+                border-bottom-left-radius: 0.625rem;
             }
 
             &::after {
@@ -315,10 +317,12 @@ let setResize = async () => {
                 display: block;
                 background-color: #121214;
                 min-width: var(--fakeWidth); // 화면 너비만큼 확장
-                height: 1px;
+                height: 100%;
                 bottom: -0.5px;
                 right: calc(var(--fakeWidth) * -1);
                 // z-index: -1; // 테이블 뒤쪽으로 배치
+                border-top-right-radius: 0.625rem;
+                border-bottom-right-radius: 0.625rem;
             }
         }
 
@@ -413,23 +417,27 @@ let setResize = async () => {
                 content: "";
                 display: block;
                 height: 100%; // 높이는 최소화
-                background-color: #fff;
+                background-color: #121214;
                 min-width: var(--fakeWidth); // 화면 너비만큼 확장
                 top: 0;
                 right: calc(var(--fakeWidth) * -1);
                 z-index: -1; // 테이블 뒤쪽으로 배치
+                border-top-left-radius: 0.625rem;
+                border-bottom-left-radius: 0.625rem;
             }
 
             &::after {
                 position: absolute;
                 content: "";
                 display: block;
-                background-color: rgba(0, 0, 0, 0.05);
+                background-color: #121214;
                 min-width: var(--fakeWidth); // 화면 너비만큼 확장
-                height: 1px;
+                height: 100%;
                 bottom: -1.5px;
                 right: calc(var(--fakeWidth) * -1);
                 // z-index: -1; // 테이블 뒤쪽으로 배치
+                border-top-right-radius: 0.625rem;
+                border-bottom-right-radius: 0.625rem;
             }
 
             &:last-child {
@@ -505,8 +513,8 @@ let setResize = async () => {
 
             &:last-child {
                 // padding-right: 3rem;
-                border-top-right-radius: 0.625rem;
-                border-bottom-right-radius: 0.625rem;
+                // border-top-right-radius: 0.625rem;
+                // border-bottom-right-radius: 0.625rem;
             }
 
             &:hover {
@@ -575,8 +583,8 @@ let setResize = async () => {
 
             &:last-child {
                 // padding-right: 3rem;
-                border-top-right-radius: 0.625rem;
-                border-bottom-right-radius: 0.625rem;
+                // border-top-right-radius: 0.625rem;
+                // border-bottom-right-radius: 0.625rem;
             }
         }
     }

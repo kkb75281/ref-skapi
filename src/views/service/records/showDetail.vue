@@ -25,7 +25,7 @@
         hr
 
     label.row
-        .key(style='color:black;') Read Only&nbsp;&nbsp;
+        .key Read Only&nbsp;&nbsp;
         .value
             Checkbox(v-model="selectedRecord.readonly" name='config[readonly]' style='vertical-align:text-top;' :disabled='restrictedAccess')
     
@@ -116,20 +116,20 @@
 
     .row
         .key(style="margin-bottom: 6px") Data (JSON Object)
-        textarea.value(:disabled='restrictedAccess' v-model="selectedRecord_data" @keydown.stop="handleKey" style="padding: 8px;width:100%;height:160px;resize: none;tab-size: 2;font-family: monospace;white-space: pre;" :name='accessGroup !== "private" ? "data" : selectedRecord.user_id === user.user_id ? null : "data"'
+        textarea.value(:disabled='restrictedAccess' v-model="selectedRecord_data" @keydown.stop="handleKey" :name='accessGroup !== "private" ? "data" : selectedRecord.user_id === user.user_id ? null : "data"'
             placeholder='{ "key": "value" }')
 
     br
 
-    .row(style='margin-bottom: 1rem')
+    .row
         .key Files 
         .value(style="width:100%;")
             // already uploaded files
             .file(v-if="selectedRecord.bin" v-for="(fileList, key) in selectedRecord.bin")
                     template(v-for="(file, index) in fileList")
                         div(style='display: flex;gap:8px;margin-bottom: 8px;' :class="{disabled: restrictedAccess}")
-                            svg.svgIcon.black.clickable(@click="deleteFile(key, index)" style='margin-top: 3px; padding-top: 1px;')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+                            svg.svgIcon.clickable(@click="deleteFile(key, index)")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-close")
 
                             div(style='display: flex;flex-wrap: wrap;')
                                 input.line.key(style='width:unset;flex-grow:1;' :value="key" required placeholder="Key name for file" disabled)
@@ -141,8 +141,8 @@
             // new files
             .file(v-for="(file, index) in addFileList")
                 div(style='display: flex;gap:8px;margin-bottom: 8px;')
-                    svg.svgIcon.black.clickable(@click="addFileList.splice(index, 1)" style='margin-top: 3px; padding-top: 1px;')
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-do-not-disturb-on-fill")
+                    svg.svgIcon.clickable(@click="addFileList.splice(index, 1)" style="width: 18px; height: 18px;")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-close")
                     div(style='display: flex;flex-wrap: wrap;')
                         input.line.key(style='width:unset;flex-grow:1;' v-model="file.key" required placeholder="Key name for file" :disabled='restrictedAccess')
                         | &nbsp;&nbsp;
@@ -160,17 +160,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, watch, type Ref } from 'vue';
-import Checkbox from '@/components/checkbox.vue';
-import { user } from '@/code/user';
+import { computed, nextTick, ref, watch, type Ref } from "vue";
+import Checkbox from "@/components/checkbox.vue";
+import { user } from "@/code/user";
 import { currentService, serviceRecords } from "@/views/service/main";
 
 let service = currentService.id;
 let owner = currentService.owner;
 
 let { data } = defineProps({
-    data: Object
-})
+    data: Object,
+});
 
 let def: any = {
     table: {
@@ -181,7 +181,7 @@ let def: any = {
             exclude_from_feed: false, // When true, record will be excluded from the subscribers feed.
             notify_subscribers: false, // When true, subscribers will receive notification when the record is uploaded.
             feed_referencing_records: false, // When true, records referencing this record will be included to the subscribers feed.
-            notify_referencing_records: false // When true, records referencing this record will be notified to subscribers.
+            notify_referencing_records: false, // When true, records referencing this record will be notified to subscribers.
         },
     },
     index: {
@@ -193,20 +193,20 @@ let def: any = {
         prevent_multiple_referencing: false, // If true, a single user can reference this record only once.
         only_granted_can_reference: false, // When true, only the user who has granted private access to the record can reference this record.
         can_remove_referencing_records: false, // When true, owner of the record can remove any record that are referencing this record. Also when this record is deleted, all the record referencing this record will be deleted.
-        referencing_index_restrictions: null as any
+        referencing_index_restrictions: null as any,
     },
     reference: "",
     tags: [] as string[],
     readonly: false,
     data: null,
     bin: {},
-}
+};
 
-let accessGroup = ref('public');
-let indexName = ref("")
+let accessGroup = ref("public");
+let indexName = ref("");
 let indexValueType = ref("string");
 
-let selectedRecord_data = ref('');
+let selectedRecord_data = ref("");
 let indexValue: Ref<any> = ref("");
 let restrictedAccess = ref(false);
 
@@ -222,14 +222,20 @@ function load(rec: any) {
 
     deleteFileList.value = [];
     addFileList.value = [];
-    accessGroup.value = typeof rec.table.access_group === 'number' ? 'authorized' : rec.table.access_group;
+    accessGroup.value =
+        typeof rec.table.access_group === "number"
+            ? "authorized"
+            : rec.table.access_group;
     indexName.value = rec?.index?.name || "";
     indexValue.value = rec.index?.value || "";
 
-    if (rec?.user_id && rec.table.access_group === 'private' && rec.user_id !== user?.user_id) {
+    if (
+        rec?.user_id &&
+        rec.table.access_group === "private" &&
+        rec.user_id !== user?.user_id
+    ) {
         restrictedAccess.value = true;
-    }
-    else {
+    } else {
         restrictedAccess.value = false;
     }
 
@@ -245,9 +251,13 @@ function load(rec: any) {
     }
 }
 
-watch(() => data, (newVal) => {
-    load(newVal);
-}, { immediate: true });
+watch(
+    () => data,
+    (newVal) => {
+        load(newVal);
+    },
+    { immediate: true }
+);
 
 // textarea tab key
 let handleKey = (e: any) => {
@@ -260,7 +270,9 @@ let handleKey = (e: any) => {
         e.preventDefault();
 
         e.target.value =
-            e.target.value.substring(0, start) + "\t" + e.target.value.substring(end);
+            e.target.value.substring(0, start) +
+            "\t" +
+            e.target.value.substring(end);
         e.target.setSelectionRange(start + 1, start + 1);
     } else if (e.key == "Enter") {
         e.preventDefault();
@@ -270,7 +282,9 @@ let handleKey = (e: any) => {
         let endCount = indentMatch.input.split("}").length - 1;
 
         let currentLineStart = beforeCursor.lastIndexOf("\n") + 1;
-        let currentIndentation = beforeCursor.slice(currentLineStart).match(/^\s*/)[0];
+        let currentIndentation = beforeCursor
+            .slice(currentLineStart)
+            .match(/^\s*/)[0];
         let newIndentation = currentIndentation + "\t";
         let newCursorPosition = beforeCursor.length + newIndentation.length + 1;
 
@@ -313,14 +327,19 @@ let addFile = () => {
     addFileList.value.push({ key: "", filename: "" });
     nextTick(() => {
         let scrollTarget = document.querySelector(".detailRecord .content");
+        let scrollTargets = document.querySelector(".detail-record .content");
+
+        if (!scrollTarget || !scrollTargets) return;
         scrollTarget.scrollTop = scrollTarget.scrollHeight;
+        scrollTargets.scrollTop = scrollTargets.scrollHeight;
     });
 };
 
 let deleteFile = (key: string, index: number) => {
-    deleteFileList.value.push(selectedRecord.value.bin[key].splice(index, 1)[0].url.split('?')[0]);
+    deleteFileList.value.push(
+        selectedRecord.value.bin[key].splice(index, 1)[0].url.split("?")[0]
+    );
 };
-
 </script>
 <style lang="less">
 .content {
@@ -401,6 +420,63 @@ let deleteFile = (key: string, index: number) => {
         font-size: 14px;
         font-weight: 500;
         cursor: pointer;
+    }
+}
+
+// new styles (임시 - 추후 삭제될 수도 있음)
+.content {
+    .value {
+        min-width: fit-content;
+        width: fit-content;
+    }
+
+    .add {
+        background: #0a4df1;
+        color: #fff;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.125rem;
+        padding: 0.5rem;
+
+        svg {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
+    }
+
+    .file {
+        .filename {
+            color: #fff;
+        }
+
+        div {
+            align-items: center;
+        }
+    }
+
+    textarea {
+        background: linear-gradient(
+                0deg,
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0.05) 100%
+            ),
+            #16171a;
+        border: none;
+        color: #fff;
+        line-height: 1.4;
+        padding: 1rem 1.25rem;
+        width: 100% !important;
+        height: 160px;
+        resize: none;
+        tab-size: 2;
+        font-family: monospace;
+        white-space: pre;
+
+        &:focus-visible {
+            outline: 1px solid rgba(10, 77, 241, 0.8);
+        }
     }
 }
 </style>
