@@ -252,7 +252,7 @@
     left: var(--moreVert-left);
     right: var(--moreVert-right);
     width: var(--moreVert-width);
-    top: 100%;
+    top: calc(100% + 8px);
     // margin-top: 4px;
     z-index: 99;
     cursor: default;
@@ -269,6 +269,12 @@
             ),
             #16171a;
         color: rgba(225, 225, 225, 0.8);
+
+        button {
+            &.inline {
+                padding: 0.875rem;
+            }
+        }
 
         .more {
             // width: 100px;

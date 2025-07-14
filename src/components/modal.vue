@@ -35,7 +35,6 @@ dialog {
     border: 1px solid rgba(0, 0, 0, 0.2);
     outline: none;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
-
     background-color: rgba(22, 23, 26, 1);
     color: #fff;
     text-align: center;
@@ -45,10 +44,10 @@ dialog {
         background-color: rgba(0, 0, 0, 0.7);
     }
 
+    .modal-prev,
     .modal-close {
         position: absolute;
         top: 1.5rem;
-        right: 1.5rem;
         width: 2rem;
         height: 2rem;
         background-color: transparent;
@@ -59,6 +58,14 @@ dialog {
         &:hover {
             opacity: 1;
         }
+    }
+
+    .modal-prev {
+        left: 1.5rem;
+    }
+
+    .modal-close {
+        right: 1.5rem;
     }
 
     .modal-title {
@@ -74,6 +81,17 @@ dialog {
         line-height: 1.3;
         color: rgba(102, 102, 102, 1);
         margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 430px) {
+    dialog {
+        max-width: 100%;
+        max-height: 100%;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        padding: 4rem 1.5rem;
     }
 }
 </style>

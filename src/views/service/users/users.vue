@@ -1,747 +1,399 @@
 <template lang="pug">
-section.infoBox
-  .titleHead
-    h2 Users
+section
+    .flex-wrap.space-between(style="gap:10px")
+        .page-title Users
+        .flex-wrap.end(style="gap:10px;")
+            //- button.inline.only-icon.gray.sm
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-person-add-fill")
+            //- button.inline.only-icon.gray.sm
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-mark-email-unread-fill")
+            a(href='https://docs.skapi.com/authentication/create-account.html' target="_blank")
+                button.inline.sm.gray Go Docs
+    
+    hr
 
-    span.moreInfo(
-      @click="showGuide = !showGuide",
-      @mouseover="hovering = true",
-      @mouseleave="hovering = false"
-    )
-      span More Info&nbsp;
-      template(v-if="showGuide")
-        //- .material-symbols-outlined.notranslate.fill expand_circle_up 
-        //- .material-symbols-outlined.notranslate.noFill expand_circle_up
-        svg(v-if="hovering", style="width: 25px; height: 25px; fill: black")
-          use(
-            xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up-fill"
-          )
-        svg(v-else, style="width: 25px; height: 25px; fill: black")
-          use(
-            xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up"
-          )
-      template(v-else)
-        //- .material-symbols-outlined.notranslate.fill expand_circle_down
-        //- .material-symbols-outlined.notranslate.noFill expand_circle_down
-        svg(v-if="hovering", style="width: 25px; height: 25px; fill: black")
-          use(
-            xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down-fill"
-          )
-        svg(v-else, style="width: 25px; height: 25px; fill: black")
-          use(
-            xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down"
-          )
+    br
+    br
 
-  template(v-if="showGuide")
-    Guide
+    .flex-wrap.space-between.table-menu-wrap(style="gap:10px")
+        .flex-wrap(style="gap:10px")
+            button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                .moreVert(
+                    @click.stop,
+                    style="--moreVert-left: 0; display: none; font-weight: normal;"
+                    )
+                    .inner(style="padding: 0.5rem;")
+                        template(v-for="c in columnList")
+                            Checkbox(v-model="c.value", style="display: flex; padding: 0.25rem 0;") {{ c.name }}
+            button.inline.only-icon.gray.sm(@click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                //- span(style="padding-left: 5px; color: #999;") Name / 권규비 ...
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+        .flex-wrap(style="gap:10px")
+            button.inline.only-icon.gray.sm(@click="openCreateUser = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-person-add-fill")
+            button.inline.only-icon.gray.sm
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-mark-email-unread-fill")
+            button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }" :class="{disabled: !Object.keys(checked).length || fetching}")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-more-vert")
+                .moreVert(@click.stop style="--moreVert-right: 0; display: none; font-weight: normal;")
+                    .inner
+                        button.inline.icon-text.gray
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-supervisor-account-fill")
+                            span Grant Access
+                        button.inline.icon-text.gray(:class="{disabled: !Object.keys(checked).length || fetching}")
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-account-circle-fill")
+                            span Unblock User
+                        button.inline.icon-text.gray(:class="{disabled: !Object.keys(checked).length || fetching}")
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-no-accounts-fill")
+                            span Block User
+                        button.inline.icon-text.gray(:class="{disabled: !Object.keys(checked).length || fetching}")
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                            span Delete User
+            //- button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
+            //-     svg.svgIcon
+            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-supervisor-account-fill")
+            //- button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
+            //-     svg.svgIcon
+            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-account-circle-fill")
+            //- button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
+            //-     svg.svgIcon
+            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-no-accounts-fill")
+            //- button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
+            //-     svg.svgIcon
+            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+    .userPart
+        template(v-if="fetching")
+            #loading.
+                Loading ... &nbsp;
+                #[.loader(style="--loader-color: black; --loader-size: 12px")]
 
-  hr
+        Table(
+            :key="tableKey"
+            :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }"
+            resizable
+            )
+            template(v-slot:head)
+                tr
+                    th.fixed(style="width: 60px")
+                        Checkbox(
+                            @click.stop
+                            :modelValue="!!Object.keys(checked).length"
+                            @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.user_id] = d)); else checked = {}; }"
+                            :class="{ nonClickable: !listDisplay || !listDisplay?.length }"
+                            style="display: inline-block"
+                        )
+                        .resizer.fixed
 
-  .error(v-if="!user?.email_verified")
-    //- .material-symbols-outlined.notranslate.fill warning
-    svg
-      use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-    router-link(to="/account-setting") Please verify your email address to modify settings.
+                    template(v-for="c in columnList")
+                        th.overflow(v-if="c.value", style="width: 200px")
+                            | {{ c.name }}
+                            .resizer
 
-  .error(v-else-if="currentService.service.active == 0")
-    //- .material-symbols-outlined.notranslate.fill warning
-    svg
-      use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-    span This service is currently disabled.
+            template(v-slot:body)
+                template(v-if="fetching")
+                    tr(v-for="i in 10")
+                        td(:colspan="colspan")
+                template(v-else-if="!listDisplay || listDisplay.length === 0")
+                    tr
+                        td#noUsers(:colspan="colspan") No Users
+                    tr(v-for="i in 9")
+                        td(:colspan="colspan")
+                template(v-else)
+                    tr.hoverRow(v-for="(user, index) in listDisplay" @click="showDetail=true; selectedUser=user")
+                        td
+                            Checkbox(
+                            @click.stop
+                            :modelValue="!!checked?.[user?.user_id]"
+                            @update:modelValue="(value) => { if (value) checked[user?.user_id] = value; else delete checked[user?.user_id]; }"
+                            )
 
-  .error(v-else-if="currentService.service.active < 0")
-    //- .material-symbols-outlined.notranslate.fill warning
-    svg
-      use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-    span This service is currently suspended.
+                        template(v-for="c in columnList")
+                            template(v-if="c.value")
+                            // customize the column
+                            td.overflow(v-if="c.key === 'timestamp'") {{ new Date(user[c.key]).toLocaleString() }}
+                            td.overflow(v-else-if="c.key === 'approved'") {{ user[c.key].split(':')[1].charAt(0).toUpperCase() + user[c.key].split(':')[1].slice(1) }}
+                            td.overflow(v-else-if="c.key === 'locale'")
+                                img(
+                                :src="'https://flagcdn.com/' + user.locale.toLowerCase() + '.svg'",
+                                style="width: 16px; object-fit: contain"
+                                )
+                            td.overflow(v-else-if="c.key === 'access_group'" :style="{color: user[c.key] < 0 ? 'var(--caution-color)' : null }") {{ Math.abs(user[c.key]) }} {{user[c.key] < 0 ? "(Disabled)" : "" }}
+                            td.overflow(v-else-if="c.value") {{ user[c.key] || "-" }}
 
-form#searchForm(@submit.prevent="getPage(true)", style="padding: 1.2em")
-  Select(
-    v-model="searchFor",
-    :selectOptions="searchOptions",
-    :class="{ nonClickable: fetching }",
-    style="min-width: 162px; flex-grow: 1"
-  )
-  .search(:class="{ nonClickable: fetching }")
-    .clickInput(
-      v-if="searchFor === 'timestamp' || searchFor === 'birthdate'",
-      @click="showCalendar = !showCalendar"
-    )
-      input#searchInput.big(
-        type="text",
-        placeholder="YYYY-MM-DD ~ YYYY-MM-DD",
-        v-model="searchValue",
-        name="date",
-        readonly
-      )
-      //- .material-symbols-outlined.notranslate.fill.icon(v-if="(searchFor === 'timestamp' || searchFor === 'birthdate')") calendar_today
-      svg.svgIcon.reactive(
-        v-if="searchFor === 'timestamp' || searchFor === 'birthdate'"
-      )
-        use(
-          xlink:href="@/assets/img/material-icon.svg#icon-calendar-today-fill"
-        ) 
-      Calendar(
-        v-model="searchValue",
-        :showCalendar="showCalendar",
-        @close="showCalendar = false",
-        alwaysEmit="true"
-      )
-    input#searchInput.big(
-      v-else-if="searchFor === 'phone_number'",
-      type="text",
-      placeholder="+821234567890",
-      v-model="searchValue",
-      :disabled="fetching"
-    )
-    input#searchInput.big(
-      v-else-if="searchFor === 'address'",
-      type="text",
-      placeholder="User's address",
-      v-model="searchValue",
-      name="address"
-    )
-    input#searchInput.big(
-      v-else-if="searchFor === 'gender'",
-      type="text",
-      placeholder="Gender",
-      v-model="searchValue",
-      name="gender"
-    )
-    input#searchInput.big(
-      v-else-if="searchFor === 'name'",
-      type="text",
-      placeholder="User's name",
-      v-model="searchValue",
-      name="name"
-    )
-    .clickInput(
-      v-else-if="searchFor === 'locale'",
-      @click="showLocale = !showLocale"
-    )
-      input#searchInput.big(
-        type="text",
-        placeholder="2 digit country code e.g. KR",
-        v-model="searchValue",
-        name="locale",
-        readonly
-      )
-      //- .material-symbols-outlined.notranslate.fill.icon(v-if="searchFor === 'locale'") arrow_drop_down
-      svg.svgIcon.reactive(v-if="searchFor === 'locale'")
-        use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down") 
-      Locale(
-        v-model="searchValue",
-        :showLocale="showLocale",
-        @close="showLocale = false"
-      )
-    input#searchInput.big(
-      v-else-if="searchFor === 'user_id'",
-      type="search",
-      placeholder="xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-      v-model="searchValue",
-      name="user_id",
-      @input="(e) => { e.target.setCustomValidity(''); }",
-      pattern="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-    )
-    input#searchInput.big(
-      v-else-if="searchFor === 'email'",
-      placeholder="user@email.com",
-      v-model="searchValue",
-      name="email",
-      type="email",
-      minlength="5"
-    )
-  button.final(type="submit", style="flex-shrink: 0") Search
+                    tr(v-for="i in 10 - listDisplay.length")
+                        td(:colspan="colspan")
 
-br
+        form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
+            .header(style='padding-right:10px;')
+                svg.svgIcon.black.clickable(@click="showDetail=false; selectedUser=null;" :class="{nonClickable: fetching}")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back")
+                .name {{ selectedUser?.name || selectedUser?.email || selectedUser?.user_id }}
+                template(v-if="uploading")
+                    .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
+                template(v-else)
+                    button.noLine.iconClick.square(type="submit" style='padding:0 14px') SAVE
 
-.tableMenu
-  .iconClick.square(@click.stop="(e) => { showDropDown(e); }")
-    svg.svgIcon
-      use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl") 
-    span &nbsp;&nbsp;Show Columns
-    .moreVert(
-      @click.stop,
-      style="--moreVert-left: 0; display: none; font-weight: normal; color: black"
-    )
-      .inner
-        template(v-for="c in columnList")
-          Checkbox(v-model="c.value", style="display: flex") {{ c.name }}
+            UserDetails(v-if='showDetail' :data='selectedUser')
 
-  .iconClick.square(
-    @click="openCreateUser = true",
-    :class="{ nonClickable: fetching || !user?.email_verified || currentService.service.active <= 0 }"
-  )
-    svg.svgIcon
-      use(xlink:href="@/assets/img/material-icon.svg#icon-person-add-fill") 
-    span &nbsp;&nbsp;Create User
+// 1
+//- Modal(:open="searchModalOpen" style="padding: 2.5rem 2rem;")
+    .modal-close(@click="searchModalOpen = false;")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
 
-  .iconClick.square(
-    @click="currentService.plan == 'Trial' ? (openUpgrade = true) : (openInviteUser = true)",
-    :class="{ nonClickable: fetching || !user?.email_verified || currentService.service.active <= 0, deact: currentService.plan == 'Trial' }"
-  )
-    svg.svgIcon
-      use(
-        xlink:href="@/assets/img/material-icon.svg#icon-mark-email-unread-fill"
-      )
+    .modal-title Search Users
 
-    span &nbsp;&nbsp;Invite User
+    br
 
-  .iconClick.square(:class="{'nonClickable': !Object.keys(checked).length || fetching}" @click.stop="(e) => { showDropDown(e); }")
-    svg.svgIcon
-      use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl") 
-    span &nbsp;&nbsp;Actions
-    .moreVert(
-      @click.stop,
-      style="--moreVert-right: 0; display: none; font-weight: normal; color: black"
-    )
-      .inner
-        .iconClick.square(@click="openGrantAccess=true" style='width: 100%;padding: .5rem;' :class="{'nonClickable': !Object.keys(checked).length || fetching}" )
-          span(style='white-space: nowrap')
-            svg.svgIcon
-              use(xlink:href="@/assets/img/material-icon.svg#icon-supervisor-account-fill")
-            span &nbsp;&nbsp;Grant Access
-          
-        .iconClick.square(@click="openUnblockUser=true" style='width: 100%;padding: .5rem;' :class="{'nonClickable': !Object.keys(checked).length || fetching}" )
-          span(style='white-space: nowrap')
-            svg.svgIcon
-              use(xlink:href="@/assets/img/material-icon.svg#icon-account-circle-fill")
-            span &nbsp;&nbsp;Unblock User
+    .flex-wrap(style="gap:10px;")
+        select#searchFor(
+            v-model="searchFor",
+            @change="getPage(true)",
+            :disabled="fetching"
+        )
+            option(v-for="option in searchOptions" :value="option.value") {{ option.option }}
+        input.inline(style="width:500px;" type="text")
+
+    br
+
+    .flex-wrap.end(style="gap:10px;")
+        button.inline.gray Reset
+        button.inline Search
+
+// 2
+//- Modal(:open="searchModalOpen" style="max-width: 560px; width: 100%;")
+    .modal-prev(v-if="searchModalStep > 1" @click="searchModalStep--")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back-ios")
+    .modal-close(@click="searchModalOpen = false; searchModalStep = 1; searchFor = 'user_id'; searchValue = '';")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+
+    .modal-title
+        template(v-if="searchModalStep === 1") What do you want to search for...
+        template(v-else) Search for {{ searchFor }}
+
+    br
+
+    .flex-wrap.center(v-if="searchModalStep === 1" style="max-width: 430px; gap:10px;")
+        button.inline.gray(@click="searchFor = 'user_id'; searchModalStep++;") User ID
+        button.inline.gray(@click="searchFor = 'email'; searchModalStep++;") Email
+        button.inline.gray(@click="searchFor = 'name'; searchModalStep++;") Name
+        button.inline.gray(@click="searchFor = 'phone_number'; searchModalStep++;") Phone Number
+        button.inline.gray(@click="searchFor = 'address'; searchModalStep++;") Address
+        button.inline.gray(@click="searchFor = 'gender'; searchModalStep++;") Gender
+        button.inline.gray(@click="searchFor = 'birthdate'; searchModalStep++;") Birthdate
+        button.inline.gray(@click="searchFor = 'locale'; searchModalStep++;") Locale
+        button.inline.gray(@click="searchFor = 'timestamp'; searchModalStep++;") Date Created
+
+    template(v-if="searchModalStep === 2")
+        div(style="max-width: 430px; width: 100%; margin: 0 auto;")
+            input.block(type="text" v-model="searchValue" :placeholder="searchFor === 'timestamp' ? 'YYYY-MM-DD ~ YYYY-MM-DD' : 'Search for...'")
         
-        .iconClick.square(@click="openBlockUser=true" style='width: 100%;padding: .5rem;' :class="{'nonClickable': !Object.keys(checked).length || fetching}" )
-          span(style='white-space: nowrap')
-            svg.svgIcon
-              use(xlink:href="@/assets/img/material-icon.svg#icon-no-accounts-fill")
-            span &nbsp;&nbsp;Block User
+        br
 
-        .iconClick.square(@click="openDeleteUser=true" style='width: 100%;padding: .5rem;' :class="{'nonClickable': !Object.keys(checked).length || fetching}")
-          span(style='white-space: nowrap')
-              svg.svgIcon
-                  use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+        .flex-wrap.end(style="gap:10px;")
+            button.inline.gray Reset
+            button.inline Search
 
-              span &nbsp;&nbsp;Delete User
+// 3
+Modal(:open="searchModalOpen" style="max-width: 560px; width: 100%; background-color: unset; padding: 0; border-radius: 0;")
+    .flex-wrap(style="position:relative; background-color: rgba(22, 23, 26, 1); border-radius: 7px; padding: 8px; gap: 10px; align-items: center")
+        #showSearchFor(style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%);")
+            svg.svgIcon(style="fill: #666; margin: 0 8px;")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+            span(style="padding-right: 4px; color: #666;") {{ searchFor }}
+            span(style="color: #666;") /
+        input#searchInput.block(type="text" style="background: unset; padding-left: 4.5rem")
+    
+    br
 
-  //- .iconClick.square(
-  //-   @click="getPage(true)",
-  //-   :class="{ nonClickable: fetching || !user?.email_verified || currentService.service.active <= 0 }"
-  //- )
-  //-   svg.svgIcon(:class="{ loading: fetching }")
-  //-     use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
-  //-   span &nbsp;&nbsp;Refresh
+    div(style="background-color: rgba(22, 23, 26, 1); padding: 1rem 1rem 1.5rem; border-radius: 7px;")
+        .tit(style="color: #666; margin-bottom:0.8rem; font-size: 0.9rem;") Search for
+        .flex-wrap.center(style="gap:10px;margin-bottom: 1.2rem")
+            button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value; searchModalStep = 2") {{ option.option }}
+        span(style="font-size: 0.9rem; padding:2px 8px; margin-right: 8px; background-color: #1f1f1f; border: 1px solid #222; border-radius: 6px; color: #666;") esc
+        span(style="color: #555; font-size: 0.9rem") to close
 
-.userPart
-  template(v-if="fetching")
-    #loading.
-      Loading ... &nbsp;
-      #[.loader(style="--loader-color: black; --loader-size: 12px")]
+Modal(:open="openCreateUser")
+    .modal-close(@click="openCreateUser = false;")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
 
-  Table(
-    :key="tableKey"
-    :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }"
-    resizable
-    )
-    template(v-slot:head)
-      tr
-        th.fixed(style="width: 60px")
-          Checkbox(
-            @click.stop
-            :modelValue="!!Object.keys(checked).length"
-            @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.user_id] = d)); else checked = {}; }"
-            :class="{ nonClickable: !listDisplay || !listDisplay?.length }"
-            style="display: inline-block"
-          )
-          .resizer.fixed
+    .modal-title Create User
 
-        template(v-for="c in columnList")
-          th.overflow(v-if="c.value", style="width: 200px")
-            | {{ c.name }}
-            .resizer
+    br
 
-    template(v-slot:body)
-      template(v-if="fetching")
-        tr(v-for="i in 10")
-          td(:colspan="colspan")
-      template(v-else-if="!listDisplay || listDisplay.length === 0")
-        tr
-          td#noUsers(:colspan="colspan") No Users
-        tr(v-for="i in 9")
-          td(:colspan="colspan")
-      template(v-else)
-        tr.hoverRow(v-for="(user, index) in listDisplay" @click="showDetail=true; selectedUser=user")
-          td
-            Checkbox(
-              @click.stop
-              :modelValue="!!checked?.[user?.user_id]"
-              @update:modelValue="(value) => { if (value) checked[user?.user_id] = value; else delete checked[user?.user_id]; }"
+    form#createForm(@submit.prevent="createUser" style="text-align:left")
+        input(hidden, name="service", :value="currentService.id")
+        label User's Email
+            em(style="color: red; font-size: 0.6rem") * Required
+            input#email.block(
+                type="email",
+                @input="(e) => (createParams.email = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'password')",
+                :disabled="promiseRunning",
+                title="Please enter a valid email address.",
+                placeholder="anonymous@anonymous.com",
+                required
+            )
+        
+        br
+
+        label Password
+            em(style="color: red; font-size: 0.6rem") * Required
+            input#password.block(
+                @input="(e) => (createParams.password = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'name')",
+                :disabled="promiseRunning",
+                placeholder="User's Password",
+                type="Password",
+                minlength="6",
+                required
+            )
+        
+        br
+
+        label Name
+            input#name.block(
+                @input="(e) => (createParams.name = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'phone')",
+                :disabled="promiseRunning",
+                placeholder="User's Name"
             )
 
-          template(v-for="c in columnList")
-            template(v-if="c.value")
-              // customize the column
-              td.overflow(v-if="c.key === 'timestamp'") {{ new Date(user[c.key]).toLocaleString() }}
-              td.overflow(v-else-if="c.key === 'approved'") {{ user[c.key].split(':')[1].charAt(0).toUpperCase() + user[c.key].split(':')[1].slice(1) }}
-              td.overflow(v-else-if="c.key === 'locale'")
-                img(
-                  :src="'https://flagcdn.com/' + user.locale.toLowerCase() + '.svg'",
-                  style="width: 16px; object-fit: contain"
+        br
+
+        label Phone Number
+            input#phone.block(
+                @input="(e) => (createParams.phone_number = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'gender')",
+                :disabled="promiseRunning",
+                placeholder="User's Phone Number",
+                type="text"
+            )
+        
+        br
+
+        .label
+            label Gender
+                input#gender.block(
+                    @input="(e) => (createParams.gender = e.target.value)",
+                    @keydown="(e) => moveFocus(e, 'address')",
+                    :disabled="promiseRunning",
+                    placeholder="User's Gender",
+                    type="text"
                 )
-              td.overflow(v-else-if="c.key === 'access_group'" :style="{color: user[c.key] < 0 ? 'var(--caution-color)' : null }") {{ Math.abs(user[c.key]) }} {{user[c.key] < 0 ? "(Disabled)" : "" }}
-              td.overflow(v-else-if="c.value") {{ user[c.key] || "-" }}
-
-        tr(v-for="i in 10 - listDisplay.length")
-          td(:colspan="colspan")
-
-  form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
-    .header(style='padding-right:10px;')
-        svg.svgIcon.black.clickable(@click="showDetail=false; selectedUser=null;" :class="{nonClickable: fetching}")
-          use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back")
-        .name {{ selectedUser?.name || selectedUser?.email || selectedUser?.user_id }}
-        template(v-if="uploading")
-          .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
-        template(v-else)
-          button.noLine.iconClick.square(type="submit" style='padding:0 14px') SAVE
-
-    UserDetails(v-if='showDetail' :data='selectedUser')
-
-.tableMenu(v-if="!showDetail" style="display: block; text-align: center")
-  .iconClick.square.arrow(
-    @click="currentPage--",
-    :class="{ nonClickable: fetching || currentPage === 1 }"
-  )
-    //- .material-symbols-outlined.notranslate.bold chevron_left
-    svg.svgIcon(style="width: 26px; height: 26px")
-      use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-    span Previous&nbsp;&nbsp;
-  | &nbsp;&nbsp;
-  .iconClick.square.arrow(
-    @click="currentPage++",
-    :class="{ nonClickable: fetching || (endOfList && currentPage >= maxPage) }"
-  )
-    span &nbsp;&nbsp;Next
-    //- .material-symbols-outlined.notranslate.bold chevron_right
-    svg.svgIcon(style="width: 26px; height: 26px")
-      use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
-
-// create user
-Modal(
-  :open="openCreateUser",
-  @close="openCreateUser = false",
-  style="width: 478px"
-)
-  h4(style="margin: 0.5em 0 0") Create User
-
-  hr
-
-  form#createForm(@submit.prevent="createUser")
-    input(hidden, name="service", :value="currentService.id")
-
-    label User's Email
-      |
-      em(style="color: red; font-size: 0.6rem") * Required
-      input#email.big(
-        type="email",
-        @input="(e) => (createParams.email = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'password')",
-        :disabled="promiseRunning",
-        title="Please enter a valid email address.",
-        placeholder="anonymous@anonymous.com",
-        required
-      )
-    br
-
-    label Password
-      |
-      em(style="color: red; font-size: 0.6rem") * Required
-      input#password.big(
-        @input="(e) => (createParams.password = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'name')",
-        :disabled="promiseRunning",
-        placeholder="User's Password",
-        type="Password",
-        minlength="6",
-        required
-      )
-
-    br
-
-    label Name
-      |
-      input#name.big(
-        @input="(e) => (createParams.name = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'phone')",
-        :disabled="promiseRunning",
-        placeholder="User's Name"
-      )
-
-    br
-
-    label Phone Number
-      |
-      input#phone.big(
-        @input="(e) => (createParams.phone_number = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'gender')",
-        :disabled="promiseRunning",
-        placeholder="User's Phone Number",
-        type="text"
-      )
-
-    br
-
-    .label
-      label Gender
-        |
-        input#gender.big(
-          @input="(e) => (createParams.gender = e.target.value)",
-          @keydown="(e) => moveFocus(e, 'address')",
-          :disabled="promiseRunning",
-          placeholder="User's Gender",
-          type="text"
-        )
-      Checkbox(v-model="gender_public") public
-
-    br
-
-    .label
-      label Address
-        |
-        input#address.big(
-          @input="(e) => (createParams.address = e.target.value)",
-          @keydown="(e) => moveFocus(e, 'birthdate')",
-          :disabled="promiseRunning",
-          placeholder="User's Address",
-          type="text"
-        ) 
-      Checkbox(v-model="address_public") public
-
-    br
-
-    .label
-      label Birthdate
-        |
-        input#birthdate.big(
-          @input="(e) => (createParams.birthdate = e.target.value)",
-          @keydown="(e) => moveFocus(e, 'picture')",
-          :disabled="promiseRunning",
-          placeholder="User's Birthdate (YYYY-MM-DD)",
-          type="text"
-        )
-      Checkbox(v-model="birthdate_public") public
-
-    br
-
-    label Picture
-      |
-      input#picture.big(
-        @input="(e) => (createParams.picture = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'profile')",
-        :disabled="promiseRunning",
-        placeholder="URL of the profile picture.",
-        type="url"
-      )
-
-    br
-
-    label Profile
-      |
-      input#profile.big(
-        @input="(e) => (createParams.profile = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'website')",
-        :disabled="promiseRunning",
-        placeholder="URL of the profile page",
-        type="url"
-      )
-
-    br
-
-    label Website
-      |
-      input#website.big(
-        @input="(e) => (createParams.website = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'nickname')",
-        :disabled="promiseRunning",
-        placeholder="URL of the website",
-        type="url"
-      )
-
-    br
-
-    label Nickname
-      |
-      input#nickname.big(
-        @input="(e) => (createParams.nickname = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'misc')",
-        :disabled="promiseRunning",
-        placeholder="Nickname of the user",
-        type="text"
-      )
-
-    br
-
-    label misc
-      |
-      input#misc.big(
-        @input="(e) => (createParams.misc = e.target.value)",
-        :disabled="promiseRunning",
-        placeholder="Additional string value that can be used freely",
-        type="text"
-      )
-
-    br
-
-    .error(v-if="error")
-      svg
-        use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-      span {{ error }}
-
-    br
-
-    div(
-      style="display: flex; align-items: center; justify-content: space-between"
-    )
-      div(
-        v-if="promiseRunning",
-        style="width: 100%; height: 44px; text-align: center"
-      )
-        .loader(style="--loader-color: blue; --loader-size: 12px")
-      template(v-else)
-        button.noLine(type="button", @click="closeModal") Cancel
-        button.final(type="submit") Create User
-
-// invite user
-Modal(:open="openInviteUser", @close="openInviteUser = false")
-  h4(style="margin: 0.5em 0 0") Invite User
-
-  hr
-
-  div(style="font-size: 0.8rem")
-    p.
-      Invitation Email includes a temporary password and the acception link. 
-      #[br]
-      User must accept the invitation within 7 days.
-      #[br]
-      For more information, refer:&nbsp;
-      #[a(href="https://docs.skapi.com/email/email-templates.html", target="_blank", style="white-space: nowrap") E-Mail Templates]
-
-  br
-
-  form#inviteForm(@submit.prevent="inviteUser")
-    input(hidden, name="service", :value="currentService.id")
-
-    label User's Email
-      |
-      em(style="color: red; font-size: 0.6rem") * Required
-      input#inviteUserEmail.big(
-        type="email"
-        @input="(e) => (inviteParams.email = e.target.value)"
-        @keydown="(e) => moveFocus(e, 'inviteUserName')"
-        title="Please enter a valid email address."
-        placeholder="anonymous@anonymous.com"
-        required
-      )
-    br
-
-    label Name
-      |
-      em(style="color: red; font-size: 0.6rem") * Required
-      input#inviteUserName.big(
-        @input="(e) => (inviteParams.name = e.target.value)"
-        @keydown="(e) => moveFocus(e, 'inviteUserURL')"
-        placeholder="User's Name"
-        required
-      )
-
-    br
-
-    label Redirect URL
-      |
-      input#inviteUserURL.big(
-        @input="(e) => (redirect = e.target.value)"
-        placeholder="URL to redirect when accepted. (optional)"
-        type="url"
-      )
-
-    br
-
-    .error(v-if="error")
-      svg
-        use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-      span {{ error }}
-
-    br
-
-    div(
-      style="display: flex; align-items: center; justify-content: space-between"
-    )
-      div(
-        v-if="promiseRunning",
-        style="width: 100%; height: 44px; text-align: center"
-      )
-        .loader(style="--loader-color: blue; --loader-size: 12px")
-      template(v-else)
-        button.noLine(type="button", @click="closeModal") Cancel
-        button.final(type="submit") Invite
-
-// block user
-Modal(:open="openBlockUser", @close="openBlockUser = false")
-  h4(style="margin: 0.5em 0 0") Block User
-
-  hr
-
-  div(style="font-size: 0.8rem")
-    p.
-      This action will block {{Object.keys(checked).length}} user(s) from your service.
-      #[br]
-      The user will not be able to access your service anymore.
-
-  br
-
-  div(
-    style="display: flex; align-items: center; justify-content: space-between"
-  )
-    div(
-      v-if="promiseRunning",
-      style="width: 100%; height: 44px; text-align: center"
-    )
-      .loader(style="--loader-color: blue; --loader-size: 12px")
-    template(v-else)
-      button.noLine(
-        type="button"
-        @click="openBlockUser = false;"
-      ) Cancel
-      button.final(type="button", @click="changeUserApprovalState('block')") Block
-
-// unblock user
-Modal(:open="openUnblockUser", @close="openUnblockUser = false")
-  h4(style="margin: 0.5em 0 0") Unblock User
-
-  hr
-
-  div(style="font-size: 0.8rem")
-    p.
-      This action will unblock {{Object.keys(checked).length}} user(s) from your service. 
-      #[br]
-      The user will have access to your service.
-
-  br
-
-  div(
-    style="display: flex; align-items: center; justify-content: space-between"
-  )
-    div(
-      v-if="promiseRunning"
-      style="width: 100%; height: 44px; text-align: center"
-    )
-      .loader(style="--loader-color: blue; --loader-size: 12px")
-    template(v-else)
-      button.noLine(
-        type="button"
-        @click="openUnblockUser = false;"
-      ) Cancel
-      button.final(type="button", @click="changeUserApprovalState('unblock')") Unblock
-
-// delete user
-Modal(:open="openDeleteUser", @close="openDeleteUser = false")
-  h4(style="margin: 0.5em 0 0; color: var(--caution-color)") Delete User
-
-  hr
-
-  div(style="font-size: 0.8rem")
-    p.
-      This action will delete {{Object.keys(checked).length}} user(s) from your service.
-      #[br]
-      All the user's data will be deleted.
-      #[br]
-      This action cannot be undone.
-
-  br
-
-  div(
-    style="display: flex; align-items: center; justify-content: space-between"
-  )
-    div(
-      v-if="promiseRunning",
-      style="width: 100%; height: 44px; text-align: center"
-    )
-      .loader(style="--loader-color: blue; --loader-size: 12px")
-    template(v-else)
-      button.noLine.warning(
-        type="button"
-        @click="openDeleteUser = false;"
-      ) Cancel
-      button.final.warning(type="button", @click="deleteUser") Delete
-
-// upgrade service
-Modal(:open="openUpgrade", @close="openUpgrade = false")
-  h4(style="margin: 0.5em 0 0") Upgrade
-
-  hr
-
-  div(style="font-size: 0.8rem")
-    p.
-      You can access more features like sending newsletters,
-      #[br]
-      inviting users and file hosting by upgrading your service.
-
-    p Would you like you check out our service plans?
-
-  br
-
-  div(
-    style="display: flex; align-items: center; justify-content: space-between"
-  )
-    button.noLine(type="button", @click="openUpgrade = false") No
-    router-link(:to="`/subscription/${currentService.id}`")
-      button.final(type="button") Yes
-
-// grant access
-Modal(:open="openGrantAccess", @close="openGrantAccess = false")
-  h4(style="margin: 0.5em 0 0") Grant Access
-
-  hr
-
-  div(style="font-size: 0.8rem")
-    p.
-      This will grant {{Object.keys(checked).length}} user(s) to a new access group.
-      #[br]
-      Access group can be granted from 1 to 99.
-
-    input.change-access(
-      type="number"
-      placeholder="1~99"
-      min=1
-      max=99
-      @keyup.stop="(e) => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); }"
-      style="background-color: white; outline: 1px solid rgba(0, 0, 0, 0.5); border-radius: 6px; width: 100%; padding: 8px"
-    )
-
-  br
-
-  div(
-    style="display: flex; align-items: center; justify-content: space-between"
-  )
-    div(
-      v-if="promiseRunning"
-      style="width: 100%; height: 44px; text-align: center"
-    )
-      .loader(style="--loader-color: blue; --loader-size: 12px")
-    template(v-else)
-      button.noLine(type="button", @click="closeGrantAccess") Cancel
-      button.final(type="button", @click="grantAccess") Change
-
-// grant access > success
-Modal(:open="successGrantAccess", @close="successGrantAccess = false")
-  h4(style="margin: 0.5em 0 0") Grant Access
-
-  hr
-
-  div(style="font-size: 0.8rem")
-    p.
-      New access group has been granted to {{Object.keys(checked).length}} user(s).
-
-  br
-
-  div(style="display: flex; align-items: center; justify-content: flex-end")
-    button.final(type="button", @click="()=>{checked.value = {};successGrantAccess = false;}") close
+            Checkbox(v-model="gender_public") public
+        
+        br
+
+        .label
+            label Address
+                input#address.block(
+                    @input="(e) => (createParams.address = e.target.value)",
+                    @keydown="(e) => moveFocus(e, 'birthdate')",
+                    :disabled="promiseRunning",
+                    placeholder="User's Address",
+                    type="text"
+                ) 
+            Checkbox(v-model="address_public") public
+
+        br
+
+        .label
+            label Birthdate
+                input#birthdate.block(
+                    @input="(e) => (createParams.birthdate = e.target.value)",
+                    @keydown="(e) => moveFocus(e, 'picture')",
+                    :disabled="promiseRunning",
+                    placeholder="User's Birthdate (YYYY-MM-DD)",
+                    type="text"
+                )
+            Checkbox(v-model="birthdate_public") public
+
+        br
+
+        label Picture
+            input#picture.block(
+                @input="(e) => (createParams.picture = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'profile')",
+                :disabled="promiseRunning",
+                placeholder="URL of the profile picture.",
+                type="url"
+            )
+
+        br
+
+        label Profile
+            input#profile.block(
+                @input="(e) => (createParams.profile = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'website')",
+                :disabled="promiseRunning",
+                placeholder="URL of the profile page",
+                type="url"
+            )
+
+        br
+
+        label Website
+            input#website.block(
+                @input="(e) => (createParams.website = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'nickname')",
+                :disabled="promiseRunning",
+                placeholder="URL of the website",
+                type="url"
+            )
+
+        br
+
+        label Nickname
+            input#nickname.block(
+                @input="(e) => (createParams.nickname = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'misc')",
+                :disabled="promiseRunning",
+                placeholder="Nickname of the user",
+                type="text"
+            )
+
+        br
+
+        label Misc
+            input#misc.block(
+                @input="(e) => (createParams.misc = e.target.value)",
+                :disabled="promiseRunning",
+                placeholder="Additional string value that can be used freely",
+                type="text"
+            )
+
+        br
+
+        .error(v-if="error")
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            span {{ error }}
+
+        br
+
+        div(style="display: flex; align-items: center; justify-content: space-between")
+            div(v-if="promiseRunning" style="width: 100%; height: 44px; text-align: center")
+                .loader(style="--loader-color: white; --loader-size: 12px")
+            template(v-else)
+                //- button.inline.gray(type="button", @click="closeModal") Cancel
+                //- button.inline(type="submit") Create
+                button.block(type="submit") Create
 </template>
 <script setup lang="ts">
 import Table from "@/components/table.vue";
@@ -789,6 +441,10 @@ let showLocale = ref(false);
 let showGuide = ref(false);
 let hovering = ref(false);
 let showDetail = ref(false);
+let searchModalOpen = ref(false);
+let searchModalStep = ref(1);
+
+// document.addEventListener("")
 
 let columnList = reactive([
     {
@@ -1040,9 +696,26 @@ watch(fetching, (n) => {
 });
 
 watch(searchFor, (n, o) => {
+    if (n) {
+        nextTick(() => {
+            let inputElement = document.querySelector("#searchInput");
+            let showSearchFor = document.querySelector("#showSearchFor");
+
+            if (!inputElement || !showSearchFor) {
+                return;
+            }
+
+            let gcr = showSearchFor.getClientRects()[0].width;
+
+            inputElement.style.paddingLeft = `${gcr + 8}px`;
+            inputElement.focus();
+        });
+    }
     if (n !== o) {
         searchValue.value = "";
     }
+}, {
+    immediate: true
 });
 
 // computed fetch params
@@ -1498,13 +1171,13 @@ body {
 // }
 .moreVert {
     .inner {
-        padding-top: 0.25rem;
+        // padding-top: 0.25rem;
 
-        &>* {
-            padding: 0.25rem 0.5rem;
-        }
+        // &>* {
+        //     padding: 0.25rem 0.5rem;
+        // }
 
-        padding-bottom: 0.25rem;
+        // padding-bottom: 0.25rem;
     }
 }
 

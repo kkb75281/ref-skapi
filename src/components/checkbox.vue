@@ -44,7 +44,9 @@ label._checkbox {
     user-select: none;
 
     &>div {
-        font-size: 0.8rem;
+        // font-size: 0.8rem;
+        font-size: 1rem;
+        font-weight: 300;
         white-space: nowrap;
     }
 
