@@ -2,7 +2,7 @@
 section.infoBox
     .titleHead
         h2.page-title Database
-        a.btn-docs(href="https://docs.skapi.com/database/introduction.html" target="_blank") More Info
+        a.btn-docs(href="https://docs.skapi.com/database/introduction.html" target="_blank") Go Docs
             
         //- span.moreInfo(@click="showGuide = !showGuide" @mouseover="hovering = true" @mouseleave="hovering = false")
             span More Info&nbsp;&nbsp;
@@ -20,7 +20,7 @@ section.infoBox
     template(v-if="showGuide")
         Guide
 
-    //- hr
+    hr
 
     .error(v-if='!user?.email_verified')
         svg
@@ -176,7 +176,7 @@ hr
                 tr(v-for="i in (10 - listDisplay?.length)")
                     td(:colspan="colspan")
 
-    //- form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
+    form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
         .header
             svg.svgIcon.clickable(@click="showDetail=false; selectedRecord=null;" :class="{nonClickable: fetching}")
                 use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back")
@@ -200,24 +200,6 @@ br
         span &nbsp;&nbsp;Next
         svg.svgIcon(style="width: 26px; height: 26px")
             use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
-
-
-// record detail modal
-Modal.modal.detail-record(:open="showDetail" @close="closeModal")
-    form.modal-container(@submit.prevent='upload')
-        .modal-header
-            h4.title {{ selectedRecord?.record_id ? selectedRecord?.record_id : 'Create Record' }}
-            button.btn-close(type="button" @click="closeModal")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-close")
-        .modal-body
-            RecDetails(v-if='showDetail' :data='selectedRecord')
-        .modal-footer
-            template(v-if="uploading")
-                .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
-            template(v-else)
-                button.btn-save(type="submit") SAVE
-
 
 // delete records
 Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
@@ -314,18 +296,18 @@ watch(currentPage, (n, o) => {
     }
 });
 
-// watch(showDetail, (nv) => {
-//     if (nv) {
-//         nextTick(() => {
-//             let scrollTarget = document.querySelector(".detailRecord .content");
-//             let detailRecord = document.querySelector(".detailRecord");
-//             let targetTop =
-//                 window.scrollY + detailRecord.getBoundingClientRect().top;
-//             scrollTarget.scrollTop = 0;
-//             window.scrollTo(0, targetTop);
-//         });
-//     }
-// });
+watch(showDetail, (nv) => {
+    if (nv) {
+        nextTick(() => {
+            let scrollTarget = document.querySelector(".detailRecord .content");
+            let detailRecord = document.querySelector(".detailRecord");
+            let targetTop =
+                window.scrollY + detailRecord.getBoundingClientRect().top;
+            scrollTarget.scrollTop = 0;
+            window.scrollTo(0, targetTop);
+        });
+    }
+});
 
 let pager: Pager = null;
 let listDisplay = ref(null);
@@ -582,11 +564,6 @@ let copyID = (e) => {
 
 // checks
 let checked: any = ref({});
-
-const closeModal = () => {
-    showDetail.value = false;
-    selectedRecord.value = null;
-};
 </script>
 
 <style scoped lang="less">
@@ -803,30 +780,7 @@ tbody {
 }
 
 // new style (추후 삭제될 수도 있음)
-.infoBox {
-    .titleHead {
-        margin: 0 0 1.375rem;
-        padding-bottom: 1.375rem;
-        border-bottom: 1px solid rgba(225, 225, 225, 0.1);
-
-        > * {
-            margin: 0;
-        }
-    }
-}
-
 .btn-docs {
-    font-size: 1rem;
-    font-weight: 500;
-    color: rgba(225, 225, 225, 0.8);
-    background-color: rgba(225, 225, 225, 0.1);
-    padding: 0.375rem 0.625rem;
-    border-radius: 0.5rem;
-
-    &:hover {
-        text-decoration: none;
-        background-color: rgba(225, 225, 225, 0.15);
-    }
 }
 
 .content {
@@ -845,38 +799,13 @@ tbody {
     }
 }
 
-// .detailRecord {
-//     .header {
-//         button {
-//             width: fit-content;
-//             font-size: 0.875rem;
-//         }
-
-//         .name {
-//             font-size: 1.125rem;
-//         }
-//     }
-
-//     .content {
-//         padding: 1.25rem 1.625rem;
-//         font-size: initial;
-
-//         .value {
-//             margin: 0;
-//         }
-//     }
-// }
-
-textarea {
-    background: linear-gradient(
-            0deg,
-            rgba(255, 255, 255, 0.05) 0%,
-            rgba(255, 255, 255, 0.05) 100%
-        ),
-        #16171a;
-    border: none;
-    border-radius: 0.5rem;
-    color: #fff;
+.detailRecord {
+    .header {
+        button {
+            width: fit-content;
+            font-size: 0.875rem;
+        }
+    }
 }
 
 .iconClick {
@@ -892,61 +821,6 @@ textarea {
         width: 1.125rem;
         height: 1.125rem;
         fill: #fff;
-    }
-}
-
-.modal {
-    background-color: #16171a;
-    padding: 0 2rem;
-    text-align: left;
-    width: calc(100% - 1rem);
-    max-width: 50rem;
-
-    button {
-        padding: 0.875rem 1rem;
-        max-width: 6.25rem;
-    }
-
-    .modal-header {
-        padding: 1.5rem 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        border-bottom: 1px solid rgba(225, 225, 225, 0.1);
-    }
-
-    .title {
-        font-size: 2rem;
-        font-weight: 500;
-        line-height: 1.3;
-        margin: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-    }
-
-    .btn-close {
-        background-color: transparent;
-        padding: 0.5rem;
-        max-width: fit-content;
-    }
-
-    .modal-body {
-        padding: 1.5rem 0 1rem;
-    }
-
-    .content {
-        padding: 0;
-        font-size: 1rem;
-    }
-
-    .modal-footer {
-        padding: 2rem 0;
-        border-top: 1px solid rgba(225, 225, 225, 0.1);
-        text-align: right;
     }
 }
 </style>

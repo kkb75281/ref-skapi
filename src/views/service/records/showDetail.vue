@@ -116,20 +116,20 @@
 
     .row
         .key(style="margin-bottom: 6px") Data (JSON Object)
-        textarea.value(:disabled='restrictedAccess' v-model="selectedRecord_data" @keydown.stop="handleKey" style="padding: 8px;width:100%;height:160px;resize: none;tab-size: 2;font-family: monospace;white-space: pre;" :name='accessGroup !== "private" ? "data" : selectedRecord.user_id === user.user_id ? null : "data"'
+        textarea.value(:disabled='restrictedAccess' v-model="selectedRecord_data" @keydown.stop="handleKey" :name='accessGroup !== "private" ? "data" : selectedRecord.user_id === user.user_id ? null : "data"'
             placeholder='{ "key": "value" }')
 
     br
 
-    .row(style='margin-bottom: 1rem')
+    .row
         .key Files 
         .value(style="width:100%;")
             // already uploaded files
             .file(v-if="selectedRecord.bin" v-for="(fileList, key) in selectedRecord.bin")
                     template(v-for="(file, index) in fileList")
                         div(style='display: flex;gap:8px;margin-bottom: 8px;' :class="{disabled: restrictedAccess}")
-                            svg.svgIcon.black.clickable(@click="deleteFile(key, index)" style='margin-top: 3px; padding-top: 1px;')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+                            svg.svgIcon.clickable(@click="deleteFile(key, index)")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-close")
 
                             div(style='display: flex;flex-wrap: wrap;')
                                 input.line.key(style='width:unset;flex-grow:1;' :value="key" required placeholder="Key name for file" disabled)
@@ -141,8 +141,8 @@
             // new files
             .file(v-for="(file, index) in addFileList")
                 div(style='display: flex;gap:8px;margin-bottom: 8px;')
-                    svg.svgIcon.black.clickable(@click="addFileList.splice(index, 1)" style='margin-top: 3px; padding-top: 1px;')
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-do-not-disturb-on-fill")
+                    svg.svgIcon.clickable(@click="addFileList.splice(index, 1)" style="width: 18px; height: 18px;")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-close")
                     div(style='display: flex;flex-wrap: wrap;')
                         input.line.key(style='width:unset;flex-grow:1;' v-model="file.key" required placeholder="Key name for file" :disabled='restrictedAccess')
                         | &nbsp;&nbsp;
@@ -327,7 +327,11 @@ let addFile = () => {
     addFileList.value.push({ key: "", filename: "" });
     nextTick(() => {
         let scrollTarget = document.querySelector(".detailRecord .content");
+        let scrollTargets = document.querySelector(".detail-record .content");
+
+        if (!scrollTarget || !scrollTargets) return;
         scrollTarget.scrollTop = scrollTarget.scrollHeight;
+        scrollTargets.scrollTop = scrollTargets.scrollHeight;
     });
 };
 
@@ -416,6 +420,63 @@ let deleteFile = (key: string, index: number) => {
         font-size: 14px;
         font-weight: 500;
         cursor: pointer;
+    }
+}
+
+// new styles (임시 - 추후 삭제될 수도 있음)
+.content {
+    .value {
+        min-width: fit-content;
+        width: fit-content;
+    }
+
+    .add {
+        background: #0a4df1;
+        color: #fff;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.125rem;
+        padding: 0.5rem;
+
+        svg {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
+    }
+
+    .file {
+        .filename {
+            color: #fff;
+        }
+
+        div {
+            align-items: center;
+        }
+    }
+
+    textarea {
+        background: linear-gradient(
+                0deg,
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0.05) 100%
+            ),
+            #16171a;
+        border: none;
+        color: #fff;
+        line-height: 1.4;
+        padding: 1rem 1.25rem;
+        width: 100% !important;
+        height: 160px;
+        resize: none;
+        tab-size: 2;
+        font-family: monospace;
+        white-space: pre;
+
+        &:focus-visible {
+            outline: 1px solid rgba(10, 77, 241, 0.8);
+        }
     }
 }
 </style>
