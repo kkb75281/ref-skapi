@@ -44,10 +44,10 @@ dialog {
         background-color: rgba(0, 0, 0, 0.7);
     }
 
+    .modal-prev,
     .modal-close {
         position: absolute;
         top: 1.5rem;
-        right: 1.5rem;
         width: 2rem;
         height: 2rem;
         background-color: transparent;
@@ -58,6 +58,14 @@ dialog {
         &:hover {
             opacity: 1;
         }
+    }
+
+    .modal-prev {
+        left: 1.5rem;
+    }
+
+    .modal-close {
+        right: 1.5rem;
     }
 
     .modal-title {

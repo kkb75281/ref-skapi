@@ -157,7 +157,6 @@ input {
     font-size: 0.875rem;
     font-weight: 400;
     outline: none;
-    width: 100%;
 
     &::placeholder {
         color: #999;
@@ -171,6 +170,10 @@ input {
 
     &.block {
         width: 100%;
+    }
+
+    &.inline {
+        width: auto;
     }
 }
 
@@ -357,6 +360,10 @@ button {
         &.sm {
             padding: 8px;
         }
+    }
+
+    &.selected {
+        box-shadow: 0 0 0 1px var(--main-color) inset;
     }
 
     @media (max-width: 430px) {

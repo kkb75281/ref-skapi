@@ -26,10 +26,11 @@ section
                     @click.stop,
                     style="--moreVert-left: 0; display: none; font-weight: normal;"
                     )
-                    .inner
+                    .inner(style="padding: 0.5rem;")
                         template(v-for="c in columnList")
-                            Checkbox(v-model="c.value", style="display: flex") {{ c.name }}
-            button.inline.only-icon.gray.sm
+                            Checkbox(v-model="c.value", style="display: flex; padding: 0.25rem 0;") {{ c.name }}
+            button.inline.only-icon.gray.sm(@click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                //- span(style="padding-left: 5px; color: #999;") Name / 권규비 ...
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-search")
         .flex-wrap(style="gap:10px")
@@ -39,18 +40,39 @@ section
             button.inline.only-icon.gray.sm
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-mark-email-unread-fill")
-            button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
+            button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }" :class="{disabled: !Object.keys(checked).length || fetching}")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-supervisor-account-fill")
-            button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-account-circle-fill")
-            button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-no-accounts-fill")
-            button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-more-vert")
+                .moreVert(@click.stop style="--moreVert-right: 0; display: none; font-weight: normal;")
+                    .inner
+                        button.inline.icon-text.gray
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-supervisor-account-fill")
+                            span Grant Access
+                        button.inline.icon-text.gray(:class="{disabled: !Object.keys(checked).length || fetching}")
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-account-circle-fill")
+                            span Unblock User
+                        button.inline.icon-text.gray(:class="{disabled: !Object.keys(checked).length || fetching}")
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-no-accounts-fill")
+                            span Block User
+                        button.inline.icon-text.gray(:class="{disabled: !Object.keys(checked).length || fetching}")
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                            span Delete User
+            //- button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
+            //-     svg.svgIcon
+            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-supervisor-account-fill")
+            //- button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
+            //-     svg.svgIcon
+            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-account-circle-fill")
+            //- button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
+            //-     svg.svgIcon
+            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-no-accounts-fill")
+            //- button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
+            //-     svg.svgIcon
+            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
     .userPart
         template(v-if="fetching")
             #loading.
@@ -125,6 +147,86 @@ section
 
             UserDetails(v-if='showDetail' :data='selectedUser')
 
+// 1
+//- Modal(:open="searchModalOpen" style="padding: 2.5rem 2rem;")
+    .modal-close(@click="searchModalOpen = false;")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+
+    .modal-title Search Users
+
+    br
+
+    .flex-wrap(style="gap:10px;")
+        select#searchFor(
+            v-model="searchFor",
+            @change="getPage(true)",
+            :disabled="fetching"
+        )
+            option(v-for="option in searchOptions" :value="option.value") {{ option.option }}
+        input.inline(style="width:500px;" type="text")
+
+    br
+
+    .flex-wrap.end(style="gap:10px;")
+        button.inline.gray Reset
+        button.inline Search
+
+// 2
+//- Modal(:open="searchModalOpen" style="max-width: 560px; width: 100%;")
+    .modal-prev(v-if="searchModalStep > 1" @click="searchModalStep--")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back-ios")
+    .modal-close(@click="searchModalOpen = false; searchModalStep = 1; searchFor = 'user_id'; searchValue = '';")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+
+    .modal-title
+        template(v-if="searchModalStep === 1") What do you want to search for...
+        template(v-else) Search for {{ searchFor }}
+
+    br
+
+    .flex-wrap.center(v-if="searchModalStep === 1" style="max-width: 430px; gap:10px;")
+        button.inline.gray(@click="searchFor = 'user_id'; searchModalStep++;") User ID
+        button.inline.gray(@click="searchFor = 'email'; searchModalStep++;") Email
+        button.inline.gray(@click="searchFor = 'name'; searchModalStep++;") Name
+        button.inline.gray(@click="searchFor = 'phone_number'; searchModalStep++;") Phone Number
+        button.inline.gray(@click="searchFor = 'address'; searchModalStep++;") Address
+        button.inline.gray(@click="searchFor = 'gender'; searchModalStep++;") Gender
+        button.inline.gray(@click="searchFor = 'birthdate'; searchModalStep++;") Birthdate
+        button.inline.gray(@click="searchFor = 'locale'; searchModalStep++;") Locale
+        button.inline.gray(@click="searchFor = 'timestamp'; searchModalStep++;") Date Created
+
+    template(v-if="searchModalStep === 2")
+        div(style="max-width: 430px; width: 100%; margin: 0 auto;")
+            input.block(type="text" v-model="searchValue" :placeholder="searchFor === 'timestamp' ? 'YYYY-MM-DD ~ YYYY-MM-DD' : 'Search for...'")
+        
+        br
+
+        .flex-wrap.end(style="gap:10px;")
+            button.inline.gray Reset
+            button.inline Search
+
+// 3
+Modal(:open="searchModalOpen" style="max-width: 560px; width: 100%; background-color: unset; padding: 0; border-radius: 0;")
+    .flex-wrap(style="position:relative; background-color: rgba(22, 23, 26, 1); border-radius: 7px; padding: 8px; gap: 10px; align-items: center")
+        #showSearchFor(style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%);")
+            svg.svgIcon(style="fill: #666; margin: 0 8px;")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+            span(style="padding-right: 4px; color: #666;") {{ searchFor }}
+            span(style="color: #666;") /
+        input#searchInput.block(type="text" style="background: unset; padding-left: 4.5rem")
+    
+    br
+
+    div(style="background-color: rgba(22, 23, 26, 1); padding: 1rem 1rem 1.5rem; border-radius: 7px;")
+        .tit(style="color: #666; margin-bottom:0.8rem; font-size: 0.9rem;") Search for
+        .flex-wrap.center(style="gap:10px;margin-bottom: 1.2rem")
+            button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value; searchModalStep = 2") {{ option.option }}
+        span(style="font-size: 0.9rem; padding:2px 8px; margin-right: 8px; background-color: #1f1f1f; border: 1px solid #222; border-radius: 6px; color: #666;") esc
+        span(style="color: #555; font-size: 0.9rem") to close
+
 Modal(:open="openCreateUser")
     .modal-close(@click="openCreateUser = false;")
         svg.svgIcon
@@ -138,7 +240,7 @@ Modal(:open="openCreateUser")
         input(hidden, name="service", :value="currentService.id")
         label User's Email
             em(style="color: red; font-size: 0.6rem") * Required
-            input#email.big(
+            input#email.block(
                 type="email",
                 @input="(e) => (createParams.email = e.target.value)",
                 @keydown="(e) => moveFocus(e, 'password')",
@@ -147,10 +249,12 @@ Modal(:open="openCreateUser")
                 placeholder="anonymous@anonymous.com",
                 required
             )
+        
         br
+
         label Password
             em(style="color: red; font-size: 0.6rem") * Required
-            input#password.big(
+            input#password.block(
                 @input="(e) => (createParams.password = e.target.value)",
                 @keydown="(e) => moveFocus(e, 'name')",
                 :disabled="promiseRunning",
@@ -159,15 +263,137 @@ Modal(:open="openCreateUser")
                 minlength="6",
                 required
             )
+        
         br
 
         label Name
-            input#name.big(
+            input#name.block(
                 @input="(e) => (createParams.name = e.target.value)",
                 @keydown="(e) => moveFocus(e, 'phone')",
                 :disabled="promiseRunning",
                 placeholder="User's Name"
             )
+
+        br
+
+        label Phone Number
+            input#phone.block(
+                @input="(e) => (createParams.phone_number = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'gender')",
+                :disabled="promiseRunning",
+                placeholder="User's Phone Number",
+                type="text"
+            )
+        
+        br
+
+        .label
+            label Gender
+                input#gender.block(
+                    @input="(e) => (createParams.gender = e.target.value)",
+                    @keydown="(e) => moveFocus(e, 'address')",
+                    :disabled="promiseRunning",
+                    placeholder="User's Gender",
+                    type="text"
+                )
+            Checkbox(v-model="gender_public") public
+        
+        br
+
+        .label
+            label Address
+                input#address.block(
+                    @input="(e) => (createParams.address = e.target.value)",
+                    @keydown="(e) => moveFocus(e, 'birthdate')",
+                    :disabled="promiseRunning",
+                    placeholder="User's Address",
+                    type="text"
+                ) 
+            Checkbox(v-model="address_public") public
+
+        br
+
+        .label
+            label Birthdate
+                input#birthdate.block(
+                    @input="(e) => (createParams.birthdate = e.target.value)",
+                    @keydown="(e) => moveFocus(e, 'picture')",
+                    :disabled="promiseRunning",
+                    placeholder="User's Birthdate (YYYY-MM-DD)",
+                    type="text"
+                )
+            Checkbox(v-model="birthdate_public") public
+
+        br
+
+        label Picture
+            input#picture.block(
+                @input="(e) => (createParams.picture = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'profile')",
+                :disabled="promiseRunning",
+                placeholder="URL of the profile picture.",
+                type="url"
+            )
+
+        br
+
+        label Profile
+            input#profile.block(
+                @input="(e) => (createParams.profile = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'website')",
+                :disabled="promiseRunning",
+                placeholder="URL of the profile page",
+                type="url"
+            )
+
+        br
+
+        label Website
+            input#website.block(
+                @input="(e) => (createParams.website = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'nickname')",
+                :disabled="promiseRunning",
+                placeholder="URL of the website",
+                type="url"
+            )
+
+        br
+
+        label Nickname
+            input#nickname.block(
+                @input="(e) => (createParams.nickname = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'misc')",
+                :disabled="promiseRunning",
+                placeholder="Nickname of the user",
+                type="text"
+            )
+
+        br
+
+        label Misc
+            input#misc.block(
+                @input="(e) => (createParams.misc = e.target.value)",
+                :disabled="promiseRunning",
+                placeholder="Additional string value that can be used freely",
+                type="text"
+            )
+
+        br
+
+        .error(v-if="error")
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            span {{ error }}
+
+        br
+
+        div(style="display: flex; align-items: center; justify-content: space-between")
+            div(v-if="promiseRunning" style="width: 100%; height: 44px; text-align: center")
+                .loader(style="--loader-color: white; --loader-size: 12px")
+            template(v-else)
+                //- button.inline.gray(type="button", @click="closeModal") Cancel
+                //- button.inline(type="submit") Create
+                button.block(type="submit") Create
 </template>
 <script setup lang="ts">
 import Table from "@/components/table.vue";
@@ -215,6 +441,10 @@ let showLocale = ref(false);
 let showGuide = ref(false);
 let hovering = ref(false);
 let showDetail = ref(false);
+let searchModalOpen = ref(false);
+let searchModalStep = ref(1);
+
+// document.addEventListener("")
 
 let columnList = reactive([
     {
@@ -466,9 +696,26 @@ watch(fetching, (n) => {
 });
 
 watch(searchFor, (n, o) => {
+    if (n) {
+        nextTick(() => {
+            let inputElement = document.querySelector("#searchInput");
+            let showSearchFor = document.querySelector("#showSearchFor");
+
+            if (!inputElement || !showSearchFor) {
+                return;
+            }
+
+            let gcr = showSearchFor.getClientRects()[0].width;
+
+            inputElement.style.paddingLeft = `${gcr + 8}px`;
+            inputElement.focus();
+        });
+    }
     if (n !== o) {
         searchValue.value = "";
     }
+}, {
+    immediate: true
 });
 
 // computed fetch params
@@ -924,13 +1171,13 @@ body {
 // }
 .moreVert {
     .inner {
-        padding-top: 0.25rem;
+        // padding-top: 0.25rem;
 
-        &>* {
-            padding: 0.25rem 0.5rem;
-        }
+        // &>* {
+        //     padding: 0.25rem 0.5rem;
+        // }
 
-        padding-bottom: 0.25rem;
+        // padding-bottom: 0.25rem;
     }
 }
 
