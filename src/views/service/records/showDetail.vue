@@ -1,42 +1,40 @@
 <template lang="pug">
 .content
     template(v-if='selectedRecord.record_id')
-        .row
-            .key(style='font-weight:normal;') RECORD ID:
-            .value {{ selectedRecord?.record_id }}
-            // record_id needed for update
-            input(:value='selectedRecord?.record_id' name='config[record_id]' hidden)
-        .row
-            .key(style='font-weight:normal;') USER ID:
-            .value {{ selectedRecord?.user_id }}
-        .row
-            .key(style='font-weight:normal;') UPDATED:
-            .value {{ new Date(selectedRecord?.updated).toLocaleString() }}
-        .row 
-            .key(style='font-weight:normal;') UPLOADED:
-            .value {{ new Date(selectedRecord?.uploaded).toLocaleString() }}
-        .row 
-            .key(style='font-weight:normal;') IP:
-            .value {{ selectedRecord?.ip }}
-        .row 
-            .key(style='font-weight:normal;') REFERENCED:
-            .value {{ selectedRecord?.referenced_count }}
+        .value-wrap.line
+            .row
+                .key(style='font-weight:normal;') RECORD ID :
+                .value {{ selectedRecord?.record_id }}
+                // record_id needed for update
+                input(:value='selectedRecord?.record_id' name='config[record_id]' hidden)
+            .row
+                .key(style='font-weight:normal;') USER ID :
+                .value {{ selectedRecord?.user_id }}
+            .row
+                .key(style='font-weight:normal;') UPDATED :
+                .value {{ new Date(selectedRecord?.updated).toLocaleString() }}
+            .row 
+                .key(style='font-weight:normal;') UPLOADED :
+                .value {{ new Date(selectedRecord?.uploaded).toLocaleString() }}
+            .row 
+                .key(style='font-weight:normal;') IP :
+                .value {{ selectedRecord?.ip }}
+            .row
+                .key(style='font-weight:normal;') REFERENCED :
+                .value {{ selectedRecord?.referenced_count }}
 
-        hr
-
-    label.row
+    label.row.line
         .key Read Only&nbsp;&nbsp;
         .value
             Checkbox(v-model="selectedRecord.readonly" name='config[readonly]' style='vertical-align:text-top;' :disabled='restrictedAccess')
-    
-    br
 
-    .row(style='margin-bottom: 1rem')
+    .row
         .key Table
 
-    .row.indent(style='height: 42px;')
-        .key
-            select(v-model='accessGroup' :disabled='restrictedAccess')
+    .row
+        .key.txt-sm Access Group
+        .key(style="width: 8.75rem;")
+            select(v-model='accessGroup' :disabled='restrictedAccess' style="width: 100%")
                 option(value='public') Public
                 option(value='authorized') Authorized
                 option(value='private') Private
@@ -48,35 +46,33 @@
             input.line(hidden v-if='accessGroup === "public"' value='public' name='config[table][access_group]' :disabled='restrictedAccess')
             input.line(hidden v-else-if='accessGroup === "Private"' value='Private' name='config[table][access_group]' :disabled='restrictedAccess')
 
-    .row.indent
-        .key Table Name
+    .row.line
+        .key.txt-sm Table Name
         .value(style='min-width: 300px;')
             input.line(placeholder="Table.Name" name='config[table][name]' v-model='selectedRecord.table.name' required :disabled='restrictedAccess')
     
-    //- .row.indent(:class="{'nonClickable': !tableName}")
+    //- .row(:class="{'nonClickable': !tableName}")
     //-     .key Subscription
     //-     .value(style='min-width: 300px;')
     //-         input.line(placeholder="xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" name='table[subscription]')
 
-    //- .row.indent(:class="{disabled : selectedRecord.table.access_group == 'public'}")
+    //- .row(:class="{disabled : selectedRecord.table.access_group == 'public'}")
         label.key(style='width:unset;color:black;')
             | Subscription&nbsp;&nbsp;
             Checkbox(v-model="selectedRecord_subscription" name='config[table][subscription]' :disabled="selectedRecord.table.access_group == 'public'" style='vertical-align:text-top;')
 
-    br
-
-    .row(style="margin-bottom:1rem")
+    .row
         .key Index&nbsp;&nbsp;
 
-    .row.indent
-        .key Index Name
+    .row
+        .key.txt-sm Index Name
         .value(style='min-width: 300px;')
             input.line(name='config[index][name]' v-model='indexName' placeholder='Alphanumeric, periods only.' :disabled='restrictedAccess')
 
-    .row.indent(:class="{'nonClickable': !indexName}")
-        .key Value
+    .row.line(:class="{'nonClickable': !indexName}")
+        .key.txt-sm Value
         .value(style="display:flex; flex-wrap:wrap; gap:10px;min-width: 300px;")
-            select(v-model='indexValueType' :disabled='restrictedAccess')
+            select(v-model='indexValueType' :disabled='restrictedAccess' style="width: 8.75rem;")
                 option(value='string' selected) String
                 option(value='number') Number
                 option(value='boolean') Boolean
@@ -99,64 +95,51 @@
     input(:value='service' name='config[service]' hidden)
     input(:value='owner' name='config[owner]' hidden)
 
-    br
-
-    .row 
+    .row.line
         .key Tags 
         .value
             input.line(v-model="selectedRecord.tags" name='config[tags]' placeholder="Tag1, Tag2, ... Alphanumeric and space only. Separated with comma." :disabled='restrictedAccess')
 
-    br
-
-    .row(style='margin-bottom: 1rem')
+    .row.line
         .key Reference
         input.line.value(v-model="selectedRecord.reference" name='config[reference]' placeholder='Record ID to reference' :disabled='restrictedAccess')
 
-    br
-
-    .row
-        .key(style="margin-bottom: 6px") Data (JSON Object)
+    .row.line
+        .key(style="margin-bottom: 0.5rem") Data (JSON Object)
         textarea.value(:disabled='restrictedAccess' v-model="selectedRecord_data" @keydown.stop="handleKey" :name='accessGroup !== "private" ? "data" : selectedRecord.user_id === user.user_id ? null : "data"'
-            placeholder='{ "key": "value" }')
-
-    br
+            placeholder='{ "key": "value" }' style="flex: auto;")
 
     .row
-        .key Files 
-        .value(style="width:100%;")
+        .key(style="margin-bottom: 0.5rem") Files 
+        .add(:class="{disabled: restrictedAccess}" @click="addFile")
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-add-circle-fill")
+            span &nbsp;Add File
+        .value(style="width:100%; flex: auto;")
             // already uploaded files
             .file(v-if="selectedRecord.bin" v-for="(fileList, key) in selectedRecord.bin")
                     template(v-for="(file, index) in fileList")
-                        div(style='display: flex;gap:8px;margin-bottom: 8px;' :class="{disabled: restrictedAccess}")
+                        div(style='display: flex;gap:8px;' :class="{disabled: restrictedAccess}")
                             svg.svgIcon.clickable(@click="deleteFile(key, index)")
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-close")
 
-                            div(style='display: flex;flex-wrap: wrap;')
+                            div(style='display: flex;flex-wrap: wrap; gap:0.5rem 1rem;')
                                 input.line.key(style='width:unset;flex-grow:1;' :value="key" required placeholder="Key name for file" disabled)
-                                
-                                | &nbsp;&nbsp;
-
                                 a.filename(:href='file.url' target="_blank") {{ file.filename }}
 
             // new files
             .file(v-for="(file, index) in addFileList")
-                div(style='display: flex;gap:8px;margin-bottom: 8px;')
+                div(style='display: flex;gap:8px;')
                     svg.svgIcon.clickable(@click="addFileList.splice(index, 1)" style="width: 18px; height: 18px;")
                         use(xlink:href="@/assets/img/material-icon.svg#icon-close")
-                    div(style='display: flex;flex-wrap: wrap;')
+                    div(style='display: flex;flex-wrap: wrap; gap:0.5rem 1rem;')
                         input.line.key(style='width:unset;flex-grow:1;' v-model="file.key" required placeholder="Key name for file" :disabled='restrictedAccess')
-                        | &nbsp;&nbsp;
                         label.filename {{ file.filename || "Choose a file"}}
                             input(@click.stop type="file" :name='file.key' @change="e=>{ file.filename = e.target.files[0].name }" required hidden)
 
         // files to delete
         template(v-for='furl in deleteFileList')
             input(:value='furl' name='config[remove_bin]' hidden)
-
-        .add(:class="{disabled: restrictedAccess}" @click="addFile" style='margin-top: 1em;')
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-add-circle-fill")
-            span &nbsp;Add File
 </template>
 
 <script setup lang="ts">
@@ -352,16 +335,16 @@ let deleteFile = (key: string, index: number) => {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        margin-bottom: 12px;
+        margin-bottom: 1rem;
 
-        &.indent {
-            padding-left: 20px;
+        // &.indent {
+        //     padding-left: 20px;
 
-            .key {
-                font-weight: normal;
-                width: 150px;
-            }
-        }
+        //     .key {
+        //         font-weight: normal;
+        //         width: 150px;
+        //     }
+        // }
     }
 
     .key {
@@ -370,7 +353,7 @@ let deleteFile = (key: string, index: number) => {
     }
 
     .value {
-        flex-grow: 1;
+        // flex-grow: 1;
         min-width: 270px;
         margin: 6px 0 6px;
 
@@ -406,7 +389,7 @@ let deleteFile = (key: string, index: number) => {
         }
 
         input.line.key {
-            margin-bottom: 4px;
+            // margin-bottom: 4px;
         }
     }
 
@@ -424,10 +407,32 @@ let deleteFile = (key: string, index: number) => {
 }
 
 // new styles (임시 - 추후 삭제될 수도 있음)
+.txt-sm {
+    font-size: 0.875rem !important;
+}
+
 .content {
     .value {
         min-width: fit-content;
         width: fit-content;
+        margin: 0;
+        flex: 1;
+    }
+
+    .row {
+        margin-bottom: 1.5rem;
+        margin-top: 0;
+        gap: 0.5rem;
+
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+
+        &.line {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
     }
 
     .add {
@@ -439,6 +444,7 @@ let deleteFile = (key: string, index: number) => {
         align-items: center;
         gap: 0.125rem;
         padding: 0.5rem;
+        margin-bottom: 0.5rem;
 
         svg {
             width: 1.125rem;
@@ -449,10 +455,36 @@ let deleteFile = (key: string, index: number) => {
     .file {
         .filename {
             color: #fff;
+            margin-bottom: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            width: fit-content;
+            min-width: fit-content;
+            white-space: initial;
+
+            &:hover {
+                text-decoration: none;
+            }
         }
 
         div {
             align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        &:last-of-type {
+            div {
+                margin-bottom: 0;
+            }
+        }
+
+        svg {
+            flex: none;
+            position: relative;
+            top: 0.25rem;
         }
     }
 
@@ -473,9 +505,47 @@ let deleteFile = (key: string, index: number) => {
         tab-size: 2;
         font-family: monospace;
         white-space: pre;
+        border-radius: 0.5rem;
+        outline: none;
 
         &:focus-visible {
-            outline: 1px solid rgba(10, 77, 241, 0.8);
+            border: 1px solid #0a4df1;
+        }
+    }
+}
+
+.value-wrap {
+    background-color: rgba(225, 225, 225, 0.05);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+
+    .row {
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &.line {
+        margin-bottom: 4rem;
+        position: relative;
+
+        &::after {
+            content: "";
+            display: block;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            position: absolute;
+            bottom: -2rem;
+            left: 0;
+        }
+    }
+}
+
+@media (max-width: 430px) {
+    .content {
+        .row {
+            gap: 0.5rem 1.25rem;
         }
     }
 }

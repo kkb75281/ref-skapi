@@ -2,8 +2,20 @@
 section.infoBox
     .titleHead
         h2.page-title Database
-        a.btn-docs(href="https://docs.skapi.com/database/introduction.html" target="_blank")
-            button.inline.sm.gray Go Docs
+        a.btn-docs(href="https://docs.skapi.com/database/introduction.html" target="_blank") More Info
+            
+        //- span.moreInfo(@click="showGuide = !showGuide" @mouseover="hovering = true" @mouseleave="hovering = false")
+            span More Info&nbsp;&nbsp;
+            template(v-if="showGuide")
+                svg(v-if="hovering" style="width: 20px; height: 20px; fill: #fff;")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up-fill")
+                svg(v-else style="width: 20px; height: 20px; fill: #fff;")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up")
+            template(v-else) 
+                svg(v-if="hovering" style="width: 20px; height: 20px; fill: #fff;")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down-fill")
+                svg(v-else style="width: 20px; height: 20px; fill: #fff;")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down")
 
     template(v-if="showGuide")
         Guide
@@ -29,41 +41,40 @@ SearchBox(:callSearch='callSearch')
 
 hr
 
-.flex-wrap.space-between.table-menu-wrap(style="gap:10px")
-    .flex-wrap(style="gap:10px")
-        button.inline.only-icon.gray.sm(@click.stop="(e)=>{showDropDown(e)}")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
-            .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal; color:black")
-                .inner
-                    Checkbox(v-model="filterOptions.table" style="display:flex;") Table
-                    Checkbox(v-model="filterOptions.record_id" style="display:flex") Record ID
-                    Checkbox(v-model="filterOptions.user_id" style="display:flex") User ID 
-                    Checkbox(v-model="filterOptions.reference" style="display:flex") Reference
-                    Checkbox(v-model="filterOptions.index" style="display:flex") Index/Value
-                    Checkbox(v-model="filterOptions.tag" style="display:flex") Tag
-                    Checkbox(v-model="filterOptions.files" style="display:flex") Files
-                    Checkbox(v-model="filterOptions.data" style="display:flex") Data
-                    Checkbox(v-model="filterOptions.updated" style="display:flex") Updated
-                    Checkbox(v-model="filterOptions.referenced" style="display:flex") Referenced
-                    Checkbox(v-model="filterOptions.ip" style="display:flex") IP
-        button.inline.only-icon.gray.sm(@click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+.tableMenu
+    .iconClick.square(@click.stop="(e)=>{showDropDown(e)}")
+        svg.svgIcon()
+            use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+        span &nbsp;&nbsp;Show Columns
+        .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal; color:black")
+            .inner
+                Checkbox(v-model="filterOptions.table" style="display:flex;") Table
+                Checkbox(v-model="filterOptions.record_id" style="display:flex") Record ID
+                Checkbox(v-model="filterOptions.user_id" style="display:flex") User ID 
+                Checkbox(v-model="filterOptions.reference" style="display:flex") Reference
+                Checkbox(v-model="filterOptions.index" style="display:flex") Index/Value
+                Checkbox(v-model="filterOptions.tag" style="display:flex") Tag
+                Checkbox(v-model="filterOptions.files" style="display:flex") Files
+                Checkbox(v-model="filterOptions.data" style="display:flex") Data
+                Checkbox(v-model="filterOptions.updated" style="display:flex") Updated
+                Checkbox(v-model="filterOptions.referenced" style="display:flex") Referenced
+                Checkbox(v-model="filterOptions.ip" style="display:flex") IP
 
-    .flex-wrap(style="gap:10px")
-        button.inline.only-icon.gray.sm(@click="()=>{ !user.email_verified ? false : selectedRecord = null; showDetail=true; }" :class="{'nonClickable' : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-add-circle-fill")
-        button.inline.only-icon.gray.sm(@click="openDeleteRecords=true" :class="{'nonClickable': !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+    .iconClick.square(@click="()=>{ !user.email_verified ? false : selectedRecord = null; showDetail=true; }" :class="{'nonClickable' : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-add-circle-fill")
+        span &nbsp;&nbsp;Create Record
 
-        //- .iconClick.square(@click="getPage(true)" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}")
-        //-     //- .material-symbols-outlined.notranslate.fill(:class='{loading:fetching}') refresh
-        //-     svg.svgIcon(:class='{loading:fetching}')
-        //-         use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
-        //-     span &nbsp;&nbsp;Refresh
+    .iconClick.square(@click="openDeleteRecords=true" :class="{'nonClickable': !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+        span &nbsp;&nbsp;Delete Selected
+
+    //- .iconClick.square(@click="getPage(true)" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}")
+    //-     //- .material-symbols-outlined.notranslate.fill(:class='{loading:fetching}') refresh
+    //-     svg.svgIcon(:class='{loading:fetching}')
+    //-         use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+    //-     span &nbsp;&nbsp;Refresh
 
 .recordPart 
     template(v-if="fetching")
@@ -165,7 +176,19 @@ hr
                 tr(v-for="i in (10 - listDisplay?.length)")
                     td(:colspan="colspan")
 
-//- br
+    //- form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
+        .header
+            svg.svgIcon.clickable(@click="showDetail=false; selectedRecord=null;" :class="{nonClickable: fetching}")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back")
+            .name {{ selectedRecord?.record_id ? selectedRecord?.record_id : 'Create Record' }}
+            template(v-if="uploading")
+                .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
+            template(v-else)
+                button.noLine.iconClick.square(type="submit") SAVE
+
+        RecDetails(v-if='showDetail' :data='selectedRecord')
+
+br
 
 .tableMenu(v-if="!showDetail" style='display:block;text-align:center;')
     .iconClick.square.arrow(@click="currentPage--;" :class="{'nonClickable': fetching || currentPage === 1 }")
@@ -178,26 +201,8 @@ hr
         svg.svgIcon(style="width: 26px; height: 26px")
             use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
 
-// modal :: search
-Modal(:open="searchModalOpen" style="max-width: 560px; width: 100%; background-color: unset; padding: 0; border-radius: 0;")
-    .flex-wrap(style="position:relative; background-color: rgba(22, 23, 26, 1); border-radius: 7px; padding: 8px; gap: 10px; align-items: center")
-        #showSearchFor(style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%);")
-            svg.svgIcon(style="fill: #666; margin: 0 8px;")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-search")
-            span(style="padding-right: 4px; color: #666;") {{ searchFor }}
-            span(style="color: #666;") /
-        input#searchInput.block(type="text" style="background: unset; padding-left: 4.5rem")
-    
-    br
 
-    div(style="background-color: rgba(22, 23, 26, 1); padding: 1rem 1rem 1.5rem; border-radius: 7px;")
-        .tit(style="color: #666; margin-bottom:0.8rem; font-size: 0.9rem;") Search for
-        .flex-wrap.center(style="gap:10px;margin-bottom: 1.2rem")
-            button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value; searchModalStep = 2") {{ option.option }}
-        span(style="font-size: 0.9rem; padding:2px 8px; margin-right: 8px; background-color: #1f1f1f; border: 1px solid #222; border-radius: 6px; color: #666;") esc
-        span(style="color: #555; font-size: 0.9rem") to close
-
-// modal :: record detail
+// record detail modal
 Modal.modal.detail-record(:open="showDetail" @close="closeModal")
     form.modal-container(@submit.prevent='upload')
         .modal-header
@@ -214,7 +219,7 @@ Modal.modal.detail-record(:open="showDetail" @close="closeModal")
                 button.btn-save(type="submit") SAVE
 
 
-// modal :: delete records
+// delete records
 Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
     h4(style='margin:.5em 0 0; color: var(--caution-color)') Delete Records
 
@@ -234,6 +239,7 @@ Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
         template(v-else)
             button.noLine.warning(type="button" @click="openDeleteRecords=false;") Cancel 
             button.final.warning(type="button" @click="deleteRecords") Delete
+
 </template>
 <script setup lang="ts">
 import Table from "@/components/table.vue";
@@ -278,23 +284,6 @@ let endOfList = ref(false);
 let showDetail = ref(false);
 let showGuide = ref(false);
 let hovering = ref(false);
-
-// search
-let searchModalOpen = ref(false);
-let searchOptions = [
-    {
-        option: "Record ID",
-        value: "record_id",
-    },
-    {
-        option: "Unique ID",
-        value: "unique_id",
-    },
-    {
-        option: "Query",
-        value: "query",
-    },
-];
 
 let colspan = computed(() => {
     return (
@@ -826,8 +815,18 @@ tbody {
     }
 }
 
-label._checkbox svg {
-    margin-right: 0;
+.btn-docs {
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgba(225, 225, 225, 0.8);
+    background-color: rgba(225, 225, 225, 0.1);
+    padding: 0.375rem 0.625rem;
+    border-radius: 0.5rem;
+
+    &:hover {
+        text-decoration: none;
+        background-color: rgba(225, 225, 225, 0.15);
+    }
 }
 
 .content {
@@ -838,10 +837,46 @@ label._checkbox svg {
 
 .moreVert {
     .inner {
+        margin-top: 0.5rem;
+
         > * {
             padding: 0.25rem;
         }
     }
+}
+
+// .detailRecord {
+//     .header {
+//         button {
+//             width: fit-content;
+//             font-size: 0.875rem;
+//         }
+
+//         .name {
+//             font-size: 1.125rem;
+//         }
+//     }
+
+//     .content {
+//         padding: 1.25rem 1.625rem;
+//         font-size: initial;
+
+//         .value {
+//             margin: 0;
+//         }
+//     }
+// }
+
+textarea {
+    background: linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.05) 0%,
+            rgba(255, 255, 255, 0.05) 100%
+        ),
+        #16171a;
+    border: none;
+    border-radius: 0.5rem;
+    color: #fff;
 }
 
 .iconClick {
@@ -859,7 +894,59 @@ label._checkbox svg {
         fill: #fff;
     }
 }
-.table-menu-wrap {
-    margin-bottom: 0.5rem;
+
+.modal {
+    background-color: #16171a;
+    padding: 0 2rem;
+    text-align: left;
+    width: calc(100% - 1rem);
+    max-width: 50rem;
+
+    button {
+        padding: 0.875rem 1rem;
+        max-width: 6.25rem;
+    }
+
+    .modal-header {
+        padding: 1.5rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        border-bottom: 1px solid rgba(225, 225, 225, 0.1);
+    }
+
+    .title {
+        font-size: 2rem;
+        font-weight: 500;
+        line-height: 1.3;
+        margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+    }
+
+    .btn-close {
+        background-color: transparent;
+        padding: 0.5rem;
+        max-width: fit-content;
+    }
+
+    .modal-body {
+        padding: 1.5rem 0 1rem;
+    }
+
+    .content {
+        padding: 0;
+        font-size: 1rem;
+    }
+
+    .modal-footer {
+        padding: 2rem 0;
+        border-top: 1px solid rgba(225, 225, 225, 0.1);
+        text-align: right;
+    }
 }
 </style>
