@@ -25,9 +25,9 @@ section.infoBox
             use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
         span This service is currently suspended.
 
-SearchBox(:callSearch='callSearch')
+//- SearchBox(:callSearch='callSearch')
 
-hr
+//- hr
 
 .flex-wrap.space-between.table-menu-wrap(style="gap:10px")
     .flex-wrap(style="gap:10px")
@@ -179,21 +179,34 @@ hr
             use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
 
 // modal :: search
-Modal(:open="searchModalOpen" style="max-width: 560px; width: 100%; background-color: unset; padding: 0; border-radius: 0;")
+Modal.modal-search(:open="searchModalOpen" style="max-width: 1000px; width: 100%; background-color: unset; padding: 0; border-radius: 0;" @close="closeSearchModal")
     .flex-wrap(style="position:relative; background-color: rgba(22, 23, 26, 1); border-radius: 7px; padding: 8px; gap: 10px; align-items: center")
         #showSearchFor(style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%);")
             svg.svgIcon(style="fill: #666; margin: 0 8px;")
                 use(xlink:href="@/assets/img/material-icon.svg#icon-search")
             span(style="padding-right: 4px; color: #666;") {{ searchFor }}
             span(style="color: #666;") /
-        input#searchInput.block(type="text" style="background: unset; padding-left: 4.5rem")
+        input#searchInput.block(type="text" style="background: unset; padding-left: 4.5rem" v-model="searchValue" @keydown="handleSearchKeydown" :placeholder="getSearchPlaceholder()")
     
     br
 
     div(style="background-color: rgba(22, 23, 26, 1); padding: 1rem 1rem 1.5rem; border-radius: 7px;")
         .tit(style="color: #666; margin-bottom:0.8rem; font-size: 0.9rem;") Search for
         .flex-wrap.center(style="gap:10px;margin-bottom: 1.2rem")
-            button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value; searchModalStep = 2") {{ option.option }}
+            button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value;") {{ option.option }}
+
+        // query 선택시
+        .search-form-container(v-if="searchFor === 'query'" style="background-color: #1a1a1a; border-radius: 6px; padding: 1rem;")
+            SearchBox(
+                :callSearch="handleSearchBoxSubmit"
+                :isInModal="true"
+                style="margin: 0;"
+            )
+        
+        .flex-wrap.end(style="gap: 10px; margin-top: 1rem;")
+            button.inline.gray(@click="resetSearch") Reset
+            button.inline(@click="performSearch") Search
+
         span(style="font-size: 0.9rem; padding:2px 8px; margin-right: 8px; background-color: #1f1f1f; border: 1px solid #222; border-radius: 6px; color: #666;") esc
         span(style="color: #555; font-size: 0.9rem") to close
 
@@ -245,7 +258,7 @@ import SearchBox from "./searchbox.vue";
 import RecDetails from "./showDetail.vue";
 
 import type { Ref } from "vue";
-import { ref, computed, watch, nextTick } from "vue";
+import { ref, computed, watch, nextTick, onMounted, onUnmounted } from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { devLog } from "@/code/logger";
@@ -279,9 +292,11 @@ let showDetail = ref(false);
 let showGuide = ref(false);
 let hovering = ref(false);
 
-// search
-let searchModalOpen = ref(false);
-let searchOptions = [
+// search 관련 변수
+const searchModalOpen = ref(false);
+const searchFor = ref("record_id");
+const searchValue = ref("");
+const searchOptions = [
     {
         option: "Record ID",
         value: "record_id",
@@ -295,6 +310,139 @@ let searchOptions = [
         value: "query",
     },
 ];
+
+// 검색 placeholder 함수
+const getSearchPlaceholder = () => {
+    switch (searchFor.value) {
+        case "record_id":
+            return "Enter record ID...";
+        case "unique_id":
+            return "Enter unique ID...";
+        case "query":
+            return "Use advanced search form below...";
+        default:
+            return "Search...";
+    }
+};
+
+// 키보드 이벤트 핸들러
+const handleSearchKeydown = (e) => {
+    if (e.key === "Enter" && searchFor.value !== "query") {
+        e.preventDefault();
+        performSearch();
+    } else if (e.key === "Escape") {
+        closeSearchModal();
+    }
+};
+
+// SearchBox에서 submit 이벤트를 받는 핸들러
+const handleSearchBoxSubmit = async (formElement) => {
+    try {
+        await callSearch(formElement); // 기존 callSearch 함수 활용
+        closeSearchModal();
+    } catch (error) {
+        console.error("Search error:", error);
+    }
+};
+
+// 간단 검색 실행 (Record ID, Unique ID)
+const performSearch = async () => {
+    if (searchFor.value === "query") {
+        // Query 검색은 SearchBox 컴포넌트에서 처리
+        return;
+    }
+
+    if (!searchValue.value.trim()) {
+        alert(`Please enter a ${searchFor.value.replace("_", " ")}`);
+        return;
+    }
+
+    // 가상의 form 엘리먼트 생성하여 기존 callSearch 함수 활용
+    const mockFormData = new FormData();
+    mockFormData.append("service", currentService.id);
+    mockFormData.append("owner", currentService.owner);
+    mockFormData.append(searchFor.value, searchValue.value.trim());
+
+    const mockForm = {
+        elements: {},
+        // FormData를 시뮬레이션
+        querySelector: () => null,
+        querySelectorAll: () => [],
+    };
+
+    // skapi.util.extractFormData가 올바르게 동작하도록 mock form 설정
+    Object.defineProperty(mockForm, "elements", {
+        value: {
+            [searchFor.value]: { value: searchValue.value.trim() },
+            service: { value: currentService.id },
+            owner: { value: currentService.owner },
+        },
+    });
+
+    try {
+        await callSearch(mockForm);
+        closeSearchModal();
+    } catch (error) {
+        console.error("Search error:", error);
+        alert("Search failed. Please try again.");
+    }
+};
+
+// 검색 초기화
+const resetSearch = () => {
+    searchValue.value = "";
+    // SearchBox 내부의 리셋은 SearchBox 컴포넌트에서 처리하도록 이벤트 발생
+    if (searchFor.value === "query") {
+        const searchBoxElement = document.querySelector(
+            ".search-form-container form"
+        );
+        if (searchBoxElement) {
+            searchBoxElement.reset();
+        }
+    }
+};
+
+// 모달 닫기
+const closeSearchModal = () => {
+    searchModalOpen.value = false;
+    resetSearch();
+};
+
+// searchFor 변경 시 input 스타일 조정
+watch(
+    searchFor,
+    (newValue) => {
+        if (newValue) {
+            nextTick(() => {
+                const inputElement = document.querySelector("#searchInput");
+                const showSearchFor = document.querySelector("#showSearchFor");
+
+                if (inputElement && showSearchFor) {
+                    const gcr = showSearchFor.getBoundingClientRect().width;
+                    inputElement.style.paddingLeft = `${gcr + 8}px`;
+                    if (newValue !== "query") {
+                        inputElement.focus();
+                    }
+                }
+            });
+        }
+    },
+    { immediate: true }
+);
+
+// ESC 키로 모달 닫기 (전역 이벤트)
+onMounted(() => {
+    const handleEscape = (e) => {
+        if (e.key === "Escape" && searchModalOpen.value) {
+            closeSearchModal();
+        }
+    };
+    document.addEventListener("keydown", handleEscape);
+
+    onUnmounted(() => {
+        document.removeEventListener("keydown", handleEscape);
+    });
+});
 
 let colspan = computed(() => {
     return (
