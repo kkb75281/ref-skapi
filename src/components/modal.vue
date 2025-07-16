@@ -6,7 +6,7 @@ dialog(ref='dialog' @keydown.esc.prevent="emit('close')" :class="modalClass")
 <script setup lang="ts">
 import { onMounted, ref, watch, computed } from "vue";
 
-// ** 기본 모달 제외 (스크롤 가능한 모달 경우) '.modal' 클래스명 추가하여 사용 (ex. Modal.modal)
+// ** 기본 모달 제외 (스크롤 가능한 모달 경우) '.modal-scroll' 클래스명 추가하여 사용 (ex. Modal.modal-scroll)
 
 let props = defineProps({
     open: Boolean,
@@ -81,6 +81,16 @@ dialog {
 
     .modal-close {
         right: 1.5rem;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.25rem;
+        height: 2.25rem;
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
     }
 
     .modal-title {
@@ -92,6 +102,7 @@ dialog {
     .modal-desc {
         // max-width: 350px;
         margin: 0 auto;
+        font-size: 1.125rem;
         font-weight: 400;
         line-height: 1.3;
         color: rgba(102, 102, 102, 1);
@@ -116,7 +127,7 @@ dialog {
     }
 }
 
-.modal {
+.modal-scroll {
     background-color: #16171a;
     padding: 0 2rem;
     text-align: left;
@@ -176,6 +187,7 @@ dialog {
     .modal-title {
         padding: 1.5rem 0;
         border-bottom: 1px solid rgba(225, 225, 225, 0.1);
+        margin-bottom: 0;
     }
 }
 
