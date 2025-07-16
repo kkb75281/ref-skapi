@@ -97,7 +97,7 @@ let preventEnterKey = (e) => {
     if (e.key == 'Enter') {
         e.preventDefault();
 
-        if(activeInput.id == 'year') {
+        if (activeInput.id == 'year') {
             activeInput.blur();
         }
         return false;
@@ -162,7 +162,7 @@ let renderCalender = async (thisMonth) => {
 
     for (let i = 1; i <= nextDate; i++) {
         let currentTimestamp = new Date(currentYear.value, currentMonth.value, i);
-        if(currentTimestamp.getTime() == todayTimestamp.getTime() && today.getFullYear() == currentYear.value && today.getMonth() == currentMonth.value) {
+        if (currentTimestamp.getTime() == todayTimestamp.getTime() && today.getFullYear() == currentYear.value && today.getMonth() == currentMonth.value) {
             dates.value.push({ day: i, classes: 'date current today', time: currentTimestamp.getTime() });
         } else {
             dates.value.push({ day: i, classes: 'date current', time: currentTimestamp.getTime() });
@@ -194,7 +194,7 @@ let periodDateSetting = () => {
     }
 }
 
-let updateCalendar = async (e, what) => {    
+let updateCalendar = async (e, what) => {
     if (what == 'year') {
         if (e.target.value.length > 4) {
             alert('maxLength 4');
@@ -289,7 +289,7 @@ let createdDate = (e, date) => {
                 endDate.value = null;
                 selectedEnd.value = null;
                 activeDate.value = false;
-            } else  {
+            } else {
                 for (let i = 0; i < getDateClass.length; i++) {
                     if (selectedStart.value < getDateClass[i].dataset.time && getDateClass[i].dataset.time < selectedEnd.value) {
                         nextTick(() => {
@@ -330,7 +330,8 @@ let createdDate = (e, date) => {
     width: 340px;
     border-radius: 6px;
     border: 1px solid rgba(0, 0, 0, 0.15);
-    background: #FAFAFA;
+    // background: #FAFAFA;
+    background: #16171a;
     box-shadow: 8px 12px 36px 0px rgba(0, 0, 0, 0.10);
     display: none;
 
@@ -362,8 +363,8 @@ let createdDate = (e, date) => {
             }
 
             svg {
-              height: 18px;
-              width: 18px;
+                height: 18px;
+                width: 18px;
             }
 
             .month {
@@ -375,12 +376,14 @@ let createdDate = (e, date) => {
                 font-size: 0.9rem;
             }
 
-            .prev, .next {
+            .prev,
+            .next {
                 flex-grow: 0;
                 cursor: pointer;
                 font-size: 0.9rem;
                 user-select: none;
-                
+                fill: #fff;
+
                 &:hover {
                     color: var(--main-color);
                 }
@@ -403,7 +406,8 @@ let createdDate = (e, date) => {
                 .day {
                     text-align: center;
                     width: calc(100% / 7);
-                    color: rgba(0, 0, 0, 0.25);
+                    // color: rgba(0, 0, 0, 0.25);
+                    color: rgba(255, 255, 255, 0.25);
                     font-size: 0.7rem;
                     font-weight: 500;
                 }
@@ -489,7 +493,7 @@ let createdDate = (e, date) => {
             left: 0;
             background: rgba(0, 0, 0, 0.10);
             box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.06);
-        } 
+        }
 
         .input {
             position: relative;
@@ -507,6 +511,7 @@ let createdDate = (e, date) => {
                 &:hover {
                     opacity: 1;
                 }
+
                 &.show {
                     display: block;
                 }
@@ -514,11 +519,11 @@ let createdDate = (e, date) => {
         }
 
         input {
-            background-color: white;
-            width: 100%;
-            padding: 12px 10px;
-            border-radius: 6px;
-            outline: 1px solid rgba(0, 0, 0, 0.5);
+            // background-color: white;
+            // width: 100%;
+            // padding: 12px 10px;
+            // border-radius: 6px;
+            // outline: 1px solid rgba(0, 0, 0, 0.5);
             cursor: pointer;
 
             &.active {

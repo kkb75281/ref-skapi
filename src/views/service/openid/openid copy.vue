@@ -1,9 +1,39 @@
 <template lang="pug">
-section
-    .flex-wrap.space-between
-        .page-title Open ID Loggers
-        a(href='https://docs.skapi.com/authentication/openid-login.html' target="_blank")
-            button.inline.sm.gray Go Docs
+section.infoBox
+    .titleHead
+        h2 Open ID Loggers
+
+        span.moreInfo(
+            @click="showGuide = !showGuide",
+            @mouseover="hovering = true",
+            @mouseleave="hovering = false"
+        )
+            span More Info&nbsp;
+            template(v-if="showGuide")
+                //- .material-symbols-outlined.notranslate.fill expand_circle_up 
+                //- .material-symbols-outlined.notranslate.noFill expand_circle_up
+                svg(v-if="hovering", style="width: 25px; height: 25px; fill: black")
+                    use(
+                    xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up-fill"
+                    )
+                svg(v-else, style="width: 25px; height: 25px; fill: black")
+                    use(
+                    xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up"
+                    )
+            template(v-else)
+                //- .material-symbols-outlined.notranslate.fill expand_circle_down
+                //- .material-symbols-outlined.notranslate.noFill expand_circle_down
+                svg(v-if="hovering", style="width: 25px; height: 25px; fill: black")
+                    use(
+                    xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down-fill"
+                    )
+                svg(v-else, style="width: 25px; height: 25px; fill: black")
+                    use(
+                    xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down"
+                    )
+
+    template(v-if="showGuide")
+        Guide
 
     hr
 
@@ -25,38 +55,23 @@ section
             use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
         span This service is currently suspended.
 
-    br
-    br
 
-    .flex-wrap.space-between.table-menu-wrap
-        .flex-wrap
-            button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
-                .moreVert(
-                    @click.stop,
-                    style="--moreVert-left: 0; display: none; font-weight: normal;"
-                    )
-                    .inner(style="padding: 0.5rem;")
-                        template(v-for="c in columnList")
-                            Checkbox(v-model="c.value", style="display: flex; padding: 0.25rem 0;") {{ c.name }}
-            button.inline.only-icon.gray.sm(@click="" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
-                //- span(style="padding-left: 5px; color: #999;") Name / 권규비 ...
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-search")
-        .flex-wrap
-            button.inline.only-icon.gray.sm(@click="()=>{ !user.email_verified ? false : selectedLogger = null; showDetail=true; }" :class="{'nonClickable' : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-add")
-            button.inline.only-icon.gray.sm(@click="openDeleteRecords=true" :class="{'nonClickable': !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+.tableMenu
+    .iconClick.square(@click="()=>{ !user.email_verified ? false : selectedLogger = null; showDetail=true; }" :class="{'nonClickable' : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-add-circle-fill")
+        span &nbsp;&nbsp;Register Logger
+
+    .iconClick.square(@click="openDeleteRecords=true" :class="{'nonClickable': !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+        span &nbsp;&nbsp;Delete Selected
 
 .recordPart 
     template(v-if="fetching")
         #loading.
             Loading ... &nbsp;
-            #[.loader(style="--loader-color:white; --loader-size:12px")]
+            #[.loader(style="--loader-color:black; --loader-size:12px")]
             
     Table(:key="tableKey" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}" resizable)
         template(v-slot:head)
@@ -126,19 +141,27 @@ br
 
 // delete records
 Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
-    .modal-title Delete Records
+    h4(style='margin:.5em 0 0; color: var(--caution-color)') Delete Records
 
-    .modal-desc This action will delete {{ Object.keys(checked).length }} open ID logger(s) from the service. #[br] Your users will loose access to the service if they are using this logger. #[br] This action cannot be undone.
+    hr
+
+    div(style='font-size:.8rem;')
+        p.
+            This action will delete {{ Object.keys(checked).length }} open ID logger(s) from the service.
+            #[br]
+            Your users will loose access to the service if they are using this logger.
+            #[br]
+            This action cannot be undone.
 
     br
 
-    .flex-wrap.space-between(style="display: flex; align-items: center; justify-content: space-between;")
+    div(style="display: flex; align-items: center; justify-content: space-between;")
         div(v-if="promiseRunning" style="width:100%; height:44px; text-align:center;")
             .loader(style="--loader-color:blue; --loader-size:12px")
 
         template(v-else)
-            button.inline.gray(type="button" @click="openDeleteRecords=false;") Cancel 
-            button.inline.red(type="button" @click="deleteRecords") Delete
+            button.noLine.warning(type="button" @click="openDeleteRecords=false;") Cancel 
+            button.final.warning(type="button" @click="deleteRecords") Delete
 
 </template>
 <script setup lang="ts">
@@ -150,7 +173,7 @@ import Guide from "./guide.vue";
 import RecDetails from './showDetail.vue'
 
 import type { Ref } from "vue";
-import { ref, computed, watch, nextTick, reactive } from "vue";
+import { ref, computed, watch, nextTick } from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { devLog } from "@/code/logger"
@@ -169,29 +192,6 @@ let showDetail = ref(false);
 let showGuide = ref(false);
 let hovering = ref(false);
 let colspan = 4;
-
-let columnList = reactive([
-    {
-        name: "Logger ID",
-        key: "logger_id",
-        value: true,
-    },
-    {
-        name: "Username Key",
-        key: "username_key",
-        value: true,
-    },
-    {
-        name: "Method",
-        key: "method",
-        value: true,
-    },
-    {
-        name: "Request URL",
-        key: "url",
-        value: true,
-    },
-]);
 
 watch(currentPage, (n, o) => {
     if (

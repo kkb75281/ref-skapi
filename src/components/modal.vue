@@ -84,6 +84,94 @@ dialog {
     }
 }
 
+.search-modal {
+    max-width: 560px;
+    width: 100%;
+    background-color: unset;
+    padding: 0;
+    border-radius: 0;
+
+    .top,
+    .bottom {
+        background-color: rgba(22, 23, 26, 1);
+        border-radius: 7px;
+        margin-bottom: 1rem;
+    }
+
+    .top {
+        position: relative;
+        padding: 8px;
+
+        .search-for {
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+
+            svg {
+                fill: #666;
+                margin: 0 8px;
+            }
+        }
+
+        .search-input {
+            position: relative;
+            width: 100%;
+
+            &.readonly {
+                cursor: pointer;
+
+                input {
+                    cursor: pointer;
+                }
+            }
+
+            input {
+                background: unset;
+            }
+
+            svg {
+                position: absolute;
+                right: 8px;
+                top: 50%;
+                transform: translateY(-50%);
+                fill: #666;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .bottom {
+        padding: 1rem 1rem 1.5rem;
+
+        .tit {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .key-desc {
+            .key {
+                font-size: 0.9rem;
+
+                .name {
+                    padding: 2px 8px;
+                    margin-right: 8px;
+                    background-color: #1f1f1f;
+                    border: 1px solid #222;
+                    border-radius: 6px;
+                    color: #666;
+                }
+
+                .action {
+                    color: #555;
+                }
+            }
+        }
+    }
+}
+
 @media (max-width: 430px) {
     dialog {
         max-width: 100%;
