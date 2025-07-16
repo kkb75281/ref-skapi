@@ -574,6 +574,7 @@ let setResize = async () => {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            text-align: center;
 
             &:first-child {
                 // padding-left: 3rem;

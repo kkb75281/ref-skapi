@@ -120,7 +120,6 @@ select {
             rgba(255, 255, 255, 0.05) 100%
         ),
         #16171a;
-    // #1A1B1E
     color: #fff;
     border: 1px solid rgba(0, 0, 0, 0.05);
     padding: 0 2.4rem 0 1.25rem;
@@ -139,7 +138,6 @@ select {
     }
 
     &:not(:disabled):hover {
-        // text-decoration: underline;
         border-color: #0a4df1;
     }
 }
@@ -152,9 +150,10 @@ input {
         ),
         #16171a;
     color: #fff;
-    border: 0.5px solid rgba(0, 0, 0, 0.05);
-    padding: 0.9375rem 1.25rem;
-    border-radius: 7px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 0 1.25rem;
+    min-height: 3rem;
+    border-radius: 0.5rem;
     font-size: 0.875rem;
     font-weight: 400;
     outline: none;
@@ -166,7 +165,7 @@ input {
     &:focus,
     &:hover,
     &:active {
-        outline: 1px solid rgba(10, 77, 241, 0.8);
+        border-color: #0a4df1;
     }
 
     &.block {

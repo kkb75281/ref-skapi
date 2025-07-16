@@ -1,16 +1,30 @@
 <template lang="pug">
-dialog(ref='dialog' @keydown.esc.prevent="emit('close')")
+dialog(ref='dialog' @keydown.esc.prevent="emit('close')" :class="modalClass")
     slot
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
-let props = defineProps({
-    open: Boolean
-});
-const emit = defineEmits(['close']);
+import { onMounted, ref, watch, computed } from "vue";
 
-let dialog = ref(null);
+// ** 기본 모달 제외 (스크롤 가능한 모달 경우) '.modal' 클래스명 추가하여 사용 (ex. Modal.modal)
+
+let props = defineProps({
+    open: Boolean,
+    variant: {
+        type: String,
+        default: "default",
+    },
+});
+
+const emit = defineEmits(["close"]);
+const dialog = ref(null);
+
+const modalClass = computed(() => {
+    if (props.variant === "modal") {
+        return "modal";
+    }
+    return ""; // 기본 스타일
+});
 
 onMounted(() => {
     if (props.open) {
@@ -18,15 +32,16 @@ onMounted(() => {
     }
 });
 
-watch(() => props.open, nv => {
-    if (nv) {
-        dialog.value.showModal();
+watch(
+    () => props.open,
+    (nv) => {
+        if (nv) {
+            dialog.value.showModal();
+        } else {
+            dialog.value.close();
+        }
     }
-    else {
-        dialog.value.close();
-    }
-});
-
+);
 </script>
 
 <style lang="less">
@@ -83,6 +98,87 @@ dialog {
         margin-bottom: 2rem;
     }
 }
+
+// 모달 스타일 추가 (스크롤O) :: s
+dialog {
+    &::-webkit-scrollbar {
+        width: 0.5rem;
+        height: 20px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 12px 12px 12px 12px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+}
+
+.modal {
+    background-color: #16171a;
+    padding: 0 2rem;
+    text-align: left;
+    width: calc(100% - 1rem);
+    height: calc(100% - 1rem);
+    max-width: 50rem;
+
+    button {
+        padding: 0.875rem 1rem;
+        max-width: 6.25rem;
+        margin-left: auto;
+    }
+
+    .modal-header {
+        padding: 1.5rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        border-bottom: 1px solid rgba(225, 225, 225, 0.1);
+    }
+
+    .title {
+        font-size: 2rem;
+        font-weight: 500;
+        line-height: 1.3;
+        margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+    }
+
+    .btn-close {
+        background-color: transparent;
+        padding: 0.5rem;
+        max-width: fit-content;
+    }
+
+    .modal-body {
+        padding: 2rem 0;
+    }
+
+    .content {
+        padding: 0;
+        font-size: 1rem;
+    }
+
+    .modal-footer {
+        padding: 2rem 0;
+        border-top: 1px solid rgba(225, 225, 225, 0.1);
+        text-align: right;
+    }
+
+    // 기존 구조에 맞춰서 스타일링
+    .modal-title {
+        padding: 1.5rem 0;
+        border-bottom: 1px solid rgba(225, 225, 225, 0.1);
+    }
+}
+// 모달 스타일 추가 (스크롤O) :: e
 
 .search-modal {
     max-width: 560px;
