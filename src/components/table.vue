@@ -405,7 +405,7 @@ let setResize = async () => {
                 position: absolute;
                 content: "";
                 display: block;
-                height: 100%; // 높이는 최소화
+                height: 3.75rem; // 높이는 최소화
                 background-color: #121214;
                 min-width: var(--fakeWidth); // 화면 너비만큼 확장
                 top: 0;
@@ -421,8 +421,8 @@ let setResize = async () => {
                 display: block;
                 background-color: #121214;
                 min-width: var(--fakeWidth); // 화면 너비만큼 확장
-                height: 100%;
-                bottom: -1.5px;
+                height: 3.75rem;
+                bottom: -1px;
                 right: calc(var(--fakeWidth) * -1);
                 // z-index: -1; // 테이블 뒤쪽으로 배치
                 border-top-right-radius: 0.625rem;
@@ -523,6 +523,10 @@ let setResize = async () => {
                     border-top: 1px solid rgba(255, 255, 255, 0.1);
                     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
                     border-right: 1px solid rgba(255, 255, 255, 0.1);
+                }
+
+                &::after {
+                    height: calc(100% - 1px);
                 }
             }
         }

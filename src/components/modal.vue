@@ -96,13 +96,13 @@ dialog {
     .modal-title {
         font-size: 1.75rem;
         font-weight: 500;
-        margin-bottom: 1rem;
+        margin: 0 0 1rem;
     }
 
     .modal-desc {
         // max-width: 350px;
         margin: 0 auto;
-        font-size: 1.125rem;
+        font-size: 1rem;
         font-weight: 400;
         line-height: 1.3;
         color: rgba(102, 102, 102, 1);
@@ -125,6 +125,17 @@ dialog {
     &::-webkit-scrollbar-track {
         background: transparent;
     }
+
+    label {
+        &.flex {
+            display: flex;
+            flex-direction: column;
+        }
+
+        span.label {
+            width: fit-content;
+        }
+    }
 }
 
 .modal-scroll {
@@ -132,7 +143,7 @@ dialog {
     padding: 0 2rem;
     text-align: left;
     width: calc(100% - 1rem);
-    height: calc(100% - 1rem);
+    max-height: calc(100% - 1rem);
     max-width: 50rem;
 
     button {

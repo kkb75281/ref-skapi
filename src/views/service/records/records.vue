@@ -229,7 +229,7 @@ Modal.modal-scroll.modal-detailRecord(:open="showDetail" @close="closeModal")
 
 // modal :: delete records
 Modal.modal-deleteRecord(:open="openDeleteRecords" @close="openDeleteRecords=false")
-    h4.modal-title(style='margin:0; color: var(--caution-color)') Delete Records
+    h4.modal-title(style='color: var(--caution-color)') Delete Records
 
     hr
 
