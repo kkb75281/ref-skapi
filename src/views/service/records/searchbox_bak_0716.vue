@@ -5,42 +5,58 @@ form#searchForm(@submit.prevent="callSearch")
         input(hidden name='service' :value='currentService.id')
         input(hidden name='owner' :value='currentService.owner')
         
-        .content
-            .row
+        .content(style="width:100%;padding: 0;overflow:visible;")
+            //- .row
+            //-     .key Search By
+            //-     select(v-model='searchBy')
+            //-         option(selected value='record_id') Record ID
+            //-         option(value='unique_id') Unique ID
+            //-         option(value='query') Query
+
+            //- .row(v-if='searchBy === "record_id"')
+            //-     .key Record ID
+            //-     .value(style='min-width: 300px;')
+            //-         input.line(placeholder="xxxxxxxxxxxxxxxx" name='record_id')
+
+            //- .row(v-else-if='searchBy === "unique_id"')
+            //-     .key Unique ID
+            //-     .value(style='min-width: 300px;')
+            //-         input.line(placeholder="Unique ID of the record" name='unique_id')
+            
+            //- template(v-else)
+            .row(style='margin-bottom: 1rem')
                 .key Table
 
-            .row
-                .key.txt-sm Access Group
-                .key(style="width: 10rem")
-                    select(v-model='accessGroup' style='width: 100%;')
+            .row.indent(style='height: 42px;')
+                .key
+                    select(v-model='accessGroup')
                         option(selected value='public') Public
                         option(value='auth') Access Group
                         option(value='private') Private
                         
-                .value(v-if='accessGroup === "auth"')
+                .value(v-if='accessGroup === "auth"' style='min-width: 300px;')
                     input.line(required placeholder="1 ~ 99" value='1' type='number' name='table[access_group]')
 
                 template(v-else)
                     input.line(hidden v-if='accessGroup === "public"' placeholder="1 ~ 99" value='public' name='table[access_group]')
                     input.line(hidden v-else-if='accessGroup === "Private"' value='Private' name='table[access_group]')
 
-            .row
-                .key.txt-sm Table Name
-                .value
+            .row.indent
+                .key Table Name
+                .value(style='min-width: 300px;')
                     input.line(placeholder="Table.Name" name='table[name]' v-model='tableName')
             
 
-            .row.line(:class="{'nonClickable': !tableName}")
-                .key.txt-sm Subscription
-                .value
+            .row.indent(:class="{'nonClickable': !tableName}")
+                .key Subscription
+                .value(style='min-width: 300px;')
                     input.line(placeholder="xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" name='table[subscription]')
 
-            .row
-                .key Index
+            br
 
-            .row(:class="{'nonClickable': !tableName}")
-                .key.txt-sm Search By
-                .value
+            .row(style="margin-bottom:1rem" :class="{'nonClickable': !tableName}")
+                .key Index&nbsp;&nbsp;
+                .value(style='min-width: 300px;')
                     select(v-model='searchIndex')
                         option(selected value='name') By Index Name
                         option(value='$updated') By Updated Timestamp
@@ -48,18 +64,18 @@ form#searchForm(@submit.prevent="callSearch")
                         option(value='$referenced_count') By Referenced Count
                         option(value='$user_id') By User ID
 
-            .row(v-if='searchIndex == "name"' :class="{'nonClickable': !tableName}")
-                .key.txt-sm Index Name
-                .value
+            .row.indent(v-if='searchIndex == "name"' :class="{'nonClickable': !tableName}")
+                .key Index Name
+                .value(style='min-width: 300px;')
                     input.line(name='index[name]' placeholder='Alphanumeric, periods only.')
             
             input(v-else name='index[name]' hidden :value='searchIndex')
 
             template(v-if='searchIndex == "name"')
-                .row(:class="{'nonClickable': !tableName}")
-                    .key.txt-sm Value
-                    .value
-                        select(v-model='searchIndexType' style="width: 10rem;")
+                .row.indent(:class="{'nonClickable': !tableName}")
+                    .key Value
+                    .value(style="display:flex; flex-wrap:wrap; gap:10px;min-width: 300px;")
+                        select(v-model='searchIndexType')
                             option(value='string' selected) String
                             option(value='number') Number
                             option(value='boolean') Boolean
@@ -78,10 +94,10 @@ form#searchForm(@submit.prevent="callSearch")
                                 input(type='radio' name='index[value]' value='false' style='margin:0;width:unset;')
                                 | &nbsp;False
 
-                .row.line(v-if='searchIndexType !== "boolean"' :class="{'nonClickable': !tableName}")
-                    .key.txt-sm Condition
-                    .value
-                        select(v-model='searchIndexCondition' style="width: 10rem;")
+                .row.indent(v-if='searchIndexType !== "boolean"' :class="{'nonClickable': !tableName}")
+                    .key Condition
+                    .value(style="display:flex; flex-wrap:wrap; gap:10px;min-width: 300px;")
+                        select(v-model='searchIndexCondition')
                             option(value='=' selected) =
                             option(value='>=') Greater or =
                             option(value='>') Greater
@@ -97,9 +113,9 @@ form#searchForm(@submit.prevent="callSearch")
                                 style="flex-grow:30; width:unset; vertical-align:middle;")
 
             template(v-else-if='searchIndex == "$user_id"')
-                .row(:class="{'nonClickable': !tableName}")
-                    .key.txt-sm Value
-                    .value
+                .row.indent(:class="{'nonClickable': !tableName}")
+                    .key Value
+                    .value(style="display:flex; flex-wrap:wrap; gap:10px;min-width: 300px;")
                         input.line(
                             name='index[value]'
                             type='string' placeholder='xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
@@ -109,19 +125,19 @@ form#searchForm(@submit.prevent="callSearch")
                             style="flex-grow:30; width:unset; vertical-align:middle;")
 
             template(v-else)
-                .row(:class="{'nonClickable': !tableName}")
-                    .key.txt-sm Value
-                    .value
+                .row.indent(:class="{'nonClickable': !tableName}")
+                    .key Value
+                    .value(style="display:flex; flex-wrap:wrap; gap:10px;min-width: 300px;")
                         input.line(
                                 name='index[value]'
                                 type='number' :placeholder='searchIndex == "$referenced_count" ? "Number of references" : "1234567890123"'
                                 required
                                 style="flex-grow:30; width:unset; vertical-align:middle;")
 
-                .row.line(:class="{'nonClickable': !tableName}")
-                    .key.txt-sm Condition
-                    .value
-                        select(v-model='searchIndexCondition' name='index[condition]' style="width: 10rem;")
+                .row.indent(:class="{'nonClickable': !tableName}")
+                    .key Condition
+                    .value(style="display:flex; flex-wrap:wrap; gap:10px;min-width: 300px;")
+                        select(v-model='searchIndexCondition' name='index[condition]')
                             option(value='=' selected) =
                             option(value='>=') Greater or =
                             option(value='>') Greater
@@ -136,18 +152,22 @@ form#searchForm(@submit.prevent="callSearch")
                                 type='name' :placeholder='searchIndex == "$referenced_count" ? "Number of references" : "1234567890123"'
                                 required
                                 style="flex-grow:30; width:unset; vertical-align:middle;")
+            
+            br
 
-            .row.line(:class="{'nonClickable': !tableName}")
+            .row(style="margin-bottom:1rem" :class="{'nonClickable': !tableName}")
                     .key Reference
-                    .value
+                    .value(style='min-width: 300px;')
                         input.line(placeholder="xxxxxxxxxxxxxxxx" name='reference')
 
-            .row(:class="{'nonClickable': !tableName}")
+            .row(style="margin-bottom:1rem" :class="{'nonClickable': !tableName}")
                 .key Tag
-                .value
+                .value(style='min-width: 300px;')
                     input.line(name='tag' placeholder="Tag name. Alphanumeric and space only.")
 
-            //- div(style='text-align:right')
+            br
+
+            div(style='text-align:right')
                 button.btn.final.wideOnMobile(type="submit") Search
 
 </template>
@@ -177,6 +197,10 @@ const props = defineProps({
 
 <style scoped lang="less">
 #searchForm {
+    // width: 700px;
+    // max-width: 100%;
+    margin: 0 auto;
+
     .inner {
         display: flex;
         flex-wrap: wrap;
@@ -184,6 +208,9 @@ const props = defineProps({
         gap: 8px;
     }
 
+    // .customSelect {
+    //     flex-grow: 1;
+    // }
     .search {
         position: relative;
         flex-grow: 50;
@@ -309,7 +336,7 @@ const props = defineProps({
         margin-bottom: 12px;
 
         &.indent {
-            // padding-left: 20px;
+            padding-left: 20px;
 
             .key {
                 font-weight: normal;
@@ -334,35 +361,24 @@ const props = defineProps({
     }
 }
 
-// new style
-.txt-sm {
-    font-size: 0.875rem;
-}
-
-.content {
-    font-size: 1rem;
-    width: 100%;
-    padding: 0;
-    overflow: visible;
-
-    .value {
-        margin: 0;
-    }
-
-    .row {
-        text-align: left;
-        margin-bottom: 1.5rem;
-
-        .value {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.625rem;
+:deep(.search-form-container) {
+    #searchForm {
+        .inner {
+            padding: 1rem; // 모달 내부에서는 패딩 줄임
+            background-color: transparent; // 배경 투명
         }
 
-        &.line {
-            border-bottom: 1px solid rgba(225, 225, 225, 0.1);
-            padding-bottom: 1.5rem;
-            margin-bottom: 1.5rem;
+        .content {
+            background-color: transparent;
+            border: none;
+        }
+
+        .btn.final {
+            background-color: var(--main-color);
+
+            &:hover {
+                background-color: var(--main-color-dark);
+            }
         }
     }
 }

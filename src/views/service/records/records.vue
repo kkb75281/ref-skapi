@@ -179,7 +179,7 @@ section.infoBox
             use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
 
 // modal :: search
-Modal.modal-search(:open="searchModalOpen" style="max-width: 1000px; width: 100%; background-color: unset; padding: 0; border-radius: 0;" @close="closeSearchModal")
+Modal.modal-search(:open="searchModalOpen" style="max-width: 800px; width: 100%; background-color: unset; padding: 0; border-radius: 0;" @close="closeSearchModal")
     .flex-wrap(style="position:relative; background-color: rgba(22, 23, 26, 1); border-radius: 7px; padding: 8px; gap: 10px; align-items: center")
         #showSearchFor(style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%);")
             svg.svgIcon(style="fill: #666; margin: 0 8px;")
@@ -190,20 +190,20 @@ Modal.modal-search(:open="searchModalOpen" style="max-width: 1000px; width: 100%
     
     br
 
-    div(style="background-color: rgba(22, 23, 26, 1); padding: 1rem 1rem 1.5rem; border-radius: 7px;")
+    div(style="background-color: rgba(22, 23, 26, 1); padding: 1rem 2rem 1.5rem; border-radius: 7px;")
         .tit(style="color: #666; margin-bottom:0.8rem; font-size: 0.9rem;") Search for
-        .flex-wrap.center(style="gap:10px;margin-bottom: 1.2rem")
+        .flex-wrap.center(style="gap:10px ;margin-bottom: 2rem")
             button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value;") {{ option.option }}
 
         // query 선택시
-        .search-form-container(v-if="searchFor === 'query'" style="background-color: #1a1a1a; border-radius: 6px; padding: 1rem;")
+        .search-wrap.sel-query(v-if="searchFor === 'query'")
             SearchBox(
                 :callSearch="handleSearchBoxSubmit"
                 :isInModal="true"
                 style="margin: 0;"
             )
         
-        .flex-wrap.end(style="gap: 10px; margin-top: 1rem;")
+        .flex-wrap.end(style="gap: 8px; margin-top: 2rem;")
             button.inline.gray(@click="resetSearch") Reset
             button.inline(@click="performSearch") Search
 
@@ -393,9 +393,7 @@ const resetSearch = () => {
     searchValue.value = "";
     // SearchBox 내부의 리셋은 SearchBox 컴포넌트에서 처리하도록 이벤트 발생
     if (searchFor.value === "query") {
-        const searchBoxElement = document.querySelector(
-            ".search-form-container form"
-        );
+        const searchBoxElement = document.querySelector(".search-wrap form");
         if (searchBoxElement) {
             searchBoxElement.reset();
         }
@@ -1007,7 +1005,14 @@ label._checkbox svg {
         fill: #fff;
     }
 }
+
 .table-menu-wrap {
     margin-bottom: 0.5rem;
+}
+
+.search-wrap {
+    border-top: 1px solid rgba(225, 225, 225, 0.1);
+    border-bottom: 1px solid rgba(225, 225, 225, 0.1);
+    padding: 2rem 0;
 }
 </style>
