@@ -270,8 +270,6 @@ let setResize = async () => {
             th {
                 &.hovered,
                 &:hover {
-                    // background-color: #eeeeee;
-
                     .resizer {
                         display: block;
                     }
@@ -287,11 +285,9 @@ let setResize = async () => {
     }
 
     thead {
-        // background-color: #f0f0f0;
         background-color: #f9f9f9;
         text-align: left;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        // box-shadow: inset 0 -3px 3px -3px rgba(0, 0, 0, 0.2);
 
         tr {
             position: relative;
@@ -320,7 +316,6 @@ let setResize = async () => {
                 height: 100%;
                 bottom: -0.5px;
                 right: calc(var(--fakeWidth) * -1);
-                // z-index: -1; // 테이블 뒤쪽으로 배치
                 border-top-right-radius: 0.625rem;
                 border-bottom-right-radius: 0.625rem;
             }
@@ -342,7 +337,6 @@ let setResize = async () => {
                 max-width: 100%;
             }
 
-            // overflow: hidden;
             text-overflow: ellipsis;
 
             &.center {
@@ -375,13 +369,9 @@ let setResize = async () => {
 
             .resizer {
                 position: absolute;
-                // top: 50%;
                 top: 0px;
                 right: -9px;
-                // transform: translateY(-50%);
                 width: 12px; // enough width for user to grab
-                // border-left: 5px solid transparent;
-                // border-right: 5px solid transparent;
                 border-left: 4px solid transparent;
                 border-right: 12px solid transparent;
                 display: none;
@@ -410,7 +400,6 @@ let setResize = async () => {
             position: relative;
             height: 60px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            // box-shadow: inset 0 -3px 3px -3px rgba(0, 0, 0, 0.2);
 
             &::before {
                 position: absolute;
@@ -443,25 +432,6 @@ let setResize = async () => {
             &:last-child {
                 border-bottom: none;
             }
-
-            // &.hoverRow {
-            //     &:not(.active):hover {
-            //         background-color: rgba(41, 63, 230, 0.05);
-            //         cursor: pointer;
-
-            //         &::before {
-            //             background-color: rgba(41, 63, 230, 0.05);
-            //         }
-            //     }
-
-            //     &.active {
-            //         background-color: rgba(41, 63, 230, 0.1);
-
-            //         &::before {
-            //             background-color: rgba(41, 63, 230, 0.1);
-            //         }
-            //     }
-            // }
         }
 
         td {
@@ -479,9 +449,6 @@ let setResize = async () => {
     border-collapse: separate;
     border-spacing: 0 0.5rem;
     color: rgba(225, 225, 225, 0.8);
-    // width: 100% !important;
-    // text-align: center;
-    // min-width: 75rem;
 
     thead {
         background-color: #121214;
@@ -490,11 +457,6 @@ let setResize = async () => {
             width: 100%;
             height: 2.625rem;
             overflow: hidden;
-            // border-bottom: 0.5rem solid #16171a;
-
-            // &::before {
-            //     content: none;
-            // }
         }
 
         th {
@@ -506,19 +468,11 @@ let setResize = async () => {
             padding: 0 0.625rem;
 
             &:first-child {
-                // padding-left: 3rem;
                 border-top-left-radius: 0.625rem;
                 border-bottom-left-radius: 0.625rem;
             }
 
-            &:last-child {
-                // padding-right: 3rem;
-                // border-top-right-radius: 0.625rem;
-                // border-bottom-right-radius: 0.625rem;
-            }
-
             &:hover {
-                // background-color: transparent;
                 background: linear-gradient(
                         0deg,
                         rgba(255, 255, 255, 0.03) 0%,
@@ -535,12 +489,6 @@ let setResize = async () => {
         tr {
             height: 3.75rem;
             overflow: hidden;
-            // border-bottom: 0.5rem solid #16171a;
-
-            // &::before,
-            // &::after {
-            //     content: none;
-            // }
 
             &:hover {
                 cursor: pointer;
@@ -560,8 +508,21 @@ let setResize = async () => {
                     }
 
                     &:last-child {
-                        border-right: 1px solid rgba(255, 255, 255, 0.1);
+                        border-right: none;
                     }
+                }
+
+                &::before,
+                &::after {
+                    background: linear-gradient(
+                            0deg,
+                            rgba(255, 255, 255, 0.03) 0%,
+                            rgba(255, 255, 255, 0.03) 100%
+                        ),
+                        #141315;
+                    border-top: 1px solid rgba(255, 255, 255, 0.1);
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                    border-right: 1px solid rgba(255, 255, 255, 0.1);
                 }
             }
         }
@@ -577,15 +538,12 @@ let setResize = async () => {
             text-align: center;
 
             &:first-child {
-                // padding-left: 3rem;
                 border-top-left-radius: 0.625rem;
                 border-bottom-left-radius: 0.625rem;
             }
 
-            &:last-child {
-                // padding-right: 3rem;
-                // border-top-right-radius: 0.625rem;
-                // border-bottom-right-radius: 0.625rem;
+            &.left {
+                text-align: left;
             }
         }
     }

@@ -37,7 +37,7 @@ section
             button.inline.only-icon.gray.sm(@click="openCreateUser = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-person-add-fill")
-            button.inline.only-icon.gray.sm
+            button.inline.only-icon.gray.sm(@click="openInviteUser = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-mark-email-unread-fill")
             button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }" :class="{disabled: !Object.keys(checked).length || fetching}")
@@ -240,16 +240,14 @@ Modal.search-modal(:open="searchModalOpen")
                     span.action to close
         Calendar(v-if="searchFor === 'timestamp' || searchFor === 'birthdate'" :showCalendar="true" style="position:relative; width: 100%; margin:0")
 
-Modal(:open="openCreateUser")
+Modal.modal-scroll.modal-createUser(:open="openCreateUser")
     .modal-close(@click="openCreateUser = false;")
         svg.svgIcon
             use(xlink:href="@/assets/img/material-icon.svg#icon-close")
 
     .modal-title Create User
 
-    br
-
-    form#createForm(@submit.prevent="createUser" style="text-align:left")
+    form#createForm.modal-body(@submit.prevent="createUser")
         input(hidden, name="service", :value="currentService.id")
         label User's Email
             em(style="color: red; font-size: 0.6rem") * Required
@@ -400,7 +398,7 @@ Modal(:open="openCreateUser")
 
         br
 
-        div(style="display: flex; align-items: center; justify-content: space-between")
+        div.modal-footer(style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 0;")
             div(v-if="promiseRunning" style="width: 100%; height: 44px; text-align: center")
                 .loader(style="--loader-color: white; --loader-size: 12px")
             template(v-else)
@@ -417,14 +415,23 @@ import Calendar from "@/components/calendar.vue";
 import Locale from "@/components/locale.vue";
 import Pager from "@/code/pager";
 
-import { nextTick, reactive, ref, computed, watch, type Ref, onMounted, onUnmounted } from "vue";
+import {
+    nextTick,
+    reactive,
+    ref,
+    computed,
+    watch,
+    type Ref,
+    onMounted,
+    onUnmounted,
+} from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { showDropDown } from "@/assets/js/event.js";
 import { currentService, serviceUsers } from "@/views/service/main";
 import { Countries } from "@/code/countries";
 import { devLog } from "@/code/logger";
-import UserDetails from './showDetail.vue'
+import UserDetails from "./showDetail.vue";
 
 onMounted(() => {
     document.addEventListener("keydown", closeSearchModal);
@@ -441,13 +448,13 @@ let closeSearchModal = (e) => {
         searchFor.value = "user_id";
         searchValue.value = "";
     }
-}
+};
 
 let pager: Pager = null;
 let selectedUser = ref(null);
 
 let searchFor: Ref<
-    "timestamp"
+    | "timestamp"
     | "user_id"
     | "email"
     | "phone_number"
@@ -660,7 +667,8 @@ watch(showDetail, (nv) => {
         nextTick(() => {
             let scrollTarget = document.querySelector(".detailRecord .content");
             let detailRecord = document.querySelector(".detailRecord");
-            let targetTop = window.scrollY + detailRecord.getBoundingClientRect().top;
+            let targetTop =
+                window.scrollY + detailRecord.getBoundingClientRect().top;
             scrollTarget.scrollTop = 0;
             window.scrollTo(0, targetTop);
         });
@@ -723,28 +731,32 @@ watch(fetching, (n) => {
     }
 });
 
-watch(searchFor, (n, o) => {
-    if (n) {
-        nextTick(() => {
-            let inputElement = document.querySelector("#searchInput");
-            let showSearchFor = document.querySelector("#showSearchFor");
+watch(
+    searchFor,
+    (n, o) => {
+        if (n) {
+            nextTick(() => {
+                let inputElement = document.querySelector("#searchInput");
+                let showSearchFor = document.querySelector("#showSearchFor");
 
-            if (!inputElement || !showSearchFor) {
-                return;
-            }
+                if (!inputElement || !showSearchFor) {
+                    return;
+                }
 
-            let gcr = showSearchFor.getBoundingClientRect().width || 98;
+                let gcr = showSearchFor.getBoundingClientRect().width || 98;
 
-            inputElement.style.paddingLeft = `${gcr + 7}px`;
-            inputElement.focus();
-        });
+                inputElement.style.paddingLeft = `${gcr + 7}px`;
+                inputElement.focus();
+            });
+        }
+        if (n !== o) {
+            searchValue.value = "";
+        }
+    },
+    {
+        immediate: true,
     }
-    if (n !== o) {
-        searchValue.value = "";
-    }
-}, {
-    immediate: true
-});
+);
 
 // computed fetch params
 let callParams = computed(() => {
@@ -757,7 +769,9 @@ let callParams = computed(() => {
                 ? new Date(new Date(dates[0]).setHours(0, 0, 0, 0)).getTime()
                 : 0;
             let endDate = dates?.[1]
-                ? new Date(new Date(dates[1]).setHours(23, 59, 59, 999)).getTime()
+                ? new Date(
+                      new Date(dates[1]).setHours(23, 59, 59, 999)
+                  ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -845,7 +859,9 @@ let getPage = async (refresh?: boolean) => {
         serviceUsers[currentService.id] = await Pager.init({
             id: "user_id",
             resultsPerPage: 10,
-            sortBy: !searchValue.value ? "timestamp" : callParams.value.searchFor,
+            sortBy: !searchValue.value
+                ? "timestamp"
+                : callParams.value.searchFor,
             order: !searchValue.value ? "desc" : "asc",
         });
     }
@@ -924,7 +940,8 @@ let moveFocus = (e: any, next: string) => {
                 alert("email is required");
                 return false;
             } else {
-                let email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+                let email_regex =
+                    /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
                 if (!email_regex.test(e.target.value)) {
                     alert("Please enter it in e-mail format");
                     return false;
@@ -950,7 +967,8 @@ let moveFocus = (e: any, next: string) => {
         let scrollTarget = e.target.parentElement.parentElement.parentElement;
 
         if (
-            scrollTarget.getBoundingClientRect().height < scrollTarget.scrollHeight
+            scrollTarget.getBoundingClientRect().height <
+            scrollTarget.scrollHeight
         ) {
             scrollTarget.scrollTop += 70;
         }
@@ -964,14 +982,11 @@ let createUser = () => {
     error.value = "";
 
     if (gender_public.value || address_public.value || birthdate_public.value) {
-        Object.assign(
-            createParams,
-            {
-                gender_public: gender_public.value,
-                address_public: address_public.value,
-                birthdate_public: birthdate_public.value,
-            }
-        );
+        Object.assign(createParams, {
+            gender_public: gender_public.value,
+            address_public: address_public.value,
+            birthdate_public: birthdate_public.value,
+        });
     }
 
     currentService
@@ -1041,7 +1056,7 @@ let changeUserApprovalState = async (state: string) => {
 
     let user_ids = Object.keys(checked.value);
 
-    let promise = user_ids.map(user_id => {
+    let promise = user_ids.map((user_id) => {
         let selectedUser = pager.list[user_id];
         let original_approved_info = selectedUser.approved.split(":");
         let original_approver = original_approved_info[0];
@@ -1054,34 +1069,36 @@ let changeUserApprovalState = async (state: string) => {
             }
 
             return currentService.blockAccount(user_id).then(() => {
-                selectedUser.approved = `${original_approver}:suspended:` + new Date().getTime();
+                selectedUser.approved =
+                    `${original_approver}:suspended:` + new Date().getTime();
                 return pager.editItem(selectedUser);
-            })
-        }
-
-        else if (state == "unblock") {
+            });
+        } else if (state == "unblock") {
             if (original_approved_status != "suspended") {
                 // This user is not blocked.
                 return;
             }
 
             return currentService.unblockAccount(user_id).then(() => {
-                selectedUser.approved = `${original_approver}:approved:` + new Date().getTime();
+                selectedUser.approved =
+                    `${original_approver}:approved:` + new Date().getTime();
                 return pager.editItem(selectedUser);
-            })
+            });
         }
     });
 
-    await Promise.all(promise).then(() => {
-        checked.value = {};
-        updateListDisplay();
-        promiseRunning.value = false;
-        openBlockUser.value = false;
-        openUnblockUser.value = false;
-    }).catch((e) => {
-        promiseRunning.value = false;
-        alert(e.message);
-    });
+    await Promise.all(promise)
+        .then(() => {
+            checked.value = {};
+            updateListDisplay();
+            promiseRunning.value = false;
+            openBlockUser.value = false;
+            openUnblockUser.value = false;
+        })
+        .catch((e) => {
+            promiseRunning.value = false;
+            alert(e.message);
+        });
 };
 
 let updateListDisplay = () => {
@@ -1095,7 +1112,7 @@ let updateListDisplay = () => {
     ) {
         currentPage.value--;
     }
-}
+};
 
 let deleteUser = () => {
     promiseRunning.value = true;
@@ -1103,22 +1120,25 @@ let deleteUser = () => {
     let userToDel = Object.keys(checked.value);
     let promises: Array<Promise<any>> = [];
     userToDel.forEach((u) => {
-        console.log({ u })
-        promises.push(currentService.deleteAccount(u).then(async () => {
-            await pager.deleteItem(u);
-        }));
+        console.log({ u });
+        promises.push(
+            currentService.deleteAccount(u).then(async () => {
+                await pager.deleteItem(u);
+            })
+        );
     });
 
-    Promise.all(promises).then(() => {
-        checked.value = {};
-        updateListDisplay();
-        promiseRunning.value = false;
-        openDeleteUser.value = false;
-    }).catch((e) => {
-        promiseRunning.value = false;
-        alert(e.message);
-    });
-
+    Promise.all(promises)
+        .then(() => {
+            checked.value = {};
+            updateListDisplay();
+            promiseRunning.value = false;
+            openDeleteUser.value = false;
+        })
+        .catch((e) => {
+            promiseRunning.value = false;
+            alert(e.message);
+        });
 };
 
 let closeModal = () => {
@@ -1140,7 +1160,8 @@ let closeModal = () => {
 let grantAccess = async () => {
     promiseRunning.value = true;
 
-    let inputAccess: HTMLInputElement = document.querySelector(".change-access");
+    let inputAccess: HTMLInputElement =
+        document.querySelector(".change-access");
     let resultAccess = Number(inputAccess.value);
 
     if (resultAccess < 1 || resultAccess > 99) {
@@ -1155,27 +1176,33 @@ let grantAccess = async () => {
 
     user_ids.forEach((u) => {
         promises.push(
-            currentService.grantAccess({ user_id: u, access_group: resultAccess }).then(() => {
-                pager.list[u].access_group = resultAccess;
-                pager.editItem(pager.list[u]);
-            })
+            currentService
+                .grantAccess({ user_id: u, access_group: resultAccess })
+                .then(() => {
+                    pager.list[u].access_group = resultAccess;
+                    pager.editItem(pager.list[u]);
+                })
         );
     });
 
-    await Promise.all(promises).then(() => {
-        inputAccess.value = "";
-        updateListDisplay();
-        openGrantAccess.value = false;
-        successGrantAccess.value = true;
-    }).catch((e) => {
-        alert(e.message);
-    }).finally(() => {
-        promiseRunning.value = false;
-    });
+    await Promise.all(promises)
+        .then(() => {
+            inputAccess.value = "";
+            updateListDisplay();
+            openGrantAccess.value = false;
+            successGrantAccess.value = true;
+        })
+        .catch((e) => {
+            alert(e.message);
+        })
+        .finally(() => {
+            promiseRunning.value = false;
+        });
 };
 
 let closeGrantAccess = () => {
-    let inputAccess: HTMLInputElement = document.querySelector(".change-access");
+    let inputAccess: HTMLInputElement =
+        document.querySelector(".change-access");
 
     openGrantAccess.value = false;
 
@@ -1217,7 +1244,7 @@ body {
     justify-content: space-between;
     // flex-direction: row-reverse;
 
-    &>* {
+    & > * {
         margin: 8px 0;
     }
 }
@@ -1240,7 +1267,7 @@ body {
 }
 
 .optionCol {
-    &>*:not(:last-child) {
+    & > *:not(:last-child) {
         margin-right: 8px;
     }
 }

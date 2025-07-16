@@ -125,7 +125,7 @@ section.infoBox
                             :modelValue="!!checked?.[rc?.record_id]"
                             @update:modelValue="(value) => { if (value) checked[rc?.record_id] = value; else delete checked[rc?.record_id]; }")
 
-                    td.overflow(v-if="filterOptions.table") 
+                    td.overflow.left(v-if="filterOptions.table") 
                         span
                             svg.svgIcon(v-if="rc.table.access_group == 'private' || rc.table.access_group == 99 || rc.table.access_group === 'admin'" style="margin-bottom: 2px")
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-vpn-key-fill")
@@ -211,7 +211,7 @@ Modal.modal-search(:open="searchModalOpen" style="max-width: 800px; width: 100%;
         span(style="color: #555; font-size: 0.9rem") to close
 
 // modal :: record detail
-Modal.modal.detail-record(:open="showDetail" @close="closeModal")
+Modal.modal-scroll.modal-detailRecord(:open="showDetail" @close="closeModal")
     form.modal-container(@submit.prevent='upload')
         .modal-header
             h4.title {{ selectedRecord?.record_id ? selectedRecord?.record_id : 'Create Record' }}
@@ -228,25 +228,23 @@ Modal.modal.detail-record(:open="showDetail" @close="closeModal")
 
 
 // modal :: delete records
-Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
-    h4(style='margin:.5em 0 0; color: var(--caution-color)') Delete Records
+Modal.modal-deleteRecord(:open="openDeleteRecords" @close="openDeleteRecords=false")
+    h4.modal-title(style='margin:0; color: var(--caution-color)') Delete Records
 
     hr
 
-    div(style='font-size:.8rem;')
+    div.modal-desc
         p.
             You sure want to delete {{ Object.values(checked).filter(value => value === true).length > 1 ? Object.values(checked).filter(value => value === true).length + ' records' : 'the record'}}?
             #[br]
             This action cannot be undone.
 
-    br
-
-    div(style="display: flex; align-items: center; justify-content: space-between;")
+    div(style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem")
         div(v-if="promiseRunning" style="width:100%; height:44px; text-align:center;")
             .loader(style="--loader-color:blue; --loader-size:12px")
         template(v-else)
-            button.noLine.warning(type="button" @click="openDeleteRecords=false;") Cancel 
-            button.final.warning(type="button" @click="deleteRecords") Delete
+            button.gray(type="button" @click="openDeleteRecords=false;") Cancel 
+            button.red(type="button" @click="deleteRecords") Delete
 </template>
 <script setup lang="ts">
 import Table from "@/components/table.vue";
@@ -979,6 +977,23 @@ label._checkbox svg {
 .content {
     .value {
         margin: 0;
+    }
+
+    .add {
+        background: #0a4df1;
+        color: #fff;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.125rem;
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+
+        svg {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
     }
 }
 
