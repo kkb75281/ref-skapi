@@ -1,22 +1,158 @@
 <template lang="pug">
-section
-    .flex-wrap.space-between
-        .page-title Automated Email
-        a(href='https://docs.skapi.com/email/email-templates.html' target="_blank")
-            button.inline.sm.gray Go Docs
-    
+section.infoBox(v-if='needsEmailAlias' style='max-width:600px;margin:3rem auto;' :class='{nonClickable: email_is_unverified_or_service_is_disabled}')
+
+    .infoTitle Automated Email
+
     hr
 
-    TabMenu(v-model="activeTabs" :tabs="['Signup Confirmation', 'Welcome Email', 'Verification Email', 'Invitation Email', 'Newsletter Confirmation']")
+    .error(v-if='!user?.email_verified')
+        //- .material-symbols-outlined.notranslate.fill warning
+        svg
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+        router-link(to="/account-setting") Please verify your email address to modify settings.
 
-    //- Code
-        pre {{ email_templates[group] }}
+    p.
+        You can set automated email templates for your service.
+        #[br]
+        To proceed, please register your email alias address that will be used to send out the emails.
 
-    .flex-wrap.center
-        button.inline(@click="init") {{ emailType.split(' ')[0] }} Email Copy
+    p The email alias can only be #[span.wordset alphanumeric and hyphen.]
+
+    br
+
+    form.register(@submit.prevent='registerAlias')
+        .emailAlias
+            input.big(v-model='emailAliasVal' pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' :disabled="registerAliasRunning" placeholder="your-email-alias" required)
+
+        button.inline(:disabled='registerAliasRunning' :class='{nonClickable: registerAliasRunning}')
+            template(v-if="registerAliasRunning")
+                .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else)
+                | Register
+
+
+section.infoBox(v-else)
+        .titleHead
+            h2(style='white-space: nowrap;') Automated Email&nbsp;
+            Select(v-model="emailType" :selectOptions="emailTypeSelect" style='display:inline-block;vertical-align:middle;width:240px;')
+
+        hr
+        .error(v-if='!user?.email_verified')
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            router-link(to="/account-setting") Please verify your email address to modify settings.
+            
+        .error(v-else-if='currentService.service.active == 0')
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            span This service is currently disabled.
+
+        .error(v-else-if='currentService.service.active < 0')
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            span This service is currently suspended.
+
+        template(v-if='emailType === "Signup Confirmation"')
+            p.
+                Signup confirmation email is sent when the signup requires email verification or when the user tries to recover their disabled account.
+                The email contains a link to activate the account.
+
+            p.
+                See #[a.wordset(href='https://docs.skapi.com/authentication/signup-confirmation.html' target="_blank") Signup Confirmation]
+                ,
+                #[a.wordset(href='https://docs.skapi.com/user-account/disable-recover-account.html' target="_blank") Disable / Recover Account]
+
+            small Required Placeholder
+            ul
+                li #[b https://link.skapi] - Activation link url. You can append this to the href attribute of the anchor tag.
+
+            small Optional Placeholder
+            ul
+                li #[b ${email}] - User email
+                li #[b ${name}] - User name, normaled to users email if not provided
+                li #[b ${service_name}] - Service name
+
+        template(v-if='emailType === "Welcome Email"')
+            p.
+                Welcome Email is sent when the user successfully logs in after the signup confirmation.
+                #[span.wordset If the signup did not require any signup confirmation, Welcome Email will not be sent]
+
+            small Optional Placeholder
+            ul
+                li #[b ${email}] - User email
+                li #[b ${name}] - User name, normaled to users email if not provided
+                li #[b ${service_name}] - Service name
+
+        template(v-if='emailType === "Verification Email"')
+            p.
+                Verification Email is sent when the user requests to verify their email address or tries to reset their #[span.wordset forgotten password.]
+            p.
+                See #[a(href='https://docs.skapi.com/user-account/email-verification.html' target="_blank") Verification Email]
+                ,
+                #[a.wordset(href='https://docs.skapi.com/authentication/forgot-password.html' target="_blank") Forgot Password]
+
+            small Required Placeholder:
+            ul
+                li #[b ${code}] - Verification code.
+
+            small Optional Placeholder:
+            ul
+                li #[b ${email}] - User email
+                li #[b ${name}] - User name, normaled to users email if not provided
+                li #[b ${service_name}] - Service name
+
+        template(v-if='emailType === "Invitation Email"')
+            p.
+                Invitation Email is sent when the user is invited to join the service.
+                #[span.wordset You can invite new users] to your service from the #[router-link(to='users') Users] page.
+                #[span.wordset User can login] with provided email and password after they accept the invitation by clicking on the link provided in the email.
+
+            small Required Placeholder:
+            ul
+                li #[b https://link.skapi] - Invitation accept link url. You can append this to the href attribute of the anchor tag.
+                li #[b ${email}] - User's login email
+                li #[b ${password}] - User's login password
+
+            small Optional Placeholder:
+            ul
+                li #[b ${name}] - User name, normaled to users email if not provided
+                li #[b ${service_name}] - Service name
+
+        template(v-if='emailType === "Newsletter Confirmation"')
+            p.
+                Newsletter Confirmation is sent when the user subscribes to your public newsletter.
+            p.
+                See #[a(href='https://docs.skapi.com/email/newsletters.html#sending-public-newsletters' target="_blank") Sending Public Newsletters]
+
+            small Required Placeholder:
+            ul
+                li #[b https://link.skapi] - Link to confirm newsletter subscription. You can append this to the href attribute of the anchor tag.
+
+            small Optional Placeholder:
+            ul
+                li #[b ${email}] - Subscribed user's email
+                li #[b ${service_name}] - Service name
+
+        p(style='margin-bottom: 0').
+            You can customize the email by sending the template to the #[a(:href='"mailto:" + email_templates[group]') email address] provided below:
+        Code
+            pre {{ email_templates[group] }}
+
+        p Email Alias: #[b.wordset {{ currentService.service.email_alias || currentService.service.service }}@mail.skapi.com]
+        
+        p.
+            The senders email address should exactly match your current profile email address: #[b.wordset {{ user.email }}]
+        
+        p.
+            After sending the email, the new template will show up on the list below. Then you can set the email template by clicking #[b In-Use] icon.
+        
+        p.
+            For more info about customizing the email template, see #[a(href='https://docs.skapi.com/email/email-templates.html' target="_blank") Automated Emails] for more information.
+
+        br
 
 template(v-if='!needsEmailAlias')
-    section
+    section.infoBox
         .titleHead
             h5(style='white-space: nowrap;') {{emailType}}
             div(style='display: flex;align-items: center;font-size: 0.8rem;')
@@ -159,24 +295,23 @@ template(v-if='!needsEmailAlias')
             template(v-else)
                 button.noLine(@click="emailToUse = null") Cancel
                 button.final(@click="useEmail(emailToUse)") Confirm
+
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, computed, watch } from "vue";
 import type { ComputedRef, Ref } from "vue";
 import { currentService, serviceAutoMails } from "./main";
-import { skapi } from "@/main";
 import { user } from "@/code/user";
-import { dateFormat } from "@/code/admin";
-import { devLog } from "@/code/logger";
 import Code from "@/components/code.vue";
+import { dateFormat } from "@/code/admin";
 import Table from "@/components/table.vue";
 import Modal from "@/components/modal.vue";
 import Pager from "@/code/pager";
+import { skapi } from "@/main";
+import { devLog } from "@/code/logger";
 import Select from "@/components/select.vue";
 import Toggle from "@/components/toggle.vue";
-import TabMenu from '@/components/tab.vue';
-
 type Newsletter = {
     bounced: number;
     compliant: number;
@@ -211,15 +346,35 @@ let needsEmailAlias = computed(() => {
     );
 });
 
-let activeTabs = ref(0);
-let emailType = ref("Signup Confirmation");
-let emailTypeSelect = ["Signup Confirmation", "Welcome Email", "Verification Email", "Invitation Email", "Newsletter Confirmation"];
-
-watch(activeTabs, (n) => {
-    emailType.value = emailTypeSelect[n];
-    console.log(emailType.value);
-});
-
+let emailType: Ref<
+    | "Signup Confirmation"
+    | "Welcome Email"
+    | "Verification Email"
+    | "Invitation Email"
+    | "Newsletter Confirmation"
+> = ref("Signup Confirmation");
+let emailTypeSelect = [
+    {
+        value: "Signup Confirmation",
+        option: "Signup Confirmation",
+    },
+    {
+        value: "Welcome Email",
+        option: "Welcome Email",
+    },
+    {
+        value: "Verification Email",
+        option: "Verification Email",
+    },
+    {
+        value: "Invitation Email",
+        option: "Invitation Email",
+    },
+    {
+        value: "Newsletter Confirmation",
+        option: "Newsletter Confirmation",
+    },
+];
 ///////////////////////////////////////////////////////////////////////////////// template history[start]
 let pager: Pager = null;
 
@@ -668,7 +823,7 @@ init();
     display: flex;
     justify-content: center;
 
-    &>div {
+    & > div {
         width: 100%;
     }
 }
@@ -689,9 +844,8 @@ li {
 // table style below
 thead {
     th {
-        &>span {
+        & > span {
             @media (pointer: fine) {
-
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -707,7 +861,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -717,7 +871,6 @@ thead {
         display: block !important;
     }
 }
-
 form.register {
     display: flex;
     flex-wrap: wrap;

@@ -1,8 +1,8 @@
 <template lang="pug">
 section
-    .flex-wrap.space-between(style="gap:10px")
+    .flex-wrap.space-between
         .page-title Users
-        .flex-wrap.end(style="gap:10px;")
+        .flex-wrap.end
             //- button.inline.only-icon.gray.sm
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-person-add-fill")
@@ -17,8 +17,8 @@ section
     br
     br
 
-    .flex-wrap.space-between.table-menu-wrap(style="gap:10px")
-        .flex-wrap(style="gap:10px")
+    .flex-wrap.space-between.table-menu-wrap
+        .flex-wrap
             button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
@@ -33,7 +33,7 @@ section
                 //- span(style="padding-left: 5px; color: #999;") Name / 권규비 ...
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-search")
-        .flex-wrap(style="gap:10px")
+        .flex-wrap
             button.inline.only-icon.gray.sm(@click="openCreateUser = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-person-add-fill")
@@ -209,23 +209,36 @@ section
             button.inline Search
 
 // 3
-Modal(:open="searchModalOpen" style="max-width: 560px; width: 100%; background-color: unset; padding: 0; border-radius: 0;")
-    .flex-wrap(style="position:relative; background-color: rgba(22, 23, 26, 1); border-radius: 7px; padding: 8px; gap: 10px; align-items: center")
-        #showSearchFor(style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%);")
-            svg.svgIcon(style="fill: #666; margin: 0 8px;")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-search")
-            span(style="padding-right: 4px; color: #666;") {{ searchFor }}
-            span(style="color: #666;") /
-        input#searchInput.block(type="text" style="background: unset; padding-left: 4.5rem")
-    
-    br
-
-    div(style="background-color: rgba(22, 23, 26, 1); padding: 1rem 1rem 1.5rem; border-radius: 7px;")
-        .tit(style="color: #666; margin-bottom:0.8rem; font-size: 0.9rem;") Search for
-        .flex-wrap.center(style="gap:10px;margin-bottom: 1.2rem")
-            button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value; searchModalStep = 2") {{ option.option }}
-        span(style="font-size: 0.9rem; padding:2px 8px; margin-right: 8px; background-color: #1f1f1f; border: 1px solid #222; border-radius: 6px; color: #666;") esc
-        span(style="color: #555; font-size: 0.9rem") to close
+Modal.search-modal(:open="searchModalOpen")
+    //- form#searchForm(@submit.prevent="getPage(true)")
+    form#searchForm(@submit.prevent)
+        .top.flex-wrap
+            #showSearchFor.search-for
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+                span {{ searchFor + ' /' }}
+            .search-input(:class="{'readonly': searchFor === 'timestamp' || searchFor === 'birthdate' || searchFor === 'locale'}")
+                template(v-if="searchFor === 'timestamp' || searchFor === 'birthdate'")
+                    input#searchInput.block(type="text" placeholder="YYYY-MM-DD ~ YYYY-MM-DD" v-model="searchValue" name="date" readonly)
+                    svg.svgIcon
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-calendar-today-fill")
+                    //- Calendar(
+                    //-     v-model="searchValue",
+                    //-     :showCalendar="showCalendar",
+                    //-     @close="showCalendar = false",
+                    //-     alwaysEmit="true"
+                    //- )
+                template(v-else)
+                    input#searchInput.block(type="text" v-model="searchValue" name="search")
+        .bottom
+            .tit Search for
+            .flex-wrap.center(style="margin-bottom: 1.2rem")
+                button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value;") {{ option.option }}
+            .key-desc.flex-wrap.center
+                .key
+                    span.name esc
+                    span.action to close
+        Calendar(v-if="searchFor === 'timestamp' || searchFor === 'birthdate'" :showCalendar="true" style="position:relative; width: 100%; margin:0")
 
 Modal(:open="openCreateUser")
     .modal-close(@click="openCreateUser = false;")
@@ -397,7 +410,6 @@ Modal(:open="openCreateUser")
 </template>
 <script setup lang="ts">
 import Table from "@/components/table.vue";
-import Guide from "./guide.vue";
 import Select from "@/components/select.vue";
 import Checkbox from "@/components/checkbox.vue";
 import Modal from "@/components/modal.vue";
@@ -405,7 +417,7 @@ import Calendar from "@/components/calendar.vue";
 import Locale from "@/components/locale.vue";
 import Pager from "@/code/pager";
 
-import { nextTick, reactive, ref, computed, watch, type Ref } from "vue";
+import { nextTick, reactive, ref, computed, watch, type Ref, onMounted, onUnmounted } from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { showDropDown } from "@/assets/js/event.js";
@@ -413,6 +425,23 @@ import { currentService, serviceUsers } from "@/views/service/main";
 import { Countries } from "@/code/countries";
 import { devLog } from "@/code/logger";
 import UserDetails from './showDetail.vue'
+
+onMounted(() => {
+    document.addEventListener("keydown", closeSearchModal);
+});
+
+onUnmounted(() => {
+    document.removeEventListener("keydown", closeSearchModal);
+});
+
+let closeSearchModal = (e) => {
+    if (e.key === "Escape" && searchModalOpen.value) {
+        searchModalOpen.value = false;
+        searchModalStep.value = 1;
+        searchFor.value = "user_id";
+        searchValue.value = "";
+    }
+}
 
 let pager: Pager = null;
 let selectedUser = ref(null);
@@ -438,7 +467,6 @@ let currentPage: Ref<number> = ref(1);
 let endOfList = ref(false);
 let showCalendar = ref(false);
 let showLocale = ref(false);
-let showGuide = ref(false);
 let hovering = ref(false);
 let showDetail = ref(false);
 let searchModalOpen = ref(false);
@@ -705,9 +733,9 @@ watch(searchFor, (n, o) => {
                 return;
             }
 
-            let gcr = showSearchFor.getClientRects()[0].width;
+            let gcr = showSearchFor.getBoundingClientRect().width || 98;
 
-            inputElement.style.paddingLeft = `${gcr + 8}px`;
+            inputElement.style.paddingLeft = `${gcr + 7}px`;
             inputElement.focus();
         });
     }
@@ -1159,85 +1187,6 @@ let closeGrantAccess = () => {
 <style scoped lang="less">
 body {
     font-family: "Twemoji Country Flags", "Radio Canada", sans-serif;
-}
-
-// .updown {
-//     background-color: #fff;
-//     background-color: var(--main-color);
-//     border-radius: 50%;
-//     margin-left: 8px;
-//     cursor: pointer;
-//     box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
-// }
-.moreVert {
-    .inner {
-        // padding-top: 0.25rem;
-
-        // &>* {
-        //     padding: 0.25rem 0.5rem;
-        // }
-
-        // padding-bottom: 0.25rem;
-    }
-}
-
-// svg {
-//     fill: black;
-//     width: 22px;
-//     height: 22px;
-// }
-// svg:hover {
-//       fill: var(--main-color);
-// }
-#searchForm {
-    margin: 0 auto;
-
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    width: 700px;
-    max-width: 100%;
-
-    // .customSelect {
-    //     flex-grow: 1;
-    // }
-    .search {
-        position: relative;
-        display: flex;
-        flex-grow: 50;
-        gap: 8px;
-        flex-shrink: 0;
-        min-width: 290px;
-    }
-
-    .clickInput {
-        position: relative;
-    }
-
-    .big {
-        padding-right: 40px;
-    }
-
-    svg,
-    .icon {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        transform: translateY(-50%);
-        cursor: pointer;
-        user-select: none;
-        fill: black;
-    }
-
-    svg:hover {
-        fill: var(--main-color);
-    }
-
-    .final {
-        flex-grow: 1;
-        width: 140px;
-    }
 }
 
 #calendar,

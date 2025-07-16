@@ -3,18 +3,6 @@ section
     .flex-wrap.space-between(style="gap:10px")
         .page-title {{ currentService.service.name }}
         .flex-wrap.end(style="gap:10px;")
-            //- button.inline.gray.sm(type="button" @click="editName") Rename
-            //- button.inline.gray.sm(type="button" @click="editCors") CORS
-            //- button.inline.gray.sm(type="button" @click="editApiKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}") Secret Key
-            //- button.only-icon.gray(type="button" @click="editName")
-            //-     svg.svgIcon.nohover
-            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
-            //- button.only-icon.gray(type="button" @click="editCors")
-            //-     svg.svgIcon.nohover
-            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-add-link")
-            //- button.only-icon.gray(type="button" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" @click="editApiKey")
-            //-     svg.svgIcon.nohover
-            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-key")
             router-link(:to='`/subscription/${currentService.id}`')
                 button.inline.sm.blue Change Plan
             router-link(:to='"/delete-service/" + currentService.id')
@@ -26,12 +14,42 @@ section
         button.inline.gray.sm(type="button" @click="editName") Rename
         button.inline.gray.sm(type="button" @click="editCors") CORS
         button.inline.gray.sm(type="button" @click="editApiKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}") Secret Key
-        router-link(:to='`/subscription/${currentService.id}`')
+        //- router-link(:to='`/subscription/${currentService.id}`')
             button.inline.sm.blue Change Plan
-        router-link(:to='"/delete-service/" + currentService.id')
+        //- router-link(:to='"/delete-service/" + currentService.id')
             button.inline.sm.red Delete Service
 
     br
+    br
+
+    .flex-wrap.space-between(style="gap: 20px;")
+        .card-wrap(style="flex: 1; min-width: 300px;")
+            .card
+                .flex-wrap.space-between
+                    div
+                        .title Service Name
+                        .data {{ currentService.service.name }}
+                    button.only-icon.gray.edit-btn(type="button" @click="editName")
+                        svg.svgIcon.nohover
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+
+            .card
+                .flex-wrap.space-between
+                    div
+                        .title CORS
+                        .data {{ currentService.service.cors || '*' }}
+                    button.only-icon.gray.edit-btn(type="button" @click="editCors")
+                        svg.svgIcon.nohover
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+
+            .card
+                .flex-wrap.space-between
+                    div
+                        .title Secret Key
+                        .data {{ currentService.service.api_key ? currentService.service.api_key.slice(0, 2) + '*'.repeat(currentService.service.api_key.length - 2) + '...' : '-' }}
+                    button.only-icon.gray.edit-btn(type="button" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" @click="editApiKey")
+                        svg.svgIcon.nohover
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
 
     .flex-wrap.space-between(style="gap: 20px;")
         .card-wrap(style="flex: 2; min-width: 300px;")
@@ -92,7 +110,7 @@ section
             .card
                 //- .title Toggle Switches
 
-                .flex-wrap.center(style="gap: 10px; padding: 1rem;")
+                //- .flex-wrap.center(style="gap: 10px; padding: 1rem;")
                     button.only-icon.gray(type="button" @click="editName")
                         svg.svgIcon.nohover
                             use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
@@ -103,7 +121,7 @@ section
                         svg.svgIcon.nohover
                             use(xlink:href="@/assets/img/material-icon.svg#icon-key")
 
-                hr
+                //- hr
 
                 .flex-wrap.space-between
                     .data(style="position:relative; margin:0; font-size: 16px;") Disable/Enable
@@ -525,6 +543,7 @@ hr {
     margin-bottom: 20px;
 
     .card {
+        position: relative;
         background-color: #121214;
         padding: 20px;
         border-radius: 13px;
@@ -535,14 +554,14 @@ hr {
         box-sizing: border-box;
 
         .title {
-            font-size: 20px;
-            margin-bottom: 20px;
+            // font-size: 20px;
+            margin-bottom: 10px;
+            opacity: 0.6;
         }
 
         .data {
-            font-size: 14px;
+            // font-size: 14px;
             font-weight: 300;
-            opacity: 0.6;
 
             @media (max-width: 600px) {
                 font-size: 12px;
@@ -558,6 +577,12 @@ hr {
                 font-size: 12px;
             }
         }
+
+        // .edit-btn {
+        //     position: absolute;
+        //     top: 20px;
+        //     right: 20px;
+        // }
 
         .bar-wrap {
             margin-top: 10px;
