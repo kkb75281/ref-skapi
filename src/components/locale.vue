@@ -38,19 +38,21 @@ let handleCountryClick = (key) => {
 let closeLocale = (e) => {
     let localeSelector = document.querySelector('#localeSelector');
 
-    if(!localeSelector.contains(e.target)) {
+    if (!localeSelector.contains(e.target)) {
         emit('close');
     }
 }
 </script>
 <style lang="less" scoped>
 #localeSelector {
-    width: 340px;
+    // width: 340px;
+    width: 100%;
     height: 276px;
     overflow: hidden;
     border-radius: 6px;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    background: #FAFAFA;
+    // border: 1px solid rgba(0, 0, 0, 0.15);
+    // background: #FAFAFA;
+    background: #16171a;
     box-shadow: 8px 12px 36px 0px rgba(0, 0, 0, 0.10);
     display: none;
 
@@ -63,28 +65,34 @@ let closeLocale = (e) => {
         overflow: scroll;
     }
 
-.country {
-    display: flex;
-    gap: 16px;
-    margin: 5px;
-    padding: 6px 10px;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
+    .country {
+        display: flex;
+        gap: 16px;
+        margin: 5px;
+        // padding: 6px 10px;
+        padding: 14px 16px;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
 
-    &.selected {
-        background-color: rgba(41, 63, 230, 0.05);
-        border: 1px solid var(--main-color);
+        &.selected {
+            // background-color: rgba(41, 63, 230, 0.05);
+            background-color: rgba(255, 255, 255, 0.05);
+            // border: 1px solid var(--main-color);
+            box-shadow: 0 0 0 1px var(--main-color) inset;
+        }
+
+        &:hover {
+            // background-color: rgba(41, 63, 230, 0.05);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .name {
+            flex: 0.95;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
     }
-    &:hover {
-        background-color: rgba(41, 63, 230, 0.05);
-    }
-    .name {
-        flex: 0.95;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-    }
-}
 }
 </style>

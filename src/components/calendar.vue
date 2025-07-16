@@ -327,9 +327,10 @@ let createdDate = (e, date) => {
 
 <style lang="less" scoped>
 #calendar {
-    width: 340px;
+    // width: 340px;
+    width: 100%;
     border-radius: 6px;
-    border: 1px solid rgba(0, 0, 0, 0.15);
+    // border: 1px solid rgba(0, 0, 0, 0.15);
     // background: #FAFAFA;
     background: #16171a;
     box-shadow: 8px 12px 36px 0px rgba(0, 0, 0, 0.10);
@@ -491,7 +492,8 @@ let createdDate = (e, date) => {
             height: 1px;
             top: 0;
             left: 0;
-            background: rgba(0, 0, 0, 0.10);
+            // background: rgba(0, 0, 0, 0.10);
+            background: rgba(255, 255, 255, 0.10);
             box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.06);
         }
 

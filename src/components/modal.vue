@@ -178,6 +178,7 @@ dialog {
         border-bottom: 1px solid rgba(225, 225, 225, 0.1);
     }
 }
+
 // 모달 스타일 추가 (스크롤O) :: e
 
 .search-modal {
@@ -250,6 +251,7 @@ dialog {
         .key-desc {
             .key {
                 font-size: 0.9rem;
+                margin-right: 10px;
 
                 .name {
                     padding: 2px 8px;

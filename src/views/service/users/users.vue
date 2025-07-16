@@ -17,8 +17,8 @@ section
     br
     br
 
-    .flex-wrap.space-between.table-menu-wrap
-        .flex-wrap
+    .table-menu-wrap
+        .table-functions 
             button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
@@ -29,11 +29,19 @@ section
                     .inner(style="padding: 0.5rem;")
                         template(v-for="c in columnList")
                             Checkbox(v-model="c.value", style="display: flex; padding: 0.25rem 0;") {{ c.name }}
-            button.inline.only-icon.gray.sm(@click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
-                //- span(style="padding-left: 5px; color: #999;") Name / 권규비 ...
+            .search-ing-btn(v-if="searchValue && !searchModalOpen")
+                span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
+                svg.svgIcon.reset-btn(@click="resetSearchModal")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-cancel-fill")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-search")
-        .flex-wrap
+            button.inline.only-icon.gray.sm.search-btn(v-else @click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+            button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+        .table-actions 
             button.inline.only-icon.gray.sm(@click="openCreateUser = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-person-add-fill")
@@ -210,35 +218,45 @@ section
 
 // 3
 Modal.search-modal(:open="searchModalOpen")
-    //- form#searchForm(@submit.prevent="getPage(true)")
-    form#searchForm(@submit.prevent)
-        .top.flex-wrap
-            #showSearchFor.search-for
+    .top.flex-wrap
+        #showSearchFor.search-for
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+            span {{ searchFor + ' /' }}
+        .search-input(:class="{'readonly': searchFor === 'timestamp' || searchFor === 'birthdate' || searchFor === 'locale'}")
+            template(v-if="searchFor === 'timestamp' || searchFor === 'birthdate'")
+                input#searchInput.block(type="text" placeholder="YYYY-MM-DD ~ YYYY-MM-DD" v-model="searchValue" name="date" readonly)
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-search")
-                span {{ searchFor + ' /' }}
-            .search-input(:class="{'readonly': searchFor === 'timestamp' || searchFor === 'birthdate' || searchFor === 'locale'}")
-                template(v-if="searchFor === 'timestamp' || searchFor === 'birthdate'")
-                    input#searchInput.block(type="text" placeholder="YYYY-MM-DD ~ YYYY-MM-DD" v-model="searchValue" name="date" readonly)
-                    svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-calendar-today-fill")
-                    //- Calendar(
-                    //-     v-model="searchValue",
-                    //-     :showCalendar="showCalendar",
-                    //-     @close="showCalendar = false",
-                    //-     alwaysEmit="true"
-                    //- )
-                template(v-else)
-                    input#searchInput.block(type="text" v-model="searchValue" name="search")
-        .bottom
-            .tit Search for
-            .flex-wrap.center(style="margin-bottom: 1.2rem")
-                button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value;") {{ option.option }}
-            .key-desc.flex-wrap.center
-                .key
-                    span.name esc
-                    span.action to close
-        Calendar(v-if="searchFor === 'timestamp' || searchFor === 'birthdate'" :showCalendar="true" style="position:relative; width: 100%; margin:0")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-calendar-today-fill")
+            template(v-if="searchFor === 'locale'")
+                input#searchInput.block(type="text" placeholder="2 digit country code e.g. KR" v-model="searchValue" name="locale" readonly)
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down") 
+            template(v-else-if="searchFor === 'user_id'")
+                input#searchInput.block(type="search" placeholder="xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" v-model="searchValue" name="user_id" @input="(e) => { e.target.setCustomValidity(''); }" pattern="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+            template(v-else-if="searchFor === 'email'")
+                input#searchInput.block(type="email" placeholder="user@email.com" v-model="searchValue" name="email" minlength="5")
+            template(v-else-if="searchFor === 'name'")
+                input#searchInput.block(type="text" placeholder="User's Name" v-model="searchValue" name="name")
+            template(v-else-if="searchFor === 'phone_number'")
+                input#searchInput.block(type="text" placeholder="+821234567890" v-model="searchValue")
+            template(v-else-if="searchFor === 'address'")
+                input#searchInput.block(type="text" placeholder="Seoul, South Korea" v-model="searchValue" name="address")
+            template(v-else-if="searchFor === 'gender'")
+                input#searchInput.block(type="text" placeholder="Gender" v-model="searchValue" name="gender")
+    .bottom
+        .tit Search for
+        .flex-wrap.center(style="margin-bottom: 1.2rem")
+            button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value;") {{ option.option }}
+        .key-desc.flex-wrap.center
+            .key
+                span.name enter
+                span.action search
+            .key
+                span.name esc
+                span.action to close
+    Calendar(v-if="searchFor === 'timestamp' || searchFor === 'birthdate'" v-model="searchValue" :showCalendar="true" alwaysEmit="true")
+    Locale(v-if="searchFor === 'locale'" v-model="searchValue" :showLocale="true")
 
 Modal(:open="openCreateUser")
     .modal-close(@click="openCreateUser = false;")
@@ -427,20 +445,41 @@ import { devLog } from "@/code/logger";
 import UserDetails from './showDetail.vue'
 
 onMounted(() => {
-    document.addEventListener("keydown", closeSearchModal);
+    document.addEventListener("keydown", handleSearchModal);
 });
 
 onUnmounted(() => {
-    document.removeEventListener("keydown", closeSearchModal);
+    document.removeEventListener("keydown", handleSearchModal);
 });
 
-let closeSearchModal = (e) => {
-    if (e.key === "Escape" && searchModalOpen.value) {
-        searchModalOpen.value = false;
-        searchModalStep.value = 1;
-        searchFor.value = "user_id";
-        searchValue.value = "";
+function handleSearchModal(e: KeyboardEvent) {
+    if (!searchModalOpen.value) return;
+
+    if (e.key === "Escape") {
+        resetSearchModal();
     }
+
+    if (e.key === "Enter") {
+        e.preventDefault();
+
+        // input 유효성 검사
+        const inputEl = document.querySelector("#searchInput") as HTMLInputElement;
+        if (inputEl && !inputEl.checkValidity()) {
+            inputEl.reportValidity(); // 브라우저 기본 alert
+            return; // 검색 실행하지 않음
+        }
+
+        searchModalOpen.value = false;
+        getPage(true);
+    }
+}
+
+function resetSearchModal() {
+    searchModalOpen.value = false;
+    searchFor.value = "user_id";
+    searchValue.value = "";
+    currentPage.value = 1;
+    getPage(true);
 }
 
 let pager: Pager = null;
@@ -841,7 +880,7 @@ let getPage = async (refresh?: boolean) => {
         currentPage.value = 1;
     }
 
-    if (!serviceUsers[currentService.id] || searchValue.value) {
+    if (!serviceUsers[currentService.id] || searchValue.value || refresh) {
         serviceUsers[currentService.id] = await Pager.init({
             id: "user_id",
             resultsPerPage: 10,
@@ -864,7 +903,7 @@ let getPage = async (refresh?: boolean) => {
             callParams.value.condition = "<=";
         }
 
-        // devLog({callParams.value})
+        // devLog({ callParams: callParams.value });
 
         let fetchedData = await skapi
             .getUsers(callParams.value, {
@@ -876,7 +915,7 @@ let getPage = async (refresh?: boolean) => {
                 alert(err);
             });
 
-        // devLog({fetchedData})
+        // devLog({ fetchedData })
 
         // save endOfList status
         serviceUsers[currentService.id].endOfList = fetchedData.endOfList;
@@ -1088,6 +1127,7 @@ let updateListDisplay = () => {
     let disp = pager.getPage(currentPage.value);
     maxPage.value = disp.maxPage;
     listDisplay.value = disp.list;
+
     while (
         disp.maxPage > 0 &&
         disp.maxPage < currentPage.value &&
@@ -1187,16 +1227,6 @@ let closeGrantAccess = () => {
 <style scoped lang="less">
 body {
     font-family: "Twemoji Country Flags", "Radio Canada", sans-serif;
-}
-
-#calendar,
-#localeSelector {
-    position: absolute;
-    right: 0;
-    top: 100%;
-    max-width: 100%;
-    margin-top: 8px;
-    z-index: 1;
 }
 
 #createForm {
