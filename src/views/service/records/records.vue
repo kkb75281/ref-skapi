@@ -1,15 +1,13 @@
 <template lang="pug">
-section.infoBox
-    .titleHead
-        h2.page-title Database
+section
+    .flex-wrap.space-between
+        .page-title Database
         a.btn-docs(href="https://docs.skapi.com/database/introduction.html" target="_blank")
             button.inline.sm.gray Go Docs
 
-    template(v-if="showGuide")
-        Guide
+hr
 
-    //- hr
-
+section
     .error(v-if='!user?.email_verified')
         svg
             use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
@@ -25,53 +23,53 @@ section.infoBox
             use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
         span This service is currently suspended.
 
-//- SearchBox(:callSearch='callSearch')
+section
+    .table-menu-wrap
+        .table-functions
+            button.inline.only-icon.gray.sm(@click.stop="(e)=>{showDropDown(e)}")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
+                    .inner
+                        Checkbox(v-model="filterOptions.table" style="display:flex;") Table
+                        Checkbox(v-model="filterOptions.record_id" style="display:flex") Record ID
+                        Checkbox(v-model="filterOptions.user_id" style="display:flex") User ID 
+                        Checkbox(v-model="filterOptions.reference" style="display:flex") Reference
+                        Checkbox(v-model="filterOptions.index" style="display:flex") Index/Value
+                        Checkbox(v-model="filterOptions.tag" style="display:flex") Tag
+                        Checkbox(v-model="filterOptions.files" style="display:flex") Files
+                        Checkbox(v-model="filterOptions.data" style="display:flex") Data
+                        Checkbox(v-model="filterOptions.updated" style="display:flex") Updated
+                        Checkbox(v-model="filterOptions.referenced" style="display:flex") Referenced
+                        Checkbox(v-model="filterOptions.ip" style="display:flex") IP
+            .search-ing-btn(v-if="searchValue && !searchModalOpen")
+                span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
+                svg.svgIcon.reset-btn(@click="resetSearchModal")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-cancel-fill")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+            button.inline.only-icon.gray.sm.search-btn(v-else @click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+            button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
 
-//- hr
+        .table-actions
+            button.inline.only-icon.gray.sm(@click="()=>{ !user.email_verified ? false : selectedRecord = null; showDetail=true; }" :class="{ disabled : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-add")
+            button.inline.only-icon.gray.sm(@click="openDeleteRecords=true" :class="{ disabled : !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
 
-.flex-wrap.space-between.table-menu-wrap(style="gap:10px")
-    .flex-wrap(style="gap:10px")
-        button.inline.only-icon.gray.sm(@click.stop="(e)=>{showDropDown(e)}")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
-            .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal; color:black")
-                .inner
-                    Checkbox(v-model="filterOptions.table" style="display:flex;") Table
-                    Checkbox(v-model="filterOptions.record_id" style="display:flex") Record ID
-                    Checkbox(v-model="filterOptions.user_id" style="display:flex") User ID 
-                    Checkbox(v-model="filterOptions.reference" style="display:flex") Reference
-                    Checkbox(v-model="filterOptions.index" style="display:flex") Index/Value
-                    Checkbox(v-model="filterOptions.tag" style="display:flex") Tag
-                    Checkbox(v-model="filterOptions.files" style="display:flex") Files
-                    Checkbox(v-model="filterOptions.data" style="display:flex") Data
-                    Checkbox(v-model="filterOptions.updated" style="display:flex") Updated
-                    Checkbox(v-model="filterOptions.referenced" style="display:flex") Referenced
-                    Checkbox(v-model="filterOptions.ip" style="display:flex") IP
-        button.inline.only-icon.gray.sm(@click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+    Table(:key="tableKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" resizable)
+        template(v-if="fetching" v-slot:msg)
+            .tableMsg.center
+                .loader(style="--loader-color:white; --loader-size:12px")
+        template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+            .tableMsg.center No Records
 
-    .flex-wrap(style="gap:10px")
-        button.inline.only-icon.gray.sm(@click="()=>{ !user.email_verified ? false : selectedRecord = null; showDetail=true; }" :class="{'nonClickable' : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-add-circle-fill")
-        button.inline.only-icon.gray.sm(@click="openDeleteRecords=true" :class="{'nonClickable': !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
-
-        //- .iconClick.square(@click="getPage(true)" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}")
-        //-     //- .material-symbols-outlined.notranslate.fill(:class='{loading:fetching}') refresh
-        //-     svg.svgIcon(:class='{loading:fetching}')
-        //-         use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
-        //-     span &nbsp;&nbsp;Refresh
-
-.recordPart 
-    template(v-if="fetching")
-        #loading.
-            Loading ... &nbsp;
-            #[.loader(style="--loader-color:black; --loader-size:12px")]
-            
-    Table(:key="tableKey" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}" resizable)
         template(v-slot:head)
             tr
                 th.fixed(style='width:60px;')
@@ -109,14 +107,10 @@ section.infoBox
                     .resizer
                 th.overflow(v-if="filterOptions.ip" style='width:160px;')
                     | IP
+
         template(v-slot:body)
-            template(v-if="fetching")
+            template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
                 tr(v-for="i in 10")
-                    td(:colspan="colspan")
-            template(v-else-if="!listDisplay || listDisplay?.length === 0")
-                tr
-                    td#noUsers(:colspan="colspan") No Records
-                tr(v-for="i in 9")
                     td(:colspan="colspan")
             template(v-else)
                 tr.hoverRow(v-for="(rc, i) in listDisplay" @click="showDetail=true; selectedRecord=rc")
@@ -165,50 +159,45 @@ section.infoBox
                 tr(v-for="i in (10 - listDisplay?.length)")
                     td(:colspan="colspan")
 
-//- br
-
-.tableMenu(v-if="!showDetail" style='display:block;text-align:center;')
-    .iconClick.square.arrow(@click="currentPage--;" :class="{'nonClickable': fetching || currentPage === 1 }")
-        svg.svgIcon(style="width: 26px; height: 26px")
-            use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-        span Previous&nbsp;&nbsp;
-    | &nbsp;&nbsp;
-    .iconClick.square.arrow(@click="currentPage++;" :class="{'nonClickable': fetching || endOfList && currentPage >= maxPage }")
-        span &nbsp;&nbsp;Next
-        svg.svgIcon(style="width: 26px; height: 26px")
-            use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+    .tableMenu(v-if="!showDetail" style='display:block;text-align:center;')
+        .iconClick.square.arrow(@click="currentPage--;" :class="{'nonClickable': fetching || currentPage === 1 }")
+            svg.svgIcon(style="width: 26px; height: 26px")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
+            span Previous&nbsp;&nbsp;
+        | &nbsp;&nbsp;
+        .iconClick.square.arrow(@click="currentPage++;" :class="{'nonClickable': fetching || endOfList && currentPage >= maxPage }")
+            span &nbsp;&nbsp;Next
+            svg.svgIcon(style="width: 26px; height: 26px")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
 
 // modal :: search
-Modal.modal-search(:open="searchModalOpen" style="max-width: 800px; width: 100%; background-color: unset; padding: 0; border-radius: 0;" @close="closeSearchModal")
-    .flex-wrap(style="position:relative; background-color: rgba(22, 23, 26, 1); border-radius: 7px; padding: 8px; gap: 10px; align-items: center")
-        #showSearchFor(style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%);")
-            svg.svgIcon(style="fill: #666; margin: 0 8px;")
+Modal.search-modal(:open="searchModalOpen")
+    .top
+        #showSearchFor.search-for
+            svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-search")
-            span(style="padding-right: 4px; color: #666;") {{ searchFor }}
-            span(style="color: #666;") /
-        input#searchInput.block(type="text" style="background: unset; padding-left: 4.5rem" v-model="searchValue" @keydown="handleSearchKeydown" :placeholder="getSearchPlaceholder()")
+            span {{ searchFor + ' /' }}
+        input#searchInput.block(type="text" v-model="searchValue" @keydown="handleSearchKeydown" :placeholder="getSearchPlaceholder()")
     
-    br
-
-    div(style="background-color: rgba(22, 23, 26, 1); padding: 1rem 2rem 1.5rem; border-radius: 7px;")
-        .tit(style="color: #666; margin-bottom:0.8rem; font-size: 0.9rem;") Search for
-        .flex-wrap.center(style="gap:10px ;margin-bottom: 2rem")
+    .bottom
+        .tit Search for
+        .flex-wrap.center(style="margin-bottom: 2rem")
             button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value;") {{ option.option }}
+        .key-desc.flex-wrap.center
+            .key
+                span.name enter
+                span.action search
+            .key
+                span.name esc
+                span.action to close
 
-        // query 선택시
-        .search-wrap.sel-query(v-if="searchFor === 'query'")
-            SearchBox(
-                :callSearch="handleSearchBoxSubmit"
-                :isInModal="true"
-                style="margin: 0;"
-            )
-        
-        .flex-wrap.end(style="gap: 8px; margin-top: 2rem;")
-            button.inline.gray(@click="resetSearch") Reset
-            button.inline(@click="performSearch") Search
-
-        span(style="font-size: 0.9rem; padding:2px 8px; margin-right: 8px; background-color: #1f1f1f; border: 1px solid #222; border-radius: 6px; color: #666;") esc
-        span(style="color: #555; font-size: 0.9rem") to close
+    // query 선택시
+    .bottom.search-wrap.sel-query(v-if="searchFor === 'query'")
+        SearchBox(
+            :callSearch="handleSearchBoxSubmit"
+            :isInModal="true"
+            style="margin: 0;"
+        )
 
 // modal :: record detail
 Modal.modal-scroll.modal-detailRecord(:open="showDetail" @close="closeModal")
@@ -428,17 +417,44 @@ watch(
 
 // ESC 키로 모달 닫기 (전역 이벤트)
 onMounted(() => {
-    const handleEscape = (e) => {
-        if (e.key === "Escape" && searchModalOpen.value) {
-            closeSearchModal();
-        }
-    };
-    document.addEventListener("keydown", handleEscape);
-
-    onUnmounted(() => {
-        document.removeEventListener("keydown", handleEscape);
-    });
+    document.addEventListener("keydown", handleSearchModal);
 });
+
+onUnmounted(() => {
+    document.removeEventListener("keydown", handleSearchModal);
+});
+
+function handleSearchModal(e: KeyboardEvent) {
+    if (!searchModalOpen.value) return;
+
+    if (e.key === "Escape") {
+        resetSearchModal();
+    }
+
+    if (e.key === "Enter") {
+        e.preventDefault();
+
+        // input 유효성 검사
+        const inputEl = document.querySelector(
+            "#searchInput"
+        ) as HTMLInputElement;
+        if (inputEl && !inputEl.checkValidity()) {
+            inputEl.reportValidity(); // 브라우저 기본 alert
+            return; // 검색 실행하지 않음
+        }
+
+        searchModalOpen.value = false;
+        getPage(true);
+    }
+}
+
+function resetSearchModal() {
+    searchModalOpen.value = false;
+    searchFor.value = "record_id";
+    searchValue.value = "";
+    currentPage.value = 1;
+    getPage(true);
+}
 
 let colspan = computed(() => {
     return (
@@ -543,11 +559,11 @@ let setUpNewPageList = async () => {
         sortBy: callParams?.index?.name || "record_id",
         order:
             callParams?.index?.name &&
-            (callParams?.index?.condition || "").includes("<")
+                (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                ? "asc"
-                : "desc",
+                    ? "asc"
+                    : "desc",
     });
 };
 
@@ -762,7 +778,7 @@ textarea::placeholder {
     .inner {
         padding: 0.5rem;
 
-        & > * {
+        &>* {
             padding: 0.25rem 0.5rem;
         }
     }
@@ -899,7 +915,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }
@@ -940,35 +956,18 @@ tbody {
     }
 }
 
-.recordPart {
-    position: relative;
-    overflow: hidden;
-}
+// // new style (추후 삭제될 수도 있음)
+// .infoBox {
+//     .titleHead {
+//         margin: 0 0 1.375rem;
+//         padding-bottom: 1.375rem;
+//         border-bottom: 1px solid rgba(225, 225, 225, 0.1);
 
-#loading {
-    position: absolute;
-    top: 60px;
-    left: 20px;
-    height: 60px;
-    z-index: 2;
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    font-size: 0.8rem;
-}
-
-// new style (추후 삭제될 수도 있음)
-.infoBox {
-    .titleHead {
-        margin: 0 0 1.375rem;
-        padding-bottom: 1.375rem;
-        border-bottom: 1px solid rgba(225, 225, 225, 0.1);
-
-        > * {
-            margin: 0;
-        }
-    }
-}
+//         >* {
+//             margin: 0;
+//         }
+//     }
+// }
 
 label._checkbox svg {
     margin-right: 0;
@@ -999,7 +998,7 @@ label._checkbox svg {
 
 .moreVert {
     .inner {
-        > * {
+        >* {
             padding: 0.25rem;
         }
     }
@@ -1026,8 +1025,8 @@ label._checkbox svg {
 }
 
 .search-wrap {
-    border-top: 1px solid rgba(225, 225, 225, 0.1);
-    border-bottom: 1px solid rgba(225, 225, 225, 0.1);
-    padding: 2rem 0;
+    // border-top: 1px solid rgba(225, 225, 225, 0.1);
+    // border-bottom: 1px solid rgba(225, 225, 225, 0.1);
+    // padding: 2rem 0;
 }
 </style>

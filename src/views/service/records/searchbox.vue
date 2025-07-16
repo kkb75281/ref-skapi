@@ -1,5 +1,4 @@
 <template lang="pug">
-
 form#searchForm(@submit.prevent="callSearch")
     .inner
         input(hidden name='service' :value='currentService.id')

@@ -25,11 +25,9 @@ section
             use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
         span This service is currently suspended.
 
-    br
-    br
-
-    .flex-wrap.space-between.table-menu-wrap
-        .flex-wrap
+section
+    .table-menu-wrap
+        .table-functions
             button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
@@ -40,25 +38,23 @@ section
                     .inner(style="padding: 0.5rem;")
                         template(v-for="c in columnList")
                             Checkbox(v-model="c.value", style="display: flex; padding: 0.25rem 0;") {{ c.name }}
-            button.inline.only-icon.gray.sm(@click="" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
-                //- span(style="padding-left: 5px; color: #999;") Name / 권규비 ...
+            button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-search")
-        .flex-wrap
-            button.inline.only-icon.gray.sm(@click="()=>{ !user.email_verified ? false : selectedLogger = null; showDetail=true; }" :class="{'nonClickable' : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+        .table-actions
+            button.inline.only-icon.gray.sm(@click="()=>{ !user.email_verified ? false : selectedLogger = null; showDetail=true; }" :class="{ disabled : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-add")
-            button.inline.only-icon.gray.sm(@click="openDeleteRecords=true" :class="{'nonClickable': !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
+            button.inline.only-icon.gray.sm(@click="openDeleteRecords=true" :class="{ disabled : !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
 
-.recordPart 
-    template(v-if="fetching")
-        #loading.
-            Loading ... &nbsp;
-            #[.loader(style="--loader-color:white; --loader-size:12px")]
-            
     Table(:key="tableKey" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}" resizable)
+        template(v-if="fetching" v-slot:msg)
+            .tableMsg.center
+                .loader(style="--loader-color:white; --loader-size:12px")
+        template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+            .tableMsg.center No Open ID Logger
         template(v-slot:head)
             tr
                 th.fixed(style='width:60px;')
@@ -77,13 +73,8 @@ section
                     | Request URL
                     .resizer
         template(v-slot:body)
-            template(v-if="fetching")
+            template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
                 tr(v-for="i in 10")
-                    td(:colspan="colspan")
-            template(v-else-if="!listDisplay || listDisplay?.length === 0")
-                tr
-                    td#noUsers(:colspan="colspan") No Open ID Logger
-                tr(v-for="i in 9")
                     td(:colspan="colspan")
             template(v-else)
                 tr.hoverRow(v-for="(rc, i) in listDisplay" @click="showDetail=true; selectedLogger=rc")
