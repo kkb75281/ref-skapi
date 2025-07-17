@@ -10,19 +10,16 @@ hr
 
 section
     .error(v-if='!user?.email_verified')
-        //- .material-symbols-outlined.notranslate.fill warning
         svg
             use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
         router-link(to="/account-setting") Please verify your email address to modify settings.
 
     .error(v-else-if='currentService.service.active == 0')
-        //- .material-symbols-outlined.notranslate.fill warning
         svg
             use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
         span This service is currently disabled.
 
     .error(v-else-if='currentService.service.active < 0')
-        //- .material-symbols-outlined.notranslate.fill warning
         svg
             use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
         span This service is currently suspended.
@@ -105,21 +102,19 @@ section
                                     use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
 
 Modal(:open="deleteClientKey" @close="deleteClientKey=false")
-    h4(style='margin:.5em 0 0;') Delete Client Secret
-    hr
+    .modal-title Delete Client Secret
 
-    div(style='font-size:.8rem;')
-        p.
-            Are you sure you want to delete #[b "{{deleteClientKey}}"]?
-            #[br]
-            This action cannot be undone.
-    br
-    div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
-        div(v-if="deleteKeyLoad" style="width:100%; text-align:center")
-            .loader(style="--loader-color:blue; --loader-size:12px")
+    .modal-desc
+        | Are you sure you want to delete #[b "{{deleteClientKey}}"]?
+        br
+        | This action cannot be undone.
+
+    .flex-wrap.space-between
+        .flex-wrap.center(v-if="deleteKeyLoad")
+            .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else)
-            button.noLine.warning(@click="deleteClientKey = false") Cancel
-            button.final.warning(@click="delCliKey") Delete
+            button.inline.gray(@click="deleteClientKey = false") Cancel
+            button.inline.red(@click="delCliKey") Delete
 
 </template>
 <script setup>
@@ -133,6 +128,7 @@ import { ref, nextTick } from 'vue';
 import { user } from '@/code/user';
 import { currentService } from '@/views/service/main';
 
+let fetching = ref(false);
 let updating = ref(false);
 let showDes = ref(false);
 let addMode = ref(false);

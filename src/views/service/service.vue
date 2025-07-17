@@ -8,8 +8,9 @@ section
             router-link(:to='"/delete-service/" + currentService.id')
                 button.inline.sm.gray.caution Delete Service
 
-    hr
+hr
 
+section
     //- .flex-wrap.end(style="gap:10px;")
         button.inline.gray.sm(type="button" @click="editName") Rename
         button.inline.gray.sm(type="button" @click="editCors") CORS

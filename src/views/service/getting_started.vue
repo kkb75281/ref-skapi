@@ -34,13 +34,6 @@ section
 
     p For more details, please refer to the #[a(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") Documentation]
 
-
-    //- .routerWrap
-        .routerButton
-        .routerButton
-            router-link(:to="`/my-services/${currentService.id}/dashboard`")
-                .desc Next Page
-                .title Dashboard & Settings
 </template>
 
 <script setup>
