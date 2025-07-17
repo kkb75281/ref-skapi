@@ -211,7 +211,7 @@ Modal.modal-scroll.modal-detailRecord(:open="showDetail" @close="closeModal")
             RecDetails(v-if='showDetail' :data='selectedRecord')
         .modal-footer
             template(v-if="uploading")
-                .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
+                .loader(style="--loader-color:white; --loader-size:12px; margin: 12px;")
             template(v-else)
                 button.btn-save(type="submit") SAVE
 
@@ -230,10 +230,10 @@ Modal.modal-deleteRecord(:open="openDeleteRecords" @close="openDeleteRecords=fal
 
     div(style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem")
         div(v-if="promiseRunning" style="width:100%; height:44px; text-align:center;")
-            .loader(style="--loader-color:blue; --loader-size:12px")
+            .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else)
-            button.gray(type="button" @click="openDeleteRecords=false;") Cancel 
-            button.red(type="button" @click="deleteRecords") Delete
+            button.gray.btn-cancel(type="button" @click="openDeleteRecords=false;") Cancel 
+            button.red.btn-delete(type="button" @click="deleteRecords") Delete
 </template>
 <script setup lang="ts">
 import Table from "@/components/table.vue";
@@ -559,11 +559,11 @@ let setUpNewPageList = async () => {
         sortBy: callParams?.index?.name || "record_id",
         order:
             callParams?.index?.name &&
-                (callParams?.index?.condition || "").includes("<")
+            (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                    ? "asc"
-                    : "desc",
+                ? "asc"
+                : "desc",
     });
 };
 
@@ -778,7 +778,7 @@ textarea::placeholder {
     .inner {
         padding: 0.5rem;
 
-        &>* {
+        & > * {
             padding: 0.25rem 0.5rem;
         }
     }
@@ -915,7 +915,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -998,7 +998,7 @@ label._checkbox svg {
 
 .moreVert {
     .inner {
-        >* {
+        > * {
             padding: 0.25rem;
         }
     }
