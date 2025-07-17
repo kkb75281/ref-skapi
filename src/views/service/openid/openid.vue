@@ -54,7 +54,7 @@ section
             .tableMsg.center
                 .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
-            .tableMsg.center No Open ID Logger
+            .tableMsg.center.empty No Open ID Logger
         template(v-slot:head)
             tr
                 th.fixed(style='width:60px;')
@@ -90,17 +90,17 @@ section
                 tr(v-for="i in (10 - listDisplay?.length)")
                     td(:colspan="colspan")
 
-    form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
-        .header(style='padding-right:10px;')
-            svg.svgIcon.black.clickable(@click="showDetail=false; selectedLogger=null;" :class="{nonClickable: fetching}")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back")
-            .name {{ selectedLogger?.id ? selectedLogger.id : 'Register Logger' }}
-            template(v-if="uploading")
-                .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
-            template(v-else)
-                button.noLine.iconClick.square(type="submit" style='padding:0 14px') SAVE
+    //- form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
+    //-     .header(style='padding-right:10px;')
+    //-         svg.svgIcon.black.clickable(@click="showDetail=false; selectedLogger=null;" :class="{nonClickable: fetching}")
+    //-             use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back")
+    //-         .name {{ selectedLogger?.id ? selectedLogger.id : 'Register Logger' }}
+    //-         template(v-if="uploading")
+    //-             .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
+    //-         template(v-else)
+    //-             button.noLine.iconClick.square(type="submit" style='padding:0 14px') SAVE
 
-        RecDetails(v-if='showDetail' :data='selectedLogger')
+    //-     RecDetails(v-if='showDetail' :data='selectedLogger')
 
 br
 
@@ -115,7 +115,7 @@ br
         svg.svgIcon(style="width: 26px; height: 26px")
             use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
 
-// delete records
+//- modal :: delete records
 Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
     .modal-title Delete Records
 
@@ -131,6 +131,22 @@ Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
             button.inline.gray(type="button" @click="openDeleteRecords=false;") Cancel 
             button.inline.red(type="button" @click="deleteRecords") Delete
 
+//- modal :: logger
+Modal.modal-scroll.modal-logger(:open="showDetail")
+    .modal-container(@submit.prevent='upload')
+        .modal-header
+            h4.title {{ selectedLogger?.id ? selectedLogger.id : 'Register Logger' }}
+            button.btn-close(type="button" @click="showDetail=false; selectedLogger=null;")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+        .modal-body
+            RecDetails(v-if='showDetail' :data='selectedLogger')
+        .modal-footer
+            template(v-if="uploading")
+                .loader(style="--loader-color:white; --loader-size:12px; margin: 12px;")
+            template(v-else)
+                button.btn-save(type="submit") SAVE
+
 </template>
 <script setup lang="ts">
 import Table from "@/components/table.vue";
@@ -138,13 +154,13 @@ import Checkbox from "@/components/checkbox.vue";
 import Modal from "@/components/modal.vue";
 import Pager from "@/code/pager";
 import Guide from "./guide.vue";
-import RecDetails from './showDetail.vue'
+import RecDetails from "./showDetail.vue";
 
 import type { Ref } from "vue";
 import { ref, computed, watch, nextTick, reactive } from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
-import { devLog } from "@/code/logger"
+import { devLog } from "@/code/logger";
 import { currentService, serviceLoggers } from "@/views/service/main";
 import { showDropDown } from "@/assets/js/event.js";
 
@@ -196,17 +212,18 @@ watch(currentPage, (n, o) => {
     }
 });
 
-watch(showDetail, (nv) => {
-    if (nv) {
-        nextTick(() => {
-            let scrollTarget = document.querySelector(".detailRecord .content");
-            let detailRecord = document.querySelector(".detailRecord");
-            let targetTop = window.scrollY + detailRecord.getBoundingClientRect().top;
-            scrollTarget.scrollTop = 0;
-            window.scrollTo(0, targetTop);
-        });
-    }
-});
+// watch(showDetail, (nv) => {
+//     if (nv) {
+//         nextTick(() => {
+//             let scrollTarget = document.querySelector(".detailRecord .content");
+//             let detailRecord = document.querySelector(".detailRecord");
+//             let targetTop =
+//                 window.scrollY + detailRecord.getBoundingClientRect().top;
+//             scrollTarget.scrollTop = 0;
+//             window.scrollTo(0, targetTop);
+//         });
+//     }
+// });
 
 let pager: Pager = null;
 let listDisplay = ref(null);
@@ -222,18 +239,21 @@ let setUpNewPageList = async () => {
         sortBy: "id",
         order: "asc",
     });
-}
+};
 
 let getPage = async (refresh?: boolean) => {
-
     pager = serviceLoggers[currentService.id];
     if (!refresh) {
-        if ((maxPage.value >= currentPage.value) || endOfList.value) {
+        if (maxPage.value >= currentPage.value || endOfList.value) {
             let disp = pager.getPage(currentPage.value);
             maxPage.value = disp.maxPage;
             listDisplay.value = disp.list;
 
-            while (disp.maxPage > 0 && disp.maxPage < currentPage.value && !disp.list.length) {
+            while (
+                disp.maxPage > 0 &&
+                disp.maxPage < currentPage.value &&
+                !disp.list.length
+            ) {
                 currentPage.value--;
             }
 
@@ -242,7 +262,9 @@ let getPage = async (refresh?: boolean) => {
     }
 
     fetching.value = true;
-    let fetchedData = await currentService.registerOpenIDLogger({ req: 'list' })
+    let fetchedData = await currentService.registerOpenIDLogger({
+        req: "list",
+    });
 
     pager.endOfList = fetchedData.endOfList;
     endOfList.value = pager.endOfList;
@@ -257,7 +279,11 @@ let getPage = async (refresh?: boolean) => {
     maxPage.value = disp.maxPage;
     listDisplay.value = disp.list;
 
-    while (disp.maxPage > 0 && disp.maxPage < currentPage.value && !disp.list.length) {
+    while (
+        disp.maxPage > 0 &&
+        disp.maxPage < currentPage.value &&
+        !disp.list.length
+    ) {
         currentPage.value--;
     }
 
@@ -268,10 +294,12 @@ let init = async () => {
     currentPage.value = 1;
 
     // setup pagers
-    if (serviceLoggers[currentService.id] && Object.keys(serviceLoggers[currentService.id]).length) {
+    if (
+        serviceLoggers[currentService.id] &&
+        Object.keys(serviceLoggers[currentService.id]).length
+    ) {
         endOfList.value = serviceLoggers[currentService.id].endOfList;
         getPage();
-
     } else {
         await setUpNewPageList();
         getPage(true);
@@ -310,7 +338,7 @@ let upload = async (e: SubmitEvent) => {
             }
         }
     } catch (err) {
-        alert('Invalid JSON data');
+        alert("Invalid JSON data");
         uploading.value = false;
         return;
     }
@@ -342,34 +370,32 @@ let upload = async (e: SubmitEvent) => {
 let deleteRecords = () => {
     promiseRunning.value = true;
 
-    let deleteIds = Object.keys(checked.value)
+    let deleteIds = Object.keys(checked.value);
 
-    let promise = deleteIds.map(id => {
+    let promise = deleteIds.map((id) => {
         currentService.registerOpenIDLogger({ req: "delete", id });
-    })
+    });
 
-    Promise.all(promise)
-        .then(async (r) => {
-            for (let id of deleteIds) {
-                for (let i = 0; i < listDisplay.value.length; i++) {
-                    if (listDisplay.value[i].record_id == id) {
-                        listDisplay.value.splice(i, 1);
-                    }
+    Promise.all(promise).then(async (r) => {
+        for (let id of deleteIds) {
+            for (let i = 0; i < listDisplay.value.length; i++) {
+                if (listDisplay.value[i].record_id == id) {
+                    listDisplay.value.splice(i, 1);
                 }
-                await pager.deleteItem(id);
             }
+            await pager.deleteItem(id);
+        }
 
-            getPage();
+        getPage();
 
-            checked.value = {};
-            promiseRunning.value = false;
-            openDeleteRecords.value = false;
-        });
+        checked.value = {};
+        promiseRunning.value = false;
+        openDeleteRecords.value = false;
+    });
 };
 
 // checks
 let checked: any = ref({});
-
 </script>
 
 <style scoped lang="less">
@@ -390,7 +416,7 @@ textarea::placeholder {
     .inner {
         padding-top: 0.25rem;
 
-        &>* {
+        & > * {
             padding: 0.25rem 0.5rem;
         }
 
@@ -529,7 +555,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }

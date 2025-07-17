@@ -68,7 +68,7 @@ section
             .tableMsg.center
                 .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
-            .tableMsg.center No Records
+            .tableMsg.center.empty No Records
 
         template(v-slot:head)
             tr

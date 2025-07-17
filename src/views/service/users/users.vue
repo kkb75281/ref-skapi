@@ -67,7 +67,7 @@ section
             .tableMsg.center
                 .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
-            .tableMsg.center No Users
+            .tableMsg.center.empty No Users
 
         template(v-slot:head)
             tr
@@ -1470,20 +1470,6 @@ body {
 
 .label {
     position: relative;
-
-    &.required {
-        &::after {
-            content: "*";
-            display: inline-block;
-            font-size: 1rem;
-            color: #ecec30;
-            position: absolute;
-            top: 0;
-            right: -14px;
-            width: 10px;
-            height: 10px;
-        }
-    }
 }
 
 #createForm {
@@ -1495,15 +1481,6 @@ body {
             top: 0;
             right: 0;
         }
-    }
-
-    .txt-required {
-        display: block;
-        font-size: 0.875rem;
-        font-weight: 400;
-        color: #ecec30;
-        text-align: right;
-        margin-bottom: 0.5rem;
     }
 }
 
