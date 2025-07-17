@@ -64,7 +64,7 @@ br
                 button.final Login
                 .signup
                     span No account?&nbsp;
-                    router-link(to="/signup") Sign up
+                    router-link(:to="{name: 'signup', query: { suc_redirect: '/refer/' + route.query.refer_name }}") Sign up
     
 br
 br
@@ -125,6 +125,8 @@ let login = (e) => {
             }
             if (route.query?.suc_redirect) {
                 router.push(route.query?.suc_redirect);
+            } else if (route.query?.refer_name) {
+                router.push({ name: 'refer', params: { name: route.query.refer_name } });
             } else {
                 router.push("/my-services");
             }
@@ -165,7 +167,7 @@ let login = (e) => {
 form {
     padding: 8px;
 
-    > label {
+    >label {
         margin-bottom: 16px;
     }
 
