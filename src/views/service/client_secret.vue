@@ -1,60 +1,14 @@
 <template lang="pug">
-section.infoBox
-    .titleHead
-        h2 Client Secret Key
-            
-        span.moreInfo(@click="showDes = !showDes" @mouseover="hovering = true" @mouseleave="hovering = false")
-            span More Info&nbsp;
-            template(v-if="showDes")
-                //- .material-symbols-outlined.notranslate.fill expand_circle_up 
-                //- .material-symbols-outlined.notranslate.noFill expand_circle_up
-                svg(v-if="hovering" style="width: 25px; height: 25px; fill: black;")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up-fill")
-                svg(v-else style="width: 25px; height: 25px; fill: black;")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up")
-            template(v-else) 
-                //- .material-symbols-outlined.notranslate.fill expand_circle_down
-                //- .material-symbols-outlined.notranslate.noFill expand_circle_down
-                svg(v-if="hovering" style="width: 25px; height: 25px; fill: black;")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down-fill")
-                svg(v-else style="width: 25px; height: 25px; fill: black;")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down")
+section
+    .flex-wrap.space-between
+        .page-title Client Secret Key
+        .flex-wrap.end
+            a(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
+                button.inline.sm.gray Go Docs
 
-    template(v-if="showDes")
-        p(style='margin-bottom: 0').
-            When using a 3rd party API that requires a client secret key in your website,
-            register them in Skapi and make secure requests to your APIs #[span.wordset without exposing] your #[span.wordset client secret key.]
+hr
 
-        Code
-            pre.
-                skapi.#[span(style="color:#44E9FF") clientSecretRequest]({
-                    clientSecretName: #[span(style="color:#FFED91") "myapi"],
-                    url: #[span(style="color:#FFED91") "https://api.openai.com/v1/images/generations"],
-                    method: #[span(style="color:#FFED91") "POST"],
-                    headers: {
-                        #[span(style="color:#FFED91") "Content-Type"]: #[span(style="color:#FFED91") "application/json"],
-                        Authorization: #[span(style="color:#FFED91") "Bearer $CLIENT_SECRET"]
-                    },
-                    data: {
-                        model: #[span(style="color:#FFED91") "dall-e-3"],
-                        "prompt": #[span(style="color:#FFED91") "A cute baby sea otter"],
-                        n: #[span(style="color:#FFED91") 1],
-                        size: #[span(style="color:#FFED91") "1024x1024"]
-                    }
-                }).#[span(style="color:#44E9FF") then]( result => console.#[span(style="color:#44E9FF") log](result) );
-
-        p.
-            The example above shows how you can request #[b OpenAI]'s #[b DALL·E 3] in your project.
-        p.
-            It is using the client secret key stored under the name: "#[b myapi]".
-            #[br]
-            The placeholder: "#[b $CLIENT_SECRET]" will be replaced to the actual client secret key from the backend.
-        
-        
-        p For more details, please refer to the #[a(href="https://docs.skapi.com/api-bridge/client-secret-request.html" target="_blank") Documentation]
-
-    hr
-
+section
     .error(v-if='!user?.email_verified')
         //- .material-symbols-outlined.notranslate.fill warning
         svg
@@ -73,82 +27,82 @@ section.infoBox
             use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
         span This service is currently suspended.
 
-    p(style='margin-bottom:0') Register your client secret keys by clicking '#[b Register Client Secret Key]' below.
+section
+    .table-menu-wrap
+        .table-functions
+            button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+        .table-actions
+            button.inline.only-icon.gray.sm(@click="addKey" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-add")
 
-br
+    form.table-form(@submit.prevent :class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
+        .table-tootlip
+            Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                template(v-slot:tip)
+                    | When LOCKED only signed users can have access to the client secret key.
+        Table
+            template(v-slot:head)
+                tr
+                    th.center.fixed(style="width:48px")
+                        //- .material-symbols-outlined.notranslate lock
+                        //- svg.svgIcon(style="fill: black;")
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-lock")
+                        .resizer
+                    th(style="width:200px")
+                        | Name
+                        .resizer
+                    th(style="width:400px")
+                        | $CLIENT_SECRET
+                        .resizer
+                    th.center(style="width:66px")
+                        .resizer
 
-.iconClick.square(@click="addKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0 || editMode || addMode}" style='margin-bottom:8px;')
-    //- .material-symbols-outlined.notranslate.fill add_circle
-    svg.svgIcon
-        use(xlink:href="@/assets/img/material-icon.svg#icon-add-circle-fill")
-    span(style="font-size: 0.8rem;font-weight:bold") &nbsp;&nbsp;Register Client Secret Key
-
-
-form.table-form(@submit.prevent :class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
-    .table-tootlip
-        Tooltip(tip-background-color="var(--main-color)" text-color="white")
-            template(v-slot:tip)
-                | When LOCKED only signed users can have access to the client secret key.
-    Table
-        template(v-slot:head)
-            tr
-                th.center.fixed(style="width:48px")
-                    //- .material-symbols-outlined.notranslate lock
-                    //- svg.svgIcon(style="fill: black;")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-lock")
-                    .resizer
-                th(style="width:200px")
-                    | Name
-                    .resizer
-                th(style="width:400px")
-                    | $CLIENT_SECRET
-                    .resizer
-                th.center(style="width:66px")
-                    .resizer
-
-        template(v-slot:body)
-            tr(v-if="!client_key.length") 
-                td(colspan=4 style="padding-left:20px") No Client Secret Key
-            tr(v-for="(key, index) in client_key")
-                template(v-if="editMode && key.edit || addMode && key.edit")
-                    td.center 
-                        //- Checkbox(v-model="key.secure" :disabled='updating')
-                        svg.svgIcon.black(@click="key.secure = !key.secure" :class="{ 'reactive' : !updating }" :style="{ opacity : updating ? 0.3 : 1, pointerEvents : updating ? 'none' : 'default' }" style="cursor:pointer")
-                            template(v-if="key.secure")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-lock-fill")
+            template(v-slot:body)
+                tr(v-if="!client_key.length") 
+                    td(colspan=4 style="padding-left:20px") No Client Secret Key
+                tr(v-for="(key, index) in client_key")
+                    template(v-if="editMode && key.edit || addMode && key.edit")
+                        td.center 
+                            //- Checkbox(v-model="key.secure" :disabled='updating')
+                            svg.svgIcon.black(@click="key.secure = !key.secure" :class="{ 'reactive' : !updating }" :style="{ opacity : updating ? 0.3 : 1, pointerEvents : updating ? 'none' : 'default' }" style="cursor:pointer")
+                                template(v-if="key.secure")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-lock-fill")
+                                template(v-else)
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-lock-open")
+                        td  
+                            input#keyName.line(type="text" v-model="key.name" placeholder="myapi" required maxlength="16" @input="e=>e.target.setCustomValidity('')" :disabled='updating')
+                        td
+                            input.line(type="text" v-model="key.key" placeholder="string1234..." required :disabled='updating')
+                        td.center.buttonWrap
+                            div(v-if="updating" style="width:100%; text-align:center")
+                                .loader(style="--loader-color:blue; --loader-size:12px")
                             template(v-else)
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-lock-open")
-                    td  
-                        input#keyName.line(type="text" v-model="key.name" placeholder="myapi" required maxlength="16" @input="e=>e.target.setCustomValidity('')" :disabled='updating')
-                    td
-                        input.line(type="text" v-model="key.key" placeholder="string1234..." required :disabled='updating')
-                    td.center.buttonWrap
-                        div(v-if="updating" style="width:100%; text-align:center")
-                            .loader(style="--loader-color:blue; --loader-size:12px")
-                        template(v-else)
-                            //- label.material-symbols-outlined.notranslate.clickable.save(@click="saveKey(key)" style="color:var(--main-color)") done
-                            label
-                              svg.svgIcon.clickable.save(style="fill: var(--main-color);" @click="saveKey(key)")
+                                //- label.material-symbols-outlined.notranslate.clickable.save(@click="saveKey(key)" style="color:var(--main-color)") done
+                                label
+                                svg.svgIcon.clickable.save(style="fill: var(--main-color);" @click="saveKey(key)")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-check")
+                                    input(type="submit" hidden)
+                                //- .material-symbols-outlined.notranslate.clickable.cancel(@click="cancelKey(key, index)") close
+                                svg.svgIcon.clickable.cancel(style="fill: black;" @click="cancelKey(key, index)")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+                    template(v-else)
+                        td.center 
+                            //- .material-symbols-outlined.notranslate.bold(v-if="key.secure") check
+                            svg.svgIcon(v-if="key.secure" style="fill: black")
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-check")
-                                input(type="submit" hidden)
-                            //- .material-symbols-outlined.notranslate.clickable.cancel(@click="cancelKey(key, index)") close
-                            svg.svgIcon.clickable.cancel(style="fill: black;" @click="cancelKey(key, index)")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-close")
-                template(v-else)
-                    td.center 
-                        //- .material-symbols-outlined.notranslate.bold(v-if="key.secure") check
-                        svg.svgIcon(v-if="key.secure" style="fill: black")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-check")
-                    td.overflow {{ key.name }}
-                    td.overflow {{ key.key ? key.key.slice(0,2) + '*'.repeat(key.key.length - 2) : '' }}
-                    td.center.buttonWrap
-                        template(v-if="!editMode && !addMode")
-                            //- .material-symbols-outlined.notranslate.fill.clickable.icon.hide(@click="editKey(key)") edit
-                            svg.svgIcon.reactive.clickable.hide(@click="editKey(key)")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit-fill")
-                            //- .material-symbols-outlined.notranslate.fill.clickable.icon.hide(@click="deleteClientKey = key.name;deleteIndex = index;") delete
-                            svg.svgIcon.reactive.clickable.hide(@click="deleteClientKey = !!key.name;deleteIndex = index;")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+                        td.overflow {{ key.name }}
+                        td.overflow {{ key.key ? key.key.slice(0,2) + '*'.repeat(key.key.length - 2) : '' }}
+                        td.center.buttonWrap
+                            template(v-if="!editMode && !addMode")
+                                //- .material-symbols-outlined.notranslate.fill.clickable.icon.hide(@click="editKey(key)") edit
+                                svg.svgIcon.reactive.clickable.hide(@click="editKey(key)")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-edit-fill")
+                                //- .material-symbols-outlined.notranslate.fill.clickable.icon.hide(@click="deleteClientKey = key.name;deleteIndex = index;") delete
+                                svg.svgIcon.reactive.clickable.hide(@click="deleteClientKey = !!key.name;deleteIndex = index;")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
 
 Modal(:open="deleteClientKey" @close="deleteClientKey=false")
     h4(style='margin:.5em 0 0;') Delete Client Secret
@@ -398,8 +352,8 @@ table {
     }
 
     &:hover {
-      border-radius: 50%;
-      background-color: #293FE61A;
+        border-radius: 50%;
+        background-color: #293FE61A;
     }
 }
 

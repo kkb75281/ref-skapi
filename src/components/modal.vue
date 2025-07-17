@@ -220,6 +220,9 @@ dialog {
 
     .top {
         position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
         padding: 8px;
 
         .search-for {

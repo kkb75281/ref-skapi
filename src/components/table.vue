@@ -1,5 +1,6 @@
 <template lang="pug">
 .tableWrap(ref='full')
+    slot(name="msg")
     table.customTbl(ref='table' :class='{resizable}' style="width:0")
         thead(ref="thead")
             slot(name="head")
@@ -233,7 +234,7 @@ let setResize = async () => {
 };
 </script>
 <style lang="less">
-.customTbl.resizable > thead > tr > th > .resizer {
+.customTbl.resizable>thead>tr>th>.resizer {
     cursor: col-resize;
 }
 
@@ -259,6 +260,24 @@ let setResize = async () => {
     }
 }
 
+.tableMsg {
+    position: absolute;
+    top: 58px;
+    left: 0;
+    color: rgba(225, 225, 225, 0.8);
+    font-size: 0.875rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+
+    &.center {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
 .customTbl {
     width: auto; // 테이블 너비는 자동으로 조정
     min-width: fit-content; // 최소 너비는 내용에 맞춤
@@ -268,6 +287,7 @@ let setResize = async () => {
     &.resizable {
         thead {
             th {
+
                 &.hovered,
                 &:hover {
                     .resizer {
@@ -354,11 +374,9 @@ let setResize = async () => {
             &.nohover,
             &.fixed {
                 &:hover {
-                    background: linear-gradient(
-                            0deg,
+                    background: linear-gradient(0deg,
                             rgba(255, 255, 255, 0.03) 0%,
-                            rgba(255, 255, 255, 0.03) 100%
-                        ),
+                            rgba(255, 255, 255, 0.03) 100%),
                         #141315;
 
                     .resizer {
@@ -473,11 +491,9 @@ let setResize = async () => {
             }
 
             &:hover {
-                background: linear-gradient(
-                        0deg,
+                background: linear-gradient(0deg,
                         rgba(255, 255, 255, 0.03) 0%,
-                        rgba(255, 255, 255, 0.03) 100%
-                    ),
+                        rgba(255, 255, 255, 0.03) 100%),
                     #141315;
             }
         }
@@ -492,11 +508,9 @@ let setResize = async () => {
 
             &:hover {
                 cursor: pointer;
-                background: linear-gradient(
-                        0deg,
+                background: linear-gradient(0deg,
                         rgba(255, 255, 255, 0.03) 0%,
-                        rgba(255, 255, 255, 0.03) 100%
-                    ),
+                        rgba(255, 255, 255, 0.03) 100%),
                     #141315;
 
                 td {
@@ -514,11 +528,9 @@ let setResize = async () => {
 
                 &::before,
                 &::after {
-                    background: linear-gradient(
-                            0deg,
+                    background: linear-gradient(0deg,
                             rgba(255, 255, 255, 0.03) 0%,
-                            rgba(255, 255, 255, 0.03) 100%
-                        ),
+                            rgba(255, 255, 255, 0.03) 100%),
                         #141315;
                     border-top: 1px solid rgba(255, 255, 255, 0.1);
                     border-bottom: 1px solid rgba(255, 255, 255, 0.1);

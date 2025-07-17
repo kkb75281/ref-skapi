@@ -3,22 +3,14 @@ section
     .flex-wrap.space-between
         .page-title Users
         .flex-wrap.end
-            //- button.inline.only-icon.gray.sm
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-person-add-fill")
-            //- button.inline.only-icon.gray.sm
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-mark-email-unread-fill")
             a(href='https://docs.skapi.com/authentication/create-account.html' target="_blank")
                 button.inline.sm.gray Go Docs
-    
-    hr
 
-    br
-    br
+hr
 
+section
     .table-menu-wrap
-        .table-functions 
+        .table-functions
             button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
@@ -41,7 +33,7 @@ section
             button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
-        .table-actions 
+        .table-actions
             button.inline.only-icon.gray.sm(@click="openCreateUser = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-person-add-fill")
@@ -69,91 +61,71 @@ section
                             svg.svgIcon
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
                             span Delete User
-            //- button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
-            //-     svg.svgIcon
-            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-supervisor-account-fill")
-            //- button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
-            //-     svg.svgIcon
-            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-account-circle-fill")
-            //- button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
-            //-     svg.svgIcon
-            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-no-accounts-fill")
-            //- button.inline.only-icon.gray.sm(:class="{disabled: !Object.keys(checked).length || fetching}")
-            //-     svg.svgIcon
-            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
-    .userPart
-        template(v-if="fetching")
-            #loading.
-                Loading ... &nbsp;
-                #[.loader(style="--loader-color: black; --loader-size: 12px")]
 
-        Table(
-            :key="tableKey"
-            :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }"
-            resizable
-            )
-            template(v-slot:head)
-                tr
-                    th.fixed(style="width: 60px")
+    Table(:key="tableKey" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }" resizable)
+        template(v-if="fetching" v-slot:msg)
+            .tableMsg.center
+                .loader(style="--loader-color:white; --loader-size:12px")
+        template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+            .tableMsg.center No Users
+
+        template(v-slot:head)
+            tr
+                th.fixed(style="width: 60px")
+                    Checkbox(
+                        @click.stop
+                        :modelValue="!!Object.keys(checked).length"
+                        @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.user_id] = d)); else checked = {}; }"
+                        :class="{ nonClickable: !listDisplay || !listDisplay?.length }"
+                        style="display: inline-block"
+                    )
+                    .resizer.fixed
+
+                template(v-for="c in columnList")
+                    th.overflow(v-if="c.value", style="width: 200px")
+                        | {{ c.name }}
+                        .resizer
+
+        template(v-slot:body)
+            template(v-if="fetching || !listDisplay || listDisplay.length === 0")
+                tr(v-for="i in 10")
+                    td(:colspan="colspan")
+            template(v-else)
+                tr.hoverRow(v-for="(user, index) in listDisplay" @click="showDetail=true; selectedUser=user")
+                    td
                         Checkbox(
-                            @click.stop
-                            :modelValue="!!Object.keys(checked).length"
-                            @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.user_id] = d)); else checked = {}; }"
-                            :class="{ nonClickable: !listDisplay || !listDisplay?.length }"
-                            style="display: inline-block"
+                        @click.stop
+                        :modelValue="!!checked?.[user?.user_id]"
+                        @update:modelValue="(value) => { if (value) checked[user?.user_id] = value; else delete checked[user?.user_id]; }"
                         )
-                        .resizer.fixed
 
                     template(v-for="c in columnList")
-                        th.overflow(v-if="c.value", style="width: 200px")
-                            | {{ c.name }}
-                            .resizer
-
-            template(v-slot:body)
-                template(v-if="fetching")
-                    tr(v-for="i in 10")
-                        td(:colspan="colspan")
-                template(v-else-if="!listDisplay || listDisplay.length === 0")
-                    tr
-                        td#noUsers(:colspan="colspan") No Users
-                    tr(v-for="i in 9")
-                        td(:colspan="colspan")
-                template(v-else)
-                    tr.hoverRow(v-for="(user, index) in listDisplay" @click="showDetail=true; selectedUser=user")
-                        td
-                            Checkbox(
-                            @click.stop
-                            :modelValue="!!checked?.[user?.user_id]"
-                            @update:modelValue="(value) => { if (value) checked[user?.user_id] = value; else delete checked[user?.user_id]; }"
+                        template(v-if="c.value")
+                        // customize the column
+                        td.overflow(v-if="c.key === 'timestamp'") {{ new Date(user[c.key]).toLocaleString() }}
+                        td.overflow(v-else-if="c.key === 'approved'") {{ user[c.key].split(':')[1].charAt(0).toUpperCase() + user[c.key].split(':')[1].slice(1) }}
+                        td.overflow(v-else-if="c.key === 'locale'")
+                            img(
+                            :src="'https://flagcdn.com/' + user.locale.toLowerCase() + '.svg'",
+                            style="width: 16px; object-fit: contain"
                             )
+                        td.overflow(v-else-if="c.key === 'access_group'" :style="{color: user[c.key] < 0 ? 'var(--caution-color)' : null }") {{ Math.abs(user[c.key]) }} {{user[c.key] < 0 ? "(Disabled)" : "" }}
+                        td.overflow(v-else-if="c.value") {{ user[c.key] || "-" }}
 
-                        template(v-for="c in columnList")
-                            template(v-if="c.value")
-                            // customize the column
-                            td.overflow(v-if="c.key === 'timestamp'") {{ new Date(user[c.key]).toLocaleString() }}
-                            td.overflow(v-else-if="c.key === 'approved'") {{ user[c.key].split(':')[1].charAt(0).toUpperCase() + user[c.key].split(':')[1].slice(1) }}
-                            td.overflow(v-else-if="c.key === 'locale'")
-                                img(
-                                :src="'https://flagcdn.com/' + user.locale.toLowerCase() + '.svg'",
-                                style="width: 16px; object-fit: contain"
-                                )
-                            td.overflow(v-else-if="c.key === 'access_group'" :style="{color: user[c.key] < 0 ? 'var(--caution-color)' : null }") {{ Math.abs(user[c.key]) }} {{user[c.key] < 0 ? "(Disabled)" : "" }}
-                            td.overflow(v-else-if="c.value") {{ user[c.key] || "-" }}
+                tr(v-for="i in 10 - listDisplay.length")
+                    td(:colspan="colspan")
 
-                    tr(v-for="i in 10 - listDisplay.length")
-                        td(:colspan="colspan")
+    form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
+        .header(style='padding-right:10px;')
+            svg.svgIcon.black.clickable(@click="showDetail=false; selectedUser=null;" :class="{nonClickable: fetching}")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back")
+            .name {{ selectedUser?.name || selectedUser?.email || selectedUser?.user_id }}
+            template(v-if="uploading")
+                .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
+            template(v-else)
+                button.noLine.iconClick.square(type="submit" style='padding:0 14px') SAVE
 
-        form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
-            .header(style='padding-right:10px;')
-                svg.svgIcon.black.clickable(@click="showDetail=false; selectedUser=null;" :class="{nonClickable: fetching}")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back")
-                .name {{ selectedUser?.name || selectedUser?.email || selectedUser?.user_id }}
-                template(v-if="uploading")
-                    .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
-                template(v-else)
-                    button.noLine.iconClick.square(type="submit" style='padding:0 14px') SAVE
-
-            UserDetails(v-if='showDetail' :data='selectedUser')
+        UserDetails(v-if='showDetail' :data='selectedUser')
 
 // 1
 //- Modal(:open="searchModalOpen" style="padding: 2.5rem 2rem;")
@@ -218,7 +190,7 @@ section
 
 // 3
 Modal.search-modal(:open="searchModalOpen")
-    .top.flex-wrap
+    .top
         #showSearchFor.search-for
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-search")
@@ -886,8 +858,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                      new Date(dates[1]).setHours(23, 59, 59, 999)
-                  ).getTime()
+                    new Date(dates[1]).setHours(23, 59, 59, 999)
+                ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1378,7 +1350,7 @@ body {
     justify-content: space-between;
     // flex-direction: row-reverse;
 
-    & > * {
+    &>* {
         margin: 8px 0;
     }
 }
@@ -1401,7 +1373,7 @@ body {
 }
 
 .optionCol {
-    & > *:not(:last-child) {
+    &>*:not(:last-child) {
         margin-right: 8px;
     }
 }
