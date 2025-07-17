@@ -230,6 +230,7 @@ Modal.search-modal(:open="searchModalOpen")
     Calendar(v-if="searchFor === 'timestamp' || searchFor === 'birthdate'" v-model="searchValue" :showCalendar="true" alwaysEmit="true")
     Locale(v-if="searchFor === 'locale'" v-model="searchValue" :showLocale="true")
 
+// modal :: create user
 Modal.modal-scroll.modal-createUser(:open="openCreateUser")
     .modal-close(@click="openCreateUser = false;")
         svg.svgIcon
@@ -239,8 +240,11 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
 
     form#createForm.modal-body(@submit.prevent="createUser")
         input(hidden, name="service", :value="currentService.id")
-        label User's Email
-            em(style="color: red; font-size: 0.6rem") * Required
+
+        span.txt-required * required
+
+        label 
+            span.label.required User's Email
             input#email.block(
                 type="email",
                 @input="(e) => (createParams.email = e.target.value)",
@@ -253,8 +257,8 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
         
         br
 
-        label Password
-            em(style="color: red; font-size: 0.6rem") * Required
+        label 
+            span.label.required Password
             input#password.block(
                 @input="(e) => (createParams.password = e.target.value)",
                 @keydown="(e) => moveFocus(e, 'name')",
@@ -395,6 +399,77 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
                 //- button.inline.gray(type="button", @click="closeModal") Cancel
                 //- button.inline(type="submit") Create
                 button.block(type="submit") Create
+
+// modal :: invite user
+Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
+    .modal-close(@click="openInviteUser = false")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+    h4.modal-title Invite User
+
+    div.modal-desc
+        p(style="margin: 0; text-align: center").
+            Invitation Email includes a temporary password and the acception link. 
+            #[br]
+            User must accept the invitation within 7 days.
+            #[br]
+            For more information, refer:&nbsp;
+            #[a(href="https://docs.skapi.com/email/email-templates.html", target="_blank", style="white-space: nowrap") E-Mail Templates]
+
+    form#inviteForm(@submit.prevent="inviteUser")
+        input(hidden, name="service", :value="currentService.id")
+
+        label.flex
+            span.label.required User's Email
+            input#inviteUserEmail.big(
+            type="email"
+            @input="(e) => (inviteParams.email = e.target.value)"
+            @keydown="(e) => moveFocus(e, 'inviteUserName')"
+            title="Please enter a valid email address."
+            placeholder="anonymous@anonymous.com"
+            required
+            )
+        br
+
+        label.flex
+            span.label.required Name
+            input#inviteUserName.big(
+            @input="(e) => (inviteParams.name = e.target.value)"
+            @keydown="(e) => moveFocus(e, 'inviteUserURL')"
+            placeholder="User's Name"
+            required
+            )
+
+        br
+
+        label.flex
+            span.label Redirect URL
+            input#inviteUserURL.big(
+                @input="(e) => (redirect = e.target.value)"
+                placeholder="URL to redirect when accepted. (optional)"
+                type="url"
+                )
+
+        br
+
+        .error(v-if="error")
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            span {{ error }}
+
+        br
+
+        div(
+            style="display: flex; align-items: center; justify-content: center"
+        )
+            div(
+                v-if="promiseRunning",
+                style="width: 100%; height: 44px; text-align: center"
+            )
+                .loader(style="--loader-color: blue; --loader-size: 12px")
+            template(v-else)
+                //- button.noLine(type="button", @click="closeModal") Cancel
+                button.final(type="submit") Invite
 </template>
 <script setup lang="ts">
 import Table from "@/components/table.vue";
@@ -1230,6 +1305,24 @@ body {
     font-family: "Twemoji Country Flags", "Radio Canada", sans-serif;
 }
 
+.label {
+    position: relative;
+
+    &.required {
+        &::after {
+            content: "*";
+            display: inline-block;
+            font-size: 1rem;
+            color: #ecec30;
+            position: absolute;
+            top: 0;
+            right: -14px;
+            width: 10px;
+            height: 10px;
+        }
+    }
+}
+
 #createForm {
     .label {
         position: relative;
@@ -1239,6 +1332,15 @@ body {
             top: 0;
             right: 0;
         }
+    }
+
+    .txt-required {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: #ecec30;
+        text-align: right;
+        margin-bottom: 0.5rem;
     }
 }
 
