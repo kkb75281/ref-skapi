@@ -34,72 +34,109 @@ section
             button.inline.only-icon.gray.sm(@click="addKey" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-add")
+            button.inline.only-icon.gray.sm(@click="deleteClientKey=true" :class="{ disabled : !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
 
-    form.table-form(@submit.prevent :class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
-        .table-tootlip
-            Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                template(v-slot:tip)
-                    | When LOCKED only signed users can have access to the client secret key.
-        Table
-            template(v-slot:head)
-                tr
-                    th.center.fixed(style="width:48px")
-                        //- .material-symbols-outlined.notranslate lock
-                        //- svg.svgIcon(style="fill: black;")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-lock")
-                        .resizer
-                    th(style="width:200px")
-                        | Name
-                        .resizer
-                    th(style="width:400px")
-                        | $CLIENT_SECRET
-                        .resizer
-                    th.center(style="width:66px")
-                        .resizer
+Table(:class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" resizable)
+    template(v-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+        .tableMsg.center No Records
 
-            template(v-slot:body)
-                tr(v-if="!client_key.length") 
-                    td(colspan=4 style="padding-left:20px") No Client Secret Key
-                tr(v-for="(key, index) in client_key")
-                    template(v-if="editMode && key.edit || addMode && key.edit")
-                        td.center 
-                            //- Checkbox(v-model="key.secure" :disabled='updating')
-                            svg.svgIcon.black(@click="key.secure = !key.secure" :class="{ 'reactive' : !updating }" :style="{ opacity : updating ? 0.3 : 1, pointerEvents : updating ? 'none' : 'default' }" style="cursor:pointer")
-                                template(v-if="key.secure")
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-lock-fill")
-                                template(v-else)
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-lock-open")
-                        td  
-                            input#keyName.line(type="text" v-model="key.name" placeholder="myapi" required maxlength="16" @input="e=>e.target.setCustomValidity('')" :disabled='updating')
-                        td
-                            input.line(type="text" v-model="key.key" placeholder="string1234..." required :disabled='updating')
-                        td.center.buttonWrap
-                            div(v-if="updating" style="width:100%; text-align:center")
-                                .loader(style="--loader-color:blue; --loader-size:12px")
+    template(v-slot:head)
+        tr
+            th.fixed(style='width:60px;')
+                Checkbox(@click.stop :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.name] = d)); else checked = {}; }" style="display:inline-block")
+                .resizer.fixed
+            th.overflow(v-if="filterOptions.name" style='width:160px;')
+                | Name
+                .resizer
+            th.overflow(v-if="filterOptions.client_secret" style='width:160px;')
+                | Client Secret
+                .resizer
+            th.overflow(v-if="filterOptions.locked" style='width:160px;')
+                | Locked
+
+    template(v-slot:body)
+        template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
+            tr(v-for="i in 10")
+                td(:colspan="colspan")
+        template(v-else)
+            tr.hoverRow(v-for="(cs, i) in listDisplay" @click="showDetail=true; selectedClient=cs")
+                td
+                    Checkbox(@click.stop
+                        :modelValue="!!checked?.[cs?.name]"
+                        @update:modelValue="(value) => { if (value) checked[cs?.name] = value; else delete checked[cs?.name]; }")
+
+                td.overflow(v-if="filterOptions.name") {{ cs?.name }}
+                td.overflow(v-if="filterOptions.client_secret") {{ cs.client_secret ? cs.client_secret.slice(0,2) + '*'.repeat(cs.client_secret.length - 2) : '' }}
+                td.overflow(v-if="filterOptions.locked")
+                    svg.svgIcon(v-if="cs?.locked" style="fill: white")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-check")
+//- form.table-form(@submit.prevent :class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
+    .table-tootlip
+        Tooltip(tip-background-color="var(--main-color)" text-color="white")
+            template(v-slot:tip)
+                | When LOCKED only signed users can have access to the client secret key.
+    Table
+        template(v-slot:head)
+            tr
+                th.center.fixed(style="width:48px")
+                    //- .material-symbols-outlined.notranslate lock
+                    //- svg.svgIcon(style="fill: black;")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-lock")
+                    .resizer
+                th(style="width:200px")
+                    | Name
+                    .resizer
+                th(style="width:400px")
+                    | $CLIENT_SECRET
+                    .resizer
+                th.center(style="width:66px")
+                    .resizer
+
+        template(v-slot:body)
+            tr(v-if="!client_key.length") 
+                td(colspan=4 style="padding-left:20px") No Client Secret Key
+            tr(v-for="(key, index) in client_key")
+                template(v-if="editMode && key.edit || addMode && key.edit")
+                    td.center 
+                        //- Checkbox(v-model="key.secure" :disabled='updating')
+                        svg.svgIcon.black(@click="key.secure = !key.secure" :class="{ 'reactive' : !updating }" :style="{ opacity : updating ? 0.3 : 1, pointerEvents : updating ? 'none' : 'default' }" style="cursor:pointer")
+                            template(v-if="key.secure")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-lock-fill")
                             template(v-else)
-                                //- label.material-symbols-outlined.notranslate.clickable.save(@click="saveKey(key)" style="color:var(--main-color)") done
-                                label
-                                svg.svgIcon.clickable.save(style="fill: var(--main-color);" @click="saveKey(key)")
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-check")
-                                    input(type="submit" hidden)
-                                //- .material-symbols-outlined.notranslate.clickable.cancel(@click="cancelKey(key, index)") close
-                                svg.svgIcon.clickable.cancel(style="fill: black;" @click="cancelKey(key, index)")
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-close")
-                    template(v-else)
-                        td.center 
-                            //- .material-symbols-outlined.notranslate.bold(v-if="key.secure") check
-                            svg.svgIcon(v-if="key.secure" style="fill: black")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-lock-open")
+                    td  
+                        input#keyName.line(type="text" v-model="key.name" placeholder="myapi" required maxlength="16" @input="e=>e.target.setCustomValidity('')" :disabled='updating')
+                    td
+                        input.line(type="text" v-model="key.key" placeholder="string1234..." required :disabled='updating')
+                    td.center.buttonWrap
+                        div(v-if="updating" style="width:100%; text-align:center")
+                            .loader(style="--loader-color:blue; --loader-size:12px")
+                        template(v-else)
+                            //- label.material-symbols-outlined.notranslate.clickable.save(@click="saveKey(key)" style="color:var(--main-color)") done
+                            label
+                            svg.svgIcon.clickable.save(style="fill: var(--main-color);" @click="saveKey(key)")
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-check")
-                        td.overflow {{ key.name }}
-                        td.overflow {{ key.key ? key.key.slice(0,2) + '*'.repeat(key.key.length - 2) : '' }}
-                        td.center.buttonWrap
-                            template(v-if="!editMode && !addMode")
-                                //- .material-symbols-outlined.notranslate.fill.clickable.icon.hide(@click="editKey(key)") edit
-                                svg.svgIcon.reactive.clickable.hide(@click="editKey(key)")
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-edit-fill")
-                                //- .material-symbols-outlined.notranslate.fill.clickable.icon.hide(@click="deleteClientKey = key.name;deleteIndex = index;") delete
-                                svg.svgIcon.reactive.clickable.hide(@click="deleteClientKey = !!key.name;deleteIndex = index;")
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+                                input(type="submit" hidden)
+                            //- .material-symbols-outlined.notranslate.clickable.cancel(@click="cancelKey(key, index)") close
+                            svg.svgIcon.clickable.cancel(style="fill: black;" @click="cancelKey(key, index)")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+                template(v-else)
+                    td.center 
+                        //- .material-symbols-outlined.notranslate.bold(v-if="key.secure") check
+                        svg.svgIcon(v-if="key.secure" style="fill: black")
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-check")
+                    td.overflow {{ key.name }}
+                    td.overflow {{ key.key ? key.key.slice(0,2) + '*'.repeat(key.key.length - 2) : '' }}
+                    td.center.buttonWrap
+                        template(v-if="!editMode && !addMode")
+                            //- .material-symbols-outlined.notranslate.fill.clickable.icon.hide(@click="editKey(key)") edit
+                            svg.svgIcon.reactive.clickable.hide(@click="editKey(key)")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit-fill")
+                            //- .material-symbols-outlined.notranslate.fill.clickable.icon.hide(@click="deleteClientKey = key.name;deleteIndex = index;") delete
+                            svg.svgIcon.reactive.clickable.hide(@click="deleteClientKey = !!key.name;deleteIndex = index;")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
 
 Modal(:open="deleteClientKey" @close="deleteClientKey=false")
     .modal-title Delete Client Secret
@@ -117,16 +154,25 @@ Modal(:open="deleteClientKey" @close="deleteClientKey=false")
             button.inline.red(@click="delCliKey") Delete
 
 </template>
-<script setup>
+<script lang="ts" setup>
 import Table from '@/components/table.vue';
 import Code from '@/components/code.vue';
 import Checkbox from '@/components/checkbox.vue';
 import Modal from '@/components/modal.vue';
 import Tooltip from '@/components/tooltip.vue';
 
-import { ref, nextTick } from 'vue';
+import { type Ref, ref, nextTick } from 'vue';
 import { user } from '@/code/user';
 import { currentService } from '@/views/service/main';
+
+// table columns
+let filterOptions = ref({
+    name: true,
+    client_secret: true,
+    locked: true,
+});
+
+let selectedClient = ref(null);
 
 let fetching = ref(false);
 let updating = ref(false);
@@ -137,6 +183,7 @@ let deleteKeyLoad = ref(false);
 let deleteClientKey = ref(false);
 let hovering = ref(false);
 let deleteIndex = '';
+let listDisplay: Ref<{ [key: string]: any } | null> = ref(null);
 let client_key = ref([
     // {
     //     edit: false,
@@ -145,6 +192,37 @@ let client_key = ref([
     //     key: 'dssdlfkjsdakdsjfaiw'
     // },
 ]);
+
+if (currentService.service.client_secret) {
+    listDisplay.value = {};
+
+    for (let key in currentService.service.client_secret) {
+        // client_key.value.push({
+        //     edit: false,
+        //     secure: (currentService.service?.auth_client_secret || []).indexOf(key) !== -1,
+        //     name: key,
+        //     key: currentService.service.client_secret[key]
+        // });
+
+        listDisplay.value[key] = {
+            name: key,
+            client_secret: currentService.service.client_secret[key],
+            locked: (currentService.service?.auth_client_secret || []).indexOf(key) !== -1
+        };
+    }
+}
+
+let checked: Ref<{ [key: string]: any }> = ref({});
+function checkall() {
+    if (Object.keys(checked.value).length) {
+        checked.value = {};
+    } else {
+        listDisplay.value.forEach((user) => {
+            checked.value[user.record_id] = user;
+        });
+    }
+}
+
 let delCliKey = async () => {
     deleteKeyLoad.value = true;
 
@@ -177,17 +255,6 @@ let delCliKey = async () => {
 
     deleteClientKey.value = false;
     deleteKeyLoad.value = false;
-}
-
-if (currentService.service.client_secret) {
-    for (let key in currentService.service.client_secret) {
-        client_key.value.push({
-            edit: false,
-            secure: (currentService.service?.auth_client_secret || []).indexOf(key) !== -1,
-            name: key,
-            key: currentService.service.client_secret[key]
-        })
-    }
 }
 
 let edit_key_origin = {};
