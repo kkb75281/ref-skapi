@@ -334,10 +334,6 @@ const props = defineProps({
 }
 
 // new style
-.txt-sm {
-    font-size: 0.875rem;
-}
-
 .content {
     font-size: 1rem;
     width: 100%;

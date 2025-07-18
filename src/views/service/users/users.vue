@@ -53,7 +53,7 @@ section
             button.inline.only-icon.gray.sm(@click="openCreateUser = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-person-add-fill")
-            button.inline.only-icon.gray.sm(@click="openInviteUser = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray.sm(@click="currentService.plan == 'Trial' ? (openUpgrade = true) : (openInviteUser = true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0, deact: currentService.plan == 'Trial' }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-mark-email-unread-fill")
             button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }" :class="{disabled: !Object.keys(checked).length || fetching}")
@@ -61,19 +61,19 @@ section
                     use(xlink:href="@/assets/img/material-icon.svg#icon-more-vert")
                 .moreVert(@click.stop style="--moreVert-right: 0; display: none; font-weight: normal;")
                     .inner
-                        button.inline.icon-text.gray
+                        button.inline.icon-text.gray(@click="openGrantAccess = true" :class="{disabled: !Object.keys(checked).length || fetching}")
                             svg.svgIcon
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-supervisor-account-fill")
                             span Grant Access
-                        button.inline.icon-text.gray(:class="{disabled: !Object.keys(checked).length || fetching}")
+                        button.inline.icon-text.gray(@click="openUnblockUser=true" :class="{disabled: !Object.keys(checked).length || fetching}")
                             svg.svgIcon
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-account-circle-fill")
                             span Unblock User
-                        button.inline.icon-text.gray(:class="{disabled: !Object.keys(checked).length || fetching}")
+                        button.inline.icon-text.gray(@click="openBlockUser=true" :class="{disabled: !Object.keys(checked).length || fetching}" style="width:100%; justify-content: flex-start;")
                             svg.svgIcon
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-no-accounts-fill")
                             span Block User
-                        button.inline.icon-text.gray(:class="{disabled: !Object.keys(checked).length || fetching}")
+                        button.inline.icon-text.gray(@click="openDeleteUser=true" :class="{disabled: !Object.keys(checked).length || fetching}" style="width:100%; justify-content: flex-start;")
                             svg.svgIcon
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
                             span Delete User
@@ -83,7 +83,7 @@ section
             .tableMsg.center
                 .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
-            .tableMsg.center No Users
+            .tableMsg.center.empty No Users
 
         template(v-slot:head)
             tr
@@ -131,17 +131,17 @@ section
                 tr(v-for="i in 10 - listDisplay.length")
                     td(:colspan="colspan")
 
-    form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
-        .header(style='padding-right:10px;')
-            svg.svgIcon.black.clickable(@click="showDetail=false; selectedUser=null;" :class="{nonClickable: fetching}")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back")
-            .name {{ selectedUser?.name || selectedUser?.email || selectedUser?.user_id }}
-            template(v-if="uploading")
-                .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
-            template(v-else)
-                button.noLine.iconClick.square(type="submit" style='padding:0 14px') SAVE
+    //- form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
+    //-     .header(style='padding-right:10px;')
+    //-         svg.svgIcon.black.clickable(@click="showDetail=false; selectedUser=null;" :class="{nonClickable: fetching}")
+    //-             use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back")
+    //-         .name {{ selectedUser?.name || selectedUser?.email || selectedUser?.user_id }}
+    //-         template(v-if="uploading")
+    //-             .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
+    //-         template(v-else)
+    //-             button.noLine.iconClick.square(type="submit" style='padding:0 14px') SAVE
 
-        UserDetails(v-if='showDetail' :data='selectedUser')
+    //-     UserDetails(v-if='showDetail' :data='selectedUser')
 
 // 1
 //- Modal(:open="searchModalOpen" style="padding: 2.5rem 2rem;")
@@ -414,7 +414,7 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
             template(v-else)
                 //- button.inline.gray(type="button", @click="closeModal") Cancel
                 //- button.inline(type="submit") Create
-                button.block(type="submit") Create
+                button.block.btn-create(type="submit") Create
 
 // modal :: invite user
 Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
@@ -482,10 +482,168 @@ Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
                 v-if="promiseRunning",
                 style="width: 100%; height: 44px; text-align: center"
             )
-                .loader(style="--loader-color: blue; --loader-size: 12px")
+                .loader(style="--loader-color: white; --loader-size: 12px")
             template(v-else)
-                //- button.noLine(type="button", @click="closeModal") Cancel
-                button.final(type="submit") Invite
+                button.btn-invite(type="submit") Invite
+
+//- modal :: grant access
+Modal.modal-grantAccess(:open="openGrantAccess", @close="openGrantAccess = false")
+    h4.modal-title(style="margin: 0") Grant Access
+
+    hr
+
+    div.modal-desc
+        p.
+            This will grant {{Object.keys(checked).length}} user(s) to a new access group.
+            #[br]
+            Access group can be granted from 1 to 99.
+
+        input.change-access(
+            type="number"
+            placeholder="1~99"
+            min=1
+            max=99
+            @keyup.stop="(e) => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); }"
+            style="width: 100%;"
+        )
+
+    div(
+        style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem"
+    )
+        div(
+            v-if="promiseRunning"
+            style="width: 100%; height: 44px; text-align: center"
+        )
+            .loader(style="--loader-color: white; --loader-size: 12px")
+        template(v-else)
+            button.gray.btn-cancel(type="button", @click="closeGrantAccess" style="flex: 1;") Cancel
+            button.btn-grant(type="button", @click="grantAccess" style="flex: 1;") Change Access
+
+// grant access > success
+Modal.modal-grantSuccess(:open="successGrantAccess", @close="successGrantAccess = false")
+  h4.modal-title(style="margin: 0") Grant Access
+
+  hr
+
+  div.modal-desc
+    p.
+      New access group has been granted to {{Object.keys(checked).length}} user(s).
+
+  br
+
+  div(style="display: flex; align-items: center; justify-content: center")
+    button.btn-cancel(type="button", @click="()=>{checked.value = {};successGrantAccess = false;}") close
+
+//- modal :: unblock user
+Modal(:open="openUnblockUser", @close="openUnblockUser = false")
+  h4.modal-title(style="margin: 0") Unblock User
+
+  hr
+
+  div.modal-desc
+    p.
+      This action will unblock {{Object.keys(checked).length}} user(s) from your service. 
+      #[br]
+      The user will have access to your service.
+
+  div(
+    style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem"
+  )
+    div(
+      v-if="promiseRunning"
+      style="width: 100%; height: 44px; text-align: center"
+    )
+      .loader(style="--loader-color: white; --loader-size: 12px")
+    template(v-else)
+      button.gray.btn-cancel(type="button" @click="openUnblockUser = false;") Cancel
+      button.btn-unblock(type="button", @click="changeUserApprovalState('unblock')") Unblock
+
+//- modal :: block user
+Modal(:open="openBlockUser", @close="openBlockUser = false")
+  h4.modal-title(style="margin: 0") Block User
+
+  hr
+
+  div.modal-desc
+    p.
+      This action will block {{Object.keys(checked).length}} user(s) from your service.
+      #[br]
+      The user will not be able to access your service anymore.
+
+  div(
+    style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem"
+  )
+    div(
+      v-if="promiseRunning",
+      style="width: 100%; height: 44px; text-align: center"
+    )
+      .loader(style="--loader-color: white; --loader-size: 12px")
+    template(v-else)
+      button.gray.btn-cancel(type="button" @click="openBlockUser = false;") Cancel
+      button.btn-block(type="button", @click="changeUserApprovalState('block')") Block
+
+//- modal :: delete user
+Modal(:open="openDeleteUser", @close="openDeleteUser = false")
+  h4.modal-title(style="color: var(--caution-color)") Delete User
+
+  hr
+
+  div.modal-desc
+    p.
+      This action will delete {{Object.keys(checked).length}} user(s) from your service.
+      #[br]
+      All the user's data will be deleted.
+      #[br]
+      This action cannot be undone.
+
+  div(
+    style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem"
+  )
+    div(
+      v-if="promiseRunning",
+      style="width: 100%; height: 44px; text-align: center"
+    )
+      .loader(style="--loader-color: white; --loader-size: 12px")
+    template(v-else)
+      button.gray.btn-cancel(type="button" @click="openDeleteUser = false;") Cancel
+      button.red.btn-delete(type="button", @click="deleteUser") Delete
+
+//- modal :: upgrade service
+Modal(:open="openUpgrade", @close="openUpgrade = false")
+  h4.modal-title(style="margin: 0") Upgrade
+
+  hr
+
+  div.modal-desc
+    p.
+      You can access more features like sending newsletters,
+      #[br]
+      inviting users and file hosting by upgrading your service.
+
+    p Would you like you check out our service plans?
+
+  div(
+    style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem"
+  )
+    button.gray.btn-cancel(type="button", @click="openUpgrade = false") No
+    router-link(:to="`/subscription/${currentService.id}`" style="display: inline-block; width: 100%")
+      button.btn-upgrade(type="button") Yes
+
+//- modal :: show user detail
+Modal.modal-scroll.modal-detailUser(:open="showDetail" @close="closeModalUser")
+    form.modal-container(@submit.prevent='upload')
+        .modal-header
+            h4.title {{ selectedUser?.name || selectedUser?.email || selectedUser?.user_id }}
+            button.btn-close(type="button" @click="closeModalUser")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+        .modal-body
+            UserDetails(v-if='showDetail' :data='selectedUser')
+        .modal-footer
+            template(v-if="uploading")
+                .loader(style="--loader-color:white; --loader-size:12px; margin: 12px;")
+            template(v-else)
+                button.btn-save(type="submit") SAVE
 </template>
 <script setup lang="ts">
 import Table from "@/components/table.vue";
@@ -766,18 +924,18 @@ watch(
     { immediate: true }
 );
 
-watch(showDetail, (nv) => {
-    if (nv) {
-        nextTick(() => {
-            let scrollTarget = document.querySelector(".detailRecord .content");
-            let detailRecord = document.querySelector(".detailRecord");
-            let targetTop =
-                window.scrollY + detailRecord.getBoundingClientRect().top;
-            scrollTarget.scrollTop = 0;
-            window.scrollTo(0, targetTop);
-        });
-    }
-});
+// watch(showDetail, (nv) => {
+//     if (nv) {
+//         nextTick(() => {
+//             let scrollTarget = document.querySelector(".detailRecord .content");
+//             let detailRecord = document.querySelector(".detailRecord");
+//             let targetTop =
+//                 window.scrollY + detailRecord.getBoundingClientRect().top;
+//             scrollTarget.scrollTop = 0;
+//             window.scrollTo(0, targetTop);
+//         });
+//     }
+// });
 
 // modal related
 let promiseRunning = ref(false);
@@ -874,8 +1032,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                    new Date(dates[1]).setHours(23, 59, 59, 999)
-                ).getTime()
+                      new Date(dates[1]).setHours(23, 59, 59, 999)
+                  ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1315,6 +1473,11 @@ let closeGrantAccess = () => {
         inputAccess.value = "";
     }
 };
+
+const closeModalUser = () => {
+    showDetail.value = false;
+    selectedUser.value = null;
+};
 </script>
 <style scoped lang="less">
 body {
@@ -1323,20 +1486,6 @@ body {
 
 .label {
     position: relative;
-
-    &.required {
-        &::after {
-            content: "*";
-            display: inline-block;
-            font-size: 1rem;
-            color: #ecec30;
-            position: absolute;
-            top: 0;
-            right: -14px;
-            width: 10px;
-            height: 10px;
-        }
-    }
 }
 
 #createForm {
@@ -1349,15 +1498,6 @@ body {
             right: 0;
         }
     }
-
-    .txt-required {
-        display: block;
-        font-size: 0.875rem;
-        font-weight: 400;
-        color: #ecec30;
-        text-align: right;
-        margin-bottom: 0.5rem;
-    }
 }
 
 .tableMenu {
@@ -1366,7 +1506,7 @@ body {
     justify-content: space-between;
     // flex-direction: row-reverse;
 
-    &>* {
+    & > * {
         margin: 8px 0;
     }
 }
@@ -1389,7 +1529,7 @@ body {
 }
 
 .optionCol {
-    &>*:not(:last-child) {
+    & > *:not(:last-child) {
         margin-right: 8px;
     }
 }
