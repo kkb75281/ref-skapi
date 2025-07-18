@@ -56,25 +56,23 @@ let registerReferMisc = () => {
         misc.refer = misc.refer ? [misc.refer] : [];
     }
 
-    if (!misc.refer) {
-        if (misc.refer.includes(refer)) return;
+    if (misc.refer.includes(refer)) return;
 
-        loading.value = true;
-        misc.refer.push(refer);
-        console.log("Updating refer code to", misc.refer);
-        skapi.updateProfile({ misc: JSON.stringify(misc) })
-            .then(() => {
-                console.log("Refer code updated successfully");
-                console.log(user);
-                loading.value = false;
-                alreadyRegister.value = true;
-            })
-            .catch(err => {
-                console.error("Failed to update refer code", err);
-                loading.value = false;
-                alreadyRegister.value = false;
-            });
-    }
+    loading.value = true;
+    misc.refer.push(refer);
+    console.log("Updating refer code to", misc.refer);
+    skapi.updateProfile({ misc: JSON.stringify(misc) })
+        .then(() => {
+            console.log("Refer code updated successfully");
+            console.log(user);
+            loading.value = false;
+            alreadyRegister.value = true;
+        })
+        .catch(err => {
+            console.error("Failed to update refer code", err);
+            loading.value = false;
+            alreadyRegister.value = false;
+        });
 }
 
 onMounted(() => {
@@ -85,11 +83,12 @@ onMounted(() => {
     }
 
     let misc = JSON.parse(user.misc || '{}');
+    let miscRefer = misc.refer || [];
 
-    if (!misc.refer) {
-        alreadyRegister.value = false;
-    } else {
+    if (miscRefer.includes(refer)) {
         alreadyRegister.value = true;
+    } else {
+        alreadyRegister.value = false;
     }
 });
 </script>
