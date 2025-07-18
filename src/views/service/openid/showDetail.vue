@@ -30,17 +30,17 @@
 
     .row
         .key.txt-sm Profile Attribute Name
-        .value(style="display:flex; flex-wrap:wrap; gap:10px;min-width: 300px;")
+        .value(style="display:flex; flex-wrap:wrap; gap:10px;")
             input.line(v-model="cdtn.key" type="text", name="cdtn[key]" placeholder="attribute_name")
 
     .row(:class="{'nonClickable': !cdtn.key}")
         .key.txt-sm Profile Attribute Value
-        .value(style="display:flex; flex-wrap:wrap; gap:10px;min-width: 300px;")
+        .value(style="display:flex; flex-wrap:wrap; gap:10px;")
             input.line(v-model="cdtn.value" type="text", name="cdtn[value]" placeholder="attribute value")
 
     .row.line(:class="{'nonClickable': !cdtn.key}")
         .key.txt-sm Condition
-        .value(style="display:flex; flex-wrap:wrap; gap:10px;min-width: 300px;")
+        .value(style="display:flex; flex-wrap:wrap; gap:10px;")
             select(v-model='cdtn.condition' name='cdtn[condition]')
                 option(value='=') =
                 option(value='>=') Greater or =
@@ -274,6 +274,7 @@ let handleKey = (e: any) => {
         display: flex;
         align-items: center;
         gap: 0.5rem 1rem;
+        flex-wrap: wrap;
 
         &:last-of-type {
             margin-bottom: 0;

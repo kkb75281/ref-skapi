@@ -60,18 +60,22 @@ section
                 th.fixed(style='width:60px;')
                     Checkbox(@click.stop :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.id] = d)); else checked = {}; }" style="display:inline-block")
                     .resizer.fixed
-                th.overflow(style='width:160px;')
-                    | Logger ID
-                    .resizer
-                th.overflow(style='width:160px;')
-                    | Username Key
-                    .resizer
-                th.overflow(style='width:100px;')
-                    | Method
-                    .resizer
-                th.overflow(style='width:160px;')
-                    | Request URL
-                    .resizer
+                template(v-for="c in columnList")
+                    th.overflow(v-if="c.value", style="width: 200px")
+                        | {{ c.name }}
+                        .resizer
+                //- th.overflow(style='width:160px;')
+                //-     | Logger ID
+                //-     .resizer
+                //- th.overflow(style='width:160px;')
+                //-     | Username Key
+                //-     .resizer
+                //- th.overflow(style='width:100px;')
+                //-     | Method
+                //-     .resizer
+                //- th.overflow(style='width:160px;')
+                //-     | Request URL
+                //-     .resizer
         template(v-slot:body)
             template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
                 tr(v-for="i in 10")
@@ -82,10 +86,12 @@ section
                         Checkbox(@click.stop
                             :modelValue="!!checked?.[rc?.id]"
                             @update:modelValue="(value) => { if (value) checked[rc?.id] = value; else delete checked[rc?.id]; }")
-                    td.overflow(v-if="rc.id") {{ rc.id }}
-                    td.overflow(v-if="rc.usr") {{ rc.usr }}
-                    td.overflow(v-if="rc.mthd") {{ rc.mthd }}
-                    td.overflow(v-if="rc.url") {{ rc.url }}
+                    template(v-for="c in columnList")
+                        template(v-if="c.value")
+                            td.overflow(v-if="c.key === 'logger_id'") {{ rc.id }}
+                            td.overflow(v-if="c.key === 'username_key'") {{ rc.usr }}
+                            td.overflow(v-if="c.key === 'method'") {{ rc.mthd }}
+                            td.overflow(v-if="c.key === 'url'") {{ rc.url }}
 
                 tr(v-for="i in (10 - listDisplay?.length)")
                     td(:colspan="colspan")
@@ -133,7 +139,7 @@ Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
 
 //- modal :: logger
 Modal.modal-scroll.modal-logger(:open="showDetail")
-    .modal-container(@submit.prevent='upload')
+    form.modal-container(@submit.prevent='upload')
         .modal-header
             h4.title {{ selectedLogger?.id ? selectedLogger.id : 'Register Logger' }}
             button.btn-close(type="button" @click="showDetail=false; selectedLogger=null;")
@@ -175,7 +181,7 @@ let endOfList = ref(false);
 let showDetail = ref(false);
 let showGuide = ref(false);
 let hovering = ref(false);
-let colspan = 4;
+let colspan = 0;
 
 let columnList = reactive([
     {
@@ -199,6 +205,21 @@ let columnList = reactive([
         value: true,
     },
 ]);
+
+watch(
+    columnList,
+    (nv) => {
+        colspan = 1;
+        nv.forEach((c) => {
+            if (c.value) {
+                colspan++;
+            }
+        });
+
+        tableKey.value++;
+    },
+    { immediate: true }
+);
 
 watch(currentPage, (n, o) => {
     if (

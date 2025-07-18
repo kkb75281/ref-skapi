@@ -114,7 +114,7 @@ dialog {
 dialog {
     &::-webkit-scrollbar {
         width: 0.25rem;
-        height: 20px;
+        height: 0.25rem;
     }
 
     &::-webkit-scrollbar-thumb {
