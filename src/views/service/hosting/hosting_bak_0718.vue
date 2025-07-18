@@ -43,7 +43,7 @@
 template(v-else)
     .infoBox(:class='{nonClickable: email_is_unverified_or_service_is_disabled || !subdomainReady}')
         //- .infoTitle File Hosting&nbsp;&nbsp;
-        h2.page-title File Hosting
+        h2 File Hosting
 
         hr
 
@@ -130,42 +130,27 @@ template(v-else)
                 span &nbsp;Remove Hosting
     br
 
-    .table-menu-wrap
-        .table-functions
-            button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
-                .moreVert(
-                    @click.stop,
-                    style="--moreVert-left: 0; display: none; font-weight: normal;"
-                    )
-                    .inner(style="padding: 0.5rem;")
-                        template(v-for="c in columnList")
-                            Checkbox(v-model="c.value", style="display: flex; padding: 0.25rem 0;") {{ c.name }}
-        .table-actions
-            button.inline.only-icon.gray.sm(@click='uploadFileInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
+    .tableMenu
 
+        .iconClick.square(@click='uploadFileInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
+            input(type="file" hidden multiple @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFileInp")
+            //- .material-symbols-outlined.notranslate.fill upload_file
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-upload-file-fill")
+            span &nbsp;&nbsp;Upload Files
 
+        .iconClick.square(@click='uploadFolderInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
+            input(type="file" hidden multiple directory webkitdirectory @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFolderInp")
+            //- .material-symbols-outlined.notranslate.fill drive_folder_upload
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-drive-folder-upload-fill")
+            span &nbsp;&nbsp;Upload Folder
 
-        //- .iconClick.square(@click='uploadFileInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
-        //-     input(type="file" hidden multiple @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFileInp")
-        //-     //- .material-symbols-outlined.notranslate.fill upload_file
-        //-     svg.svgIcon
-        //-         use(xlink:href="@/assets/img/material-icon.svg#icon-upload-file-fill")
-        //-     span &nbsp;&nbsp;Upload Files
-
-        //- .iconClick.square(@click='uploadFolderInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
-        //-     input(type="file" hidden multiple directory webkitdirectory @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFolderInp")
-        //-     //- .material-symbols-outlined.notranslate.fill drive_folder_upload
-        //-     svg.svgIcon
-        //-         use(xlink:href="@/assets/img/material-icon.svg#icon-drive-folder-upload-fill")
-        //-     span &nbsp;&nbsp;Upload Folder
-
-        //- .iconClick.square(:class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching || !Object.keys(checked).length}" @click='deleteSelected=true')
-        //-     //- .material-symbols-outlined.notranslate.fill delete
-        //-     svg.svgIcon
-        //-         use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
-        //-     span &nbsp;&nbsp;Delete Selected
+        .iconClick.square(:class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching || !Object.keys(checked).length}" @click='deleteSelected=true')
+            //- .material-symbols-outlined.notranslate.fill delete
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+            span &nbsp;&nbsp;Delete Selected
 
         // .iconClick.square(@click='openRefreshCdn=true' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
             .material-symbols-outlined.notranslate.fill(:class='{loading:currentService.pending.cdn}') refresh
@@ -910,6 +895,20 @@ watch(ascending, () => {
 </script>
 
 <style lang="less" scoped>
+tbody {
+    tr:first-child {
+        background-color: rgba(0, 0, 255, 0.02);
+
+        &::before {
+            background-color: rgba(0, 0, 255, 0.02);
+        }
+    }
+
+    tr {
+        cursor: default;
+    }
+}
+
 form.register {
     display: flex;
     flex-wrap: wrap;
