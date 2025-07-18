@@ -5,8 +5,15 @@ section
         a(href='https://docs.skapi.com/email/email-templates.html' target="_blank")
             button.inline.sm.gray Go Docs
     
-    hr
+hr
 
+section
+    .error(v-if='!user?.email_verified')
+        svg
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+        router-link(to="/account-setting") Please verify your email address to modify settings.
+
+section
     TabMenu(v-model="activeTabs" :tabs="['Signup Confirmation', 'Welcome Email', 'Verification Email', 'Invitation Email', 'Newsletter Confirmation']")
 
     //- Code

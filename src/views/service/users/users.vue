@@ -9,6 +9,22 @@ section
 hr
 
 section
+    .error(v-if="!user?.email_verified")
+        svg
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+        router-link(to="/account-setting") Please verify your email address to modify settings.
+
+    .error(v-else-if="currentService.service.active == 0")
+        svg
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+        span This service is currently disabled.
+
+    .error(v-else-if="currentService.service.active < 0")
+        svg
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+        span This service is currently suspended.
+
+section
     .table-menu-wrap
         .table-functions
             button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }")
