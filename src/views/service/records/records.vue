@@ -1019,14 +1019,4 @@ label._checkbox svg {
         fill: #fff;
     }
 }
-
-.table-menu-wrap {
-    margin-bottom: 0.5rem;
-}
-
-.search-wrap {
-    // border-top: 1px solid rgba(225, 225, 225, 0.1);
-    // border-bottom: 1px solid rgba(225, 225, 225, 0.1);
-    // padding: 2rem 0;
-}
 </style>

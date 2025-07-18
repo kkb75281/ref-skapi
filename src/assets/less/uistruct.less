@@ -108,11 +108,20 @@
 }
 .editHandle {
     // text button for edit -> [edit]
-    font-size: 0.66rem;
-    font-weight: normal;
-    color: var(--main-color);
+    font-size: 1rem;
+    font-weight: 400;
+    color: #fff;
     text-decoration: none;
-    vertical-align: super;
+    // vertical-align: super;
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 2.5rem;
+    height: 100%;
+    background: #222325;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
 
     &:hover {
         text-decoration: underline;
@@ -246,10 +255,11 @@
     }
 
     .smallTitle {
-        font-size: 0.8rem;
-        font-weight: 500;
+        font-size: 1rem;
+        font-weight: 400;
         display: inline-block;
         width: var(--smallTitle-width);
+        width: 10.625rem;
     }
 
     .smallValue {
@@ -259,12 +269,7 @@
 
     .infoValue {
         max-width: 100%;
-        margin-bottom: 0.5rem;
-
-        .smallTitle {
-            font-size: 0.7rem;
-            font-weight: normal;
-        }
+        margin-bottom: 1.5rem;
 
         &
             > *:not(.ellipsis, span, .editHandle, a, select, ._tooltip):not(
@@ -272,9 +277,17 @@
             ) {
             min-height: 44px;
             display: flex;
+            align-items: center;
             flex-wrap: wrap;
-            align-items: flex-start;
-            margin: 4px 0;
+            // margin: 4px 0;
+            // padding: 0 1rem;
+            // background: linear-gradient(
+            //         0deg,
+            //         rgba(255, 255, 255, 0.05) 0%,
+            //         rgba(255, 255, 255, 0.05) 100%
+            //     ),
+            //     #16171a;
+            // border-radius: 0.5rem;
         }
 
         .editValue {
@@ -283,7 +296,7 @@
             flex-grow: 1;
             position: relative;
             flex-wrap: nowrap !important;
-            margin: 4px 0;
+            // margin: 4px 0;
             gap: 0.5rem;
 
             // .loading {
@@ -436,7 +449,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    margin-top: 2rem;
+    margin: 2rem 0 0.5rem;
     gap: 10px;
 
     .table-functions,

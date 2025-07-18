@@ -233,6 +233,7 @@ let setResize = async () => {
     document.addEventListener("mouseup", mouseup);
 };
 </script>
+
 <style lang="less">
 .customTbl.resizable > thead > tr > th > .resizer {
     cursor: col-resize;
@@ -483,6 +484,29 @@ let setResize = async () => {
     border-spacing: 0 0.5rem;
     color: rgba(225, 225, 225, 0.8);
 
+    .left {
+        text-align: left;
+    }
+
+    .nohover {
+        &:hover {
+            cursor: default;
+            background: transparent;
+
+            td {
+                border: none;
+            }
+
+            &::before,
+            &::after {
+                background: #121214;
+                border-top: none;
+                border-bottom: none;
+                border-right: none;
+            }
+        }
+    }
+
     thead {
         background-color: #121214;
 
@@ -577,10 +601,6 @@ let setResize = async () => {
             &:first-child {
                 border-top-left-radius: 0.625rem;
                 border-bottom-left-radius: 0.625rem;
-            }
-
-            &.left {
-                text-align: left;
             }
         }
     }
