@@ -262,20 +262,13 @@ template(v-else)
                 tr(v-for="i in (10 - listDisplay.length)")
                     td(colspan="4")
 
-    br
-
-    .tableMenu(style='display:block;text-align:center;')
-        .iconClick.square.arrow(@click="currentPage--;" :class="{'nonClickable': fetching || currentPage <= 1 }")
-            //- .material-symbols-outlined.notranslate.bold chevron_left
-            svg.svgIcon(style="width: 26px; height: 26px")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-            span Previous&nbsp;&nbsp;
-        | &nbsp;&nbsp;
-        .iconClick.square.arrow(@click="currentPage++;" :class="{'nonClickable': fetching || currentPage >= maxPage || !listDisplay.length }")
-            span &nbsp;&nbsp;Next
-            //- .material-symbols-outlined.notranslate.bold chevron_right
-            svg.svgIcon(style="width: 26px; height: 26px")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+    .table-page-wrap
+        button.inline.only-icon.gray.sm(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
+        button.inline.only-icon.gray.sm(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 
     .dragPopup(:class="{'show' : dragHere}")
         //- .material-symbols-outlined.notranslate(style='font-size:64px;') cloud_upload
@@ -825,9 +818,8 @@ function openFile(ns: any) {
     let path = ns.path;
     let url;
     if (path.split("/").length > 1) {
-        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${
-            ns.name
-        }`;
+        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${ns.name
+            }`;
     } else {
         url = `https://${hostUrl.value}/${ns.name}`;
     }
@@ -948,8 +940,9 @@ form.register {
 // table style below
 thead {
     th {
-        & > span {
+        &>span {
             @media (pointer: fine) {
+
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -965,7 +958,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }
@@ -1052,7 +1045,7 @@ tbody {
                 background-color: transparent;
             }
 
-            ~ tr {
+            ~tr {
                 pointer-events: none;
 
                 &:hover {
@@ -1082,7 +1075,7 @@ tbody {
         gap: 0.5rem;
         flex: 1;
 
-        > div {
+        >div {
             width: 100%;
             height: 100%;
         }
@@ -1091,11 +1084,9 @@ tbody {
             display: inline-flex;
             align-items: center;
             height: 100%;
-            background: linear-gradient(
-                    0deg,
+            background: linear-gradient(0deg,
                     rgba(255, 255, 255, 0.05) 0%,
-                    rgba(255, 255, 255, 0.05) 100%
-                ),
+                    rgba(255, 255, 255, 0.05) 100%),
                 #16171a;
             border-radius: 0.5rem;
             padding: 0 1rem;
@@ -1110,11 +1101,9 @@ tbody {
     align-items: center;
     min-width: 2.5rem;
     height: 3rem;
-    background: linear-gradient(
-            0deg,
+    background: linear-gradient(0deg,
             rgba(255, 255, 255, 0.05) 0%,
-            rgba(255, 255, 255, 0.05) 100%
-        ),
+            rgba(255, 255, 255, 0.05) 100%),
         #16171a;
     border-radius: 0.5rem;
     padding: 0.5rem;

@@ -86,6 +86,14 @@
             <path d="m424-312 282-282-56-56-226 226-114-114-56 56 170 170ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Z"/>
         </symbol>
 
+        <!-- small arrow -->
+        <symbol id="icon-keyboard-arrow-left" viewBox="0 -960 960 960">
+                <path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/>
+        </symbol>
+        <symbol id="icon-keyboard-arrow-right" viewBox="0 -960 960 960">
+                <path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/>
+        </symbol>
+
 <!-- Nav -->
         <!-- docs -->
         <symbol id="icon-menu-book" viewBox="0 -960 960 960">

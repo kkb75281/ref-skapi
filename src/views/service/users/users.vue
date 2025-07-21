@@ -131,17 +131,13 @@ section
                 tr.nohover(v-for="i in 10 - listDisplay.length")
                     td(:colspan="colspan")
 
-    //- form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
-    //-     .header(style='padding-right:10px;')
-    //-         svg.svgIcon.black.clickable(@click="showDetail=false; selectedUser=null;" :class="{nonClickable: fetching}")
-    //-             use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back")
-    //-         .name {{ selectedUser?.name || selectedUser?.email || selectedUser?.user_id }}
-    //-         template(v-if="uploading")
-    //-             .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
-    //-         template(v-else)
-    //-             button.noLine.iconClick.square(type="submit" style='padding:0 14px') SAVE
-
-    //-     UserDetails(v-if='showDetail' :data='selectedUser')
+    .table-page-wrap
+        button.inline.only-icon.gray.sm(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
+        button.inline.only-icon.gray.sm(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 
 // 1
 //- Modal(:open="searchModalOpen" style="padding: 2.5rem 2rem;")
