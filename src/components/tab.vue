@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from "vue";
 
 const props = defineProps({
     tabs: {
@@ -19,16 +19,16 @@ const props = defineProps({
     },
     tabWidth: {
         type: String,
-    }
+    },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(["update:modelValue"]);
 
 let resizeObserver = null; // ResizeObserver를 사용하여 동적 너비 조정 -> active-menu의 크기를 동적으로 조정하기 위함
 
 const activeIndex = ref(0);
-const activeWidth = ref('0px');
-const activeLeft = ref('0px');
+const activeWidth = ref("0px");
+const activeLeft = ref("0px");
 
 const itemRefs = [];
 const setItemRef = (el) => {
@@ -39,7 +39,7 @@ const setItemRef = (el) => {
 
 const selectTab = (index) => {
     setActiveMenu(index);
-    emit('update:modelValue', index); // 부모에게 선택된 인덱스 전달
+    emit("update:modelValue", index); // 부모에게 선택된 인덱스 전달
 };
 
 const setActiveMenu = (index) => {
@@ -90,6 +90,7 @@ onUnmounted(() => {
         // background-color: rgba(0, 0, 0, 0.05);
         background-color: rgba(18, 18, 20, 1);
         border-radius: 24px;
+        flex-wrap: wrap;
 
         li {
             position: relative;
@@ -104,14 +105,15 @@ onUnmounted(() => {
 
         .active-menu {
             position: absolute;
-            content: '';
+            content: "";
             height: calc(100% - 8px);
             border-radius: 20px;
             // background-color: rgb(255, 255, 255);
             background-color: rgba(255, 255, 255, 0.05);
             box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
             // box-shadow: rgba(113, 116, 152, 0.1) 0px 18px 31px, rgba(113, 116, 152, 0.067) 0px 8px 16.2244px, rgba(113, 116, 152, 0.05) 0px 8px 8.46625px;
-            transition: left 200ms cubic-bezier(0.6, 0.6, 0, 1), 350ms cubic-bezier(0.6, 0.6, 0, 1);
+            transition: left 200ms cubic-bezier(0.6, 0.6, 0, 1),
+                350ms cubic-bezier(0.6, 0.6, 0, 1);
         }
     }
 }

@@ -3,7 +3,7 @@ section
     .flex-wrap.space-between
         .page-title Users
         .flex-wrap.end
-            a(href='https://docs.skapi.com/authentication/create-account.html' target="_blank")
+            a.btn-docs(href='https://docs.skapi.com/authentication/create-account.html' target="_blank")
                 button.inline.sm.gray Go Docs
 
 hr

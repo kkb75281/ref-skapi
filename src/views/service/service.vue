@@ -2,7 +2,7 @@
 section
     .flex-wrap.space-between(style="gap:10px")
         .page-title {{ currentService.service.name }}
-        .flex-wrap.end(style="gap:10px;")
+        .flex-wrap.end(style="gap:10px; margin-left: auto;")
             router-link(:to='`/subscription/${currentService.id}`')
                 button.inline.sm.blue Change Plan
             router-link(:to='"/delete-service/" + currentService.id')
@@ -257,26 +257,26 @@ Modal(:open="modifyMode.api_key")
 </template>
 
 <script setup lang="ts">
-import { nextTick, reactive, ref, computed, onMounted } from 'vue';
-import { currentService } from '@/views/service/main';
-import { dateFormat } from '@/code/admin';
-import { devLog } from '@/code/logger';
-import { user } from '@/code/user';
-import { currentServiceSpec } from '@/views/service/service-spec';
+import { nextTick, reactive, ref, computed, onMounted } from "vue";
+import { currentService } from "@/views/service/main";
+import { dateFormat } from "@/code/admin";
+import { devLog } from "@/code/logger";
+import { user } from "@/code/user";
+import { currentServiceSpec } from "@/views/service/service-spec";
 
-import Modal from '@/components/modal.vue';
-import Toggle from '@/components/toggle.vue';
-import Tooltip from '@/components/tooltip.vue';
+import Modal from "@/components/modal.vue";
+import Toggle from "@/components/toggle.vue";
+import Tooltip from "@/components/tooltip.vue";
 
-let inputName = '';
-let inputCors = '';
-let inputKey = '';
+let inputName = "";
+let inputCors = "";
+let inputKey = "";
 let modifyMode = reactive({
     name: false,
     cors: false,
     api_key: false,
-    prevent_signup: false
-})
+    prevent_signup: false,
+});
 let updatingValue = reactive({
     name: false,
     cors: false,
@@ -316,7 +316,7 @@ let resetTime = (timestamp: number) => {
 
     // Return the date as a 13-digit timestamp
     return dateFormat(today.getTime());
-}
+};
 
 // edit/change name
 let editName = () => {
@@ -325,60 +325,71 @@ let editName = () => {
     nextTick(() => {
         focus_name.value.focus();
     });
-}
+};
 let changeName = () => {
     if (currentService.service.name !== inputName) {
         let regex = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
         if (inputName.match(regex)) {
-            alert('Special characters are not allowed');
+            alert("Special characters are not allowed");
 
-            return
+            return;
         }
 
         let previous = currentService.service.name;
 
         updatingValue.name = true;
 
-        currentService.updateService({
-            name: inputName
-        }).then(() => {
-            updatingValue.name = false;
-            currentService.service.name = inputName;
-            modifyMode.name = false;
-        }).catch(err => {
-            updatingValue.name = false;
-            currentService.service.name = previous;
-            throw err;
-        });
+        currentService
+            .updateService({
+                name: inputName,
+            })
+            .then(() => {
+                updatingValue.name = false;
+                currentService.service.name = inputName;
+                modifyMode.name = false;
+            })
+            .catch((err) => {
+                updatingValue.name = false;
+                currentService.service.name = previous;
+                throw err;
+            });
     } else {
         return false;
     }
-}
+};
 
 // edit/change cors
 let editCors = () => {
-    inputCors = currentService.service.cors === '*' ? '' : currentService.service.cors;
+    inputCors =
+        currentService.service.cors === "*" ? "" : currentService.service.cors;
     modifyMode.cors = true;
     nextTick(() => {
         focus_cors.value.focus();
     });
-}
+};
 let changeCors = () => {
     updatingValue.cors = true;
-    currentService.updateService({
-        cors: inputCors
-    }).then(() => {
-        updatingValue.cors = false;
-        modifyMode.cors = false;
-    }).catch(err => {
-        updatingValue.cors = false;
-        nextTick(() => {
-            document.getElementById('modifyCors').focus();
-            (document.getElementById('modifyCors') as HTMLInputElement).setCustomValidity(err.message);
-            (document.getElementById('modifyCors') as HTMLInputElement).reportValidity();
+    currentService
+        .updateService({
+            cors: inputCors,
+        })
+        .then(() => {
+            updatingValue.cors = false;
+            modifyMode.cors = false;
+        })
+        .catch((err) => {
+            updatingValue.cors = false;
+            nextTick(() => {
+                document.getElementById("modifyCors").focus();
+                (
+                    document.getElementById("modifyCors") as HTMLInputElement
+                ).setCustomValidity(err.message);
+                (
+                    document.getElementById("modifyCors") as HTMLInputElement
+                ).reportValidity();
+            });
         });
-    });
-}
+};
 
 // edit/change api_key
 let editApiKey = () => {
@@ -387,75 +398,84 @@ let editApiKey = () => {
     nextTick(() => {
         focus_key.value.focus();
     });
-}
+};
 let changeApiKey = () => {
     let previous = currentService.service.api_key;
 
     updatingValue.api_key = true;
 
-    currentService.updateService({
-        api_key: inputKey
-    }).then(() => {
-        updatingValue.api_key = false;
-        currentService.service.api_key = inputKey;
-        modifyMode.api_key = false;
-    }).catch(err => {
-        currentService.service.api_key = previous;
-        throw err;
-    });
-}
+    currentService
+        .updateService({
+            api_key: inputKey,
+        })
+        .then(() => {
+            updatingValue.api_key = false;
+            currentService.service.api_key = inputKey;
+            modifyMode.api_key = false;
+        })
+        .catch((err) => {
+            currentService.service.api_key = previous;
+            throw err;
+        });
+};
 
 // change prevent_signup
 let changeCreateUserMode = async (onlyAdmin: boolean) => {
     updatingValue.prevent_signup = true;
-    currentService.setServiceOption({
-        prevent_signup: onlyAdmin,
-    }).catch(err => {
-        alert(err.message);
-    }).finally(() => {
-        updatingValue.prevent_signup = false;
-    });
-}
+    currentService
+        .setServiceOption({
+            prevent_signup: onlyAdmin,
+        })
+        .catch((err) => {
+            alert(err.message);
+        })
+        .finally(() => {
+            updatingValue.prevent_signup = false;
+        });
+};
 let enableDisable = async () => {
     updatingValue.enableDisable = true;
     try {
         if (currentService.service.active >= 1)
-            await currentService.disableService()
-        else
-            await currentService.enableService()
-    }
-    catch (error) {
-        window.alert(error.message)
+            await currentService.disableService();
+        else await currentService.enableService();
+    } catch (error) {
+        window.alert(error.message);
         throw error;
-    }
-    finally {
+    } finally {
         updatingValue.enableDisable = false;
     }
-}
+};
 
 // change prevent_inquiry
 let changePreventInquiry = async (onlyAdmin: boolean) => {
     updatingValue.prevent_inquiry = true;
-    currentService.setServiceOption({
-        prevent_inquiry: onlyAdmin,
-    }).catch(err => {
-        alert(err.message);
-    }).finally(() => {
-        updatingValue.prevent_inquiry = false;
-    });
-}
+    currentService
+        .setServiceOption({
+            prevent_inquiry: onlyAdmin,
+        })
+        .catch((err) => {
+            alert(err.message);
+        })
+        .finally(() => {
+            updatingValue.prevent_inquiry = false;
+        });
+};
 
 // change freeze_database
 let changeFreezeDatabase = async (onlyAdmin: boolean) => {
     updatingValue.freeze_database = true;
-    currentService.setServiceOption({
-        freeze_database: onlyAdmin,
-    }).catch(err => {
-        alert(err.message);
-    }).finally(() => {
-        updatingValue.freeze_database = false;
-    });
-}
+    currentService
+        .setServiceOption({
+            freeze_database: onlyAdmin,
+        })
+        .catch((err) => {
+            alert(err.message);
+        })
+        .finally(() => {
+            updatingValue.freeze_database = false;
+        });
+};
 </script>
 
 <style lang="less" scoped>
@@ -599,7 +619,6 @@ hr {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-
             }
 
             span {
@@ -628,4 +647,5 @@ hr {
 // .svgIcon:hover {
 //     border-radius: 50%;
 //     background-color: #293FE61A;
-// }</style>
+// }
+</style>

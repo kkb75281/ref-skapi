@@ -47,6 +47,8 @@ template(v-else)
             h2.page-title File Hosting
             .flex-wrap.end
                 button.inline.sm.red.caution.btn-delete(type="button" @click="removeHosting = true") Remove Hosting
+                a(href='https://docs.skapi.com/hosting/hosting.html' target="_blank")
+                    button.inline.sm.gray Go Docs
 
         hr
 
@@ -87,12 +89,12 @@ template(v-else)
                             .loader-wrap(style='width: 40px; text-align: center;')
                                 .loader(style="--loader-color:white; --loader-size:12px;")
                         //- label.material-symbols-outlined.notranslate.save(v-else) done
-                        label.btn(v-else)
+                        label.button(v-else)
                             svg.svgIcon.save()
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-check")
                             input(type="submit" hidden)
                         //- span.material-symbols-outlined.notranslate.cancel(@click="modifyMode.subdomain = false;") close
-                        svg.btn.svgIcon.cancel(@click="modifyMode.subdomain = false;")
+                        svg.button.svgIcon.cancel(@click="modifyMode.subdomain = false;")
                             use(xlink:href="@/assets/img/material-icon.svg#icon-close")
 
                 div(v-else)
@@ -114,25 +116,25 @@ template(v-else)
                             pre(style='margin: 0; font-size: 0.75rem; text-align: center; width: 80px;' v-if='progress404 < 100') {{ progress404 }}%
                             pre(style='margin: 0; font-size: 0.75rem; text-align: center; width: 80px;' v-else) Updating...
                         //- label.material-symbols-outlined.notranslate.save.fill(v-else :class="{'nonClickable' : !selected404File}") done
-                        label.btn(v-else :class="{'nonClickable' : !selected404File}")
+                        label.button(v-else :class="{'nonClickable' : !selected404File}")
                             svg.svgIcon.save()
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-check")
                             input(type="submit" hidden)
                         //- span.material-symbols-outlined.notranslate.cancel(v-if='!updatingValue.page404' @click="modifyMode.page404 = false;selected404File=null;") close
-                        svg.btn.svgIcon.cancel(v-if='!updatingValue.page404' @click="modifyMode.page404 = false;selected404File=null;")
+                        svg.button.svgIcon.cancel(v-if='!updatingValue.page404' @click="modifyMode.page404 = false;selected404File=null;")
                             use(xlink:href="@/assets/img/material-icon.svg#icon-close")
 
                 div(v-else)
                     .smallValue.editValue
                         span.value(:class='{nonClickable:isPending}') {{ sdInfo?.['404'] || '-' }}
-                        span.btn.editHandle(:class='{nonClickable:isPending}' @click="open404FileInp")
+                        span.button.editHandle(:class='{nonClickable:isPending}' @click="open404FileInp")
                             template(v-if="sdInfo?.['404']")
                                 svg.svgIcon
                                     use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
                             template(v-else)
                                 svg.svgIcon
                                     use(xlink:href="@/assets/img/material-icon.svg#icon-upload")
-                        span.btn.editHandle(v-if='!updatingValue.page404 && sdInfo?.["404"] && sdInfo?.["404"] !== "..."' @click="openRemove404=true")
+                        span.button.editHandle(v-if='!updatingValue.page404 && sdInfo?.["404"] && sdInfo?.["404"] !== "..."' @click="openRemove404=true")
                             svg.svgIcon
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
     br
@@ -1102,7 +1104,7 @@ tbody {
     }
 }
 
-.btn {
+.button {
     display: inline-flex;
     justify-content: center;
     align-items: center;

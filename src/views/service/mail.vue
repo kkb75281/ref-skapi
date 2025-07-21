@@ -2,7 +2,7 @@
 section
     .flex-wrap.space-between
         .page-title Automated Email
-        a(href='https://docs.skapi.com/email/email-templates.html' target="_blank")
+        a.btn-docs(href='https://docs.skapi.com/email/email-templates.html' target="_blank")
             button.inline.sm.gray Go Docs
     
 hr
@@ -14,7 +14,10 @@ section
         router-link(to="/account-setting") Please verify your email address to modify settings.
 
 section
-    TabMenu(v-model="activeTabs" :tabs="['Signup Confirmation', 'Welcome Email', 'Verification Email', 'Invitation Email', 'Newsletter Confirmation']" style="margin-bottom: 1.5rem;")
+    ul.tab-menu
+        li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
+
+    //- TabMenu(v-model="activeTabs" :tabs="['Signup Confirmation', 'Welcome Email', 'Verification Email', 'Invitation Email', 'Newsletter Confirmation']" style="margin-bottom: 1.5rem;")
 
     .email-btn-wrap(style="text-align: center;")
         .flex-wrap.center(style='display:inline-flex; align-items: center;flex-wrap: nowrap; gap:6px; background-color: #222325; padding: 0.5rem; border-radius: 0.6rem;')
@@ -38,10 +41,10 @@ template(v-if='!needsEmailAlias')
         hr
 
         .state
-            .smallTitle Sender
+            .smallTitle Sender :
             .smallValue.ellipsis {{ currentService.service?.email_alias || currentService.service?.service }}@mail.skapi.com
         .state
-            .smallTitle Subject
+            .smallTitle Subject :
             .smallValue.ellipsis {{ converter(subjects[group], parseOpt) }}
 
         .email(style='pointer-events: none;')
@@ -178,12 +181,37 @@ Modal(:open="!!emailToDelete" @close="emailToDelete=false")
             button.noLine.warning(@click="emailToDelete = null") Cancel
             button.final.warning(@click="deleteEmail(emailToDelete)") Delete
 
-Modal(:open="!!emailToUse" @close="emailToUse=false")
-    h4(style='margin:.5em 0 0;') Set Template
+//- modal :: delete email
+Modal.modal-deleteEmail(:open="!!emailToDelete" @close="emailToDelete=false")
+    h4.modal-title Delete Email
 
     hr
 
-    div(style='font-size:.8rem;')
+    div.modal-desc
+        p.
+            Are you sure you want to delete email template:
+            #[br]
+            "#[b {{ emailToDelete?.subject }}]"?
+            #[br]
+            #[br]
+            This action cannot be undone.
+
+    br
+
+    div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
+        div(v-if="deleteMailLoad" style="width:100%; text-align:center")
+            .loader(style="--loader-color:white; --loader-size:12px")
+        template(v-else)
+            button.gray.btn-cancel(@click="emailToDelete = null") Cancel
+            button.red.btn-delete(@click="deleteEmail(emailToDelete)") Delete
+
+//- modal :: set email template
+Modal.modal-setTemplate(:open="!!emailToUse" @close="emailToUse=false")
+    h4.modal-title Set Template
+
+    hr
+
+    div.modal-desc
         p.
             By clicking confirm, you are setting the email template:
             #[br]
@@ -195,10 +223,10 @@ Modal(:open="!!emailToUse" @close="emailToUse=false")
 
     div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
         div(v-if="useMailLoad" style="width:100%; text-align:center")
-            .loader(style="--loader-color:blue; --loader-size:12px")
+            .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else)
-            button.noLine(@click="emailToUse = null") Cancel
-            button.final(@click="useEmail(emailToUse)") Confirm
+            button.gray.btn-cancel(@click="emailToUse = null") Cancel
+            button.btn-confirm(@click="useEmail(emailToUse)") Confirm
 </template>
 
 <script setup lang="ts">
@@ -216,7 +244,7 @@ import Pager from "@/code/pager";
 import Select from "@/components/select.vue";
 import Toggle from "@/components/toggle.vue";
 import TabMenu from "@/components/tab.vue";
-import Checkbox from '@/components/checkbox.vue';
+import Checkbox from "@/components/checkbox.vue";
 
 type Newsletter = {
     bounced: number;
@@ -646,18 +674,18 @@ let getHtml = async (key: string) => {
 
     let defaults: { [key: string]: string } = {
         welcome: `
-<pre>
+<pre style="line-height: 1.4;">
 <span style="font-weight: bold">Hello \${name}</span>
 Thank you for joining \${service_name}
 Your login email is: <span style="font-weight: bold">\${email}</span></pre>`,
         verification:
-            '<pre>Your verification code is <span style="font-weight: bold">${code}</span></pre>',
-        confirmation: `<pre>
+            '<pre style="line-height: 1.4;">Your verification code is <span style="font-weight: bold">${code}</span></pre>',
+        confirmation: `<pre style="line-height: 1.4;">
 Please activate your account by clicking this <a href="\https://link.skapi" style="font-weight: bold">LINK</a>
 Your activation link is valid for 7 days.
 </pre>`,
         invitation: `
-<pre>
+<pre style="line-height: 1.4;">
 Hello \${name}
 You are invited to \${service_name}
 You can accept the invitation by clicking on this <a href="\https://link.skapi" style="font-weight: bold">LINK</a>
@@ -667,7 +695,7 @@ Your account password is: <b>\${password}</b>
 
 Your activation link is valid for 7 days.
 </pre>`,
-        newsletter_subscription: `<pre>
+        newsletter_subscription: `<pre style="line-height: 1.4;">
 Thank you for subscribing to \${service_name} newsletter. 
 Please confirm your subscription by clicking this <a href="\https://link.skapi" style="font-weight: bold">LINK</a>
 </pre>`,
@@ -781,7 +809,7 @@ init();
     border-radius: 0.5rem;
     margin-top: 1.5rem;
 
-    &>div {
+    & > div {
         width: 100%;
     }
 }
@@ -802,9 +830,8 @@ li {
 // table style below
 thead {
     th {
-        &>span {
+        & > span {
             @media (pointer: fine) {
-
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -820,7 +847,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -875,10 +902,66 @@ form.register {
 // new style
 .infoBox {
     .state {
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
+    }
 
-        &:first-of-type {
-            margin-top: 2rem;
+    .smallTitle {
+        font-weight: 500;
+    }
+}
+
+.tab-menu {
+    margin-bottom: 1.5rem;
+}
+
+._codeWrap {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+
+    .code {
+        pre {
+            padding-bottom: 4.2rem !important;
+        }
+    }
+}
+
+.tab-menu {
+    list-style: none;
+    background-color: #121214;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    width: fit-content;
+    padding: 0.625rem;
+    margin: 2rem auto 1.5rem;
+    border-radius: 2rem;
+
+    .tab-menu-item {
+        list-style: none;
+        margin: 0;
+        background-color: transparent;
+        padding: 0.75rem 1rem;
+        border-radius: 1.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+
+        &:hover,
+        &.active {
+            background-color: #222325;
+        }
+    }
+}
+
+@media (max-width: 430px) {
+    .tab-menu {
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+
+        .tab-menu-item {
+            width: 100%;
+            text-align: center;
         }
     }
 }
