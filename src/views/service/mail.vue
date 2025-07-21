@@ -852,9 +852,8 @@ li {
 // table style below
 thead {
     th {
-        &>span {
+        & > span {
             @media (pointer: fine) {
-
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -870,7 +869,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
