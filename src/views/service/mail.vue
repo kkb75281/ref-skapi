@@ -14,18 +14,24 @@ section
         router-link(to="/account-setting") Please verify your email address to modify settings.
 
 section
-    //- TabMenu(v-model="activeTabs" :tabs="['Signup Confirmation', 'Welcome Email', 'Verification Email', 'Invitation Email', 'Newsletter Confirmation']")
     ul.tab-menu
         li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
 
-    Code
-        pre {{ email_templates[group] }}
+    //- TabMenu(v-model="activeTabs" :tabs="['Signup Confirmation', 'Welcome Email', 'Verification Email', 'Invitation Email', 'Newsletter Confirmation']" style="margin-bottom: 1.5rem;")
 
-    //- .flex-wrap.center
-        button.inline(@click="init") {{ emailType.split(' ')[0] }} Email Copy
+    .email-btn-wrap(style="text-align: center;")
+        .flex-wrap.center(style='display:inline-flex; align-items: center;flex-wrap: nowrap; gap:6px; background-color: #222325; padding: 0.5rem; border-radius: 0.6rem;')
+            //- button.inline(@click="init") {{ emailType.split(' ')[0] }} Email Copy
+            span(style="word-break: break-all; padding:0 0.5rem 0 1rem") {{ email_templates[group] }}
+            button.inline.only-icon.gray.sm(style="padding:8px 10px; border-radius:0.4375rem; background-color: #121214;")
+                svg.svgIcon(style="width:20px;")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")
+            button.inline.only-icon.gray.sm(@click="showPreview = true" style="padding:8px 9px; background-color: #121214;")
+                svg.svgIcon(style="width:22px;")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-preview")
 
 template(v-if='!needsEmailAlias')
-    section.infoBox(style='margin-top: 3rem;')
+    //- section.infoBox(style='margin-top: 3rem;')
         .titleHead
             h5(style='white-space: nowrap;') {{emailType}}
             div(style='display: flex;align-items: center;font-size: 0.8rem;')
@@ -45,131 +51,182 @@ template(v-if='!needsEmailAlias')
             div(v-if='htmls[group] === null') ...
             iframe(v-else :srcdoc='currentTemp' style='width: 100%; height: 300px; border: none;')
 
-section
-    .table-menu-wrap
-        .table-functions
-            button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
-        .table-actions
-            a.btn.inline.only-icon.gray.sm(:href="'mailto:' + mailEndpoint" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-mail-fill")
-                span &nbsp;&nbsp;New {{emailType}}
+    //- br
 
-    Table(:class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
-        template(v-slot:head)
-            tr(:class="{'nonClickable' : fetching}")
-                th(style="width:66px; padding:0;text-align:center;")
-                    span In-Use
-                    .resizer
-                th(style="width:400px;")
-                    span(@click='toggleSort("subject")')
-                        | Subject
-                        svg.svgIcon(v-if='searchFor === "subject" && ascending')
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
-                        svg.svgIcon(v-if='searchFor === "subject" && !ascending')
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
-                    .resizer
-                th(style="width:160px;")
-                    span(@click='toggleSort("timestamp")')
-                        | Date
-                        svg.svgIcon(v-if='searchFor === "timestamp" && ascending')
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
-                        svg.svgIcon(v-if='searchFor === "timestamp" && !ascending')
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
-                    .resizer
-                th(style="width:66px; padding:0")
+    section
+        .table-menu-wrap
+            .table-functions
+                //- button.inline.only-icon.gray.sm(@click.stop="(e)=>{showDropDown(e)}")
+                    svg.svgIcon
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                    svg.svgIcon
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+            .table-actions
+                a(:href="'mailto:' + mailEndpoint")
+                    button.inline.only-icon.gray.sm(:class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-send")
+                button.inline.only-icon.gray.sm(:class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
+                    svg.svgIcon
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
 
-        template(v-slot:body)
-            template(v-if="fetching")
-                tr
-                    td#loading(colspan="4").
-                        Loading {{emailType}} ... &nbsp;
-                        #[.loader(style="--loader-color:white; --loader-size:12px")]
-                tr(v-for="i in 9")
-                    td(colspan="4")
-            template(v-else-if="!listDisplay || listDisplay.length === 0")
-                tr.empty-value
-                    td(colspan="4") No {{emailType}} Template
-                tr(v-for="i in 9")
-                    td(colspan="4")
-            template(v-else)
-                tr.hoverRow(v-for="ns in listDisplay" @click='openNewsletter(ns.url)')
-                    td.overflow
-                        template(v-if='currentService.service?.["template_" + group]?.url === ns.url')
-                            svg.svgIcon.black
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-verified-fill")
-                        template(v-else)
-                            svg.svgIcon.reactive.clickable.hide(@click.stop="emailToUse = ns")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-verified")
-                    td.overflow {{ converter(ns.subject) }}
-                    td.overflow {{ dateFormat(ns.timestamp) }}
-                    td.center.buttonWrap(@click.stop)
-                        svg.svgIcon.reactiveDanger.clickable.hide(@click.stop="emailToDelete = ns")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
-                tr(v-for="i in (10 - listDisplay.length)")
-                    td(colspan="4")
+        Table(:key="tableKey" :class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
+            template(v-if="fetching" v-slot:msg)
+                .tableMsg.center
+                    .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+                .tableMsg.center No {{emailType}} Template
+
+            template(v-slot:head)
+                tr(:class="{'nonClickable' : fetching}")
+                    th.fixed(style='width:60px;')
+                        Checkbox(@click.stop :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.url] = d)); else checked = {}; }" style="display:inline-block")
+                        .resizer.fixed
+                    th(style="width:66px; padding:0;text-align:center;")
+                        span In-Use
+                        .resizer
+                    th(style="width:400px;")
+                        span(@click='toggleSort("subject")')
+                            | Subject
+                            svg.svgIcon(v-if='searchFor === "subject" && ascending')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                            svg.svgIcon(v-if='searchFor === "subject" && !ascending')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                        .resizer
+                    th(style="width:160px;")
+                        span(@click='toggleSort("timestamp")')
+                            | Date
+                            svg.svgIcon(v-if='searchFor === "timestamp" && ascending')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                            svg.svgIcon(v-if='searchFor === "timestamp" && !ascending')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                        .resizer
+                    th(style="width:66px; padding:0")
+
+            template(v-slot:body)
+                template(v-if="fetching || !listDisplay || listDisplay.length === 0")
+                    tr.nohover(v-for="i in 10")
+                        td(colspan="4")
+                template(v-else)
+                    tr.hoverRow(v-for="ns in listDisplay" @click='openNewsletter(ns.url)')
+                        td
+                            Checkbox(@click.stop
+                                :modelValue="!!checked?.[ns?.url]"
+                                @update:modelValue="(value) => { if (value) checked[cs?.url] = value; else delete checked[ns?.url]; }"
+                                )
+                        td.overflow
+                            template(v-if='currentService.service?.["template_" + group]?.url === ns.url')
+                                svg.svgIcon
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-verified-fill")
+                            template(v-else)
+                                svg.svgIcon.reactive.clickable.hide(@click.stop="emailToUse = ns")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-verified")
+                        td.overflow {{ converter(ns.subject) }}
+                        td.overflow {{ dateFormat(ns.timestamp) }}
+                        td.center.buttonWrap(@click.stop)
+                            svg.svgIcon.reactiveDanger.clickable.hide(@click.stop="emailToDelete = ns")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+                    tr.nohover(v-for="i in (10 - listDisplay.length)")
+                        td(colspan="4")
+
+        .table-page-wrap
+            button.inline.only-icon.gray.sm(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+                svg.svgIcon(style="rotate: 180deg;")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-forward-ios")
+            button.inline.only-icon.gray.sm(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-forward-ios")
+
+Modal.modal-scroll(:open="showPreview")
+    .modal-container
+        .modal-header
+            h4.title Current Template
+            button.btn-close(type="button" @click="showPreview = false")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+        .modal-body
+            div(v-if='htmls[group] === null')
+                .loader(style="--loader-color:white; --loader-size:12px")
+            .content(v-else)
+                .row
+                    .key Sender
+                    .value {{ currentService.service?.email_alias || currentService.service?.service }}@mail.skapi.com
+                .row
+                    .key Subject
+                    .value {{ converter(subjects[group], parseOpt) }}
+                .row
+                    iframe(:srcdoc='currentTemp' style='width: 100%; height: 300px; border: none; background-color: #fff; border-radius: 1rem; padding: 1rem;')
+
+Modal(:open="!!emailToDelete" @close="emailToDelete=false")
+    h4(style='margin:.5em 0 0;') Delete Email
+
+    hr
+
+    div(style='font-size:.8rem;')
+        p.
+            Are you sure you want to delete email template:
+            #[br]
+            "#[b {{ emailToDelete?.subject }}]"?
+            #[br]
+            #[br]
+            This action cannot be undone.
 
     br
 
-    .tableMenu(style='display:block;text-align:center;')
-        .iconClick.square.arrow(@click="currentPage--;" :class="{'nonClickable': fetching || currentPage <= 1 }")
-            svg.svgIcon(style="height: 26px; width: 26px")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-            span Previous&nbsp;&nbsp;
-        | &nbsp;&nbsp;
-        .iconClick.square.arrow(@click="currentPage++;" :class="{'nonClickable': fetching || endOfList && currentPage >= maxPage }")
-            span &nbsp;&nbsp;Next
-            svg.svgIcon(style="height: 26px; width: 26px")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+    div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
+        div(v-if="deleteMailLoad" style="width:100%; text-align:center")
+            .loader(style="--loader-color:blue; --loader-size:12px")
+        template(v-else)
+            button.noLine.warning(@click="emailToDelete = null") Cancel
+            button.final.warning(@click="deleteEmail(emailToDelete)") Delete
 
-    //- modal :: delete email
-    Modal.modal-deleteEmail(:open="!!emailToDelete" @close="emailToDelete=false")
-        h4.modal-title Delete Email
+//- modal :: delete email
+Modal.modal-deleteEmail(:open="!!emailToDelete" @close="emailToDelete=false")
+    h4.modal-title Delete Email
 
-        hr
+    hr
 
-        div.modal-desc
-            p.
-                Are you sure you want to delete email template:
-                #[br]
-                "#[b {{ emailToDelete?.subject }}]"?
-                #[br]
-                #[br]
-                This action cannot be undone.
+    div.modal-desc
+        p.
+            Are you sure you want to delete email template:
+            #[br]
+            "#[b {{ emailToDelete?.subject }}]"?
+            #[br]
+            #[br]
+            This action cannot be undone.
 
-        br
+    br
 
-        div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
-            div(v-if="deleteMailLoad" style="width:100%; text-align:center")
-                .loader(style="--loader-color:white; --loader-size:12px")
-            template(v-else)
-                button.gray.btn-cancel(@click="emailToDelete = null") Cancel
-                button.red.btn-delete(@click="deleteEmail(emailToDelete)") Delete
+    div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
+        div(v-if="deleteMailLoad" style="width:100%; text-align:center")
+            .loader(style="--loader-color:white; --loader-size:12px")
+        template(v-else)
+            button.gray.btn-cancel(@click="emailToDelete = null") Cancel
+            button.red.btn-delete(@click="deleteEmail(emailToDelete)") Delete
 
-    //- modal :: set email template
-    Modal.modal-setTemplate(:open="!!emailToUse" @close="emailToUse=false")
-        h4.modal-title Set Template
+//- modal :: set email template
+Modal.modal-setTemplate(:open="!!emailToUse" @close="emailToUse=false")
+    h4.modal-title Set Template
 
-        hr
+    hr
 
-        div.modal-desc
-            p.
-                By clicking confirm, you are setting the email template:
-                #[br]
-                "#[b {{ emailToUse?.subject }}]"
-                #[br]
-                as the {{ emailType }} template.
+    div.modal-desc
+        p.
+            By clicking confirm, you are setting the email template:
+            #[br]
+            "#[b {{ emailToUse?.subject }}]"
+            #[br]
+            as the {{ emailType }} template.
 
-        br
+    br
 
-        div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
-            div(v-if="useMailLoad" style="width:100%; text-align:center")
-                .loader(style="--loader-color:white; --loader-size:12px")
-            template(v-else)
-                button.gray.btn-cancel(@click="emailToUse = null") Cancel
-                button.btn-confirm(@click="useEmail(emailToUse)") Confirm
+    div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
+        div(v-if="useMailLoad" style="width:100%; text-align:center")
+            .loader(style="--loader-color:white; --loader-size:12px")
+        template(v-else)
+            button.gray.btn-cancel(@click="emailToUse = null") Cancel
+            button.btn-confirm(@click="useEmail(emailToUse)") Confirm
 </template>
 
 <script setup lang="ts">
@@ -187,6 +244,7 @@ import Pager from "@/code/pager";
 import Select from "@/components/select.vue";
 import Toggle from "@/components/toggle.vue";
 import TabMenu from "@/components/tab.vue";
+import Checkbox from "@/components/checkbox.vue";
 
 type Newsletter = {
     bounced: number;
@@ -198,6 +256,9 @@ type Newsletter = {
     url: string;
 };
 
+let showPreview = ref(false);
+let tableKey = ref(0);
+let checked: Ref<{ [key: string]: any }> = ref({});
 let emailAliasVal = ref("");
 let email_is_unverified_or_service_is_disabled = computed(
     () => !user?.email_verified || currentService.service.active <= 0
@@ -680,6 +741,65 @@ init();
 </script>
 
 <style lang="less" scoped>
+.email-btn-wrap {
+    button {
+        svg {
+            opacity: 0.6;
+        }
+
+        &:hover {
+            &::after {
+                display: none;
+            }
+
+            svg {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+.modal-scroll {
+    .content {
+        flex-grow: 1;
+        overflow-y: auto;
+        font-size: 0.8rem;
+
+        .value {
+            min-width: fit-content;
+            width: fit-content;
+            margin: 0;
+            flex: 1;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            margin-top: 0;
+            gap: 0.5rem;
+
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+
+            &.line {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                padding-bottom: 2rem;
+                margin-bottom: 2rem;
+            }
+        }
+
+        .key {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            width: 170px;
+        }
+    }
+}
+
 .email {
     overflow-x: auto;
     display: flex;

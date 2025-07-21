@@ -45,7 +45,7 @@ section
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
 
-Table(:key="tableKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" resizable)
+Table(:key="tableKey" :class="{disabled : !user?.email_verified || currentService.service.active <= 0}" resizable)
     template(v-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
         .tableMsg.center No Records
 
