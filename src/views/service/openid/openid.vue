@@ -76,7 +76,7 @@ section
                 //-     .resizer
         template(v-slot:body)
             template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
-                tr(v-for="i in 10")
+                tr.nohover(v-for="i in 10")
                     td(:colspan="colspan")
             template(v-else)
                 tr.hoverRow(v-for="(rc, i) in listDisplay" @click="showDetail=true; selectedLogger=rc")
@@ -91,7 +91,7 @@ section
                             td.overflow(v-if="c.key === 'method'") {{ rc.mthd }}
                             td.overflow(v-if="c.key === 'url'") {{ rc.url }}
 
-                tr(v-for="i in (10 - listDisplay?.length)")
+                tr.nohover(v-for="i in (10 - listDisplay?.length)")
                     td(:colspan="colspan")
 
     //- form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
@@ -435,7 +435,7 @@ textarea::placeholder {
     .inner {
         padding-top: 0.25rem;
 
-        & > * {
+        &>* {
             padding: 0.25rem 0.5rem;
         }
 
@@ -574,7 +574,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }
