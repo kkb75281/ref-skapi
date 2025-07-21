@@ -17,17 +17,14 @@ section
     ul.tab-menu
         li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
 
-    //- TabMenu(v-model="activeTabs" :tabs="['Signup Confirmation', 'Welcome Email', 'Verification Email', 'Invitation Email', 'Newsletter Confirmation']" style="margin-bottom: 1.5rem;")
-
-    .email-btn-wrap(style="text-align: center;")
-        .flex-wrap.center(style='display:inline-flex; align-items: center;flex-wrap: nowrap; gap:6px; background-color: #222325; padding: 0.5rem; border-radius: 0.6rem;')
-            //- button.inline(@click="init") {{ emailType.split(' ')[0] }} Email Copy
-            span(style="word-break: break-all; padding:0 0.5rem 0 1rem") {{ email_templates[group] }}
-            button.inline.only-icon.gray.sm(style="padding:8px 10px; border-radius:0.4375rem; background-color: #121214;")
-                svg.svgIcon(style="width:20px;")
+    .email-btn-wrap
+        .inner
+            span.email {{ email_templates[group] }}
+            button.inline.only-icon.gray.sm.btn-copy
+                svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")
-            button.inline.only-icon.gray.sm(@click="showPreview = true" style="padding:8px 9px; background-color: #121214;")
-                svg.svgIcon(style="width:22px;")
+            button.inline.only-icon.gray.sm.btn-preview(@click="showPreview = true")
+                svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-preview")
 
 template(v-if='!needsEmailAlias')
@@ -742,7 +739,28 @@ init();
 
 <style lang="less" scoped>
 .email-btn-wrap {
+    text-align: center;
+
+    .inner {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background-color: #222325;
+        padding: 0.5rem;
+        border-radius: 0.6rem;
+    }
+
+    .email {
+        word-break: break-all;
+        padding: 0 0.5rem 0 1rem;
+    }
+
     button {
+        border-radius: 0.4375rem;
+        background-color: #121214;
+
         svg {
             opacity: 0.6;
         }
@@ -754,6 +772,24 @@ init();
 
             svg {
                 opacity: 1;
+            }
+        }
+
+        &.btn-copy {
+            padding: 8px 10px;
+
+            svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        &.btn-preview {
+            padding: 8px 9px;
+
+            svg {
+                width: 22px;
+                height: 22px;
             }
         }
     }
@@ -797,20 +833,6 @@ init();
             font-weight: 500;
             width: 170px;
         }
-    }
-}
-
-.email {
-    overflow-x: auto;
-    display: flex;
-    justify-content: center;
-    background-color: #fff;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    margin-top: 1.5rem;
-
-    &>div {
-        width: 100%;
     }
 }
 
