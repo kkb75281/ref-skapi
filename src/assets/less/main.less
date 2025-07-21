@@ -521,6 +521,38 @@
     }
 }
 
+.txt-sm {
+    font-size: 0.875rem !important;
+}
+
+.txt-required {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #ecec30;
+    text-align: right;
+    margin-bottom: 0.5rem;
+}
+
+.label,
+.text {
+    position: relative;
+
+    &.required {
+        &::after {
+            content: "*";
+            display: inline-block;
+            font-size: 1rem;
+            color: #ecec30;
+            position: absolute;
+            top: 0;
+            right: -14px;
+            width: 10px;
+            height: 10px;
+        }
+    }
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -532,6 +564,9 @@
 
 .page-title {
     font-size: 2.375rem;
+    font-weight: 500;
+    line-height: 1.4;
+    margin: 0;
 }
 
 .page-desc {

@@ -93,8 +93,8 @@ div(v-if="fetchingServiceList" style="display: flex; justify-content: center; al
 							span.value(:class="getClass(serviceSpecList[id], 'email')") {{ typeof(serviceSpecList[id]?.dataPercent?.email) === 'string' ? serviceSpecList[id]?.dataPercent?.email : serviceSpecList[id]?.dataPercent?.email + '%' }}
 
 #loading(v-if="loading")
-	.loader(style="--loader-color:black; --loader-size:12px")
-	span.text Createing service...
+	.loader
+	//- span.text Creating service...
 </template>
 
 <script setup lang="ts">
@@ -605,8 +605,8 @@ a {
     gap: 1rem;
 
     .loader {
-        --loader-color: #fff !important;
-        --loader-size: 1rem !important;
+        --loader-color: #fff;
+        --loader-size: 1rem;
         width: var(--loader-size);
         height: var(--loader-size);
     }

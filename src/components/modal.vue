@@ -113,8 +113,8 @@ dialog {
 // 모달 스타일 추가 (스크롤O) :: s
 dialog {
     &::-webkit-scrollbar {
-        width: 0.5rem;
-        height: 20px;
+        width: 0.25rem;
+        height: 0.25rem;
     }
 
     &::-webkit-scrollbar-thumb {
@@ -298,10 +298,10 @@ dialog {
 
 @media (max-width: 430px) {
     dialog {
-        max-width: 100%;
-        max-height: 100%;
-        width: 100%;
-        height: 100%;
+        max-width: calc(100% - 1rem);
+        max-height: calc(100% - 1rem);
+        width: calc(100% - 1rem);
+        height: fit-content;
         border-radius: 0;
         padding: 4rem 1.5rem;
     }

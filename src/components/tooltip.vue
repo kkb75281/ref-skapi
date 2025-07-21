@@ -11,23 +11,23 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick } from "vue";
 
 const props = defineProps({
     tipBackgroundColor: {
         type: String,
-        default: 'transparent'
+        default: "transparent",
     },
     textColor: {
         type: String,
-        default: '#000'
-    }
+        default: "#000",
+    },
 });
 
 const host = ref(null);
 const tipContainer = ref(null);
-const classNames = ref('');
-const tipBackgroundColor = ref('transparent');
+const classNames = ref("");
+const tipBackgroundColor = ref("transparent");
 
 const handleMouseEnter = (e) => {
     const y = window.innerHeight / 2;
@@ -35,18 +35,20 @@ const handleMouseEnter = (e) => {
     const isBottom = e.clientY < y;
     const isLeft = e.clientX > x;
 
-    classNames.value = '';
-    classNames.value += isBottom ? ' bottom' : ' top';
-    classNames.value += isLeft ? ' left' : ' right';
+    classNames.value = "";
+    classNames.value += isBottom ? " bottom" : " top";
+    classNames.value += isLeft ? " left" : " right";
 
     nextTick(() => {
         const tipElement = tipContainer.value?.querySelector('[slot="tip"]');
         if (tipElement) {
-            const bgColor = window.getComputedStyle(tipElement).getPropertyValue('background-color');
-            tipBackgroundColor.value = bgColor || 'transparent';
+            const bgColor = window
+                .getComputedStyle(tipElement)
+                .getPropertyValue("background-color");
+            tipBackgroundColor.value = bgColor || "transparent";
         }
-    })
-}
+    });
+};
 </script>
 
 <style lang="less" scoped>
@@ -80,7 +82,7 @@ const handleMouseEnter = (e) => {
     //     overflow: hidden;
     // }
 
-    >.tool {
+    > .tool {
         text-align: inherit;
     }
 
@@ -98,7 +100,7 @@ const handleMouseEnter = (e) => {
     .tip {
         // min-width: 100%;
         // max-width: 100%;
-		width: 100%;
+        width: 100%;
         min-width: 10rem;
         display: none;
         position: absolute;
@@ -109,13 +111,14 @@ const handleMouseEnter = (e) => {
         right: unset;
         z-index: 999;
         white-space: pre-wrap;
-		text-align: left;
+        text-align: left;
         // overflow: hidden;
-        
+
         background-color: var(--tip-background-color); // 배경색 적용
         color: var(--text-color); // 텍스트 색상 적용
         padding: 8px;
         font-size: 0.8rem;
+        border-radius: 0.375rem;
     }
 
     .tip-arrow {

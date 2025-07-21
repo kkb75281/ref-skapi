@@ -23,7 +23,7 @@ section
         button.inline(@click="init") {{ emailType.split(' ')[0] }} Email Copy
 
 template(v-if='!needsEmailAlias')
-    section
+    section.infoBox(style='margin-top: 3rem;')
         .titleHead
             h5(style='white-space: nowrap;') {{emailType}}
             div(style='display: flex;align-items: center;font-size: 0.8rem;')
@@ -33,13 +33,13 @@ template(v-if='!needsEmailAlias')
         hr
 
         .state
-            .smallTitle(style='vertical-align: middle;') Sender
+            .smallTitle Sender
             .smallValue.ellipsis {{ currentService.service?.email_alias || currentService.service?.service }}@mail.skapi.com
         .state
-            .smallTitle(style='vertical-align: middle;') Subject
+            .smallTitle Subject
             .smallValue.ellipsis {{ converter(subjects[group], parseOpt) }}
 
-        .email(style='pointer-events: none;margin: -.5em;')
+        .email(style='pointer-events: none;')
             div(v-if='htmls[group] === null') ...
             iframe(v-else :srcdoc='currentTemp' style='width: 100%; height: 300px; border: none;')
 
@@ -88,7 +88,7 @@ template(v-if='!needsEmailAlias')
                 tr(v-for="i in 9")
                     td(colspan="4")
             template(v-else-if="!listDisplay || listDisplay.length === 0")
-                tr
+                tr.empty
                     td(colspan="4") No {{emailType}} Template
                 tr(v-for="i in 9")
                     td(colspan="4")
@@ -182,7 +182,7 @@ import Modal from "@/components/modal.vue";
 import Pager from "@/code/pager";
 import Select from "@/components/select.vue";
 import Toggle from "@/components/toggle.vue";
-import TabMenu from '@/components/tab.vue';
+import TabMenu from "@/components/tab.vue";
 
 type Newsletter = {
     bounced: number;
@@ -220,7 +220,13 @@ let needsEmailAlias = computed(() => {
 
 let activeTabs = ref(0);
 let emailType = ref("Signup Confirmation");
-let emailTypeSelect = ["Signup Confirmation", "Welcome Email", "Verification Email", "Invitation Email", "Newsletter Confirmation"];
+let emailTypeSelect = [
+    "Signup Confirmation",
+    "Welcome Email",
+    "Verification Email",
+    "Invitation Email",
+    "Newsletter Confirmation",
+];
 
 watch(activeTabs, (n) => {
     emailType.value = emailTypeSelect[n];
@@ -674,8 +680,12 @@ init();
     overflow-x: auto;
     display: flex;
     justify-content: center;
+    background-color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    margin-top: 1.5rem;
 
-    &>div {
+    & > div {
         width: 100%;
     }
 }
@@ -696,9 +706,8 @@ li {
 // table style below
 thead {
     th {
-        &>span {
+        & > span {
             @media (pointer: fine) {
-
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -714,7 +723,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -763,6 +772,17 @@ form.register {
 
     button {
         flex-shrink: 0;
+    }
+}
+
+// new style
+.infoBox {
+    .state {
+        margin-bottom: 1.5rem;
+
+        &:first-of-type {
+            margin-top: 2rem;
+        }
     }
 }
 </style>

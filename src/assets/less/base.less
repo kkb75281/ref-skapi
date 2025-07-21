@@ -150,7 +150,8 @@ input {
         ),
         #16171a;
     color: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    // border: 1px solid rgba(225, 225, 225, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 0 1.25rem;
     min-height: 3rem;
     border-radius: 0.5rem;
@@ -277,8 +278,10 @@ button {
     position: relative;
     display: inline-flex;
     max-width: 240px;
-    padding: 0.8438rem 4.375rem;
+    // padding: 0.8438rem 4.375rem;
+    padding: 0.8438rem 1rem;
     width: 100%;
+    min-height: 2.75rem;
     justify-content: center;
     align-items: center;
     gap: 10px;
@@ -312,15 +315,9 @@ button {
     }
 
     &.sm {
-        padding: 0.625rem 1.5rem;
+        padding: 0.625rem 1rem;
         font-size: 0.875rem;
         width: auto;
-
-        // svg {
-        //     width: 17px;
-        //     height: 17px;
-        //     fill: #fff;
-        // }
     }
 
     &.dark {
@@ -346,7 +343,7 @@ button {
     }
 
     &.inline {
-        padding: 0.875rem 1.5rem;
+        padding: 0.875rem 1rem;
         width: auto;
     }
 
@@ -377,7 +374,7 @@ button {
     }
 
     @media (max-width: 430px) {
-        padding: 0.75rem 4.375rem;
+        padding: 0.75rem 1rem;
         font-size: 0.875rem;
     }
 }

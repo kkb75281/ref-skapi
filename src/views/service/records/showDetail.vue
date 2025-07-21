@@ -407,10 +407,6 @@ let deleteFile = (key: string, index: number) => {
 }
 
 // new styles (임시 - 추후 삭제될 수도 있음)
-.txt-sm {
-    font-size: 0.875rem !important;
-}
-
 .content {
     .value {
         min-width: fit-content;

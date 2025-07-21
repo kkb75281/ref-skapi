@@ -161,14 +161,9 @@ onUnmounted(() => {
     }
 
     .advanced-router {
-        padding: 24px 0;
-        margin: 1.5rem 2.25rem 0;
+        padding: 1.5rem 0;
+        margin: 1.5rem 0 0;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
-
-        .router {
-            padding-left: 0;
-            padding-right: 0;
-        }
     }
 }
 
