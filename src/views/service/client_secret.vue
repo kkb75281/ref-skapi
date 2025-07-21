@@ -122,19 +122,19 @@ Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModa
 
 // modal :: delete client secret key
 Modal(:open="showDeleteMsg" @close="showDeleteMsg=false")
-    .modal-title Delete Client Secret
+    .modal-title Delete Key
 
     .modal-desc
         | Are you sure you want to delete the selected #[b {{Object.keys(checked).length}} key(s)]?
         br
         | This action cannot be undone.
 
-    .flex-wrap.space-between
-        .flex-wrap.center(v-if="uploading" style="width: 100%;")
+    .modal-btns
+        .loader-wrap(v-if="uploading")
             .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else)
-            button.inline.gray(@click="showDeleteMsg = false;") Cancel
-            button.inline.red(@click="deleteKey") Delete
+            button.gray(@click="showDeleteMsg = false;") Cancel
+            button.red(@click="deleteKey") Delete
 
 </template>
 <script lang="ts" setup>

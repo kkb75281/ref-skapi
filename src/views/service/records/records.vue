@@ -182,16 +182,10 @@ Modal.modal-scroll.modal-detailRecord(:open="showDetail" @close="closeModal")
 Modal.modal-deleteRecord(:open="openDeleteRecords" @close="openDeleteRecords=false")
     h4.modal-title(style='color: var(--caution-color)') Delete Records
 
-    hr
+    .modal-desc You sure want to delete {{ Object.values(checked).filter(value => value === true).length > 1 ? Object.values(checked).filter(value => value === true).length + ' records' : 'the record'}}? #[br] This action cannot be undone.
 
-    div.modal-desc
-        p.
-            You sure want to delete {{ Object.values(checked).filter(value => value === true).length > 1 ? Object.values(checked).filter(value => value === true).length + ' records' : 'the record'}}?
-            #[br]
-            This action cannot be undone.
-
-    div(style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem")
-        div(v-if="promiseRunning" style="width:100%; height:44px; text-align:center;")
+    .modal-btns
+        .loader-wrap(v-if="promiseRunning")
             .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else)
             button.gray.btn-cancel(type="button" @click="openDeleteRecords=false;") Cancel 

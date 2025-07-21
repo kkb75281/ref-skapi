@@ -205,8 +205,8 @@ Modal(:open="modifyMode.name")
     form(@submit.prevent="changeName")
         input.block(type="text" ref="focus_name" placeholder="Maximum 40 characters" maxlength="40" :value='inputName' @input="(e) => inputName = e.target.value" :disabled="updatingValue.name" style="margin-bottom: 0.75rem;" required)
 
-        .flex-wrap.space-between
-            .flex-wrap.center(v-if='updatingValue.name' style="width:100%; height: 46.5px; align-items:center;")
+        .modal-btns
+            .loader-wrap(v-if='updatingValue.name')
                 .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else)
                 button.block(type="submit") Save
@@ -228,8 +228,8 @@ Modal(:open="modifyMode.cors")
     form(@submit.prevent="changeCors")
         input#modifyCors.block(ref="focus_cors" :disabled="updatingValue.cors || null" type="text" placeholder='https://your.domain.com, http://second.domain.net, ...' :value='inputCors' @input="(e) => {e.target.setCustomValidity(''); inputCors = e.target.value;}" style="margin-bottom: 0.75rem;")
 
-        .flex-wrap.space-between
-            .flex-wrap.center(v-if='updatingValue.cors' style="width:100%; height: 46.5px; align-items:center;")
+        .modal-btns
+            .loader-wrap(v-if='updatingValue.cors')
                 .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else)
                 button.block(type="submit") Save
@@ -249,8 +249,8 @@ Modal(:open="modifyMode.api_key")
     form(@submit.prevent="changeApiKey")
         input.block(ref="focus_key" :disabled="updatingValue.api_key || null" type="text" minlength="4" maxlength="256" placeholder='Maximum 256 characters, At least 4 characters.' :value='inputKey' @input="(e) => inputKey = e.target.value" style="margin-bottom: 0.75rem;")
 
-        .flex-wrap.space-between
-            .flex-wrap.center(v-if='updatingValue.api_key' style="width:100%; height: 46.5px; align-items:center;")
+        .modal-btns
+            .loader-wrap(v-if='updatingValue.api_key')
                 .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else)
                 button.block(type="submit") Save
@@ -647,5 +647,4 @@ hr {
 // .svgIcon:hover {
 //     border-radius: 50%;
 //     background-color: #293FE61A;
-// }
-</style>
+// }</style>

@@ -104,9 +104,29 @@ dialog {
         margin: 0 auto;
         font-size: 1rem;
         font-weight: 400;
-        line-height: 1.3;
+        line-height: 1.4;
         color: rgba(102, 102, 102, 1);
         margin-bottom: 2rem;
+    }
+
+    .modal-btns {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+
+        .loader-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 45px;
+            text-align: center;
+        }
+
+        &.end {
+            justify-content: flex-end;
+        }
     }
 }
 

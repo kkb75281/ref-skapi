@@ -104,16 +104,18 @@ Modal(:open="subscrOpt" @close="subscrOpt=false" style='max-width: 640px;')
     .modal-desc
         | Would you like to {{subscrOpt ? subscrOpt.toLowerCase() : ''}} your service plan to {{ changeMode }}?
         br
-        | If the subscription plan is updated before the renewal date, proration of the remaining days will be calculated and the amount will be adjusted accordingly.
+        | If the subscription plan is updated before the renewal date,
+        br
+        | proration of the remaining days will be calculated 
+        br
+        | and the amount will be adjusted accordingly.
 
-    br
-
-    .flex-wrap.space-between(style="min-height: 40px;")
-        div(v-if='promiseRunning' style="width:100%; text-align:center;")
+    .modal-btns
+        .loader-wrap(v-if='promiseRunning')
             .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else)
-            button.inline.gray(@click="subscrOpt = false") Cancel
-            button.inline(@click="upgrade") {{subscrOpt}}
+            button.gray(@click="subscrOpt = false") Cancel
+            button(@click="upgrade") {{subscrOpt}}
 
 Modal(:open="openCancelplan" @close="openCancelplan=false" style='max-width: 640px;')
     .modal-title Cancel Plan
@@ -121,16 +123,18 @@ Modal(:open="openCancelplan" @close="openCancelplan=false" style='max-width: 640
     .modal-desc
         | Would you like to cancel your service plan?
         br
-        | When you cancel your subscription, the service will be available until the end of the current billing period, and the service will be terminated after the end of the period.
+        | When you cancel your subscription,
+        br
+        | the service will be available until the end of the current billing period,
+        br
+        | and the service will be terminated after the end of the period.
 
-    br
-
-    .flex-wrap.space-between(style='min-height:40px;')
-        div(v-if='promiseRunning' style="width:100%; text-align:center")
+    .modal-btns
+        .loader-wrap(v-if='promiseRunning')
             .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else)
-            button.inline.gray(@click="openCancelplan = false") No, I don't want.
-            button.inline.red(@click="cancelSubs") Cancel Plan
+            button.gray(@click="openCancelplan = false") No, I don't want.
+            button.red(@click="cancelSubs") Cancel Plan
 </template>
 
 <script setup>

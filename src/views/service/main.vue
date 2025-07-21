@@ -15,13 +15,12 @@
     Modal(:open="openOffer" @close="openOffer=false")
         .modal-title Upgrade
 
-        .modal-desc You can access more features like sending newsletters, inviting users and file hosting by upgrading your service. #[br]Would you like you check out our service plans?
+        .modal-desc You can access more features like sending newsletters, #[br]inviting users and file hosting by upgrading your service. #[br]Would you like you check out our service plans?
 
-        br
-        div(style='justify-content:space-between;display:flex;align-items:center;')
-            button.inline.gray(type="button" @click="openOffer=false;") No
+        .modal-btns
+            button.gray(type="button" @click="openOffer=false;") No
             router-link(:to='`/subscription/${currentService.id}`')
-                button.inline(type="button") Yes, Upgrade Now
+                button(type="button") Yes, Upgrade Now
 div(v-else style='width:100%;text-align: center;margin-top: 100px;')
     .loader(style="--loader-color:white; --loader-size:12px")
 

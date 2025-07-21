@@ -419,14 +419,12 @@ Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
             use(xlink:href="@/assets/img/material-icon.svg#icon-close")
     h4.modal-title Invite User
 
-    div.modal-desc
-        p(style="margin: 0; text-align: center").
-            Invitation Email includes a temporary password and the acception link. 
-            #[br]
-            User must accept the invitation within 7 days.
-            #[br]
-            For more information, refer:&nbsp;
-            #[a(href="https://docs.skapi.com/email/email-templates.html", target="_blank", style="white-space: nowrap") E-Mail Templates]
+    .modal-desc
+        | Invitation Email includes a temporary password and the acception link. 
+        br
+        | User must accept the invitation within 7 days.
+        br
+        | For more information, refer:&nbsp;#[a(href="https://docs.skapi.com/email/email-templates.html", target="_blank", style="white-space: nowrap") E-Mail Templates]
 
     form#inviteForm(@submit.prevent="inviteUser")
         input(hidden, name="service", :value="currentService.id")
@@ -471,45 +469,32 @@ Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
 
         br
 
-        div(
-            style="display: flex; align-items: center; justify-content: center"
-        )
-            div(
-                v-if="promiseRunning",
-                style="width: 100%; height: 44px; text-align: center"
-            )
+        .modal-btns.end
+            .loader-wrap(v-if="promiseRunning")
                 .loader(style="--loader-color: white; --loader-size: 12px")
             template(v-else)
                 button.btn-invite(type="submit") Invite
 
 //- modal :: grant access
 Modal.modal-grantAccess(:open="openGrantAccess", @close="openGrantAccess = false")
-    h4.modal-title(style="margin: 0") Grant Access
+    h4.modal-title Grant Access
 
-    hr
+    .modal-desc This will grant {{Object.keys(checked).length}} user(s) to a new access group. #[br] Access group can be granted from 1 to 99.
 
-    div.modal-desc
-        p.
-            This will grant {{Object.keys(checked).length}} user(s) to a new access group.
-            #[br]
-            Access group can be granted from 1 to 99.
-
-        input.change-access(
-            type="number"
-            placeholder="1~99"
-            min=1
-            max=99
-            @keyup.stop="(e) => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); }"
-            style="width: 100%;"
-        )
-
-    div(
-        style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem"
+    input.change-access(
+        type="number"
+        placeholder="1~99"
+        min=1
+        max=99
+        @keyup.stop="(e) => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); }"
+        style="width: 100%;"
     )
-        div(
-            v-if="promiseRunning"
-            style="width: 100%; height: 44px; text-align: center"
-        )
+
+    br
+    br
+
+    .modal-btns
+        .loader-wrap(v-if="promiseRunning")
             .loader(style="--loader-color: white; --loader-size: 12px")
         template(v-else)
             button.gray.btn-cancel(type="button", @click="closeGrantAccess" style="flex: 1;") Cancel
@@ -517,38 +502,21 @@ Modal.modal-grantAccess(:open="openGrantAccess", @close="openGrantAccess = false
 
 // grant access > success
 Modal.modal-grantSuccess(:open="successGrantAccess", @close="successGrantAccess = false")
-  h4.modal-title(style="margin: 0") Grant Access
+  h4.modal-title Grant Access
 
-  hr
+  .modal-desc New access group has been granted to {{Object.keys(checked).length}} user(s).
 
-  div.modal-desc
-    p.
-      New access group has been granted to {{Object.keys(checked).length}} user(s).
-
-  br
-
-  div(style="display: flex; align-items: center; justify-content: center")
-    button.btn-cancel(type="button", @click="()=>{checked.value = {};successGrantAccess = false;}") close
+  .modal-btns
+    button.block.btn-cancel(type="button", @click="()=>{checked.value = {};successGrantAccess = false;}") close
 
 //- modal :: unblock user
 Modal(:open="openUnblockUser", @close="openUnblockUser = false")
-  h4.modal-title(style="margin: 0") Unblock User
+  h4.modal-title Unblock User
 
-  hr
+  .modal-desc This action will unblock {{Object.keys(checked).length}} user(s) from your service.  #[br] The user will have access to your service.
 
-  div.modal-desc
-    p.
-      This action will unblock {{Object.keys(checked).length}} user(s) from your service. 
-      #[br]
-      The user will have access to your service.
-
-  div(
-    style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem"
-  )
-    div(
-      v-if="promiseRunning"
-      style="width: 100%; height: 44px; text-align: center"
-    )
+  .modal-btns
+    .loader-wrap(v-if="promiseRunning")
       .loader(style="--loader-color: white; --loader-size: 12px")
     template(v-else)
       button.gray.btn-cancel(type="button" @click="openUnblockUser = false;") Cancel
@@ -556,23 +524,12 @@ Modal(:open="openUnblockUser", @close="openUnblockUser = false")
 
 //- modal :: block user
 Modal(:open="openBlockUser", @close="openBlockUser = false")
-  h4.modal-title(style="margin: 0") Block User
+  h4.modal-title Block User
 
-  hr
+  .modal-desc This action will block {{Object.keys(checked).length}} user(s) from your service. #[br] The user will not be able to access your service anymore.
 
-  div.modal-desc
-    p.
-      This action will block {{Object.keys(checked).length}} user(s) from your service.
-      #[br]
-      The user will not be able to access your service anymore.
-
-  div(
-    style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem"
-  )
-    div(
-      v-if="promiseRunning",
-      style="width: 100%; height: 44px; text-align: center"
-    )
+  .modal-btns
+    .loader-wrap(v-if="promiseRunning")
       .loader(style="--loader-color: white; --loader-size: 12px")
     template(v-else)
       button.gray.btn-cancel(type="button" @click="openBlockUser = false;") Cancel
@@ -582,23 +539,10 @@ Modal(:open="openBlockUser", @close="openBlockUser = false")
 Modal(:open="openDeleteUser", @close="openDeleteUser = false")
   h4.modal-title(style="color: var(--caution-color)") Delete User
 
-  hr
+  .modal-desc This action will delete {{Object.keys(checked).length}} user(s) from your service. #[br] All the user's data will be deleted. #[br] This action cannot be undone.
 
-  div.modal-desc
-    p.
-      This action will delete {{Object.keys(checked).length}} user(s) from your service.
-      #[br]
-      All the user's data will be deleted.
-      #[br]
-      This action cannot be undone.
-
-  div(
-    style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem"
-  )
-    div(
-      v-if="promiseRunning",
-      style="width: 100%; height: 44px; text-align: center"
-    )
+  .modal-btns
+    .loader-wrap(v-if="promiseRunning")
       .loader(style="--loader-color: white; --loader-size: 12px")
     template(v-else)
       button.gray.btn-cancel(type="button" @click="openDeleteUser = false;") Cancel
@@ -606,21 +550,11 @@ Modal(:open="openDeleteUser", @close="openDeleteUser = false")
 
 //- modal :: upgrade service
 Modal(:open="openUpgrade", @close="openUpgrade = false")
-  h4.modal-title(style="margin: 0") Upgrade
+  h4.modal-title Upgrade
 
-  hr
+  .modal-desc You can access more features like sending newsletters, #[br] inviting users and file hosting by upgrading your service. #[br]Would you like you check out our service plans?
 
-  div.modal-desc
-    p.
-      You can access more features like sending newsletters,
-      #[br]
-      inviting users and file hosting by upgrading your service.
-
-    p Would you like you check out our service plans?
-
-  div(
-    style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem"
-  )
+  .modal-btns
     button.gray.btn-cancel(type="button", @click="openUpgrade = false") No
     router-link(:to="`/subscription/${currentService.id}`" style="display: inline-block; width: 100%")
       button.btn-upgrade(type="button") Yes
