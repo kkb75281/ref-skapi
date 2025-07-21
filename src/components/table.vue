@@ -604,5 +604,56 @@ let setResize = async () => {
             }
         }
     }
+
+    .empty-value {
+        position: absolute;
+        top: 78px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1;
+        pointer-events: none;
+        cursor: default;
+        height: fit-content;
+
+        ~ tr {
+            &:hover {
+                cursor: default;
+                background: transparent;
+
+                &::before,
+                &::after {
+                    background: #121214;
+                    border: none;
+                }
+
+                td {
+                    border: none;
+                }
+            }
+        }
+
+        &:hover {
+            cursor: default;
+            background: transparent;
+
+            ~ tr {
+                pointer-events: none;
+
+                &:hover {
+                    background: transparent;
+                }
+            }
+
+            td {
+                border: none;
+            }
+
+            &::before,
+            &::after {
+                background: #121214;
+                border: none;
+            }
+        }
+    }
 }
 </style>
