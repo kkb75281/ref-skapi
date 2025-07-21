@@ -124,16 +124,13 @@ section
                 tr.nohover(v-for="i in (10 - listDisplay?.length)")
                     td(:colspan="colspan")
 
-    .tableMenu(v-if="!showDetail" style='display:block;text-align:center;')
-        .iconClick.square.arrow(@click="currentPage--;" :class="{'nonClickable': fetching || currentPage === 1 }")
-            svg.svgIcon(style="width: 26px; height: 26px")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-            span Previous&nbsp;&nbsp;
-        | &nbsp;&nbsp;
-        .iconClick.square.arrow(@click="currentPage++;" :class="{'nonClickable': fetching || endOfList && currentPage >= maxPage }")
-            span &nbsp;&nbsp;Next
-            svg.svgIcon(style="width: 26px; height: 26px")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+    .table-page-wrap
+        button.inline.only-icon.gray.sm(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
+        button.inline.only-icon.gray.sm(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 
 // modal :: search
 Modal.search-modal(:open="searchModalOpen")

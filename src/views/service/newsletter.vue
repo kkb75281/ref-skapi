@@ -184,20 +184,13 @@ template(v-else)
                 tr(v-for="i in (10 - listDisplay.length)")
                     td(colspan="6")
 
-    br
-
-    .tableMenu(style='display:block;text-align:center;')
-        .iconClick.square.arrow(@click="currentPage--;" :class="{'nonClickable': fetching || currentPage <= 1 }")
-            //- .material-symbols-outlined.notranslate.bold chevron_left
-            svg.svgIcon(style="width: 26px; height: 26px")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-            span Previous&nbsp;&nbsp;
-        | &nbsp;&nbsp;
-        .iconClick.square.arrow(@click="currentPage++;" :class="{'nonClickable': fetching || endOfList && currentPage >= maxPage }")
-            span &nbsp;&nbsp;Next
-            //- .material-symbols-outlined.notranslate.bold chevron_right
-            svg.svgIcon(style="width: 26px; height: 26px")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+    .table-page-wrap
+        button.inline.only-icon.gray.sm(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
+        button.inline.only-icon.gray.sm(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 
     Modal(:open="emailToDelete" @close="emailToDelete=false")
         h4(style='margin:.5em 0 0;') Delete Email
@@ -570,8 +563,9 @@ let converter = (html: string, parsed: boolean, inv: boolean) => {
 // table style below
 thead {
     th {
-        & > span {
+        &>span {
             @media (pointer: fine) {
+
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -587,7 +581,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }
@@ -597,6 +591,7 @@ thead {
         display: block !important;
     }
 }
+
 form.register {
     display: flex;
     flex-wrap: wrap;

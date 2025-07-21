@@ -132,11 +132,11 @@ template(v-if='!needsEmailAlias')
 
         .table-page-wrap
             button.inline.only-icon.gray.sm(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
-                svg.svgIcon(style="rotate: 180deg;")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-forward-ios")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
             button.inline.only-icon.gray.sm(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-forward-ios")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 
 Modal.modal-scroll(:open="showPreview")
     .modal-container
@@ -809,7 +809,7 @@ init();
     border-radius: 0.5rem;
     margin-top: 1.5rem;
 
-    & > div {
+    &>div {
         width: 100%;
     }
 }
@@ -830,8 +830,9 @@ li {
 // table style below
 thead {
     th {
-        & > span {
+        &>span {
             @media (pointer: fine) {
+
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -847,7 +848,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }

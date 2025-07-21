@@ -45,41 +45,49 @@ section
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
 
-Table(:key="tableKey" :class="{disabled : !user?.email_verified || currentService.service.active <= 0}" resizable)
-    template(v-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
-        .tableMsg.center No Records
+    Table(:key="tableKey" :class="{disabled : !user?.email_verified || currentService.service.active <= 0}" resizable)
+        template(v-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+            .tableMsg.center No Records
 
-    template(v-slot:head)
-        tr
-            th.fixed(style='width:60px;')
-                Checkbox(@click.stop :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.name] = d)); else checked = {}; }" style="display:inline-block")
-                .resizer.fixed
-            template(v-for="c in columnList")
-                th.overflow(v-if="c.value", style="width: 200px")
-                    | {{ c.name }}
-                    .resizer
-
-    template(v-slot:body)
-        template(v-if="!listDisplay || listDisplay?.length === 0")
-            tr.nohover(v-for="i in 10")
-                td(:colspan="colspan")
-        template(v-else)
-            tr.hoverRow(v-for="(cs, index) in listDisplay" @click="openDetailModal(cs, i)")
-                td
-                    Checkbox(@click.stop
-                        :modelValue="!!checked?.[cs?.name]"
-                        @update:modelValue="(value) => { if (value) checked[cs?.name] = value; else delete checked[cs?.name]; }")
-
+        template(v-slot:head)
+            tr
+                th.fixed(style='width:60px;')
+                    Checkbox(@click.stop :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.name] = d)); else checked = {}; }" style="display:inline-block")
+                    .resizer.fixed
                 template(v-for="c in columnList")
-                    template(v-if="c.value")
-                        td.overflow(v-if="c.key === 'name'") {{ cs?.name }}
-                        td.overflow(v-if="c.key === 'client_secret'") {{ cs.client_secret ? cs.client_secret.slice(0,2) + '*'.repeat(cs.client_secret.length - 2) : '' }}
-                        td.overflow(v-if="c.key === 'locked'")
-                            svg.svgIcon(v-if="cs?.locked" style="fill: white")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-check")
+                    th.overflow(v-if="c.value", style="width: 200px")
+                        | {{ c.name }}
+                        .resizer
 
-            tr.nohover(v-for="i in 10 - Object.keys(listDisplay || {}).length")
-                td(:colspan="colspan")
+        template(v-slot:body)
+            template(v-if="!listDisplay || listDisplay?.length === 0")
+                tr.nohover(v-for="i in 10")
+                    td(:colspan="colspan")
+            template(v-else)
+                tr.hoverRow(v-for="(cs, index) in listDisplay" @click="openDetailModal(cs, i)")
+                    td
+                        Checkbox(@click.stop
+                            :modelValue="!!checked?.[cs?.name]"
+                            @update:modelValue="(value) => { if (value) checked[cs?.name] = value; else delete checked[cs?.name]; }")
+
+                    template(v-for="c in columnList")
+                        template(v-if="c.value")
+                            td.overflow(v-if="c.key === 'name'") {{ cs?.name }}
+                            td.overflow(v-if="c.key === 'client_secret'") {{ cs.client_secret ? cs.client_secret.slice(0,2) + '*'.repeat(cs.client_secret.length - 2) : '' }}
+                            td.overflow(v-if="c.key === 'locked'")
+                                svg.svgIcon(v-if="cs?.locked" style="fill: white")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-check")
+
+                tr.nohover(v-for="i in 10 - Object.keys(listDisplay || {}).length")
+                    td(:colspan="colspan")
+
+    .table-page-wrap
+        button.inline.only-icon.gray.sm(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
+        button.inline.only-icon.gray.sm(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 
 // modal :: client secret key detail (edit/add)
 Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModal")
@@ -144,6 +152,10 @@ import { showDropDown } from "@/assets/js/event.js";
 // table
 let listDisplay = ref(null);
 let checked: Ref<{ [key: string]: any }> = ref({});
+let fetching = ref(false);
+let maxPage = ref(0);
+let currentPage = ref(1);
+let endOfList = ref(false);
 let tableKey = ref(0);
 let colspan = 0;
 let columnList = reactive([
