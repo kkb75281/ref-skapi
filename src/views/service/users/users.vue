@@ -104,7 +104,7 @@ section
 
         template(v-slot:body)
             template(v-if="fetching || !listDisplay || listDisplay.length === 0")
-                tr(v-for="i in 10")
+                tr.nohover(v-for="i in 10")
                     td(:colspan="colspan")
             template(v-else)
                 tr.hoverRow(v-for="(user, index) in listDisplay" @click="showDetail=true; selectedUser=user")
@@ -117,18 +117,18 @@ section
 
                     template(v-for="c in columnList")
                         template(v-if="c.value")
-                        // customize the column
-                        td.overflow(v-if="c.key === 'timestamp'") {{ new Date(user[c.key]).toLocaleString() }}
-                        td.overflow(v-else-if="c.key === 'approved'") {{ user[c.key].split(':')[1].charAt(0).toUpperCase() + user[c.key].split(':')[1].slice(1) }}
-                        td.overflow(v-else-if="c.key === 'locale'")
-                            img(
-                            :src="'https://flagcdn.com/' + user.locale.toLowerCase() + '.svg'",
-                            style="width: 16px; object-fit: contain"
-                            )
-                        td.overflow(v-else-if="c.key === 'access_group'" :style="{color: user[c.key] < 0 ? 'var(--caution-color)' : null }") {{ Math.abs(user[c.key]) }} {{user[c.key] < 0 ? "(Disabled)" : "" }}
-                        td.overflow(v-else-if="c.value") {{ user[c.key] || "-" }}
+                            // customize the column
+                            td.overflow(v-if="c.key === 'timestamp'") {{ new Date(user[c.key]).toLocaleString() }}
+                            td.overflow(v-else-if="c.key === 'approved'") {{ user[c.key].split(':')[1].charAt(0).toUpperCase() + user[c.key].split(':')[1].slice(1) }}
+                            td.overflow(v-else-if="c.key === 'locale'")
+                                img(
+                                :src="'https://flagcdn.com/' + user.locale.toLowerCase() + '.svg'",
+                                style="width: 16px; object-fit: contain"
+                                )
+                            td.overflow(v-else-if="c.key === 'access_group'" :style="{color: user[c.key] < 0 ? 'var(--caution-color)' : null }") {{ Math.abs(user[c.key]) }} {{user[c.key] < 0 ? "(Disabled)" : "" }}
+                            td.overflow(v-else-if="c.value") {{ user[c.key] || "-" }}
 
-                tr(v-for="i in 10 - listDisplay.length")
+                tr.nohover(v-for="i in 10 - listDisplay.length")
                     td(:colspan="colspan")
 
     //- form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
@@ -1032,8 +1032,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                      new Date(dates[1]).setHours(23, 59, 59, 999)
-                  ).getTime()
+                    new Date(dates[1]).setHours(23, 59, 59, 999)
+                ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1506,7 +1506,7 @@ body {
     justify-content: space-between;
     // flex-direction: row-reverse;
 
-    & > * {
+    &>* {
         margin: 8px 0;
     }
 }
@@ -1529,7 +1529,7 @@ body {
 }
 
 .optionCol {
-    & > *:not(:last-child) {
+    &>*:not(:last-child) {
         margin-right: 8px;
     }
 }

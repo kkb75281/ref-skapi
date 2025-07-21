@@ -30,18 +30,9 @@ section
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
                 .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
-                    .inner
-                        Checkbox(v-model="filterOptions.table" style="display:flex;") Table
-                        Checkbox(v-model="filterOptions.record_id" style="display:flex") Record ID
-                        Checkbox(v-model="filterOptions.user_id" style="display:flex") User ID 
-                        Checkbox(v-model="filterOptions.reference" style="display:flex") Reference
-                        Checkbox(v-model="filterOptions.index" style="display:flex") Index/Value
-                        Checkbox(v-model="filterOptions.tag" style="display:flex") Tag
-                        Checkbox(v-model="filterOptions.files" style="display:flex") Files
-                        Checkbox(v-model="filterOptions.data" style="display:flex") Data
-                        Checkbox(v-model="filterOptions.updated" style="display:flex") Updated
-                        Checkbox(v-model="filterOptions.referenced" style="display:flex") Referenced
-                        Checkbox(v-model="filterOptions.ip" style="display:flex") IP
+                    .inner(style="padding: 0.5rem;")
+                        template(v-for="c in columnList")
+                            Checkbox(v-model="c.value", style="display: flex; padding: 0.25rem 0;") {{ c.name }}
             .search-ing-btn(v-if="searchValue && !searchModalOpen")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
                 svg.svgIcon.reset-btn(@click="resetSearchModal")
@@ -75,42 +66,14 @@ section
                 th.fixed(style='width:60px;')
                     Checkbox(@click.stop :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.record_id] = d)); else checked = {}; }" style="display:inline-block")
                     .resizer.fixed
-                th.overflow(v-if="filterOptions.table" style='width:160px;')
-                    | Table
-                    .resizer
-                th.overflow(v-if="filterOptions.record_id" style='width:160px;')
-                    | Record ID
-                    .resizer
-                th.overflow(v-if="filterOptions.user_id" style='width:160px;')
-                    | User ID
-                    .resizer
-                th.overflow(v-if="filterOptions.reference" style='width:120px;')
-                    | Reference
-                    .resizer
-                th.overflow(v-if="filterOptions.index" style='width:160px;')
-                    | Index/Value
-                    .resizer
-                th.overflow(v-if="filterOptions.tag" style='width:160px;')
-                    | Tag
-                    .resizer
-                th.overflow(v-if="filterOptions.files" style='width:80px;')
-                    | Files
-                    .resizer
-                th(v-if="filterOptions.data" style='width:200px;')
-                    | Data
-                    .resizer
-                th.overflow(v-if="filterOptions.updated" style='width:160px;')
-                    | Updated
-                    .resizer
-                th.overflow(v-if="filterOptions.referenced" style='width:120px;')
-                    | Referenced
-                    .resizer
-                th.overflow(v-if="filterOptions.ip" style='width:160px;')
-                    | IP
+                template(v-for="c in columnList")
+                    th.overflow(v-if="c.value", style="width: 200px")
+                        | {{ c.name }}
+                        .resizer
 
         template(v-slot:body)
             template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
-                tr(v-for="i in 10")
+                tr.nohover(v-for="i in 10")
                     td(:colspan="colspan")
             template(v-else)
                 tr.hoverRow(v-for="(rc, i) in listDisplay" @click="showDetail=true; selectedRecord=rc")
@@ -119,44 +82,46 @@ section
                             :modelValue="!!checked?.[rc?.record_id]"
                             @update:modelValue="(value) => { if (value) checked[rc?.record_id] = value; else delete checked[rc?.record_id]; }")
 
-                    td.overflow.left(v-if="filterOptions.table") 
-                        span
-                            svg.svgIcon(v-if="rc.table.access_group == 'private' || rc.table.access_group == 99 || rc.table.access_group === 'admin'" style="margin-bottom: 2px")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-vpn-key-fill")
-                        span
-                            svg.svgIcon(v-if="rc.table.access_group == 'authorized' || typeof rc.table.access_group === 'number' && rc.table.access_group > 0" style="margin-bottom: 2px")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-person-fill")
-                        span
-                            svg.svgIcon(v-if="rc.table.access_group == 'public' || rc.table.access_group === 0" style="margin-bottom: 2px")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-language")
-                        span(style="margin-left: 8px") {{ rc?.table?.name }}
+                    template(v-for="c in columnList")
+                        template(v-if="c.value")
+                            td.overflow.left(v-if="c.key === 'table'") 
+                                span
+                                    svg.svgIcon(v-if="rc.table.access_group == 'private' || rc.table.access_group == 99 || rc.table.access_group === 'admin'" style="margin-bottom: 2px")
+                                        use(xlink:href="@/assets/img/material-icon.svg#icon-vpn-key-fill")
+                                span
+                                    svg.svgIcon(v-if="rc.table.access_group == 'authorized' || typeof rc.table.access_group === 'number' && rc.table.access_group > 0" style="margin-bottom: 2px")
+                                        use(xlink:href="@/assets/img/material-icon.svg#icon-person-fill")
+                                span
+                                    svg.svgIcon(v-if="rc.table.access_group == 'public' || rc.table.access_group === 0" style="margin-bottom: 2px")
+                                        use(xlink:href="@/assets/img/material-icon.svg#icon-language")
+                                span(style="margin-left: 8px") {{ rc?.table?.name }}
 
-                    td(v-if="filterOptions.record_id")
-                        .click.overflow(@click.stop="copyID") {{ rc.record_id }}
+                            td(v-if="c.key === 'record_id'")
+                                .click.overflow(@click.stop="copyID") {{ rc.record_id }}
 
-                    td(v-if="filterOptions.user_id") 
-                        .click.overflow(@click.stop="copyID") {{ rc.user_id }}
+                            td(v-if="c.key === 'user_id'") 
+                                .click.overflow(@click.stop="copyID") {{ rc.user_id }}
 
-                    td(v-if="filterOptions.reference")
-                        .click.overflow(v-if="rc?.reference" @click.stop="copyID") {{ rc?.reference }}
-                        template(v-else) -
-                    td.overflow(v-if="filterOptions.index") 
-                        template(v-if="rc?.index") 
-                            span(v-if="typeof(rc?.index?.value) == 'string'") {{ rc?.index?.name }} / "{{ rc?.index?.value }}"
-                            span(v-else) {{ rc?.index?.name }} / {{ rc?.index?.value }}
-                        template(v-else) -
-                    td.overflow(v-if="filterOptions.tag") 
-                        template(v-if="rc?.tags" v-for="(tag, index) in rc.tags")
-                            span(v-if="rc.tags.length-1 == index") {{ tag }}
-                            span(v-else) {{ tag }}
-                        template(v-else) -
+                            td(v-if="c.key === 'reference'")
+                                .click.overflow(v-if="rc?.reference" @click.stop="copyID") {{ rc?.reference }}
+                                template(v-else) -
+                            td.overflow(v-if="c.key === 'index'") 
+                                template(v-if="rc?.index") 
+                                    span(v-if="typeof(rc?.index?.value) == 'string'") {{ rc?.index?.name }} / "{{ rc?.index?.value }}"
+                                    span(v-else) {{ rc?.index?.name }} / {{ rc?.index?.value }}
+                                template(v-else) -
+                            td.overflow(v-if="c.key === 'tag'") 
+                                template(v-if="rc?.tags" v-for="(tag, index) in rc.tags")
+                                    span(v-if="rc.tags.length-1 == index") {{ tag }}
+                                    span(v-else) {{ tag }}
+                                template(v-else) -
 
-                    td.overflow(v-if="filterOptions.files") {{ countMyFiles(rc) }}
-                    td.overflow(v-if="filterOptions.data") {{ rc.data }}
-                    td.overflow(v-if="filterOptions.updated") {{ new Date(rc.updated).toLocaleString() }}
-                    td.overflow(v-if="filterOptions.referenced") {{ rc.referenced_count }}
-                    td.overflow(v-if="filterOptions.ip") {{ rc.ip }}
-                tr(v-for="i in (10 - listDisplay?.length)")
+                            td.overflow(v-if="c.key === 'files'") {{ countMyFiles(rc) }}
+                            td.overflow(v-if="c.key === 'data'") {{ rc.data }}
+                            td.overflow(v-if="c.key === 'updated'") {{ new Date(rc.updated).toLocaleString() }}
+                            td.overflow(v-if="c.key === 'referenced'") {{ rc.referenced_count }}
+                            td.overflow(v-if="c.key === 'ip'") {{ rc.ip }}
+                tr.nohover(v-for="i in (10 - listDisplay?.length)")
                     td(:colspan="colspan")
 
     .tableMenu(v-if="!showDetail" style='display:block;text-align:center;')
@@ -245,7 +210,7 @@ import SearchBox from "./searchbox.vue";
 import RecDetails from "./showDetail.vue";
 
 import type { Ref } from "vue";
-import { ref, computed, watch, nextTick, onMounted, onUnmounted } from "vue";
+import { ref, computed, watch, nextTick, onMounted, onUnmounted, reactive } from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { devLog } from "@/code/logger";
@@ -253,24 +218,83 @@ import { currentService, serviceRecords } from "@/views/service/main";
 import { showDropDown } from "@/assets/js/event.js";
 
 // table columns
-let filterOptions = ref({
-    table: true,
-    user_id: false,
-    reference: true,
-    index: false,
-    tag: false,
-    record_id: true,
-    updated: true,
-    ip: false,
-    files: true,
-    referenced: true,
-    data: true,
-});
+let tableKey = ref(0);
+let colspan = 0;
+let columnList = reactive([
+    {
+        name: "Table",
+        key: "table",
+        value: true,
+    },
+    {
+        name: "User ID",
+        key: "user_id",
+        value: false,
+    },
+    {
+        name: "Reference",
+        key: "reference",
+        value: true,
+    },
+    {
+        name: "Index",
+        key: "index",
+        value: false,
+    },
+    {
+        name: "Tag",
+        key: "tag",
+        value: false,
+    },
+    {
+        name: "Record ID",
+        key: "record_id",
+        value: true,
+    },
+    {
+        name: "Updated",
+        key: "updated",
+        value: true,
+    },
+    {
+        name: "IP",
+        key: "ip",
+        value: false,
+    },
+    {
+        name: "Files",
+        key: "files",
+        value: true,
+    },
+    {
+        name: "Referenced",
+        key: "referenced",
+        value: true,
+    },
+    {
+        name: "Data",
+        key: "data",
+        value: true,
+    },
+]);
+watch(
+    columnList,
+    (nv) => {
+        colspan = 1;
+        nv.forEach((c) => {
+            if (c.value) {
+                colspan++;
+            }
+        });
+
+        tableKey.value++;
+    },
+    { immediate: true }
+);
 
 // ui/ux related
 let openDeleteRecords = ref(false);
 let promiseRunning = ref(false);
-let tableKey = ref(0);
 let fetching = ref(false);
 let maxPage = ref(0);
 let currentPage: Ref<number> = ref(1);
@@ -456,13 +480,6 @@ function resetSearchModal() {
     getPage(true);
 }
 
-let colspan = computed(() => {
-    return (
-        Object.values(filterOptions.value).filter((value) => value === true)
-            .length + 1
-    );
-});
-
 let countMyFiles = (rc: any) => {
     let count = 0;
     if (!rc.bin) return 0;
@@ -559,11 +576,11 @@ let setUpNewPageList = async () => {
         sortBy: callParams?.index?.name || "record_id",
         order:
             callParams?.index?.name &&
-            (callParams?.index?.condition || "").includes("<")
+                (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                ? "asc"
-                : "desc",
+                    ? "asc"
+                    : "desc",
     });
 };
 
@@ -778,7 +795,7 @@ textarea::placeholder {
     .inner {
         padding: 0.5rem;
 
-        & > * {
+        &>* {
             padding: 0.25rem 0.5rem;
         }
     }
@@ -915,7 +932,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }
@@ -998,7 +1015,7 @@ label._checkbox svg {
 
 .moreVert {
     .inner {
-        > * {
+        >* {
             padding: 0.25rem;
         }
     }
