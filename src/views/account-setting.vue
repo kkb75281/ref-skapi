@@ -41,13 +41,12 @@ Modal(:open="proceedVerification" @close="proceedVerification=false")
 
     .modal-desc Would you like to verify your email address? #[br] The verification code will be sent to #[b {{ user.email }}]
 
-    br
-    div(style='justify-content:space-between;display:flex;align-items:center;')
-        template(v-if='sendingEmail')
-            .loader(style="--loader-color:white; --loader-size:12px; margin:0 auto")
+    .modal-btns
+        .loader-wrap(v-if='sendingEmail')
+            .loader(style="--loader-color:white; --loader-size:12px;")
         template(v-else)
-            button.inline.gray(@click="proceedVerification = false") Cancel
-            button.inline(@click="sendEmail") Proceed
+            button.gray.btn-cancel(@click="proceedVerification = false") Cancel
+            button.btn-proceed(@click="sendEmail") Proceed
 
 </template>
 

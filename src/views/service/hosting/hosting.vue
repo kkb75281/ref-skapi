@@ -280,16 +280,10 @@ template(v-else)
     Modal.modal-deleteSel(:open="deleteSelected" @close="deleteSelected = false")
         h4.modal-title Delete Files
 
-        hr
+        .modal-desc Delete {{ Object.keys(checked).length }} file(s) from your hosting? #[br] This action cannot be undone.
 
-        div.modal-desc
-            p.
-                Delete {{ Object.keys(checked).length }} file(s) from your hosting?
-                #[br]
-                This action cannot be undone.
-
-        div(style='justify-content:space-between; display:flex; align-items:center; min-height:44px; gap: 0.5rem;')
-            div(v-if="modalPromise" style="width:100%; text-align:center")
+        .modal-btns
+            .loader-wrap(v-if="modalPromise")
                 .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else)
                 button.gray.btn-cancel(@click="deleteSelected = false") Cancel
@@ -299,18 +293,10 @@ template(v-else)
     Modal.modal-removeHosting(:open="removeHosting" @close="removeHosting=false")
         h4.modal-title Remove Hosting
 
-        hr
+        .modal-desc Are you sure you want to remove hosting? #[br] This will remove all the files and release your subdomain address. #[br] This action cannot be undone.
 
-        div.modal-desc
-            p.
-                Are you sure you want to remove hosting?
-                #[br]
-                This will remove all the files and release your subdomain address.
-                #[br]
-                This action cannot be undone.
-
-        div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px; gap: 0.5rem;')
-            div(v-if="modalPromise" style="width:100%; text-align:center")
+        .modal-btns
+            .loader-wrap(v-if="modalPromise")
                 .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else)
                 button.gray.btn-cancel(@click="removeHosting = false") Cancel
@@ -320,16 +306,10 @@ template(v-else)
     Modal.modal-remove404(:open="openRemove404" @close="openRemove404=false")
         h4.modal-title Remove 404
 
-        hr
+        .modal-desc Would you like to remove the 404 page? #[br] This will revert the 404 page to the default one.
 
-        div.modal-desc
-            p.
-                Would you like to remove the 404 page?
-                #[br]
-                This will revert the 404 page to the default one.
-
-        div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px; gap: 0.5rem;')
-            div(v-if="modalPromise" style="width:100%; text-align:center")
+        .modal-btns
+            .loader-wrap(v-if="modalPromise")
                 .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else)
                 button.gray.btn-cancel(@click="openRemove404 = false") Cancel

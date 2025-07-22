@@ -28,28 +28,6 @@ section
                     use(xlink:href="@/assets/img/material-icon.svg#icon-preview")
 
 template(v-if='!needsEmailAlias')
-    //- section.infoBox(style='margin-top: 3rem;')
-        .titleHead
-            h5(style='white-space: nowrap;') {{emailType}}
-            div(style='display: flex;align-items: center;font-size: 0.8rem;')
-                span Preview&nbsp;&nbsp;
-                Toggle(:active='parseOpt' @click="parseOpt=!parseOpt")
-
-        hr
-
-        .state
-            .smallTitle Sender :
-            .smallValue.ellipsis {{ currentService.service?.email_alias || currentService.service?.service }}@mail.skapi.com
-        .state
-            .smallTitle Subject :
-            .smallValue.ellipsis {{ converter(subjects[group], parseOpt) }}
-
-        .email(style='pointer-events: none;')
-            div(v-if='htmls[group] === null') ...
-            iframe(v-else :srcdoc='currentTemp' style='width: 100%; height: 300px; border: none;')
-
-    //- br
-
     section
         .table-menu-wrap
             .table-functions
@@ -135,7 +113,7 @@ template(v-if='!needsEmailAlias')
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 
-Modal.modal-scroll(:open="showPreview")
+Modal.modal-scroll.modal-previewMail(:open="showPreview")
     .modal-container
         .modal-header
             h4.title Current Template
@@ -146,6 +124,10 @@ Modal.modal-scroll(:open="showPreview")
             div(v-if='htmls[group] === null')
                 .loader(style="--loader-color:white; --loader-size:12px")
             .content(v-else)
+                .row
+                    .key Preview
+                    .value
+                        Toggle(:active='parseOpt' @click="parseOpt=!parseOpt")
                 .row
                     .key Sender
                     .value {{ currentService.service?.email_alias || currentService.service?.service }}@mail.skapi.com
@@ -182,21 +164,10 @@ Modal(:open="!!emailToDelete" @close="emailToDelete=false")
 Modal.modal-deleteEmail(:open="!!emailToDelete" @close="emailToDelete=false")
     h4.modal-title Delete Email
 
-    hr
+    .modal-desc Are you sure you want to delete email template: #[br] "#[b {{ emailToDelete?.subject }}]"? #[br] This action cannot be undone.
 
-    div.modal-desc
-        p.
-            Are you sure you want to delete email template:
-            #[br]
-            "#[b {{ emailToDelete?.subject }}]"?
-            #[br]
-            #[br]
-            This action cannot be undone.
-
-    br
-
-    div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
-        div(v-if="deleteMailLoad" style="width:100%; text-align:center")
+    .modal-btns
+        .loader-wrap(v-if="deleteMailLoad")
             .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else)
             button.gray.btn-cancel(@click="emailToDelete = null") Cancel
@@ -206,20 +177,10 @@ Modal.modal-deleteEmail(:open="!!emailToDelete" @close="emailToDelete=false")
 Modal.modal-setTemplate(:open="!!emailToUse" @close="emailToUse=false")
     h4.modal-title Set Template
 
-    hr
+    .modal-desc By clicking confirm, you are setting the email template: #[br] "#[b {{ emailToUse?.subject }}]" #[br] as the {{ emailType }} template.
 
-    div.modal-desc
-        p.
-            By clicking confirm, you are setting the email template:
-            #[br]
-            "#[b {{ emailToUse?.subject }}]"
-            #[br]
-            as the {{ emailType }} template.
-
-    br
-
-    div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
-        div(v-if="useMailLoad" style="width:100%; text-align:center")
+    .modal-btns
+        .loader-wrap(v-if="useMailLoad")
             .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else)
             button.gray.btn-cancel(@click="emailToUse = null") Cancel
@@ -795,43 +756,21 @@ init();
     }
 }
 
-.modal-scroll {
-    .content {
-        flex-grow: 1;
-        overflow-y: auto;
-        font-size: 0.8rem;
-
-        .value {
-            min-width: fit-content;
-            width: fit-content;
-            margin: 0;
-            flex: 1;
-        }
-
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            margin-top: 0;
-            gap: 0.5rem;
-
-            &:last-of-type {
-                margin-bottom: 0;
-            }
-
-            &.line {
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                padding-bottom: 2rem;
-                margin-bottom: 2rem;
-            }
-        }
+.modal-previewMail {
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 1rem;
 
         .key {
-            display: flex;
-            align-items: center;
             font-weight: 500;
             width: 170px;
+        }
+
+        .value {
+            min-width: 270px;
+            margin: 6px 0 6px;
         }
     }
 }
@@ -880,71 +819,8 @@ thead {
     }
 }
 
-form.register {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: flex-end;
-
-    .emailAlias {
-        display: inline-block;
-        position: relative;
-        height: 44px;
-
-        &::after {
-            content: "@mail.skapi.com";
-            position: absolute;
-            right: 20px;
-            line-height: 44px;
-            color: #999;
-            font-size: 0.8rem;
-            font-weight: 400;
-            pointer-events: none;
-            user-select: none;
-            z-index: 1;
-        }
-
-        input {
-            padding-right: 132px;
-        }
-
-        flex-grow: 1;
-    }
-
-    svg:hover {
-        border-radius: 50%;
-        background-color: rgba(41, 63, 230, 0.1);
-    }
-
-    button {
-        flex-shrink: 0;
-    }
-}
-
-// new style
-.infoBox {
-    .state {
-        margin-bottom: 1rem;
-    }
-
-    .smallTitle {
-        font-weight: 500;
-    }
-}
-
 .tab-menu {
     margin-bottom: 1.5rem;
-}
-
-._codeWrap {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-
-    .code {
-        pre {
-            padding-bottom: 4.2rem !important;
-        }
-    }
 }
 
 .tab-menu {

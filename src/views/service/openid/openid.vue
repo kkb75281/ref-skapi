@@ -108,15 +108,13 @@ Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
 
     .modal-desc This action will delete {{ Object.keys(checked).length }} open ID logger(s) from the service. #[br] Your users will loose access to the service if they are using this logger. #[br] This action cannot be undone.
 
-    br
-
-    .flex-wrap.space-between(style="display: flex; align-items: center; justify-content: space-between;")
-        div(v-if="promiseRunning" style="width:100%; height:44px; text-align:center;")
-            .loader(style="--loader-color:blue; --loader-size:12px")
+    .modal-btns
+        .loader-wrap(v-if="promiseRunning")
+            .loader(style="--loader-color:white; --loader-size:12px")
 
         template(v-else)
-            button.inline.gray(type="button" @click="openDeleteRecords=false;") Cancel 
-            button.inline.red(type="button" @click="deleteRecords") Delete
+            button.gray(type="button" @click="openDeleteRecords=false;") Cancel 
+            button.red(type="button" @click="deleteRecords") Delete
 
 //- modal :: logger
 Modal.modal-scroll.modal-logger(:open="showDetail")
