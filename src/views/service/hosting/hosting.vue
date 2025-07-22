@@ -278,7 +278,7 @@ template(v-else)
 
     //- modal :: delete selected
     Modal.modal-deleteSel(:open="deleteSelected" @close="deleteSelected = false")
-        h4.modal-title Delete Files
+        .modal-title Delete Files
 
         .modal-desc Delete {{ Object.keys(checked).length }} file(s) from your hosting? #[br] This action cannot be undone.
 
@@ -291,7 +291,7 @@ template(v-else)
 
     //- modal :: remove hosting
     Modal.modal-removeHosting(:open="removeHosting" @close="removeHosting=false")
-        h4.modal-title Remove Hosting
+        .modal-title Remove Hosting
 
         .modal-desc Are you sure you want to remove hosting? #[br] This will remove all the files and release your subdomain address. #[br] This action cannot be undone.
 
@@ -304,7 +304,7 @@ template(v-else)
 
     //- modal :: remove 404
     Modal.modal-remove404(:open="openRemove404" @close="openRemove404=false")
-        h4.modal-title Remove 404
+        .modal-title Remove 404
 
         .modal-desc Would you like to remove the 404 page? #[br] This will revert the 404 page to the default one.
 

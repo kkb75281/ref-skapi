@@ -7,27 +7,130 @@ section
     
 hr
 
-section
-    .error(v-if='!user?.email_verified')
-        svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-        router-link(to="/account-setting") Please verify your email address to modify settings.
+template(v-if='needsEmailAlias')
+    section
+        .error(v-if='!user?.email_verified')
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            router-link(to="/account-setting") Please verify your email address to modify settings.
 
-section
-    ul.tab-menu
-        li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
+    section
+        p.desc(style="color: #888888; margin-bottom: 30px;").
+            You can set automated email templates for your service.
+            #[br]
+            To proceed, please register your email alias address that will be used to send out the emails.
+            #[br]
+            The email alias can only be #[span.wordset alphanumeric and hyphen.]
 
-    .email-btn-wrap
-        .inner
+        form#registerForm(@submit.prevent='registerAlias')
+            .email-alias
+                input.block(v-model='emailAliasVal' pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' :disabled="registerAliasRunning" placeholder="your-email-alias" required)
+
+            button.inline(:disabled='registerAliasRunning' :class='{disabled: registerAliasRunning}')
+                template(v-if="registerAliasRunning")
+                    .loader(style="--loader-color:white; --loader-size:12px; margin: 12px")
+                template(v-else)
+                    | Register
+template(v-else)
+    section
+        .error(v-if='!user?.email_verified')
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            router-link(to="/account-setting") Please verify your email address to modify settings.
+            
+        .error(v-else-if='currentService.service.active == 0')
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            span This service is currently disabled.
+
+        .error(v-else-if='currentService.service.active < 0')
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            span This service is currently suspended.
+
+    //- section
+        template(v-if='emailType === "Signup Confirmation"')
+            p.
+                Signup confirmation email is sent when the signup requires email verification or when the user tries to recover their disabled account.
+                The email contains a link to activate the account.
+
+            p.
+                See #[a.wordset(href='https://docs.skapi.com/authentication/signup-confirmation.html' target="_blank") Signup Confirmation]
+                ,
+                #[a.wordset(href='https://docs.skapi.com/user-account/disable-recover-account.html' target="_blank") Disable / Recover Account]
+
+        template(v-if='emailType === "Welcome Email"')
+            p.
+                Welcome Email is sent when the user successfully logs in after the signup confirmation.
+                #[span.wordset If the signup did not require any signup confirmation, Welcome Email will not be sent]
+
+        template(v-if='emailType === "Verification Email"')
+            p.
+                Verification Email is sent when the user requests to verify their email address or tries to reset their #[span.wordset forgotten password.]
+            p.
+                See #[a(href='https://docs.skapi.com/user-account/email-verification.html' target="_blank") Verification Email]
+                ,
+                #[a.wordset(href='https://docs.skapi.com/authentication/forgot-password.html' target="_blank") Forgot Password]
+
+        template(v-if='emailType === "Invitation Email"')
+            p.
+                Invitation Email is sent when the user is invited to join the service.
+                #[span.wordset You can invite new users] to your service from the #[router-link(to='users') Users] page.
+                #[span.wordset User can login] with provided email and password after they accept the invitation by clicking on the link provided in the email.
+
+        template(v-if='emailType === "Newsletter Confirmation"')
+            p.
+                Newsletter Confirmation is sent when the user subscribes to your public newsletter.
+            p.
+                See #[a(href='https://docs.skapi.com/email/newsletters.html#sending-public-newsletters' target="_blank") Sending Public Newsletters]
+
+    section
+        //- .label Type
+        ul.tab-menu
+            li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
+
+        //- .email-btn-wrap
+            .inner
+                span.email {{ email_templates[group] }}
+                button.inline.only-icon.gray.sm.btn-copy
+                    svg.svgIcon
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")
+                button.inline.only-icon.gray.sm.btn-preview(@click="showPreview = true")
+                    svg.svgIcon
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-preview")
+
+        //- .label Address / Template
+        .email-btn-wrap
             span.email {{ email_templates[group] }}
-            button.inline.only-icon.gray.sm.btn-copy
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")
-            button.inline.only-icon.gray.sm.btn-preview(@click="showPreview = true")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-preview")
 
-template(v-if='!needsEmailAlias')
+            br
+            br
+
+            .flex-wrap.center
+                button.inline.icon-text.gray.sm.btn-copy
+                    svg.svgIcon
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")
+                    span Copy
+                button.inline.icon-text.gray.sm.btn-preview(@click="showPreview = true")
+                    svg.svgIcon
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-preview")
+                    span Preview
+                a(:href="'mailto:' + mailEndpoint")
+                    button.inline.icon-text.gray.sm.btn-send
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-send")
+                        span Send
+
+        br
+
+        //- .label Placeholders
+        //- ul.placeholder-list
+            li.placeholder-item.required(v-for="(placeholder, i) in emailPlaceholders[group].required" :key="'req-' + i")
+                | {{ placeholder }}
+            li.placeholder-item.optional(v-for="(placeholder, i) in emailPlaceholders[group].optional" :key="'opt-' + i")
+                | {{ placeholder }}
+
+
     section
         .table-menu-wrap
             .table-functions
@@ -38,7 +141,7 @@ template(v-if='!needsEmailAlias')
                     svg.svgIcon
                         use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
             .table-actions
-                a(:href="'mailto:' + mailEndpoint")
+                //- a(:href="'mailto:' + mailEndpoint")
                     button.inline.only-icon.gray.sm(:class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
                         svg.svgIcon
                             use(xlink:href="@/assets/img/material-icon.svg#icon-send")
@@ -113,7 +216,8 @@ template(v-if='!needsEmailAlias')
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 
-Modal.modal-scroll.modal-previewMail(:open="showPreview")
+//- modal :: preview mail template
+Modal.modal-scroll.modal-previewMail(:open="showPreview" @close="showPreview = false")
     .modal-container
         .modal-header
             h4.title Current Template
@@ -137,32 +241,9 @@ Modal.modal-scroll.modal-previewMail(:open="showPreview")
                 .row
                     iframe(:srcdoc='currentTemp' style='width: 100%; height: 300px; border: none; background-color: #fff; border-radius: 1rem; padding: 1rem;')
 
-Modal(:open="!!emailToDelete" @close="emailToDelete=false")
-    h4(style='margin:.5em 0 0;') Delete Email
-
-    hr
-
-    div(style='font-size:.8rem;')
-        p.
-            Are you sure you want to delete email template:
-            #[br]
-            "#[b {{ emailToDelete?.subject }}]"?
-            #[br]
-            #[br]
-            This action cannot be undone.
-
-    br
-
-    div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
-        div(v-if="deleteMailLoad" style="width:100%; text-align:center")
-            .loader(style="--loader-color:blue; --loader-size:12px")
-        template(v-else)
-            button.noLine.warning(@click="emailToDelete = null") Cancel
-            button.final.warning(@click="deleteEmail(emailToDelete)") Delete
-
 //- modal :: delete email
 Modal.modal-deleteEmail(:open="!!emailToDelete" @close="emailToDelete=false")
-    h4.modal-title Delete Email
+    .modal-title Delete Email
 
     .modal-desc Are you sure you want to delete email template: #[br] "#[b {{ emailToDelete?.subject }}]"? #[br] This action cannot be undone.
 
@@ -175,7 +256,7 @@ Modal.modal-deleteEmail(:open="!!emailToDelete" @close="emailToDelete=false")
 
 //- modal :: set email template
 Modal.modal-setTemplate(:open="!!emailToUse" @close="emailToUse=false")
-    h4.modal-title Set Template
+    .modal-title Set Template
 
     .modal-desc By clicking confirm, you are setting the email template: #[br] "#[b {{ emailToUse?.subject }}]" #[br] as the {{ emailType }} template.
 
@@ -217,6 +298,29 @@ type Newsletter = {
 let showPreview = ref(false);
 let tableKey = ref(0);
 let checked: Ref<{ [key: string]: any }> = ref({});
+const emailPlaceholders: Record<string, { required: string[]; optional: string[] }> = {
+    confirmation: {
+        required: ["${service_name}", "${code}", "${email}"],
+        optional: ["${name}"]
+    },
+    welcome: {
+        required: ["${service_name}", "${name}", "${email}"],
+        optional: []
+    },
+    verification: {
+        required: ["${code}", "${email}"],
+        optional: []
+    },
+    invitation: {
+        required: ["${service_name}", "${name}", "${email}", "${password}"],
+        optional: []
+    },
+    newsletter_subscription: {
+        required: ["${service_name}", "${email}"],
+        optional: []
+    }
+};
+
 let emailAliasVal = ref("");
 let email_is_unverified_or_service_is_disabled = computed(
     () => !user?.email_verified || currentService.service.active <= 0
@@ -699,59 +803,147 @@ init();
 </script>
 
 <style lang="less" scoped>
-.email-btn-wrap {
-    text-align: center;
+#registerForm {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    max-width: 620px;
 
-    .inner {
-        display: inline-flex;
-        flex-wrap: nowrap;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        background-color: #222325;
-        padding: 0.5rem;
-        border-radius: 0.6rem;
-    }
+    .email-alias {
+        position: relative;
+        flex-grow: 1;
 
-    .email {
-        word-break: break-all;
-        padding: 0 0.5rem 0 1rem;
+        &::after {
+            content: "@mail.skapi.com";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 0.8rem;
+            font-weight: 400;
+            pointer-events: none;
+            user-select: none;
+            z-index: 1;
+        }
+
+        input {
+            padding-right: 132px;
+        }
     }
 
     button {
-        border-radius: 0.4375rem;
-        background-color: #121214;
+        width: 92px;
+    }
 
-        svg {
-            opacity: 0.6;
+    @media (max-width: 540px) {
+        button {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+}
+
+// .email-btn-wrap {
+//     text-align: center;
+
+//     .inner {
+//         display: inline-flex;
+//         flex-wrap: nowrap;
+//         align-items: center;
+//         justify-content: center;
+//         gap: 6px;
+//         background-color: #222325;
+//         padding: 0.5rem;
+//         border-radius: 0.6rem;
+//     }
+
+//     .email {
+//         word-break: break-all;
+//         padding: 0 0.5rem 0 1rem;
+//     }
+
+//     button {
+//         border-radius: 0.4375rem;
+//         background-color: #121214;
+
+//         svg {
+//             opacity: 0.6;
+//         }
+
+//         &:hover {
+//             &::after {
+//                 display: none;
+//             }
+
+//             svg {
+//                 opacity: 1;
+//             }
+//         }
+
+//         &.btn-copy {
+//             padding: 8px 10px;
+
+//             svg {
+//                 width: 20px;
+//                 height: 20px;
+//             }
+//         }
+
+//         &.btn-preview {
+//             padding: 8px 9px;
+
+//             svg {
+//                 width: 22px;
+//                 height: 22px;
+//             }
+//         }
+//     }
+// }
+
+.email-btn-wrap {
+    text-align: center;
+    background-color: #121214;
+    padding: 1rem 4rem;
+    border-radius: 2rem;
+    max-width: 840px;
+    width: 100%;
+    margin: 0 auto;
+
+    .email {
+        word-break: break-all;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    button {
+        border-radius: 2rem;
+    }
+}
+
+.placeholder-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    gap: 0.5rem;
+
+    li {
+        list-style: none;
+        margin: 0;
+
+        &.required {
+            font-weight: 500;
         }
 
-        &:hover {
-            &::after {
-                display: none;
-            }
-
-            svg {
-                opacity: 1;
-            }
-        }
-
-        &.btn-copy {
-            padding: 8px 10px;
-
-            svg {
-                width: 20px;
-                height: 20px;
-            }
-        }
-
-        &.btn-preview {
-            padding: 8px 9px;
-
-            svg {
-                width: 22px;
-                height: 22px;
-            }
+        &.optional {
+            color: #888888;
         }
     }
 }

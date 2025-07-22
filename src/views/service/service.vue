@@ -190,7 +190,7 @@ section
                 //- br
                 //- button.inline.gray(type="button" @click="editApiKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}") Secret Key
 
-Modal(:open="modifyMode.name")
+Modal(:open="modifyMode.name" @close="modifyMode.name = false")
     .modal-close(@click="modifyMode.name = false;")
         svg.svgIcon
             use(xlink:href="@/assets/img/material-icon.svg#icon-close")
@@ -211,7 +211,7 @@ Modal(:open="modifyMode.name")
             template(v-else)
                 button.block(type="submit") Save
 
-Modal(:open="modifyMode.cors")
+Modal(:open="modifyMode.cors" @close="modifyMode.cors = false")
     .modal-close(@click="modifyMode.cors = false;")
         svg.svgIcon
             use(xlink:href="@/assets/img/material-icon.svg#icon-close")
@@ -234,7 +234,7 @@ Modal(:open="modifyMode.cors")
             template(v-else)
                 button.block(type="submit") Save
 
-Modal(:open="modifyMode.api_key")
+Modal(:open="modifyMode.api_key" @close="modifyMode.api_key = false")
     .modal-close(@click="modifyMode.api_key = false;")
         svg.svgIcon
             use(xlink:href="@/assets/img/material-icon.svg#icon-close")
