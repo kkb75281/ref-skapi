@@ -167,10 +167,11 @@ import Table from "@/components/table.vue";
 import { skapi } from "@/main";
 import { dateFormat } from "@/code/admin";
 import Pager from "@/code/pager";
-import Code from "@/components/code.vue";
+// import Code from "@/components/code.vue";
 import Modal from "@/components/modal.vue";
 import type { Newsletters } from "skapi-js/js/Types";
 import Select from "@/components/select.vue";
+import Checkbox from "@/components/checkbox.vue";
 
 type Newsletter = {
     bounced: number;
@@ -509,6 +510,29 @@ let converter = (html: string, parsed: boolean, inv: boolean) => {
     );
     html = html.replaceAll("${password}", "abc123&&");
     return html;
+};
+
+// copy code
+const copyToClipboard = (text: string) => {
+    try {
+        // 복사 기능
+        let doc = document.createElement("textarea");
+        doc.textContent = text;
+        document.body.append(doc);
+        doc.select();
+        document.execCommand("copy");
+        doc.remove();
+
+        // 복사 완료 메시지 표시
+        let copyMsg = document.getElementById("code-copy-msg");
+        copyMsg.classList.add("show");
+
+        setTimeout(() => {
+            copyMsg.classList.remove("show");
+        }, 2000);
+    } catch (err) {
+        console.error("Failed to copy: ", err);
+    }
 };
 </script>
 
