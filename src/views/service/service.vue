@@ -583,6 +583,7 @@ hr {
         .data {
             // font-size: 14px;
             font-weight: 300;
+            max-width: 12.5rem;
 
             @media (max-width: 600px) {
                 font-size: 12px;
@@ -647,4 +648,5 @@ hr {
 // .svgIcon:hover {
 //     border-radius: 50%;
 //     background-color: #293FE61A;
-// }</style>
+// }
+</style>

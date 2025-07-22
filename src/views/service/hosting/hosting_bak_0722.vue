@@ -74,41 +74,83 @@ template(v-else)
             br
             br
 
-        .flex-wrap.space-between(style="gap: 20px;")
-            .card-wrap(style="flex: 1; min-width: 300px;")
-                .card
-                    .flex-wrap.space-between
-                        .text
-                            span.title Storage in-use
-                            span.data {{ currentService.dirInfo?.size ? getFileSize(currentService.dirInfo?.size || 0) : '...' }}
+        .infoValue
+            .smallTitle Storage in-use
+            .smallValue {{ currentService.dirInfo?.size ? getFileSize(currentService.dirInfo?.size || 0) : '...' }}
 
-                .card
-                    .flex-wrap.space-between
-                        .text
-                            span.title URL
-                            span.data {{ hostUrl}}
-                        button.only-icon.gray.edit-btn(type="button" @click="editSubdomain")
-                            svg.svgIcon.nohover
+        .infoValue
+            .smallTitle URL
+            .smallValue(:class='{nonClickable: isPending}')
+                template(v-if="modifyMode.subdomain")
+                    form.register.editValue(@submit.prevent="changeSubdomain")
+                        .subdomain
+                            input#modifySubdomain.big(ref="focus_subdomain" :disabled="updatingValue.subdomain || null" type="text"  pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' minlength="6" maxlength="32" placeholder="your-subdomain" required :value='inputSubdomain' @input="(e) => {e.target.setCustomValidity(''); inputSubdomain = e.target.value;}")
+                        template(v-if="updatingValue.subdomain")
+                            .loader-wrap(style='width: 40px; text-align: center;')
+                                .loader(style="--loader-color:white; --loader-size:12px;")
+                        //- label.material-symbols-outlined.notranslate.save(v-else) done
+                        label.button(v-else)
+                            svg.svgIcon.save()
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-check")
+                            input(type="submit" hidden)
+                        //- span.material-symbols-outlined.notranslate.cancel(@click="modifyMode.subdomain = false;") close
+                        svg.button.svgIcon.cancel(@click="modifyMode.subdomain = false;")
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+
+                div(v-else)
+                    .smallValue
+                        span.value {{ hostUrl}}
+                        span.editHandle(@click="editSubdomain")
+                            svg.svgIcon
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                    .infoValue
 
-                .card
-                    .flex-wrap.space-between
-                        .text
-                            span.title 404 Page
-                            span.data {{ sdInfo?.['404'] || '-' }}
-                        .flex-wrap.end(style="gap: 10px;")
-                            button.only-icon.gray.edit-btn(:class='{nonClickable: email_is_unverified_or_service_is_disabled || isPending}' @click="open404FileInp")
-                                template(v-if="sdInfo?.['404']")
-                                    svg.svgIcon
-                                        use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
-                                template(v-else)
-                                    svg.svgIcon
-                                        use(xlink:href="@/assets/img/material-icon.svg#icon-upload")
-                            button.only-icon.gray.edit-btn(v-if='!updatingValue.page404 && sdInfo?.["404"] && sdInfo?.["404"] !== "..."' @click="openRemove404=true")
-                                svg.svgIcon.nohover
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+        .infoValue
+            .smallTitle 404 Page
+            .smallValue(:class='{nonClickable: email_is_unverified_or_service_is_disabled || isPending}')
+                template(v-if="modifyMode.page404")
+                    form.register.editValue(@submit.prevent="change404")
+                        input(ref="focus_404" hidden type="file" name='file' required @change="handle404file" :disabled='updatingValue.page404' accept="text/html")
+                        .input.editHandle(style='height: 48px; justify-content: flex-start; padding: 0 1rem;' @click='focus_404.click()' :class='{nonClickable:updatingValue.page404}') {{ selected404File || sdInfo?.['404'] || 'Click here to select a file' }}
+                        template(v-if="updatingValue.page404")
+                            pre(style='margin: 0; font-size: 0.75rem; text-align: center; width: 80px;' v-if='progress404 < 100') {{ progress404 }}%
+                            pre(style='margin: 0; font-size: 0.75rem; text-align: center; width: 80px;' v-else) Updating...
+                        //- label.material-symbols-outlined.notranslate.save.fill(v-else :class="{'nonClickable' : !selected404File}") done
+                        label.button(v-else :class="{'nonClickable' : !selected404File}")
+                            svg.svgIcon.save()
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-check")
+                            input(type="submit" hidden)
+                        //- span.material-symbols-outlined.notranslate.cancel(v-if='!updatingValue.page404' @click="modifyMode.page404 = false;selected404File=null;") close
+                        svg.button.svgIcon.cancel(v-if='!updatingValue.page404' @click="modifyMode.page404 = false;selected404File=null;")
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+
+                div(v-else)
+                    .smallValue.editValue
+                        span.value(:class='{nonClickable:isPending}') {{ sdInfo?.['404'] || '-' }}
+                        span.button.editHandle(:class='{nonClickable:isPending}' @click="open404FileInp")
+                            template(v-if="sdInfo?.['404']")
+                                svg.svgIcon
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                            template(v-else)
+                                svg.svgIcon
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-upload")
+                        span.button.editHandle(v-if='!updatingValue.page404 && sdInfo?.["404"] && sdInfo?.["404"] !== "..."' @click="openRemove404=true")
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+    br
 
     .table-menu-wrap
+        //- .table-functions
+            button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }")
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                .moreVert(
+                    @click.stop,
+                    style="--moreVert-left: 0; display: none; font-weight: normal;"
+                    )
+                    .inner(style="padding: 0.5rem;")
+                        template(v-for="c in columnList")
+                            Checkbox(v-model="c.value", style="display: flex; padding: 0.25rem 0;") {{ c.name }}
         .table-actions
             button.inline.only-icon.gray.sm(@click='uploadFileInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
                 input(type="file" hidden multiple @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFileInp")
@@ -229,94 +271,69 @@ template(v-else)
                 use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 
     .dragPopup(:class="{'show' : dragHere}")
+        //- .material-symbols-outlined.notranslate(style='font-size:64px;') cloud_upload
         svg.svgIcon(style="width: 64px; height: 64px; fill: white")
             use(xlink:href="@/assets/img/material-icon.svg#icon-cloud-upload")
         p Drop your files to upload
 
-//- modal :: change subdomain
-Modal(:open="modifyMode.subdomain")
-    .modal-close(@click="modifyMode.subdomain = false;")
-        svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+    //- modal :: delete selected
+    Modal.modal-deleteSel(:open="deleteSelected" @close="deleteSelected = false")
+        h4.modal-title Delete Files
 
-    .modal-title Change Subdomain
-
-    .modal-desc
-        | Enter a new subdomain for the hosting service.
-        br
-        | (Minimum 6 characters)
-
-    form(@submit.prevent="changeSubdomain")
-        .subdomain
-            input.block(ref="focus_subdomain" :disabled="updatingValue.subdomain || null" type="text" pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' minlength="6" maxlength="32" placeholder="your-subdomain" required :value='inputSubdomain' @input="(e) => {e.target.setCustomValidity(''); inputSubdomain = e.target.value;}" style="margin-bottom: 0.75rem; padding-right: 88px;")
+        .modal-desc Delete {{ Object.keys(checked).length }} file(s) from your hosting? #[br] This action cannot be undone.
 
         .modal-btns
-            .loader-wrap(v-if='updatingValue.subdomain')
+            .loader-wrap(v-if="modalPromise")
                 .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else)
-                button.block(type="submit") Save
+                button.gray.btn-cancel(@click="deleteSelected = false") Cancel
+                button.red.btn-delete(@click="deleteFiles") Delete
 
-//- modal :: delete selected
-Modal.modal-deleteSel(:open="deleteSelected" @close="deleteSelected = false")
-    h4.modal-title Delete Files
+    //- modal :: remove hosting
+    Modal.modal-removeHosting(:open="removeHosting" @close="removeHosting=false")
+        h4.modal-title Remove Hosting
 
-    .modal-desc Delete {{ Object.keys(checked).length }} file(s) from your hosting? #[br] This action cannot be undone.
+        .modal-desc Are you sure you want to remove hosting? #[br] This will remove all the files and release your subdomain address. #[br] This action cannot be undone.
 
-    .modal-btns
-        .loader-wrap(v-if="modalPromise")
-            .loader(style="--loader-color:white; --loader-size:12px")
-        template(v-else)
-            button.gray.btn-cancel(@click="deleteSelected = false") Cancel
-            button.red.btn-delete(@click="deleteFiles") Delete
+        .modal-btns
+            .loader-wrap(v-if="modalPromise")
+                .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else)
+                button.gray.btn-cancel(@click="removeHosting = false") Cancel
+                button.red.btn-delete(@click="remove") Remove
 
-//- modal :: remove hosting
-Modal.modal-removeHosting(:open="removeHosting" @close="removeHosting=false")
-    h4.modal-title Remove Hosting
+    //- modal :: remove 404
+    Modal.modal-remove404(:open="openRemove404" @close="openRemove404=false")
+        h4.modal-title Remove 404
 
-    .modal-desc Are you sure you want to remove hosting? #[br] This will remove all the files and release your subdomain address. #[br] This action cannot be undone.
+        .modal-desc Would you like to remove the 404 page? #[br] This will revert the 404 page to the default one.
 
-    .modal-btns
-        .loader-wrap(v-if="modalPromise")
-            .loader(style="--loader-color:white; --loader-size:12px")
-        template(v-else)
-            button.gray.btn-cancel(@click="removeHosting = false") Cancel
-            button.red.btn-delete(@click="remove") Remove
+        .modal-btns
+            .loader-wrap(v-if="modalPromise")
+                .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else)
+                button.gray.btn-cancel(@click="openRemove404 = false") Cancel
+                button.red.btn-delete(@click="remove404") Remove
 
-//- modal :: upload 404 page
-Modal.modal-upload404(:open="modifyMode.page404" @close="modifyMode.page404 = false; selected404File = null;")
-    .modal-close(@click="modifyMode.page404 = false; selected404File = null;")
-        svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+    // Modal(:open="openRefreshCdn" @close="openRefreshCdn=false")
+        h4(style='margin:.5em 0 0;') Refresh CDN
 
-    .modal-title Upload 404 Page
+        hr
 
-    .modal-desc
-        | Upload a custom 404 page for your hosting service.
+        div(style='font-size:.8rem;')
+            p.
+                If you have overwritten files, you can refresh the CDN to apply the changes.
+                #[br]
+                While in process you will not be able to upload or delete files.
+                This process will take a few minutes.
         br
-        | (HTML file only)
 
-    form.form-wrap(@submit.prevent="change404")
-        input(ref="focus_404" hidden type="file" name='file' required @change="handle404file" :disabled='updatingValue.page404' accept="text/html")
-        .input.editHandle(@click='focus_404.click()' :class='{nonClickable:updatingValue.page404}') {{ selected404File || 'Click here to select a file' }}
-        template(v-if="updatingValue.page404")
-            pre(v-if='progress404 < 100') {{ progress404 }}%
-            pre(v-else) Updating...
-        label.btn(v-else :class="{'nonClickable' : !selected404File}")
-            span.btn-save Save
-            input(type="submit" hidden)
-
-//- modal :: remove 404
-Modal.modal-remove404(:open="openRemove404" @close="openRemove404=false")
-    h4.modal-title Remove 404
-
-    .modal-desc Would you like to remove the 404 page? #[br] This will revert the 404 page to the default one.
-
-    .modal-btns
-        .loader-wrap(v-if="modalPromise")
-            .loader(style="--loader-color:white; --loader-size:12px")
-        template(v-else)
-            button.gray.btn-cancel(@click="openRemove404 = false") Cancel
-            button.red.btn-delete(@click="remove404") Remove
+        div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
+            div(v-if="modalPromise" style="width:100%; text-align:center")
+                .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else)
+                button.noLine.warning(@click="openRefreshCdn = false") Cancel
+                button.final.warning(@click="()=>{currentService.refreshCDN(); openRefreshCdn=false;}") Refresh
 </template>
 
 <script setup lang="ts">
@@ -411,24 +428,12 @@ let open404FileInp = async () => {
 };
 
 let handle404file = (e: any) => {
-    let file = e.target?.files?.[0];
+    let file = e.target.files[0];
     let fileName = file.name;
-
-    if (!file) {
-        selected404File.value = null;
-        return;
-    }
-
     selected404File.value = fileName;
 };
-
 let progress404 = ref(0);
 let change404 = async (e: any) => {
-    const file = e.target?.elements?.file?.files?.[0];
-    if (!file) {
-        return;
-    }
-
     updatingValue.page404 = true;
 
     try {
@@ -458,7 +463,6 @@ let change404 = async (e: any) => {
         modifyMode.page404 = false;
         updatingValue.page404 = false;
         progress404.value = 0;
-        selected404File.value = null;
     } catch (err: any) {
         updatingValue.page404 = false;
         alert(err.message);
@@ -794,9 +798,8 @@ function openFile(ns: any) {
     let path = ns.path;
     let url;
     if (path.split("/").length > 1) {
-        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${
-            ns.name
-        }`;
+        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${ns.name
+            }`;
     } else {
         url = `https://${hostUrl.value}/${ns.name}`;
     }
@@ -917,8 +920,9 @@ form.register {
 // table style below
 thead {
     th {
-        & > span {
+        &>span {
             @media (pointer: fine) {
+
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -934,7 +938,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }
@@ -1021,7 +1025,7 @@ tbody {
                 background-color: transparent;
             }
 
-            ~ tr {
+            ~tr {
                 pointer-events: none;
 
                 &:hover {
@@ -1051,7 +1055,7 @@ tbody {
         gap: 0.5rem;
         flex: 1;
 
-        > div {
+        >div {
             width: 100%;
             height: 100%;
         }
@@ -1060,11 +1064,9 @@ tbody {
             display: inline-flex;
             align-items: center;
             height: 100%;
-            background: linear-gradient(
-                    0deg,
+            background: linear-gradient(0deg,
                     rgba(255, 255, 255, 0.05) 0%,
-                    rgba(255, 255, 255, 0.05) 100%
-                ),
+                    rgba(255, 255, 255, 0.05) 100%),
                 #16171a;
             border-radius: 0.5rem;
             padding: 0 1rem;
@@ -1079,103 +1081,11 @@ tbody {
     align-items: center;
     min-width: 2.5rem;
     height: 3rem;
-    background: linear-gradient(
-            0deg,
+    background: linear-gradient(0deg,
             rgba(255, 255, 255, 0.05) 0%,
-            rgba(255, 255, 255, 0.05) 100%
-        ),
+            rgba(255, 255, 255, 0.05) 100%),
         #16171a;
     border-radius: 0.5rem;
     padding: 0.5rem;
-}
-
-.card-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-    margin-bottom: 1.25rem;
-
-    .card {
-        position: relative;
-        background-color: #121214;
-        padding: 1.25rem;
-        border-radius: 0.8125rem;
-        flex: 1;
-        min-width: 170px;
-        display: flex;
-        flex-direction: column;
-        box-sizing: border-box;
-
-        .title {
-            display: block;
-            margin-bottom: 0.625rem;
-            opacity: 0.6;
-        }
-
-        .data {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            max-width: 12.5rem;
-        }
-    }
-}
-
-.subdomain {
-    position: relative;
-
-    &::after {
-        content: ".skapi.com";
-        position: absolute;
-        top: 1px;
-        right: 1.25rem;
-        line-height: 2.75rem;
-        color: #999;
-        font-size: 0.875rem;
-        font-weight: 400;
-        pointer-events: none;
-        user-select: none;
-        z-index: 1;
-    }
-}
-
-.form-wrap {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-
-    .editHandle {
-        width: 100%;
-        height: 48px;
-        justify-content: flex-start;
-        padding: 0 1rem;
-        flex: 1;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        align-items: center;
-        line-height: 48px;
-        border: 1px solid #0a4df1;
-        text-align: left;
-    }
-
-    pre {
-        margin: 0;
-        font-size: 0.875rem;
-        text-align: center;
-        height: 2.75rem;
-        line-height: 2.75rem;
-    }
-
-    .btn-save {
-        display: block;
-        width: 100%;
-    }
 }
 </style>
