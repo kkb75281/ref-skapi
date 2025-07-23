@@ -83,17 +83,17 @@ template(v-else)
     section
         .table-menu-wrap
             .table-actions
-                button.inline.only-icon.gray.sm(@click='uploadFileInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
+                button.inline.only-icon.gray(@click='uploadFileInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
                     input(type="file" hidden multiple @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFileInp")
                     svg.svgIcon
                         use(xlink:href="@/assets/img/material-icon.svg#icon-upload-file-fill")
                     //- span.text Upload Files
-                button.inline.only-icon.gray.sm(@click='uploadFolderInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
+                button.inline.only-icon.gray(@click='uploadFolderInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
                     input(type="file" hidden multiple directory webkitdirectory @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFolderInp")
                     svg.svgIcon
                         use(xlink:href="@/assets/img/material-icon.svg#icon-drive-folder-upload-fill")
                     //- span.text Upload Folder
-                button.inline.only-icon.gray.sm(:class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching || !Object.keys(checked).length}" @click='deleteSelected=true')
+                button.inline.only-icon.gray(:class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching || !Object.keys(checked).length}" @click='deleteSelected=true')
                     svg.svgIcon
                         use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
 
@@ -202,10 +202,10 @@ template(v-else)
                     td(colspan="4")
 
     .table-page-wrap
-        button.inline.only-icon.gray.sm(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+        button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
-        button.inline.only-icon.gray.sm(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+        button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 

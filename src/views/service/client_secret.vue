@@ -27,21 +27,21 @@ section
 section
     .table-menu-wrap
         .table-functions
-            button.inline.only-icon.gray.sm(@click.stop="(e)=>{showDropDown(e)}")
+            button.inline.only-icon.gray(@click.stop="(e)=>{showDropDown(e)}")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
                 .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
                     .inner(style="padding: 0.5rem;")
                         template(v-for="c in columnList")
                             Checkbox(v-model="c.value", style="display: flex; padding: 0.25rem 0;") {{ c.name }}
-            button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
         .table-actions
-            button.inline.only-icon.gray.sm(@click="openDetailModal(addClient, -1)" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray(@click="openDetailModal(addClient, -1)" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-add")
-            button.inline.only-icon.gray.sm(@click="showDeleteMsg=true" :class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
+            button.inline.only-icon.gray(@click="showDeleteMsg=true" :class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
 
@@ -82,10 +82,10 @@ section
                     td(:colspan="colspan")
 
     .table-page-wrap
-        button.inline.only-icon.gray.sm(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+        button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
-        button.inline.only-icon.gray.sm(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+        button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 

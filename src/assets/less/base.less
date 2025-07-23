@@ -347,7 +347,7 @@ button,
     }
 
     &.inline {
-        padding: 0.875rem 1rem;
+        padding: 0.875rem 1.5rem;
         width: auto;
     }
 
@@ -366,11 +366,17 @@ button,
 
     &.only-icon {
         width: auto;
-        padding: 12px;
+        padding: 0;
 
-        &.sm {
-            padding: 8px;
+        svg {
+            margin: 13px 10px;
         }
+
+        // &.sm {
+        //     svg {
+        //         margin: 9px 6px;
+        //     }
+        // }
     }
 
     &.selected {

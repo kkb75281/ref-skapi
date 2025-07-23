@@ -20,7 +20,7 @@ section
     .email-btn-wrap
         .inner
             span.email {{ newsletterEndpoint || '...' }}
-            button.inline.only-icon.gray.sm.btn-copy(@click="copyToClipboard(newsletterEndpoint)")
+            button.inline.only-icon.gray.btn-copy(@click="copyToClipboard(newsletterEndpoint)")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")
 
@@ -28,15 +28,15 @@ template(v-if='!needsEmailAlias')
     section
         .table-menu-wrap
             .table-functions
-                button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
+                button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
                     svg.svgIcon
                         use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
             .table-actions
                 a(:href="'mailto:' + newsletterEndpoint")
-                    button.inline.only-icon.gray.sm(:class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
+                    button.inline.only-icon.gray(:class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
                         svg.svgIcon
                             use(xlink:href="@/assets/img/material-icon.svg#icon-send")
-                button.inline.only-icon.gray.sm(:class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
+                button.inline.only-icon.gray(:class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
                     svg.svgIcon
                         use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
 
@@ -127,10 +127,10 @@ template(v-if='!needsEmailAlias')
                     td(colspan="6")
 
     .table-page-wrap
-        button.inline.only-icon.gray.sm(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+        button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
-        button.inline.only-icon.gray.sm(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+        button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 

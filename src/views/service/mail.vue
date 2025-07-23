@@ -96,9 +96,6 @@ template(v-else)
         .email-btn-wrap
             .email {{ email_templates[group] }}
 
-            br
-            br
-
             .flex-wrap.center
                 button.inline.icon-text.gray.sm.btn-copy(@click="copy(email_templates[group])")
                     svg.svgIcon
@@ -119,11 +116,11 @@ template(v-else)
     section
         .table-menu-wrap
             .table-functions
-                button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                     svg.svgIcon
                         use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
             .table-actions
-                button.inline.only-icon.gray.sm(@click="emailToDelete = true" :class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
+                button.inline.only-icon.gray(@click="emailToDelete = true" :class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
                     svg.svgIcon
                         use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
 
@@ -183,10 +180,10 @@ template(v-else)
                         td(colspan="4")
 
         .table-page-wrap
-            button.inline.only-icon.gray.sm(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+            button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
-            button.inline.only-icon.gray.sm(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+            button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 
@@ -918,6 +915,7 @@ section {
     .email {
         word-break: break-all;
         line-height: 1.5;
+        margin-bottom: 1rem;
     }
 
     a {
@@ -930,7 +928,7 @@ section {
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    @media (max-width: 430px) {
+    @media (max-width: 465px) {
         padding: 1rem;
 
         a {
