@@ -48,58 +48,51 @@ template(v-else)
                 use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
             span This service is currently suspended.
 
-    //- section
-        template(v-if='emailType === "Signup Confirmation"')
-            p.
-                Signup confirmation email is sent when the signup requires email verification or when the user tries to recover their disabled account.
-                The email contains a link to activate the account.
-
-            p.
-                See #[a.wordset(href='https://docs.skapi.com/authentication/signup-confirmation.html' target="_blank") Signup Confirmation]
-                ,
-                #[a.wordset(href='https://docs.skapi.com/user-account/disable-recover-account.html' target="_blank") Disable / Recover Account]
-
-        template(v-if='emailType === "Welcome Email"')
-            p.
-                Welcome Email is sent when the user successfully logs in after the signup confirmation.
-                #[span.wordset If the signup did not require any signup confirmation, Welcome Email will not be sent]
-
-        template(v-if='emailType === "Verification Email"')
-            p.
-                Verification Email is sent when the user requests to verify their email address or tries to reset their #[span.wordset forgotten password.]
-            p.
-                See #[a(href='https://docs.skapi.com/user-account/email-verification.html' target="_blank") Verification Email]
-                ,
-                #[a.wordset(href='https://docs.skapi.com/authentication/forgot-password.html' target="_blank") Forgot Password]
-
-        template(v-if='emailType === "Invitation Email"')
-            p.
-                Invitation Email is sent when the user is invited to join the service.
-                #[span.wordset You can invite new users] to your service from the #[router-link(to='users') Users] page.
-                #[span.wordset User can login] with provided email and password after they accept the invitation by clicking on the link provided in the email.
-
-        template(v-if='emailType === "Newsletter Confirmation"')
-            p.
-                Newsletter Confirmation is sent when the user subscribes to your public newsletter.
-            p.
-                See #[a(href='https://docs.skapi.com/email/newsletters.html#sending-public-newsletters' target="_blank") Sending Public Newsletters]
-
     section
-        //- .label Type
+        span.txt-required * required
+
         ul.tab-menu
             li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
 
-        //- .email-btn-wrap
-            .inner
-                span.email {{ email_templates[group] }}
-                button.inline.only-icon.gray.sm.btn-copy
-                    svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")
-                button.inline.only-icon.gray.sm.btn-preview(@click="showPreview = true")
-                    svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-preview")
+        .desc-wrap
+            template(v-if='emailType === "Signup Confirmation"')
+                p.
+                    Signup confirmation email is sent #[span.wordset when the signup requires email verification]
+                    #[br]
+                    or when the user tries to recover #[span.wordset their disabled account.]
+                    #[br]
+                    The email contains a link to activate the account.
 
-        //- .label Address / Template
+            template(v-if='emailType === "Welcome Email"')
+                p.
+                    Welcome Email is sent when the user successfully logs #[span.wordset in after the signup confirmation.]
+                    #[span.wordset If the signup did not require any signup confirmation, #[span.wordset Welcome Email will not be sent]]
+
+            template(v-if='emailType === "Verification Email"')
+                p.
+                    Verification Email is sent when the user requests to verify their email address or tries to reset their #[span.wordset forgotten password.]
+
+            template(v-if='emailType === "Invitation Email"')
+                p.
+                    Invitation Email is sent when the user is invited to join the service.
+                    #[span.wordset You can invite new users] to your service from the #[router-link(to='users') Users] page.
+                    #[span.wordset User can login] with provided email and password after they accept the invitation by clicking on the link provided in the email.
+
+            template(v-if='emailType === "Newsletter Confirmation"')
+                p.
+                    Newsletter Confirmation is sent when the user subscribes to your public newsletter.
+
+
+            .placeholder-wrap
+                svg.svgIcon
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-info")
+                span.label placeholders: 
+                span.placeholder.required(v-for="(placeholder, i) in emailPlaceholders[group].required" :key="'req-' + i")
+                    | {{ placeholder }}
+                span.placeholder.optional(v-for="(placeholder, i) in emailPlaceholders[group].optional" :key="'opt-' + i")
+                    | {{ placeholder }}
+
+
         .email-btn-wrap
             span.email {{ email_templates[group] }}
 
@@ -122,14 +115,6 @@ template(v-else)
                         span Send
 
         br
-
-        //- .label Placeholders
-        //- ul.placeholder-list
-            li.placeholder-item.required(v-for="(placeholder, i) in emailPlaceholders[group].required" :key="'req-' + i")
-                | {{ placeholder }}
-            li.placeholder-item.optional(v-for="(placeholder, i) in emailPlaceholders[group].optional" :key="'opt-' + i")
-                | {{ placeholder }}
-
 
     section
         .table-menu-wrap
@@ -803,6 +788,16 @@ init();
 </script>
 
 <style lang="less" scoped>
+section {
+    position: relative;
+}
+
+.txt-required {
+    position: absolute;
+    top: -1rem;
+    right: 14px;
+}
+
 #registerForm {
     display: flex;
     flex-wrap: wrap;
@@ -846,67 +841,74 @@ init();
     }
 }
 
-// .email-btn-wrap {
-//     text-align: center;
+.email-btn-wrap-1 {
+    text-align: center;
 
-//     .inner {
-//         display: inline-flex;
-//         flex-wrap: nowrap;
-//         align-items: center;
-//         justify-content: center;
-//         gap: 6px;
-//         background-color: #222325;
-//         padding: 0.5rem;
-//         border-radius: 0.6rem;
-//     }
+    .inner {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background-color: #222325;
+        padding: 0.5rem;
+        border-radius: 0.6rem;
+    }
 
-//     .email {
-//         word-break: break-all;
-//         padding: 0 0.5rem 0 1rem;
-//     }
+    .email {
+        word-break: break-all;
+        padding: 0 0.5rem 0 1rem;
+    }
 
-//     button {
-//         border-radius: 0.4375rem;
-//         background-color: #121214;
+    button {
+        border-radius: 0.4375rem;
+        background-color: #121214;
 
-//         svg {
-//             opacity: 0.6;
-//         }
+        svg {
+            opacity: 0.6;
+        }
 
-//         &:hover {
-//             &::after {
-//                 display: none;
-//             }
+        &:hover {
+            &::after {
+                display: none;
+            }
 
-//             svg {
-//                 opacity: 1;
-//             }
-//         }
+            svg {
+                opacity: 1;
+            }
+        }
 
-//         &.btn-copy {
-//             padding: 8px 10px;
+        &.btn-copy {
+            padding: 8px 10px;
 
-//             svg {
-//                 width: 20px;
-//                 height: 20px;
-//             }
-//         }
+            svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
 
-//         &.btn-preview {
-//             padding: 8px 9px;
+        &.btn-preview {
+            padding: 8px 9px;
 
-//             svg {
-//                 width: 22px;
-//                 height: 22px;
-//             }
-//         }
-//     }
-// }
+            svg {
+                width: 22px;
+                height: 22px;
+            }
+        }
+    }
+}
+
+.desc-wrap {
+    max-width: 600px;
+    margin: 2rem auto;
+    text-align: center;
+    color: #999;
+}
 
 .email-btn-wrap {
     text-align: center;
-    background-color: #121214;
-    padding: 1rem 4rem;
+    background-color: #222325;
+    padding: 1rem 2rem;
     border-radius: 2rem;
     max-width: 840px;
     width: 100%;
@@ -914,6 +916,7 @@ init();
 
     .email {
         word-break: break-all;
+        line-height: 1.5;
     }
 
     a {
@@ -923,23 +926,39 @@ init();
 
     button {
         border-radius: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 }
 
-.placeholder-list {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-    gap: 0.5rem;
+.placeholder-wrap {
+    font-size: 1rem;
 
-    li {
-        list-style: none;
-        margin: 0;
+    svg {
+        width: 18px;
+        height: 18px;
+        fill: #888888;
+    }
+
+    .label {
+        margin-left: 0.25rem;
+        margin-right: 0.5rem;
+    }
+
+    .placeholder {
+        position: relative;
+        margin-right: 1rem;
+        font-size: 0.875rem;
 
         &.required {
             font-weight: 500;
+
+            &::after {
+                content: "*";
+                color: yellow;
+                position: absolute;
+                right: -8px;
+                top: 0;
+            }
         }
 
         &.optional {
@@ -1012,7 +1031,7 @@ thead {
 }
 
 .tab-menu {
-    margin-bottom: 1.5rem;
+    // margin-bottom: 1.5rem;
 }
 
 .tab-menu {
@@ -1024,7 +1043,7 @@ thead {
     gap: 0.5rem;
     width: fit-content;
     padding: 0.625rem;
-    margin: 2rem auto 1.5rem;
+    margin: 2rem auto 0;
     border-radius: 2rem;
 
     .tab-menu-item {
