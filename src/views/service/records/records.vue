@@ -180,7 +180,7 @@ Modal.modal-scroll.modal-detailRecord(:open="showDetail" @close="closeModal")
 
 // modal :: delete records
 Modal.modal-deleteRecord(:open="openDeleteRecords" @close="openDeleteRecords=false")
-    h4.modal-title(style='color: var(--caution-color)') Delete Records
+    .modal-title(style='color: var(--caution-color)') Delete Records
 
     .modal-desc You sure want to delete {{ Object.values(checked).filter(value => value === true).length > 1 ? Object.values(checked).filter(value => value === true).length + ' records' : 'the record'}}? #[br] This action cannot be undone.
 

@@ -100,7 +100,7 @@ dialog {
     }
 
     .modal-desc {
-        // max-width: 350px;
+        // max-width: 360px;
         margin: 0 auto;
         font-size: 1rem;
         font-weight: 400;

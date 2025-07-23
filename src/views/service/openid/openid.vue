@@ -117,7 +117,7 @@ Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
             button.red(type="button" @click="deleteRecords") Delete
 
 //- modal :: logger
-Modal.modal-scroll.modal-logger(:open="showDetail")
+Modal.modal-scroll.modal-logger(:open="showDetail" @close="showDetail=false; selectedLogger=null;")
     form.modal-container(@submit.prevent='upload')
         .modal-header
             h4.title {{ selectedLogger?.id ? selectedLogger.id : 'Register Logger' }}

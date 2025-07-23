@@ -404,20 +404,19 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
 
         br
 
-        div.modal-footer(style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 0;")
-            div(v-if="promiseRunning" style="width: 100%; height: 44px; text-align: center")
-                .loader(style="--loader-color: white; --loader-size: 12px")
+        .modal-footer(style="padding-bottom: 0;")
+            template(v-if="promiseRunning")
+                .loader(style="--loader-color: white; --loader-size: 12px; margin: 12px;")
             template(v-else)
-                //- button.inline.gray(type="button", @click="closeModal") Cancel
-                //- button.inline(type="submit") Create
-                button.block.btn-create(type="submit") Create
+                button.btn-create(type="submit") Create
 
 // modal :: invite user
 Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
     .modal-close(@click="openInviteUser = false")
         svg.svgIcon
             use(xlink:href="@/assets/img/material-icon.svg#icon-close")
-    h4.modal-title Invite User
+
+    .modal-title Invite User
 
     .modal-desc
         | Invitation Email includes a temporary password and the acception link. 
@@ -469,15 +468,21 @@ Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
 
         br
 
-        .modal-btns.end
+        .modal-btns
             .loader-wrap(v-if="promiseRunning")
                 .loader(style="--loader-color: white; --loader-size: 12px")
             template(v-else)
-                button.btn-invite(type="submit") Invite
+                //- button.gray(type="button" @click="closeModal") Cancel
+                //- button(type="submit") Invite
+                button.block.btn-invite(type="submit") Invite
 
 //- modal :: grant access
-Modal.modal-grantAccess(:open="openGrantAccess", @close="openGrantAccess = false")
-    h4.modal-title Grant Access
+Modal.modal-grantAccess(:open="openGrantAccess" @close="closeGrantAccess")
+    .modal-close(@click="closeGrantAccess")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+
+    .modal-title Grant Access
 
     .modal-desc This will grant {{Object.keys(checked).length}} user(s) to a new access group. #[br] Access group can be granted from 1 to 99.
 
@@ -497,12 +502,12 @@ Modal.modal-grantAccess(:open="openGrantAccess", @close="openGrantAccess = false
         .loader-wrap(v-if="promiseRunning")
             .loader(style="--loader-color: white; --loader-size: 12px")
         template(v-else)
-            button.gray.btn-cancel(type="button", @click="closeGrantAccess" style="flex: 1;") Cancel
-            button.btn-grant(type="button", @click="grantAccess" style="flex: 1;") Change Access
+            //- button.gray.btn-cancel(type="button", @click="closeGrantAccess" style="flex: 1;") Cancel
+            button.block.btn-grant(type="button", @click="grantAccess" style="flex: 1;") Change Access
 
 // grant access > success
 Modal.modal-grantSuccess(:open="successGrantAccess", @close="successGrantAccess = false")
-  h4.modal-title Grant Access
+  .modal-title Grant Access
 
   .modal-desc New access group has been granted to {{Object.keys(checked).length}} user(s).
 
@@ -511,7 +516,7 @@ Modal.modal-grantSuccess(:open="successGrantAccess", @close="successGrantAccess 
 
 //- modal :: unblock user
 Modal(:open="openUnblockUser", @close="openUnblockUser = false")
-  h4.modal-title Unblock User
+  .modal-title Unblock User
 
   .modal-desc This action will unblock {{Object.keys(checked).length}} user(s) from your service.  #[br] The user will have access to your service.
 
@@ -524,7 +529,7 @@ Modal(:open="openUnblockUser", @close="openUnblockUser = false")
 
 //- modal :: block user
 Modal(:open="openBlockUser", @close="openBlockUser = false")
-  h4.modal-title Block User
+  .modal-title Block User
 
   .modal-desc This action will block {{Object.keys(checked).length}} user(s) from your service. #[br] The user will not be able to access your service anymore.
 
@@ -537,7 +542,7 @@ Modal(:open="openBlockUser", @close="openBlockUser = false")
 
 //- modal :: delete user
 Modal(:open="openDeleteUser", @close="openDeleteUser = false")
-  h4.modal-title(style="color: var(--caution-color)") Delete User
+  .modal-title(style="color: var(--caution-color)") Delete User
 
   .modal-desc This action will delete {{Object.keys(checked).length}} user(s) from your service. #[br] All the user's data will be deleted. #[br] This action cannot be undone.
 
@@ -550,7 +555,7 @@ Modal(:open="openDeleteUser", @close="openDeleteUser = false")
 
 //- modal :: upgrade service
 Modal(:open="openUpgrade", @close="openUpgrade = false")
-  h4.modal-title Upgrade
+  .modal-title Upgrade
 
   .modal-desc You can access more features like sending newsletters, #[br] inviting users and file hosting by upgrading your service. #[br]Would you like you check out our service plans?
 
