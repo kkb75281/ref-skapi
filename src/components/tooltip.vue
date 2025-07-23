@@ -161,12 +161,12 @@ const handleMouseEnter = (e) => {
             bottom: calc(100% + 18px);
 
             &.left {
-                left: -8px;
+                left: -10px;
             }
 
             &.right {
                 left: initial;
-                right: -8px;
+                right: -10px;
             }
         }
 
