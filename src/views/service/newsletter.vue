@@ -524,7 +524,7 @@ const copyToClipboard = (text: string) => {
         doc.remove();
 
         // 복사 완료 메시지 표시
-        let copyMsg = document.getElementById("code-copy-msg");
+        let copyMsg = document.getElementById("copy-msg");
         copyMsg.classList.add("show");
 
         setTimeout(() => {
@@ -540,8 +540,9 @@ const copyToClipboard = (text: string) => {
 // table style below
 thead {
     th {
-        & > span {
+        &>span {
             @media (pointer: fine) {
+
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -557,7 +558,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }

@@ -273,6 +273,10 @@ let setResize = async () => {
     justify-content: center;
     z-index: 2;
 
+    &.left {
+        left: 16px;
+    }
+
     &.center {
         left: 50%;
         transform: translateX(-50%);
@@ -613,7 +617,7 @@ let setResize = async () => {
         cursor: default;
         height: fit-content;
 
-        ~ tr {
+        ~tr {
             &:hover {
                 cursor: default;
                 background: transparent;
@@ -634,7 +638,7 @@ let setResize = async () => {
             cursor: default;
             background: transparent;
 
-            ~ tr {
+            ~tr {
                 pointer-events: none;
 
                 &:hover {
