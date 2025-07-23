@@ -9,11 +9,10 @@
 			router-link(v-else to="/signup")
 				button(type="button" data-aos="fade-up" data-aos-duration="500") Get Started
 
-		section.video
+		section.video(ref="videoSection")
 			.wrap
 				.inner
-					//- img(src="@/assets/img/landingpage/bg_hero.png", alt="Skapi Video")
-					video.video-skapi(src="@/assets/img/landingpage/video_skapi.mp4", autoplay muted loop playsinline)
+					video.video-skapi(src="@/assets/img/landingpage/video_skapi.mp4", autoplay muted loop playsinline ref="videoElement")
 						source(src="@/assets/img/landingpage/video_skapi.mp4", type="video/mp4")
 						p Your browser does not support the video tag.
 
@@ -314,6 +313,8 @@ const activeTabs = ref({
 });
 const articles = ref([]);
 const videos = ref([]);
+const videoSection = ref(null);
+const videoElement = ref(null);
 
 function setSwiperImageWidth() {
     let swiperImage = document.getElementById("reviewerImg");
@@ -353,6 +354,7 @@ function makeBullet(index, className) {
     return `<span class="${className}">${menu[index]}</span>`;
 }
 
+// 스크롤에 따른 영상 효과
 function handleScroll() {
     const video = document.querySelector(".video .wrap");
     if (!video) return;
@@ -364,12 +366,29 @@ function handleScroll() {
     const rotate = 15 - 15 * progress; // 15deg → 0deg로 변화 (뒤로 → 정면)
 
     video.style.transform = `perspective(1000px) rotateX(${rotate}deg)`;
+
+    // 비디오 재생 제어
+    if (progress >= 1) {
+        videoElement.value.play();
+    } else {
+        videoElement.value.pause();
+    }
 }
+
+const resetVideo = () => {
+    if (videoElement.value) {
+        videoElement.value.pause();
+        videoElement.value.currentTime = 0;
+    }
+};
 
 onMounted(async () => {
     window.addEventListener("resize", setSwiperImageWidth);
     window.addEventListener("scroll", handleScroll);
     handleScroll();
+
+    // 새로고침 시 비디오 초기화
+    resetVideo();
 
     const heroArea = document.querySelector(".hero");
     if (heroArea) {
@@ -444,11 +463,16 @@ onBeforeUnmount(() => {
 
 onUnmounted(() => {
     window.removeEventListener("resize", setSwiperImageWidth);
+    window.removeEventListener("scroll", handleScroll);
 
     const heroArea = document.querySelector(".hero");
     if (heroArea) {
         heroArea.classList.remove("active");
     }
+});
+
+defineExpose({
+    resetVideo,
 });
 </script>
 

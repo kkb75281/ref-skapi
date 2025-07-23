@@ -4,7 +4,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
         .left
             template(v-if="route.name != 'home'")
                 .logo-wrap
-                    router-link.logo(to="/")
+                    router-link.logo(to="/" @click="handleLogoClick")
                         img.symbol(src="@/assets/img/logo/icon_logo_symbol.svg")
                     router-link.myservice(to="/my-services")
                         img.symbol(src="@/assets/img/logo/icon_logo_text_myservices.svg")
@@ -219,6 +219,7 @@ const communityEl = ref(null);
 const communityDropdownVisible = ref(false);
 let currentRoutePath = ref("");
 let hideTimeout = null;
+const landingPageRef = ref(null);
 
 const updateServiceName = () => {
     serviceName.value = currentService?.service?.name || "loading...";
@@ -359,6 +360,22 @@ const hideDropdown = () => {
     hideTimeout = setTimeout(() => {
         communityDropdownVisible.value = false;
     }, 100);
+};
+
+// 로고 클릭 시 resetVideo 호출하는 함수
+const handleLogoClick = () => {
+    console.log("Logo clicked, resetting video...");
+    // 현재 홈페이지인 경우에만 비디오 리셋
+    if (route.name === "home") {
+        // landingPage 컴포넌트의 resetVideo 함수 호출
+        const landingPageComponent = document.querySelector(
+            "[data-landing-page]"
+        );
+        if (landingPageComponent && landingPageComponent.__vueParentComponent) {
+            landingPageComponent.__vueParentComponent.exposed?.resetVideo?.();
+        }
+    }
+    // router.push("/");
 };
 
 window.addEventListener("resize", () => {

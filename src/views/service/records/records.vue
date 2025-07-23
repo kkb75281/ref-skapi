@@ -27,8 +27,11 @@ section
     .table-menu-wrap
         .table-functions
             button.inline.only-icon.gray.sm(@click.stop="(e)=>{showDropDown(e)}")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                    template(v-slot:tip) Show Columns
                 .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
                     .inner(style="padding: 0.5rem;")
                         template(v-for="c in columnList")
@@ -40,19 +43,31 @@ section
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-search")
             button.inline.only-icon.gray.sm.search-btn(v-else @click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+                    template(v-slot:tip) Search
             button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                    template(v-slot:tip) Refresh
 
         .table-actions
             button.inline.only-icon.gray.sm(@click="()=>{ !user.email_verified ? false : selectedRecord = null; showDetail=true; }" :class="{ disabled : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-add")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-add")
+                    template(v-slot:tip) Add Record
             button.inline.only-icon.gray.sm(@click="openDeleteRecords=true" :class="{ disabled : !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                    template(v-slot:tip) Delete Selected
 
     Table(:key="tableKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" resizable)
         template(v-if="fetching" v-slot:msg)
@@ -201,12 +216,21 @@ import SearchBox from "./searchbox.vue";
 import RecDetails from "./showDetail.vue";
 
 import type { Ref } from "vue";
-import { ref, computed, watch, nextTick, onMounted, onUnmounted, reactive } from "vue";
+import {
+    ref,
+    computed,
+    watch,
+    nextTick,
+    onMounted,
+    onUnmounted,
+    reactive,
+} from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { devLog } from "@/code/logger";
 import { currentService, serviceRecords } from "@/views/service/main";
 import { showDropDown } from "@/assets/js/event.js";
+import Tooltip from "@/components/tooltip.vue";
 
 // table columns
 let tableKey = ref(0);
@@ -567,11 +591,11 @@ let setUpNewPageList = async () => {
         sortBy: callParams?.index?.name || "record_id",
         order:
             callParams?.index?.name &&
-                (callParams?.index?.condition || "").includes("<")
+            (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                    ? "asc"
-                    : "desc",
+                ? "asc"
+                : "desc",
     });
 };
 
@@ -786,7 +810,7 @@ textarea::placeholder {
     .inner {
         padding: 0.5rem;
 
-        &>* {
+        & > * {
             padding: 0.25rem 0.5rem;
         }
     }
@@ -923,7 +947,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -1006,7 +1030,7 @@ label._checkbox svg {
 
 .moreVert {
     .inner {
-        >* {
+        > * {
             padding: 0.25rem;
         }
     }

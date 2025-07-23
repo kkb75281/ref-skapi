@@ -1,5 +1,5 @@
 <template lang="pug">
-.infoBox(v-if='!currentService.service.subdomain' :class='{nonClickable: email_is_unverified_or_service_is_disabled}')
+.infoBox(v-if='!currentService.service.subdomain' :class='{disabled: email_is_unverified_or_service_is_disabled}')
     h2.page-title File Hosting 
 
     hr
@@ -35,14 +35,14 @@
         form.register(@submit.prevent='registerSubdomain')
             .subdomain
                 input.big(v-model='subdomain' pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' minlength="6" maxlength="32" :disabled="registerSubdomainRunning" placeholder="your-subdomain" required)
-            button.inline(:disabled='registerSubdomainRunning' :class='{nonClickable: registerSubdomainRunning}')
+            button.inline(:disabled='registerSubdomainRunning' :class='{disabled: registerSubdomainRunning}')
                 template(v-if="registerSubdomainRunning")
                     .loader(style="--loader-color:white; --loader-size:12px")
                 template(v-else)
                     | Register
 
 template(v-else)
-    .infoBox(:class='{nonClickable: email_is_unverified_or_service_is_disabled || !subdomainReady}')
+    .infoBox(:class='{disabled: email_is_unverified_or_service_is_disabled || !subdomainReady}')
         .flex-wrap.space-between(style="gap:10px")
             h2.page-title File Hosting
             .flex-wrap.end
@@ -97,7 +97,7 @@ template(v-else)
                             span.title 404 Page
                             span.data {{ sdInfo?.['404'] || '-' }}
                         .flex-wrap.end(style="gap: 10px;")
-                            button.only-icon.gray.edit-btn(:class='{nonClickable: email_is_unverified_or_service_is_disabled || isPending}' @click="open404FileInp")
+                            button.only-icon.gray.edit-btn(:class='{disabled: email_is_unverified_or_service_is_disabled || isPending}' @click="open404FileInp")
                                 template(v-if="sdInfo?.['404']")
                                     svg.svgIcon
                                         use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
@@ -110,19 +110,26 @@ template(v-else)
 
     .table-menu-wrap
         .table-actions
-            button.inline.only-icon.gray.sm(@click='uploadFileInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
+            button.inline.only-icon.gray.sm(@click='uploadFileInp.click()' :class="{disabled : email_is_unverified_or_service_is_disabled || isPending || fetching}")
                 input(type="file" hidden multiple @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFileInp")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-upload-file-fill")
-                span.text Upload Files
-            button.inline.only-icon.gray.sm(@click='uploadFolderInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-upload-file-fill")
+                    template(v-slot:tip) Upload Files
+            button.inline.only-icon.gray.sm(@click='uploadFolderInp.click()' :class="{disabled : email_is_unverified_or_service_is_disabled || isPending || fetching}")
                 input(type="file" hidden multiple directory webkitdirectory @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFolderInp")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-drive-folder-upload-fill")
-                span.text Upload Folder
-            button.inline.only-icon.gray.sm(:class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching || !Object.keys(checked).length}" @click='deleteSelected=true')
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-drive-folder-upload-fill")
+                    template(v-slot:tip) Upload Folder
+            button.inline.only-icon.gray.sm(:class="{disabled : email_is_unverified_or_service_is_disabled || isPending || fetching || !Object.keys(checked).length}" @click='deleteSelected=true')
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                    template(v-slot:tip) Delete Selected
 
     .hostingPart
         #loading
@@ -339,6 +346,7 @@ import {
     uploadCount,
     uploadProgress,
 } from "@/views/service/hosting/file";
+import Tooltip from "@/components/tooltip.vue";
 
 let folders = {}; // cache folders
 

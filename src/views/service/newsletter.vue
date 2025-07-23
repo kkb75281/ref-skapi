@@ -49,17 +49,22 @@ template(v-if='!needsEmailAlias')
         .table-menu-wrap
             .table-functions
                 button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
-                    svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                    Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                        template(v-slot:tip) Refresh
             .table-actions
                 //- a(:href="'mailto:' + newsletterEndpoint")
                     button.inline.only-icon.gray.sm(:class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
                         svg.svgIcon
                             use(xlink:href="@/assets/img/material-icon.svg#icon-send")
                 button.inline.only-icon.gray.sm(:class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
-                    svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
-
+                    Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                        template(v-slot:tip) Delete Selected
 
     Table(:class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
         template(v-slot:head)
@@ -187,11 +192,12 @@ import Table from "@/components/table.vue";
 import { skapi } from "@/main";
 import { dateFormat } from "@/code/admin";
 import Pager from "@/code/pager";
-// import Code from "@/components/code.vue";
+
 import Modal from "@/components/modal.vue";
 import type { Newsletters } from "skapi-js/js/Types";
 import Select from "@/components/select.vue";
 import Checkbox from "@/components/checkbox.vue";
+import Tooltip from "@/components/tooltip.vue";
 
 type Newsletter = {
     bounced: number;
