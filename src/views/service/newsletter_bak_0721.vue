@@ -1,52 +1,115 @@
 <template lang="pug">
-section
-    .flex-wrap.space-between
-        .page-title Bulk Email
-        a.btn-docs(href='https://docs.skapi.com/email/newsletters.html' target="_blank")
-            button.inline.sm.gray Go Docs
+section.infoBox(v-if='needsEmailAlias' style='max-width:600px;margin:3rem auto;' :class='{nonClickable: email_is_unverified_or_service_is_disabled}')
 
-hr
+    .infoTitle Bulk Email
 
-section
+    hr
+
     .error(v-if='!user?.email_verified')
+        //- .material-symbols-outlined.notranslate.fill warning
         svg
             use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
         router-link(to="/account-setting") Please verify your email address to modify settings.
 
-section
-    ul.tab-menu
-        li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
+    p.
+        You can send bulk emails to your newsletter subscribers.
+        #[br]
+        To proceed, please register your email alias address that will be used to send out the emails.
 
-    .email-btn-wrap
-        .inner
-            span.email {{ newsletterEndpoint || '...' }}
-            button.inline.only-icon.gray.sm.btn-copy(@click="copyToClipboard(newsletterEndpoint)")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")
+    p The email alias can only be #[span.wordset alphanumeric and hyphen.]
 
-template(v-if='!needsEmailAlias')
-    section
-        .table-menu-wrap
-            .table-functions
-                button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
-                    svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
-            .table-actions
-                a(:href="'mailto:' + newsletterEndpoint")
-                    button.inline.only-icon.gray.sm(:class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-send")
-                button.inline.only-icon.gray.sm(:class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
-                    svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+    br
+
+    form.register(@submit.prevent='registerAlias')
+        .emailAlias
+            input.big(v-model='emailAliasVal' pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' :disabled="registerAliasRunning" placeholder="your-email-alias" required)
+
+        button.inline( :disabled='registerAliasRunning' :class='{nonClickable: registerAliasRunning}')
+            template(v-if="registerAliasRunning")
+                .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else)
+                | Register
+
+template(v-else)
+    section.infoBox
+        .titleHead
+            h2 Bulk Email
+            Select(v-model="group" :selectOptions="[{option: 'Newsletter', value: 0}, {option: 'Service Mail', value: 1}]" style='display:inline-block;vertical-align:middle;width:136px')
+
+        hr
+        
+        .error(v-if='!user?.email_verified')
+            //- .material-symbols-outlined.notranslate.fill warning
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            router-link(to="/account-setting") Please verify your email address to modify settings.
+            
+        .error(v-else-if='currentService.service.active == 0')
+            //- .material-symbols-outlined.notranslate.fill warning
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            span This service is currently disabled.
+
+        .error(v-else-if='currentService.service.active < 0')
+            //- .material-symbols-outlined.notranslate.fill warning
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            span This service is currently suspended.
+
+        p(style='margin-bottom: 0').
+            You can collect your {{mailType.toLowerCase()}} subscribers by using the following code:
+
+        Code(v-if='group === 0')
+            pre.
+                #[span(style="color:#999") &lt;]#[span(style="color:#33adff") form] #[span(style="color:#44E9FF") onsubmit]=#[span(style="color:#FFED91") "skapi.subscribeNewsletter(event).then(res => alert(res))"]#[span(style="color:#999") &gt;]
+                    #[span(style="color:#999") &lt;]#[span(style="color:#33adff") input] #[span(style="color:#44E9FF") type]=#[span(style="color:#FFED91") "email"] #[span(style="color:#44E9FF") name]=#[span(style="color:#FFED91") "email"] #[span(style="color:#44E9FF") placeholder]=#[span(style="color:#FFED91") "E-Mail address"]#[span(style="color:#999") &gt;]
+                    #[span(style="color:#999") &lt;]#[span(style="color:#33adff") input] #[span(style="color:#44E9FF") hidden] #[span(style="color:#44E9FF") name]=#[span(style="color:#FFED91") "group"] #[span(style="color:#44E9FF") value]=#[span(style="color:#FFED91") {{group ? '"authorized"' : '"public"'}}]#[span(style="color:#999") &gt;]
+                    #[span(style="color:#999") &lt;]#[span(style="color:#33adff") input] #[span(style="color:#44E9FF") type]=#[span(style="color:#FFED91") "submit"] #[span(style="color:#44E9FF") value]=#[span(style="color:#FFED91") "Subscribe"]#[span(style="color:#999") &gt;]
+                #[span(style="color:#999") &lt;/]#[span(style="color:#33adff") form]#[span(style="color:#999") &gt;]
+        Code(v-if='group === 1')
+            pre.
+                #[span(style="color:#999") &lt;]#[span(style="color:#33adff") form] #[span(style="color:#44E9FF") onsubmit]=#[span(style="color:#FFED91") "skapi.subscribeNewsletter(event).then(res => alert(res))"]#[span(style="color:#999") &gt;]
+                    #[span(style="color:#999") &lt;]#[span(style="color:#33adff") input] #[span(style="color:#44E9FF") hidden] #[span(style="color:#44E9FF") name]=#[span(style="color:#FFED91") "group"] #[span(style="color:#44E9FF") value]=#[span(style="color:#FFED91") {{group ? '"authorized"' : '"public"'}}]#[span(style="color:#999") &gt;]
+                    #[span(style="color:#999") &lt;]#[span(style="color:#33adff") input] #[span(style="color:#44E9FF") type]=#[span(style="color:#FFED91") "submit"] #[span(style="color:#44E9FF") value]=#[span(style="color:#FFED91") "Subscribe"]#[span(style="color:#999") &gt;]
+                #[span(style="color:#999") &lt;/]#[span(style="color:#33adff") form]#[span(style="color:#999") &gt;]
+
+        p(v-if='group === 1') * User must be logged in to subscribe to Service Mail, and the user must have their email verified.
+
+        br
+
+        p(style='margin-bottom: 0') Once the users have subscribed to your {{mailType.toLowerCase()}}, they will be able to receive your emails sent to the address #[span.wordset provided below:]
+
+        Code
+            pre {{ newsletterEndpoint || '...' }}
+
+        br
+
+        p * The senders email address should exactly match your current profile email address: #[b.wordset {{ user.email }}]
+        
+        p Email Alias: #[b.wordset {{ currentService.service.email_alias || currentService.service.service }}@mail.skapi.com]
+
+        p For more information, please refer to the #[a(href="https://docs.skapi.com/email/newsletters.html" target="_blank") documentation]
+
+        br
+        
+    br
+
+    .tableMenu
+        a.iconClick.square(:href="'mailto:' + newsletterEndpoint" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}")
+            //- .material-symbols-outlined.notranslate.fill mail
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-mail-fill")
+            span &nbsp;&nbsp;Send {{mailType}}
+        .iconClick.square(@click="getPage(true)" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}")
+            //- .material-symbols-outlined.notranslate.fill(:class='{loading:fetching}') refresh
+            svg.svgIcon(:class='{loading:fetching}')
+                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+            span &nbsp;&nbsp;Refresh
 
 
     Table(:class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
         template(v-slot:head)
             tr(:class="{'nonClickable' : fetching}")
-                th.fixed(style='width:60px;')
-                    Checkbox(@click.stop :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.url] = d)); else checked = {}; }" style="display:inline-block")
-                    .resizer.fixed
                 th(style='width: 250px;')
                     span(@click='toggleSort("subject")')
                         | Subject
@@ -95,24 +158,19 @@ template(v-if='!needsEmailAlias')
 
         template(v-slot:body)
             template(v-if="fetching")
-                tr.empty-value
+                tr
                     td#loading(colspan="6").
                         Loading {{mailType}} ... &nbsp;
-                        #[.loader(style="--loader-color:white; --loader-size:12px")]
+                        #[.loader(style="--loader-color:black; --loader-size:12px")]
                 tr(v-for="i in 9")
                     td(colspan="6")
             template(v-else-if="!listDisplay || listDisplay.length === 0")
-                tr.empty-value
+                tr
                     td(colspan="6") No {{mailType}} Sent
                 tr(v-for="i in 9")
                     td(colspan="6")
             template(v-else)
                 tr.hoverRow(v-for="ns in listDisplay" @click='openNewsletter(ns.url)')
-                    td
-                        Checkbox(@click.stop
-                            :modelValue="!!checked?.[ns?.url]"
-                            @update:modelValue="(value) => { if (value) checked[cs?.url] = value; else delete checked[ns?.url]; }"
-                            )
                     td.overflow {{ converter(ns.subject) }}
                     td.overflow {{ dateFormat(ns.timestamp) }}
                     td.overflow {{ ns.read }}
@@ -134,27 +192,26 @@ template(v-if='!needsEmailAlias')
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 
-//- modal :: delete email
-Modal.modal-deleteEmail(:open="emailToDelete" @close="emailToDelete=false")
-    h4.modal-title Delete Email
+    Modal(:open="emailToDelete" @close="emailToDelete=false")
+        h4(style='margin:.5em 0 0;') Delete Email
 
-    hr
+        hr
 
-    div.modal-desc
-        p.
-            Are you sure you want to delete email:
-            #[br]
-            "#[b {{ emailToDelete?.subject }}]"?
-            #[br]
-            #[br]
-            This action cannot be undone.
-    br
-    div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
-        div(v-if="deleteMailLoad" style="width:100%; text-align:center")
-            .loader(style="--loader-color:white; --loader-size:12px")
-        template(v-else)
-            button.gray.btn-cancel(@click="emailToDelete = null") Cancel
-            button.red.btn-delete(@click="deleteEmail(emailToDelete)") Delete
+        div(style='font-size:.8rem;')
+            p.
+                Are you sure you want to delete email:
+                #[br]
+                "#[b {{ emailToDelete?.subject }}]"?
+                #[br]
+                #[br]
+                This action cannot be undone.
+        br
+        div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
+            div(v-if="deleteMailLoad" style="width:100%; text-align:center")
+                .loader(style="--loader-color:blue; --loader-size:12px")
+            template(v-else)
+                button.noLine.warning(@click="emailToDelete = null") Cancel
+                button.final.warning(@click="deleteEmail(emailToDelete)") Delete
 
 </template>
 
@@ -167,11 +224,10 @@ import Table from "@/components/table.vue";
 import { skapi } from "@/main";
 import { dateFormat } from "@/code/admin";
 import Pager from "@/code/pager";
-// import Code from "@/components/code.vue";
+import Code from "@/components/code.vue";
 import Modal from "@/components/modal.vue";
 import type { Newsletters } from "skapi-js/js/Types";
 import Select from "@/components/select.vue";
-import Checkbox from "@/components/checkbox.vue";
 
 type Newsletter = {
     bounced: number;
@@ -185,8 +241,6 @@ type Newsletter = {
 
 let pager: Pager = null;
 
-let tableKey = ref(0);
-let checked: Ref<{ [key: string]: any }> = ref({});
 let emailAliasVal = ref("");
 let email_is_unverified_or_service_is_disabled = computed(
     () => !user?.email_verified || currentService.service.active <= 0
@@ -234,14 +288,6 @@ let listDisplay: Ref<Newsletter[]> = ref(null);
 // etc
 let newsletterEndpoint: Ref<string> = ref("");
 currentService.newsletterSender[0].then((r) => (newsletterEndpoint.value = r));
-
-// tabmenu
-let activeTabs = ref(0);
-let emailTypeSelect = ["Newsletter", "Service Mail"];
-
-watch(activeTabs, (newIndex) => {
-    group.value = newIndex as 0 | 1;
-});
 
 // call getPage when currentPage changes
 watch(currentPage, (n, o) => {
@@ -511,37 +557,15 @@ let converter = (html: string, parsed: boolean, inv: boolean) => {
     html = html.replaceAll("${password}", "abc123&&");
     return html;
 };
-
-// copy code
-const copyToClipboard = (text: string) => {
-    try {
-        // 복사 기능
-        let doc = document.createElement("textarea");
-        doc.textContent = text;
-        document.body.append(doc);
-        doc.select();
-        document.execCommand("copy");
-        doc.remove();
-
-        // 복사 완료 메시지 표시
-        let copyMsg = document.getElementById("code-copy-msg");
-        copyMsg.classList.add("show");
-
-        setTimeout(() => {
-            copyMsg.classList.remove("show");
-        }, 2000);
-    } catch (err) {
-        console.error("Failed to copy: ", err);
-    }
-};
 </script>
 
 <style lang="less" scoped>
 // table style below
 thead {
     th {
-        & > span {
+        &>span {
             @media (pointer: fine) {
+
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -557,7 +581,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }
@@ -606,105 +630,6 @@ form.register {
 
     button {
         flex-shrink: 0;
-    }
-}
-
-// new style
-.email-btn-wrap {
-    text-align: center;
-
-    .inner {
-        display: inline-flex;
-        flex-wrap: nowrap;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        background-color: #222325;
-        padding: 0.5rem;
-        border-radius: 0.6rem;
-    }
-
-    .email {
-        word-break: break-all;
-        padding: 0 0.5rem 0 1rem;
-    }
-
-    button {
-        border-radius: 0.4375rem;
-        background-color: #121214;
-
-        svg {
-            opacity: 0.6;
-        }
-
-        &:hover {
-            &::after {
-                display: none;
-            }
-
-            svg {
-                opacity: 1;
-            }
-        }
-
-        &.btn-copy {
-            padding: 8px 10px;
-
-            svg {
-                width: 20px;
-                height: 20px;
-            }
-        }
-
-        &.btn-preview {
-            padding: 8px 9px;
-
-            svg {
-                width: 22px;
-                height: 22px;
-            }
-        }
-    }
-}
-
-.tab-menu {
-    list-style: none;
-    background-color: #121214;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    width: fit-content;
-    padding: 0.625rem;
-    margin: 2rem auto 1.5rem;
-    border-radius: 2rem;
-
-    .tab-menu-item {
-        list-style: none;
-        margin: 0;
-        background-color: transparent;
-        padding: 0.75rem 1rem;
-        border-radius: 1.5rem;
-        font-size: 1rem;
-        cursor: pointer;
-
-        &:hover,
-        &.active {
-            background-color: #222325;
-        }
-    }
-}
-
-@media (max-width: 430px) {
-    .tab-menu {
-        width: 100%;
-        flex-direction: column;
-        align-items: center;
-
-        .tab-menu-item {
-            width: 100%;
-            text-align: center;
-        }
     }
 }
 </style>
