@@ -1,9 +1,10 @@
 <template lang="pug">
-section
-    .flex-wrap.space-between
-        .page-title Automated Email
-        a.btn-docs(href='https://docs.skapi.com/email/email-templates.html' target="_blank")
-            button.inline.sm.gray Go Docs
+section.page-header
+    .page-title Automated Email
+    a.btn-docs(href='https://docs.skapi.com/authentication/create-account.html' target="_blank")
+        button.inline.icon-text.sm.gray
+            img(src="@/assets/img/landingpage/icon_docs.svg")
+            | Go Docs
     
 hr
 
@@ -1058,10 +1059,6 @@ thead {
 }
 
 .tab-menu {
-    // margin-bottom: 1.5rem;
-}
-
-.tab-menu {
     list-style: none;
     background-color: #121214;
     display: flex;
@@ -1077,7 +1074,7 @@ thead {
         list-style: none;
         margin: 0;
         background-color: transparent;
-        padding: 0.75rem 1rem;
+        padding: 0.75rem 1.25rem;
         border-radius: 1.5rem;
         font-size: 1rem;
         cursor: pointer;

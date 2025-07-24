@@ -1,9 +1,10 @@
 <template lang="pug">
-section
-    .flex-wrap.space-between
-        .page-title Database
-        a.btn-docs(href="https://docs.skapi.com/database/introduction.html" target="_blank")
-            button.inline.sm.gray Go Docs
+section.page-header
+    .page-title Database
+    a.btn-docs(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
+        button.inline.icon-text.sm.gray
+            img(src="@/assets/img/landingpage/icon_docs.svg")
+            | Go Docs
 
 hr
 
@@ -591,11 +592,11 @@ let setUpNewPageList = async () => {
         sortBy: callParams?.index?.name || "record_id",
         order:
             callParams?.index?.name &&
-            (callParams?.index?.condition || "").includes("<")
+                (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                ? "asc"
-                : "desc",
+                    ? "asc"
+                    : "desc",
     });
 };
 
@@ -810,7 +811,7 @@ textarea::placeholder {
     .inner {
         padding: 0.5rem;
 
-        & > * {
+        &>* {
             padding: 0.25rem 0.5rem;
         }
     }
@@ -947,7 +948,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }
@@ -1030,7 +1031,7 @@ label._checkbox svg {
 
 .moreVert {
     .inner {
-        > * {
+        >* {
             padding: 0.25rem;
         }
     }
