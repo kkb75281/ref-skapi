@@ -114,7 +114,7 @@ template(v-else)
 
         br
 
-    section
+    section.table-area
         .table-menu-wrap
             .table-functions
                 button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
@@ -285,7 +285,7 @@ let previewModal: Ref<{
 }> = ref({
     current: false,
     subject: null,
-})
+});
 let tableKey = ref(0);
 let checked: Ref<{ [key: string]: any }> = ref({});
 const emailPlaceholders: Record<
@@ -294,24 +294,24 @@ const emailPlaceholders: Record<
 > = {
     confirmation: {
         required: ["https://link.skapi"],
-        optional: ["${email}", "${name}", "${service_name}"]
+        optional: ["${email}", "${name}", "${service_name}"],
     },
     welcome: {
         required: [],
-        optional: ["${email}", "${name}", "${service_name}"]
+        optional: ["${email}", "${name}", "${service_name}"],
     },
     verification: {
         required: ["${code}"],
-        optional: ["${email}", "${name}", "${service_name}"]
+        optional: ["${email}", "${name}", "${service_name}"],
     },
     invitation: {
         required: ["https://link.skapi", "${email}", "${password}"],
-        optional: ["${name}", "${service_name}"]
+        optional: ["${name}", "${service_name}"],
     },
     newsletter_subscription: {
         required: ["https://link.skapi"],
-        optional: ["${name}", "${service_name}"]
-    }
+        optional: ["${name}", "${service_name}"],
+    },
 };
 
 let emailAliasVal = ref("");
@@ -320,19 +320,19 @@ let email_is_unverified_or_service_is_disabled = computed(
 );
 
 function copy(text: string) {
-    let doc = document.createElement('textarea');
+    let doc = document.createElement("textarea");
     doc.textContent = text;
     document.body.append(doc);
     doc.select();
-    document.execCommand('copy');
+    document.execCommand("copy");
     doc.remove();
 
-    let copyMsg = document.getElementById('copy-msg');
-    copyMsg.textContent = 'The email copied!';
-    copyMsg.classList.add('show');
+    let copyMsg = document.getElementById("copy-msg");
+    copyMsg.textContent = "The email copied!";
+    copyMsg.classList.add("show");
 
     setTimeout(() => {
-        copyMsg.classList.remove('show');
+        copyMsg.classList.remove("show");
     }, 2000);
 }
 
@@ -620,7 +620,7 @@ let openMailPreview = async (mail: Newsletter, isCurrent: boolean) => {
         beforeTemp.value = html;
         showPreview.value = true;
     } catch (err) {
-        window.alert('미리보기 HTML을 불러오지 못했습니다.');
+        window.alert("미리보기 HTML을 불러오지 못했습니다.");
         beforeTemp.value = null;
         showPreview.value = false;
     }
@@ -656,21 +656,26 @@ let deleteEmail = async () => {
 
     try {
         // 삭제 요청을 모두 Promise 배열로 만듭니다.
-        await Promise.all(ids.map(async (message_id) => {
-            const params = {
-                message_id,
-                group: group.value,
-            };
-            await currentService.deleteTemplate(params);
+        await Promise.all(
+            ids.map(async (message_id) => {
+                const params = {
+                    message_id,
+                    group: group.value,
+                };
+                await currentService.deleteTemplate(params);
 
-            // 현재 사용 중인 템플릿이면 삭제
-            const templateKey = "template_" + group.value;
-            if ((currentService.service as any)?.[templateKey]?.url === checked.value[message_id]?.url) {
-                delete (currentService.service as any)[templateKey];
-            }
+                // 현재 사용 중인 템플릿이면 삭제
+                const templateKey = "template_" + group.value;
+                if (
+                    (currentService.service as any)?.[templateKey]?.url ===
+                    checked.value[message_id]?.url
+                ) {
+                    delete (currentService.service as any)[templateKey];
+                }
 
-            await pager.deleteItem(message_id);
-        }));
+                await pager.deleteItem(message_id);
+            })
+        );
 
         emailToDelete.value = false;
         checked.value = {};
@@ -917,7 +922,7 @@ section {
 .email-btn-wrap {
     text-align: center;
     background-color: #222325;
-    padding: 1rem 2rem;
+    padding: 1.25rem 2rem;
     border-radius: 2rem;
     max-width: 840px;
     width: 100%;
@@ -1029,9 +1034,8 @@ li {
 // table style below
 thead {
     th {
-        &>span {
+        & > span {
             @media (pointer: fine) {
-
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -1047,7 +1051,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -1066,7 +1070,7 @@ thead {
     flex-wrap: wrap;
     gap: 0.5rem;
     width: fit-content;
-    padding: 0.625rem;
+    padding: 0.75rem 0.875rem;
     margin: 2rem auto 0;
     border-radius: 2rem;
 
@@ -1084,6 +1088,10 @@ thead {
             background-color: #222325;
         }
     }
+}
+
+.table-area {
+    margin-top: 3.5rem;
 }
 
 @media (max-width: 430px) {

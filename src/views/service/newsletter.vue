@@ -46,7 +46,7 @@ section
                     span Send
 
 template(v-if='!needsEmailAlias')
-    section
+    section.table-area
         .table-menu-wrap
             .table-functions
                 button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
@@ -567,9 +567,8 @@ const copyToClipboard = (text: string) => {
 // table style below
 thead {
     th {
-        &>span {
+        & > span {
             @media (pointer: fine) {
-
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -585,7 +584,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -641,7 +640,7 @@ form.register {
 .email-btn-wrap {
     text-align: center;
     background-color: #222325;
-    padding: 1rem 2rem;
+    padding: 1.25rem 2rem;
     border-radius: 2rem;
     max-width: 840px;
     width: 100%;
@@ -701,7 +700,7 @@ form.register {
     flex-wrap: wrap;
     gap: 0.5rem;
     width: fit-content;
-    padding: 0.625rem;
+    padding: 0.75rem 0.875rem;
     margin: 2rem auto;
     border-radius: 2rem;
 
@@ -709,7 +708,7 @@ form.register {
         list-style: none;
         margin: 0;
         background-color: transparent;
-        padding: 0.75rem 1rem;
+        padding: 0.75rem 1.25rem;
         border-radius: 1.5rem;
         font-size: 1rem;
         cursor: pointer;
@@ -734,6 +733,10 @@ form.register {
             margin-bottom: 0;
         }
     }
+}
+
+.table-area {
+    margin-top: 3.5rem;
 }
 
 @media (max-width: 430px) {

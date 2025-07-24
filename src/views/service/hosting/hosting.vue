@@ -784,8 +784,9 @@ function openFile(ns: any) {
     let path = ns.path;
     let url;
     if (path.split("/").length > 1) {
-        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${ns.name
-            }`;
+        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${
+            ns.name
+        }`;
     } else {
         url = `https://${hostUrl.value}/${ns.name}`;
     }
@@ -949,9 +950,8 @@ watch(ascending, () => {
 // table style below
 thead {
     th {
-        &>span {
+        & > span {
             @media (pointer: fine) {
-
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -967,7 +967,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -1048,7 +1048,7 @@ tbody {
                 background-color: transparent;
             }
 
-            ~tr {
+            ~ tr {
                 pointer-events: none;
 
                 &:hover {
@@ -1078,7 +1078,7 @@ tbody {
         gap: 0.5rem;
         flex: 1;
 
-        >div {
+        > div {
             width: 100%;
             height: 100%;
         }
@@ -1087,9 +1087,11 @@ tbody {
             display: inline-flex;
             align-items: center;
             height: 100%;
-            background: linear-gradient(0deg,
+            background: linear-gradient(
+                    0deg,
                     rgba(255, 255, 255, 0.05) 0%,
-                    rgba(255, 255, 255, 0.05) 100%),
+                    rgba(255, 255, 255, 0.05) 100%
+                ),
                 #16171a;
             border-radius: 0.5rem;
             padding: 0 1rem;
@@ -1104,9 +1106,11 @@ tbody {
     align-items: center;
     min-width: 2.5rem;
     height: 3rem;
-    background: linear-gradient(0deg,
+    background: linear-gradient(
+            0deg,
             rgba(255, 255, 255, 0.05) 0%,
-            rgba(255, 255, 255, 0.05) 100%),
+            rgba(255, 255, 255, 0.05) 100%
+        ),
         #16171a;
     border-radius: 0.5rem;
     padding: 0.5rem;
@@ -1199,6 +1203,12 @@ tbody {
     .btn-save {
         display: block;
         width: 100%;
+    }
+}
+
+@media (max-width: 430px) {
+    .card-wrap {
+        gap: 0.75rem;
     }
 }
 </style>

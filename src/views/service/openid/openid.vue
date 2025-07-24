@@ -39,7 +39,7 @@ section
                     )
                     .inner(style="padding: 0.5rem;")
                         template(v-for="c in columnList")
-                            Checkbox(v-model="c.value", style="display: flex; padding: 0.25rem 0;") {{ c.name }}
+                            Checkbox(v-model="c.value", style="display: flex;") {{ c.name }}
             button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)

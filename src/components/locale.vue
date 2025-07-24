@@ -8,40 +8,42 @@
             .name {{ key }} - {{ c.name }}
 </template>
 <script setup>
-import { Countries } from '@/code/countries';
-import { ref, onBeforeUnmount, onMounted } from 'vue';
+import { Countries } from "@/code/countries";
+import { ref, onBeforeUnmount, onMounted } from "vue";
 
-let emit = defineEmits(['close', 'update:modelValue']);
-let props = defineProps(['showLocale', 'modelValue']);
-let selectedFlag = ref('');
+let emit = defineEmits(["close", "update:modelValue"]);
+let props = defineProps(["showLocale", "modelValue"]);
+let selectedFlag = ref("");
 
 onMounted(() => {
-    document.addEventListener('mouseup', closeLocale);
-})
+    document.addEventListener("mouseup", closeLocale);
+});
 onBeforeUnmount(() => {
-    document.removeEventListener('mouseup', closeLocale);
-})
+    document.removeEventListener("mouseup", closeLocale);
+});
 
 let showFlagImg = (code) => {
-    let codePoints = code.split(' ');
-    let htmlEntities = codePoints.map(code => code.replace('U+', '&#x') + ';');
+    let codePoints = code.split(" ");
+    let htmlEntities = codePoints.map(
+        (code) => code.replace("U+", "&#x") + ";"
+    );
 
-    return htmlEntities.join('');
-}
+    return htmlEntities.join("");
+};
 
 let handleCountryClick = (key) => {
     selectedFlag.value = key;
-    emit('update:modelValue', key);
-    emit('close');
+    emit("update:modelValue", key);
+    emit("close");
 };
 
 let closeLocale = (e) => {
-    let localeSelector = document.querySelector('#localeSelector');
+    let localeSelector = document.querySelector("#localeSelector");
 
     if (!localeSelector.contains(e.target)) {
-        emit('close');
+        emit("close");
     }
-}
+};
 </script>
 <style lang="less" scoped>
 #localeSelector {
@@ -53,7 +55,7 @@ let closeLocale = (e) => {
     // border: 1px solid rgba(0, 0, 0, 0.15);
     // background: #FAFAFA;
     background: #16171a;
-    box-shadow: 8px 12px 36px 0px rgba(0, 0, 0, 0.10);
+    box-shadow: 8px 12px 36px 0px rgba(0, 0, 0, 0.1);
     display: none;
 
     &.show {
@@ -62,7 +64,21 @@ let closeLocale = (e) => {
 
     .wrap {
         height: 100%;
-        overflow: scroll;
+        overflow: auto;
+
+        &::-webkit-scrollbar {
+            width: 0.25rem;
+            height: 0.25rem;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px 12px 12px 12px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
     }
 
     .country {
