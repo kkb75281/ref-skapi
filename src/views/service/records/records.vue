@@ -599,11 +599,11 @@ let setUpNewPageList = async () => {
         sortBy: callParams?.index?.name || "record_id",
         order:
             callParams?.index?.name &&
-            (callParams?.index?.condition || "").includes("<")
+                (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                ? "asc"
-                : "desc",
+                    ? "asc"
+                    : "desc",
     });
 };
 
@@ -814,22 +814,6 @@ textarea::placeholder {
     box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
 }
 
-.moreVert {
-    .inner {
-        padding: 0.5rem;
-
-        & > * {
-            padding: 0.375rem 0.25rem !important;
-            gap: 0.25rem;
-        }
-
-        .svgIcon {
-            width: 22px;
-            height: 22px;
-        }
-    }
-}
-
 #searchForm {
     // max-width: 700px;
     margin: 0 auto;
@@ -958,7 +942,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }
@@ -1035,14 +1019,6 @@ label._checkbox svg {
         svg {
             width: 1.125rem;
             height: 1.125rem;
-        }
-    }
-}
-
-.moreVert {
-    .inner {
-        > * {
-            padding: 0.25rem;
         }
     }
 }

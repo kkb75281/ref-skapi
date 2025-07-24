@@ -37,9 +37,9 @@ section
                     @click.stop,
                     style="--moreVert-left: 0; display: none; font-weight: normal;"
                     )
-                    .inner(style="padding: 0.5rem;")
+                    .inner
                         template(v-for="c in columnList")
-                            Checkbox(v-model="c.value", style="display: flex; padding: 0.25rem 0;") {{ c.name }}
+                            Checkbox(v-model="c.value") {{ c.name }}
             .search-ing-btn(v-if="searchValue && !searchModalOpen")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
                 svg.svgIcon.reset-btn(@click="resetSearchModal")

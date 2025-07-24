@@ -261,18 +261,37 @@
         width: 100%;
         box-shadow: 8px 12px 36px 0px rgba(225, 225, 225, 0.04);
         border-radius: 8px;
-        // background-color: #121214;
-        background: linear-gradient(
-                0deg,
-                rgba(255, 255, 255, 0.05) 0%,
-                rgba(255, 255, 255, 0.05) 100%
-            ),
-            #16171a;
-        color: rgba(225, 225, 225, 0.8);
+        background: #16171a;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        // padding: 0.625rem 0;
+        // color: rgba(225, 225, 225, 0.8);
+        color: #fff;
+        overflow: hidden;
 
         button {
-            &.inline {
-                padding: 0.875rem;
+            border-radius: 0;
+            background: transparent;
+        }
+
+        label._checkbox {
+            display: flex;
+            padding: 0.3125rem 0.625rem;
+            opacity: 0.6 !important;
+
+            svg {
+                margin-right: 4px !important;
+            }
+
+            &:first-child {
+                padding-top: 0.625rem;
+            }
+
+            &:last-child {
+                padding-bottom: 0.625rem;
+            }
+
+            &:hover {
+                opacity: 1 !important;
             }
         }
 
