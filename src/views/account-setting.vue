@@ -164,7 +164,7 @@ watch(emailSubscribed, async (n, o) => {
         padding: 20px;
         border-radius: 13px;
         flex: 1;
-        min-width: 170px;
+        min-width: 300px;
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
