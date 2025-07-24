@@ -146,7 +146,7 @@ form#searchForm(@submit.prevent="callSearch")
                 .value
                     input.line(name='tag' placeholder="Tag name. Alphanumeric and space only.")
 
-            //- div(style='text-align:right')
+            div(style='text-align:right')
                 button.btn.final.wideOnMobile(type="submit") Search
 
 </template>

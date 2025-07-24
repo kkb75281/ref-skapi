@@ -58,12 +58,12 @@ br
 
         .bottom
             div(v-if="promiseRunning" style="width:100%; text-align:center")
-                .loader(style="--loader-color:blue; --loader-size:12px")
+                .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else)
-                button.inline Login
+                button.inline.btn-login Login
                 .signup
-                    span No account?&nbsp;
-                    router-link(to="/signup") Sign up
+                    span.text No account?
+                    router-link.btn-signup(to="/signup") Sign up
 </template>
 
 <script setup lang="ts">
@@ -157,7 +157,7 @@ let login = (e) => {
 form {
     padding: 8px;
 
-    >label {
+    > label {
         margin-bottom: 16px;
     }
 
@@ -195,14 +195,30 @@ form {
 //     }
 // }
 
+input {
+    border: 1px solid rgba(225, 225, 225, 0.2);
+}
+
+.btn-signup {
+    display: inline-block;
+    margin-left: 0.5rem;
+}
+
+.btn-login {
+    padding: 0.875rem 1.5rem;
+}
+
 @media (max-width: 480px) {
     form {
+        padding-bottom: 1rem;
+
         .bottom {
             display: block;
             text-align: center;
 
             button {
                 width: 100%;
+                max-width: 100%;
             }
 
             .forgot {

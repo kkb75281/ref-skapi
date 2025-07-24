@@ -37,7 +37,7 @@ section
                     .inner
                         template(v-for="c in columnList")
                             Checkbox(v-model="c.value", style="display: flex;") {{ c.name }}
-            .search-ing-btn(v-if="searchValue && !searchModalOpen")
+            .search-ing-btn(v-if="searchValue && searchValue.length > 0 && searchFor !== 'query'")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
                 svg.svgIcon.reset-btn(@click="resetSearchModal")
                     use(xlink:href="@/assets/img/material-icon.svg#icon-cancel-fill")
@@ -156,6 +156,7 @@ Modal.search-modal(:open="searchModalOpen")
                 use(xlink:href="@/assets/img/material-icon.svg#icon-search")
             span {{ searchFor + ' /' }}
         input#searchInput.block(type="text" v-model="searchValue" @keydown="handleSearchKeydown" :placeholder="getSearchPlaceholder()")
+        //- input#searchInput.block(type="text" v-model="searchValue" @keydown.enter.prevent="performSearch" @keydown.esc="resetSearchModal" :placeholder="getSearchPlaceholder()")
     
     .bottom
         .tit Search for
@@ -171,7 +172,13 @@ Modal.search-modal(:open="searchModalOpen")
 
     // query 선택시
     .bottom.search-wrap.sel-query(v-if="searchFor === 'query'")
+        //- SearchBox(
+        //-     :callSearch="handleSearchBoxSubmit"
+        //-     :isInModal="true"
+        //-     style="margin: 0;"
+        //- )
         SearchBox(
+            ref="searchBoxRef"
             :callSearch="handleSearchBoxSubmit"
             :isInModal="true"
             style="margin: 0;"
@@ -354,19 +361,19 @@ const getSearchPlaceholder = () => {
 
 // 키보드 이벤트 핸들러
 const handleSearchKeydown = (e) => {
-    if (e.key === "Enter" && searchFor.value !== "query") {
+    if (e.key === "Enter") {
         e.preventDefault();
         performSearch();
     } else if (e.key === "Escape") {
-        closeSearchModal();
+        resetSearchModal();
     }
 };
 
 // SearchBox에서 submit 이벤트를 받는 핸들러
 const handleSearchBoxSubmit = async (formElement) => {
     try {
-        await callSearch(formElement); // 기존 callSearch 함수 활용
-        closeSearchModal();
+        await callSearch(formElement);
+        resetSearchModal();
     } catch (error) {
         console.error("Search error:", error);
     }
@@ -384,31 +391,21 @@ const performSearch = async () => {
         return;
     }
 
-    // 가상의 form 엘리먼트 생성하여 기존 callSearch 함수 활용
-    const mockFormData = new FormData();
-    mockFormData.append("service", currentService.id);
-    mockFormData.append("owner", currentService.owner);
-    mockFormData.append(searchFor.value, searchValue.value.trim());
-
-    const mockForm = {
-        elements: {},
-        // FormData를 시뮬레이션
-        querySelector: () => null,
-        querySelectorAll: () => [],
-    };
-
-    // skapi.util.extractFormData가 올바르게 동작하도록 mock form 설정
-    Object.defineProperty(mockForm, "elements", {
-        value: {
-            [searchFor.value]: { value: searchValue.value.trim() },
-            service: { value: currentService.id },
-            owner: { value: currentService.owner },
-        },
-    });
-
     try {
-        await callSearch(mockForm);
-        closeSearchModal();
+        // callParams 직접 설정
+        if (searchFor.value === "record_id") {
+            callParams = {
+                record_id: searchValue.value.trim(),
+            };
+        } else if (searchFor.value === "unique_id") {
+            callParams = {
+                unique_id: searchValue.value.trim(),
+            };
+        }
+
+        await setUpNewPageList();
+        // getPage(true);
+        resetSearchModal();
     } catch (error) {
         console.error("Search error:", error);
         alert("Search failed. Please try again.");
@@ -427,12 +424,6 @@ const resetSearch = () => {
     }
 };
 
-// 모달 닫기
-const closeSearchModal = () => {
-    searchModalOpen.value = false;
-    resetSearch();
-};
-
 // searchFor 변경 시 input 스타일 조정
 watch(
     searchFor,
@@ -446,12 +437,12 @@ watch(
                     return;
                 }
 
-                const gcr = showSearchFor.getBoundingClientRect().width;
-
+                const gcr = showSearchFor.getBoundingClientRect().width || 114;
                 inputElement.style.paddingLeft = `${gcr + 8}px`;
-                inputElement.focus();
-                // if (newValue !== "query") {
-                // }
+
+                if (n !== "query") {
+                    inputElement.focus();
+                }
             });
         }
 
@@ -472,33 +463,34 @@ onUnmounted(() => {
 });
 
 function handleSearchModal(e: KeyboardEvent) {
+    console.log("== handleSearchModal 실행 ==");
     if (!searchModalOpen.value) return;
 
     if (e.key === "Escape") {
+        console.log("== Escape pressed ==");
+        console.log("== AA ==");
         resetSearchModal();
+        console.log("== BB ==");
     }
 
     if (e.key === "Enter") {
+        console.log("== Enter pressed ==");
         e.preventDefault();
+        performSearch();
+        console.log("== CC ==");
 
-        // input 유효성 검사
-        const inputEl = document.querySelector(
-            "#searchInput"
-        ) as HTMLInputElement;
-        if (inputEl && !inputEl.checkValidity()) {
-            inputEl.reportValidity(); // 브라우저 기본 alert
-            return; // 검색 실행하지 않음
+        // Query 검색이 아닌 경우에만 간단 검색 실행
+        if (searchFor.value !== "query") {
+            performSearch();
         }
-
-        searchModalOpen.value = false;
-        getPage(true);
+        // Query 검색의 경우 SearchBox 컴포넌트 내부에서 처리됨
     }
 }
 
 function resetSearchModal() {
     searchModalOpen.value = false;
     searchFor.value = "record_id";
-    searchValue.value = "";
+    // searchValue.value = "";
     currentPage.value = 1;
     getPage(true);
 }
@@ -608,6 +600,7 @@ let setUpNewPageList = async () => {
 };
 
 let getPage = async (refresh?: boolean) => {
+    console.log("== getPage실행 ==");
     pager = serviceRecords[currentService.id];
     if (!refresh) {
         if (maxPage.value >= currentPage.value || endOfList.value) {
@@ -628,6 +621,7 @@ let getPage = async (refresh?: boolean) => {
     }
 
     fetching.value = true;
+    console.log("ddd");
 
     let fetchedData = await skapi
         .getRecords(Object.assign({ service: currentService.id }, callParams), {
