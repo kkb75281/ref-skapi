@@ -386,7 +386,10 @@ let changeName = () => {
                 throw err;
             });
     } else {
-        return false;
+        // If the name is not changed, just close the modal
+        updatingValue.name = false;
+        currentService.service.name = inputName;
+        modifyMode.name = false;
     }
 };
 
