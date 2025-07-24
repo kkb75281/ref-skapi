@@ -31,6 +31,11 @@ section
                         .title Service Name
                         .data {{ currentService.service.name }}
                     button.only-icon.gray.edit-btn(type="button" @click="editName")
+                        //- Tooltip(tip-background-color="rgb(45 46 48)" text-color="white")
+                            template(v-slot:tool)
+                                svg.svgIcon
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                            template(v-slot:tip) Edit
                         svg.svgIcon.nohover
                             use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
 
@@ -125,7 +130,14 @@ section
                 //- hr
 
                 .flex-wrap.space-between
-                    .data(style="position:relative; margin:0; font-size: 16px;") Disable/Enable
+                    .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;") 
+                        span.label Disable/Enable
+                        Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                            template(v-slot:tool)
+                                svg.svgIcon
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help")
+                            template(v-slot:tip)
+                                | When the service is disabled, users cannot access the service.
                         //- .tooltip-icon
                             Tooltip(tip-background-color="var(--main-color)" text-color="white")
                                 template(v-slot:tip)
@@ -140,7 +152,14 @@ section
                 br
 
                 .flex-wrap.space-between
-                    .data(style="position:relative; margin:0; font-size: 16px;") Allow Signup
+                    .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
+                        span.label Allow Signup
+                        Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                            template(v-slot:tool)
+                                svg.svgIcon
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help")
+                            template(v-slot:tip)
+                                | When signup is disallowed, only the administrator can create accounts.
                         //- .tooltip-icon
                             Tooltip(tip-background-color="var(--main-color)" text-color="white")
                                 template(v-slot:tip)
@@ -155,7 +174,14 @@ section
                 br
 
                 .flex-wrap.space-between
-                    .data(style="position:relative; margin:0; font-size: 16px;") Prevent Inquiry
+                    .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
+                        span.label Prevent Inquiry
+                        Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                            template(v-slot:tool)
+                                svg.svgIcon
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help")
+                            template(v-slot:tip)
+                                | When inquiry is prevented, users cannot send inquiries via sendInquiry() to the service.
                         //- .tooltip-icon
                             Tooltip(tip-background-color="var(--main-color)" text-color="white")
                                 template(v-slot:tip)
@@ -170,7 +196,14 @@ section
                 br
 
                 .flex-wrap.space-between
-                    .data(style="position:relative; margin:0; font-size: 16px;") Freeze Database
+                    .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
+                        span.label Freeze Database
+                        Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                            template(v-slot:tool)
+                                svg.svgIcon
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help")
+                            template(v-slot:tip)
+                                | When the database is frozen, users cannot upload any data to the database.
                         //- .tooltip-icon
                             Tooltip(tip-background-color="var(--main-color)" text-color="white")
                                 template(v-slot:tip)
@@ -648,4 +681,20 @@ hr {
 // .svgIcon:hover {
 //     border-radius: 50%;
 //     background-color: #293FE61A;
-// }</style>
+// }
+
+.data {
+    .svgIcon {
+        width: 1.25rem;
+        height: 1.25rem;
+        position: relative;
+        top: -2px;
+    }
+
+    ._tooltip {
+        ::v-deep(.tip) {
+            max-width: 9rem;
+        }
+    }
+}
+</style>

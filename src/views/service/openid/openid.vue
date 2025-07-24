@@ -27,8 +27,11 @@ section
     .table-menu-wrap
         .table-functions
             button.inline.only-icon.gray(@click.stop="(e) => { showDropDown(e); }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                    template(v-slot:tip) Show Columns
                 .moreVert(
                     @click.stop,
                     style="--moreVert-left: 0; display: none; font-weight: normal;"
@@ -37,15 +40,24 @@ section
                         template(v-for="c in columnList")
                             Checkbox(v-model="c.value", style="display: flex; padding: 0.25rem 0;") {{ c.name }}
             button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                    template(v-slot:tip) Refresh
         .table-actions
             button.inline.only-icon.gray(@click="()=>{ !user.email_verified ? false : selectedLogger = null; showDetail=true; }" :class="{ disabled : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-add")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-add")
+                    template(v-slot:tip) Add Logger
             button.inline.only-icon.gray(@click="openDeleteRecords=true" :class="{ disabled : !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                    template(v-slot:tip) Delete Selected
 
     Table(:key="tableKey" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}" resizable)
         template(v-if="fetching" v-slot:msg)
@@ -140,6 +152,7 @@ import Modal from "@/components/modal.vue";
 import Pager from "@/code/pager";
 import Guide from "./guide.vue";
 import RecDetails from "./showDetail.vue";
+import Tooltip from "@/components/tooltip.vue";
 
 import type { Ref } from "vue";
 import { ref, computed, watch, nextTick, reactive } from "vue";
@@ -416,7 +429,7 @@ textarea::placeholder {
     .inner {
         padding-top: 0.25rem;
 
-        &>* {
+        & > * {
             padding: 0.25rem 0.5rem;
         }
 
@@ -555,7 +568,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }

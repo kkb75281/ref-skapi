@@ -117,12 +117,18 @@ template(v-else)
         .table-menu-wrap
             .table-functions
                 button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
-                    svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                    Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                        template(v-slot:tip) Refresh
             .table-actions
                 button.inline.only-icon.gray(@click="emailToDelete = true" :class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
-                    svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                    Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                        template(v-slot:tip) Delete Selected
 
         Table(:key="tableKey" :class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
             template(v-if="fetching" v-slot:msg)
@@ -258,6 +264,7 @@ import Select from "@/components/select.vue";
 import Toggle from "@/components/toggle.vue";
 import TabMenu from "@/components/tab.vue";
 import Checkbox from "@/components/checkbox.vue";
+import Tooltip from "@/components/tooltip.vue";
 
 type Newsletter = {
     bounced: number;
@@ -280,7 +287,10 @@ let previewModal: Ref<{
 })
 let tableKey = ref(0);
 let checked: Ref<{ [key: string]: any }> = ref({});
-const emailPlaceholders: Record<string, { required: string[]; optional: string[] }> = {
+const emailPlaceholders: Record<
+    string,
+    { required: string[]; optional: string[] }
+> = {
     confirmation: {
         required: ["https://link.skapi"],
         optional: ["${email}", "${name}", "${service_name}"]

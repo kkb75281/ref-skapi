@@ -28,22 +28,35 @@ section
     .table-menu-wrap
         .table-functions
             button.inline.only-icon.gray(@click.stop="(e)=>{showDropDown(e)}")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                    template(v-slot:tip) Show Columns
+
                 .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
                     .inner(style="padding: 0.5rem;")
                         template(v-for="c in columnList")
                             Checkbox(v-model="c.value", style="display: flex; padding: 0.25rem 0;") {{ c.name }}
             button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                    template(v-slot:tip) Refresh
         .table-actions
             button.inline.only-icon.gray(@click="openDetailModal(addClient, -1)" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-add")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-add")
+                    template(v-slot:tip) Add Key
             button.inline.only-icon.gray(@click="showDeleteMsg=true" :class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                    template(v-slot:tip) Delete Selected
 
     Table(:key="tableKey" :class="{disabled : !user?.email_verified || currentService.service.active <= 0}" resizable)
         template(v-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
@@ -110,6 +123,9 @@ Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModa
                 label.row
                     .key Locked &nbsp;
                         Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                            template(v-slot:tool)
+                                svg.svgIcon
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help")
                             template(v-slot:tip)
                                 | When LOCKED only signed users can have access to the client secret key.
                     .value
@@ -138,15 +154,15 @@ Modal(:open="showDeleteMsg" @close="showDeleteMsg=false")
 
 </template>
 <script lang="ts" setup>
-import Table from '@/components/table.vue';
-import Checkbox from '@/components/checkbox.vue';
-import Modal from '@/components/modal.vue';
-import Tooltip from '@/components/tooltip.vue';
-import Toggle from '@/components/toggle.vue';
+import Table from "@/components/table.vue";
+import Checkbox from "@/components/checkbox.vue";
+import Modal from "@/components/modal.vue";
+import Tooltip from "@/components/tooltip.vue";
+import Toggle from "@/components/toggle.vue";
 
-import { type Ref, ref, nextTick, onMounted, reactive, watch } from 'vue';
-import { user } from '@/code/user';
-import { currentService } from '@/views/service/main';
+import { type Ref, ref, nextTick, onMounted, reactive, watch } from "vue";
+import { user } from "@/code/user";
+import { currentService } from "@/views/service/main";
 import { showDropDown } from "@/assets/js/event.js";
 
 // table
@@ -197,8 +213,8 @@ let uploading = ref(false);
 let selectedClientIndex: null | number = null; // -1이면 새로 추가, 0 이상이면 수정
 let selectedClient = ref(null);
 let addClient = ref({
-    name: '',
-    client_secret: '',
+    name: "",
+    client_secret: "",
     locked: false,
 });
 
@@ -217,15 +233,20 @@ onMounted(() => {
     if (currentService.service.client_secret) {
         listDisplay.value = {};
 
-        Object.entries(currentService.service.client_secret).forEach(([key, value], i) => {
-            listDisplay.value[i] = {
-                name: key,
-                client_secret: value,
-                locked: (currentService.service?.auth_client_secret || []).indexOf(key) !== -1
-            };
-        });
+        Object.entries(currentService.service.client_secret).forEach(
+            ([key, value], i) => {
+                listDisplay.value[i] = {
+                    name: key,
+                    client_secret: value,
+                    locked:
+                        (
+                            currentService.service?.auth_client_secret || []
+                        ).indexOf(key) !== -1,
+                };
+            }
+        );
     }
-})
+});
 
 let openDetailModal = (cs: object, i: number) => {
     selectedClientIndex = i;
@@ -237,8 +258,8 @@ let closeDetailModal = () => {
     selectedClientIndex = null;
     selectedClient.value = null;
     addClient.value = {
-        name: '',
-        client_secret: '',
+        name: "",
+        client_secret: "",
         locked: false,
     };
     showDetail.value = false;
@@ -264,49 +285,65 @@ let deleteKey = async () => {
         }
 
         Object.assign(secKeys, {
-            [ck.name]: ck.client_secret
+            [ck.name]: ck.client_secret,
         });
     }
 
     uploading.value = true;
 
-    await currentService.setServiceOption({
-        client_secret: secKeys,
-        auth_client_secret: authKeys,
-    }).then(() => {
-        showDeleteMsg.value = false;
-        checked.value = {};
-        nextTick(() => {
-            listDisplay.value = Object.values(listDisplay.value).filter((ck) => !deleteKeys.includes(ck.name));
+    await currentService
+        .setServiceOption({
+            client_secret: secKeys,
+            auth_client_secret: authKeys,
+        })
+        .then(() => {
+            showDeleteMsg.value = false;
+            checked.value = {};
+            nextTick(() => {
+                listDisplay.value = Object.values(listDisplay.value).filter(
+                    (ck) => !deleteKeys.includes(ck.name)
+                );
+            });
+        })
+        .catch((err) => {
+            window.alert(err.message || err);
+        })
+        .finally(() => {
+            uploading.value = false;
         });
-    }).catch(err => {
-        window.alert(err.message || err);
-    }).finally(() => {
-        uploading.value = false;
-    });
-}
+};
 
 let saveKey = async () => {
     let authKeys = [];
     let secKeys = {};
 
     // Validate selectedClient
-    if (!selectedClient.value || !selectedClient.value.name || !selectedClient.value.client_secret) {
-        let el = document.getElementById('keyName');
+    if (
+        !selectedClient.value ||
+        !selectedClient.value.name ||
+        !selectedClient.value.client_secret
+    ) {
+        let el = document.getElementById("keyName");
         el.focus();
-        el.setCustomValidity('Please fill in all required fields.');
+        el.setCustomValidity("Please fill in all required fields.");
         el.reportValidity();
         return;
     }
 
     // Check for duplicate names
-    if (listDisplay.value[selectedClientIndex]?.name !== selectedClient.value.name) {
+    if (
+        listDisplay.value[selectedClientIndex]?.name !==
+        selectedClient.value.name
+    ) {
         for (let i = 0; i < listDisplay.value.length; i++) {
             let ck = listDisplay.value[i];
-            if (ck.name === selectedClient.value.name && i !== selectedClientIndex) {
-                let el = document.getElementById('keyName');
+            if (
+                ck.name === selectedClient.value.name &&
+                i !== selectedClientIndex
+            ) {
+                let el = document.getElementById("keyName");
                 el.focus();
-                el.setCustomValidity('The name is already in use.');
+                el.setCustomValidity("The name is already in use.");
                 el.reportValidity();
                 return;
             }
@@ -320,14 +357,14 @@ let saveKey = async () => {
         listDisplay.value[lastIndex] = {
             name: selectedClient.value.name,
             client_secret: selectedClient.value.client_secret,
-            locked: selectedClient.value.locked
+            locked: selectedClient.value.locked,
         };
     } else {
         // 기존 클라이언트 키 수정
         listDisplay.value[selectedClientIndex] = {
             name: selectedClient.value.name,
             client_secret: selectedClient.value.client_secret,
-            locked: selectedClient.value.locked
+            locked: selectedClient.value.locked,
         };
     }
 
@@ -337,23 +374,27 @@ let saveKey = async () => {
             authKeys.push(ck.name);
         }
         Object.assign(secKeys, {
-            [ck.name]: ck.client_secret
+            [ck.name]: ck.client_secret,
         });
     }
 
     uploading.value = true;
 
-    await currentService.setServiceOption({
-        client_secret: secKeys,
-        auth_client_secret: authKeys,
-    }).then(() => {
-        closeDetailModal();
-    }).catch(err => {
-        window.alert(err.message || err);
-    }).finally(() => {
-        uploading.value = false;
-    });
-}
+    await currentService
+        .setServiceOption({
+            client_secret: secKeys,
+            auth_client_secret: authKeys,
+        })
+        .then(() => {
+            closeDetailModal();
+        })
+        .catch((err) => {
+            window.alert(err.message || err);
+        })
+        .finally(() => {
+            uploading.value = false;
+        });
+};
 </script>
 <style scoped lang="less">
 .content {
@@ -393,6 +434,12 @@ let saveKey = async () => {
         align-items: center;
         font-weight: 500;
         width: 170px;
+
+        ._tooltip {
+            ::v-deep(.tip) {
+                max-width: 10rem;
+            }
+        }
     }
 }
 
@@ -460,7 +507,7 @@ table {
 
     &::after {
         position: absolute;
-        content: '';
+        content: "";
         top: 50%;
         left: 50%;
         width: 100%;
@@ -468,7 +515,7 @@ table {
         padding: 4px;
         transform: translate(-50%, -50%);
         border-radius: 50%;
-        background-color: #293FE61A;
+        background-color: #293fe61a;
         display: none;
     }
 
@@ -478,7 +525,7 @@ table {
 
     &:hover {
         border-radius: 50%;
-        background-color: #293FE61A;
+        background-color: #293fe61a;
     }
 }
 

@@ -28,8 +28,11 @@ section
     .table-menu-wrap
         .table-functions
             button.inline.only-icon.gray(@click.stop="(e) => { showDropDown(e); }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                    template(v-slot:tip) Show Columns
                 .moreVert(
                     @click.stop,
                     style="--moreVert-left: 0; display: none; font-weight: normal;"
@@ -43,22 +46,37 @@ section
                     use(xlink:href="@/assets/img/material-icon.svg#icon-cancel-fill")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-search")
-            button.inline.only-icon.gray.search-btn(v-else @click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-search")
-            button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+            button.inline.only-icon.gray.sm.search-btn(v-else @click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+                    template(v-slot:tip) Search
+            button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                    template(v-slot:tip) Refresh
         .table-actions
-            button.inline.only-icon.gray(@click="openCreateUser = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-person-add-fill")
-            button.inline.only-icon.gray(@click="currentService.plan == 'Trial' ? (openUpgrade = true) : (openInviteUser = true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0, deact: currentService.plan == 'Trial' }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-mark-email-unread-fill")
-            button.inline.only-icon.gray(@click.stop="(e) => { showDropDown(e); }" :class="{disabled: !Object.keys(checked).length || fetching}")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-more-vert")
+            button.inline.only-icon.gray.sm(@click="openCreateUser = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-person-add-fill")
+                    template(v-slot:tip) Create User
+            button.inline.only-icon.gray.sm(@click="currentService.plan == 'Trial' ? (openUpgrade = true) : (openInviteUser = true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0, deact: currentService.plan == 'Trial' }")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-mark-email-unread-fill")
+                    template(v-slot:tip) Invite User
+            button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }" :class="{disabled: !Object.keys(checked).length || fetching}")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-more-vert")
+                    template(v-slot:tip) More Actions
                 .moreVert(@click.stop style="--moreVert-right: 0; display: none; font-weight: normal;")
                     .inner
                         button.inline.icon-text.gray(@click="openGrantAccess = true" :class="{disabled: !Object.keys(checked).length || fetching}")
@@ -606,6 +624,7 @@ import { currentService, serviceUsers } from "@/views/service/main";
 import { Countries } from "@/code/countries";
 import { devLog } from "@/code/logger";
 import UserDetails from "./showDetail.vue";
+import Tooltip from "@/components/tooltip.vue";
 
 onMounted(() => {
     document.addEventListener("keydown", handleSearchModal);
@@ -967,8 +986,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                    new Date(dates[1]).setHours(23, 59, 59, 999)
-                ).getTime()
+                      new Date(dates[1]).setHours(23, 59, 59, 999)
+                  ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1441,7 +1460,7 @@ body {
     justify-content: space-between;
     // flex-direction: row-reverse;
 
-    &>* {
+    & > * {
         margin: 8px 0;
     }
 }
@@ -1464,7 +1483,7 @@ body {
 }
 
 .optionCol {
-    &>*:not(:last-child) {
+    & > *:not(:last-child) {
         margin-right: 8px;
     }
 }

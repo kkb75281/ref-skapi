@@ -17,29 +17,54 @@ section
     ul.tab-menu
         li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
 
+    .desc-wrap
+        template(v-if='mailType === "Newsletter"')
+            p.
+                Once the users have subscribed #[span.wordset to your newsletter,]
+                #[br] they will be able to receive your emails sent to the address provided below:
+        template(v-else)
+            p.
+                Once the users have subscribed to your service mail,
+                they will be able to receive your emails sent to the address provided below:
+
+            p(style="max-width: 23.75rem;").
+                User must be logged in to subscribe to Service Mail,
+                and the user must have their email verified.
+
     .email-btn-wrap
-        .inner
-            span.email {{ newsletterEndpoint || '...' }}
-            button.inline.only-icon.gray.btn-copy(@click="copyToClipboard(newsletterEndpoint)")
+        span.email {{ newsletterEndpoint || '...' }}
+        .flex-wrap.center.btn-wrap
+            button.inline.icon-text.gray.sm.btn-copy(@click="copyToClipboard(newsletterEndpoint)")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")
+                span Copy
+            a(:href="'mailto:' + newsletterEndpoint" target="_blank")
+                button.inline.icon-text.gray.sm.btn-send
+                    svg.svgIcon
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-send")
+                    span Send
 
 template(v-if='!needsEmailAlias')
     section
         .table-menu-wrap
             .table-functions
                 button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
-                    svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                    Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                        template(v-slot:tip) Refresh
             .table-actions
-                a(:href="'mailto:' + newsletterEndpoint")
+                //- a(:href="'mailto:' + newsletterEndpoint")
                     button.inline.only-icon.gray(:class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
                         svg.svgIcon
                             use(xlink:href="@/assets/img/material-icon.svg#icon-send")
                 button.inline.only-icon.gray(:class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
-                    svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
-
+                    Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                        template(v-slot:tip) Delete Selected
 
     Table(:class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
         template(v-slot:head)
@@ -167,11 +192,12 @@ import Table from "@/components/table.vue";
 import { skapi } from "@/main";
 import { dateFormat } from "@/code/admin";
 import Pager from "@/code/pager";
-// import Code from "@/components/code.vue";
+
 import Modal from "@/components/modal.vue";
 import type { Newsletters } from "skapi-js/js/Types";
 import Select from "@/components/select.vue";
 import Checkbox from "@/components/checkbox.vue";
+import Tooltip from "@/components/tooltip.vue";
 
 type Newsletter = {
     bounced: number;
@@ -613,6 +639,12 @@ form.register {
 // new style
 .email-btn-wrap {
     text-align: center;
+    background-color: #222325;
+    padding: 1rem 2rem;
+    border-radius: 2rem;
+    max-width: 840px;
+    width: 100%;
+    margin: 0 auto;
 
     .inner {
         display: inline-flex;
@@ -627,42 +659,34 @@ form.register {
 
     .email {
         word-break: break-all;
-        padding: 0 0.5rem 0 1rem;
+        line-height: 1.5;
+        display: block;
+        margin-bottom: 1rem;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
     }
 
     button {
-        border-radius: 0.4375rem;
-        background-color: #121214;
+        border-radius: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
 
         svg {
             opacity: 0.6;
         }
 
         &:hover {
-            &::after {
-                display: none;
-            }
-
             svg {
                 opacity: 1;
             }
         }
 
         &.btn-copy {
-            padding: 8px 10px;
-
             svg {
                 width: 20px;
                 height: 20px;
-            }
-        }
-
-        &.btn-preview {
-            padding: 8px 9px;
-
-            svg {
-                width: 22px;
-                height: 22px;
             }
         }
     }
@@ -677,7 +701,7 @@ form.register {
     gap: 0.5rem;
     width: fit-content;
     padding: 0.625rem;
-    margin: 2rem auto 1.5rem;
+    margin: 2rem auto;
     border-radius: 2rem;
 
     .tab-menu-item {
@@ -696,6 +720,21 @@ form.register {
     }
 }
 
+.desc-wrap {
+    max-width: 37.5rem;
+    margin: 0 auto 2rem;
+    text-align: center;
+    color: #999;
+
+    p {
+        margin: 0 auto 1rem;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
 @media (max-width: 430px) {
     .tab-menu {
         width: 100%;
@@ -705,6 +744,19 @@ form.register {
         .tab-menu-item {
             width: 100%;
             text-align: center;
+        }
+    }
+
+    .email-btn-wrap {
+        .btn-wrap {
+            flex-direction: column;
+            gap: 0.5rem;
+
+            button,
+            a {
+                width: 100%;
+                max-width: 100%;
+            }
         }
     }
 }

@@ -1,11 +1,9 @@
 <template lang="pug">
 ._tooltip(:class="classNames" @mouseenter="handleMouseEnter" ref="host")
     .tool
-        //- slot(name="tool")
         .tool-icon
-            svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-help")
-        .tip(:style="{ '--tip-background-color': props.tipBackgroundColor, '--text-color': props.textColor }" ref="tipContainer")
+            slot(name="tool")
+        .tip(:style="{ '--tip-background-color': props.tipBackgroundColor, '--text-color': props.textColor}" ref="tipContainer" :class="class")
             slot(name="tip")
         .tip-arrow(:class="classNames" :style="{ '--tip-background-color': props.tipBackgroundColor }")
 </template>
@@ -22,6 +20,10 @@ const props = defineProps({
         type: String,
         default: "#000",
     },
+    class: {
+        type: String,
+        default: "",
+    },
 });
 
 const host = ref(null);
@@ -30,13 +32,25 @@ const classNames = ref("");
 const tipBackgroundColor = ref("transparent");
 
 const handleMouseEnter = (e) => {
-    const y = window.innerHeight / 2;
-    const x = window.innerWidth / 2;
-    const isBottom = e.clientY < y;
-    const isLeft = e.clientX > x;
+    const tipEl = tipContainer.value;
+    const toolEl = host.value;
+
+    if (!tipEl || !toolEl) return;
+
+    const toolRect = toolEl.getBoundingClientRect();
+    const tipHeight = tipEl.offsetHeight;
+
+    const safeMargin = 8; // 위에 최소로 확보하고 싶은 여백
+
+    // 상단 공간 부족하면 아래로 표시
+    const shouldFlip = toolRect.top < tipHeight + safeMargin;
 
     classNames.value = "";
-    classNames.value += isBottom ? " bottom" : " top";
+    classNames.value += shouldFlip ? "bottom" : "top";
+
+    // 왼쪽/오른쪽 판단은 유지
+    const x = window.innerWidth / 2;
+    const isLeft = e.clientX > x;
     classNames.value += isLeft ? " left" : " right";
 
     nextTick(() => {
@@ -55,6 +69,7 @@ const handleMouseEnter = (e) => {
 ._tooltip {
     display: block;
     position: relative !important;
+    z-index: 1;
 
     &.bottom {
         .tip {
@@ -76,11 +91,6 @@ const handleMouseEnter = (e) => {
             display: block;
         }
     }
-    // &::slotted([slot='tip']) {
-    //     /* slot1 every slotted element - YES */
-    //     white-space: pre;
-    //     overflow: hidden;
-    // }
 
     > .tool {
         text-align: inherit;
@@ -98,10 +108,7 @@ const handleMouseEnter = (e) => {
     }
 
     .tip {
-        // min-width: 100%;
-        // max-width: 100%;
-        width: 100%;
-        min-width: 10rem;
+        width: max-content;
         display: none;
         position: absolute;
         box-sizing: border-box;
@@ -112,7 +119,6 @@ const handleMouseEnter = (e) => {
         z-index: 999;
         white-space: pre-wrap;
         text-align: left;
-        // overflow: hidden;
 
         background-color: var(--tip-background-color); // 배경색 적용
         color: var(--text-color); // 텍스트 색상 적용
@@ -145,6 +151,29 @@ const handleMouseEnter = (e) => {
             border-top-width: 0;
             border-bottom-width: 4px;
             border-bottom-color: var(--tip-background-color);
+        }
+    }
+}
+
+.table-menu-wrap {
+    ._tooltip {
+        .tip {
+            bottom: calc(100% + 18px);
+
+            &.left {
+                left: -10px;
+            }
+
+            &.right {
+                left: initial;
+                right: -10px;
+            }
+        }
+
+        .tip-arrow {
+            &.top {
+                bottom: calc(100% + 14px);
+            }
         }
     }
 }

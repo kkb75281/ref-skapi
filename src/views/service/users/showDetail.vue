@@ -70,7 +70,7 @@
 
     .row
         .key(style="margin-bottom: 6px; width: 100%") MISC
-        textarea.value(v-model="selectedUser_data" style="padding: 8px;width:100%;height:160px;resize: none;tab-size: 2;font-family: monospace;white-space: pre;" name='attributes[misc]'
+        textarea.value(v-model="selectedUser_data" style="width:100%;height:160px;resize: none;tab-size: 2;font-family: monospace;white-space: pre;" name='attributes[misc]'
             placeholder='Misc data (String)')
 
 </template>
