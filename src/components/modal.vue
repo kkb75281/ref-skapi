@@ -120,6 +120,7 @@ dialog {
         align-items: center;
         justify-content: space-between;
         gap: 1rem;
+        margin-top: 0.75rem;
 
         .loader-wrap {
             display: flex;

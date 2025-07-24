@@ -484,8 +484,6 @@ Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
                 use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
             span {{ error }}
 
-        br
-
         .modal-btns
             .loader-wrap(v-if="promiseRunning")
                 .loader(style="--loader-color: white; --loader-size: 12px")
@@ -512,9 +510,6 @@ Modal.modal-grantAccess(:open="openGrantAccess" @close="closeGrantAccess")
         @keyup.stop="(e) => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); }"
         style="width: 100%;"
     )
-
-    br
-    br
 
     .modal-btns
         .loader-wrap(v-if="promiseRunning")

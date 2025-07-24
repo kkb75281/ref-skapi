@@ -232,7 +232,7 @@ Modal(:open="modifyMode.name" @close="modifyMode.name = false")
         | (Maximum 40 characters.)
 
     form(@submit.prevent="changeName")
-        input.block(type="text" ref="focus_name" placeholder="Maximum 40 characters" maxlength="40" :value='inputName' @input="(e) => inputName = e.target.value" :disabled="updatingValue.name" style="margin-bottom: 0.75rem;" required)
+        input.block(type="text" ref="focus_name" placeholder="Maximum 40 characters" maxlength="40" :value='inputName' @input="(e) => inputName = e.target.value" :disabled="updatingValue.name" required)
 
         .modal-btns
             .loader-wrap(v-if='updatingValue.name')
@@ -255,7 +255,7 @@ Modal(:open="modifyMode.cors" @close="modifyMode.cors = false")
         | (https://your.domain.com, http://second.domain.net, ...)
 
     form(@submit.prevent="changeCors")
-        input#modifyCors.block(ref="focus_cors" :disabled="updatingValue.cors || null" type="text" placeholder='https://your.domain.com, http://second.domain.net, ...' :value='inputCors' @input="(e) => {e.target.setCustomValidity(''); inputCors = e.target.value;}" style="margin-bottom: 0.75rem;")
+        input#modifyCors.block(ref="focus_cors" :disabled="updatingValue.cors || null" type="text" placeholder='https://your.domain.com, http://second.domain.net, ...' :value='inputCors' @input="(e) => {e.target.setCustomValidity(''); inputCors = e.target.value;}")
 
         .modal-btns
             .loader-wrap(v-if='updatingValue.cors')
@@ -276,7 +276,7 @@ Modal(:open="modifyMode.api_key" @close="modifyMode.api_key = false")
         | (Maximum 256 characters, At least 4 characters.)
 
     form(@submit.prevent="changeApiKey")
-        input.block(ref="focus_key" :disabled="updatingValue.api_key || null" type="text" minlength="4" maxlength="256" placeholder='Maximum 256 characters, At least 4 characters.' :value='inputKey' @input="(e) => inputKey = e.target.value" style="margin-bottom: 0.75rem;")
+        input.block(ref="focus_key" :disabled="updatingValue.api_key || null" type="text" minlength="4" maxlength="256" placeholder='Maximum 256 characters, At least 4 characters.' :value='inputKey' @input="(e) => inputKey = e.target.value")
 
         .modal-btns
             .loader-wrap(v-if='updatingValue.api_key')
