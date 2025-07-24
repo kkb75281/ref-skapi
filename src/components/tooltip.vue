@@ -158,21 +158,23 @@ const handleMouseEnter = (e) => {
 .table-menu-wrap {
     ._tooltip {
         .tip {
-            bottom: calc(100% + 18px);
+            bottom: calc(100% + 4px);
 
             &.left {
-                left: -10px;
+                // left: -10px;
+                left: 0;
             }
 
             &.right {
                 left: initial;
-                right: -10px;
+                // right: -10px;
+                right: 0;
             }
         }
 
         .tip-arrow {
             &.top {
-                bottom: calc(100% + 14px);
+                bottom: calc(100% + 0px);
             }
         }
     }

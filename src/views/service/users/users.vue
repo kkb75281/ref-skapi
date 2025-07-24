@@ -241,7 +241,7 @@ Modal.search-modal(:open="searchModalOpen")
             template(v-else-if="searchFor === 'name'")
                 input#searchInput.block(type="text" placeholder="User's Name" v-model="searchValue" name="name")
             template(v-else-if="searchFor === 'phone_number'")
-                input#searchInput.block(type="text" placeholder="+821234567890" v-model="searchValue")
+                input#searchInput.block(type="text" placeholder="+821012345678" v-model="searchValue")
             template(v-else-if="searchFor === 'address'")
                 input#searchInput.block(type="text" placeholder="Seoul, South Korea" v-model="searchValue" name="address")
             template(v-else-if="searchFor === 'gender'")
@@ -274,14 +274,14 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
         span.txt-required * required
 
         label 
-            span.label.required User's Email
+            span.label.required Email
             input#email.block(
                 type="email",
                 @input="(e) => (createParams.email = e.target.value)",
                 @keydown="(e) => moveFocus(e, 'password')",
                 :disabled="promiseRunning",
                 title="Please enter a valid email address.",
-                placeholder="anonymous@anonymous.com",
+                placeholder="User's Email (user@email.com)",
                 required
             )
         
@@ -316,7 +316,7 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
                 @input="(e) => (createParams.phone_number = e.target.value)",
                 @keydown="(e) => moveFocus(e, 'gender')",
                 :disabled="promiseRunning",
-                placeholder="User's Phone Number",
+                placeholder="User's Phone Number (+821012345678)",
                 type="text"
             )
         

@@ -4,7 +4,7 @@ dialog(ref='dialog' @keydown.esc.prevent="emit('close')" :class="modalClass")
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch, computed } from "vue";
+import { onMounted, ref, watch, computed, onUnmounted } from "vue";
 
 // ** 기본 모달 제외 (스크롤 가능한 모달 경우) '.modal-scroll' 클래스명 추가하여 사용 (ex. Modal.modal-scroll)
 
@@ -26,22 +26,28 @@ const modalClass = computed(() => {
     return ""; // 기본 스타일
 });
 
+watch(
+    () => props.open,
+    (nv) => {
+        if (nv) {
+            dialog.value.showModal();
+            document.body.style.overflow = "hidden";
+        } else {
+            dialog.value.close();
+            document.body.style.overflow = "";
+        }
+    }
+);
+
 onMounted(() => {
     if (props.open) {
         dialog.value.showModal();
     }
 });
 
-watch(
-    () => props.open,
-    (nv) => {
-        if (nv) {
-            dialog.value.showModal();
-        } else {
-            dialog.value.close();
-        }
-    }
-);
+onUnmounted(() => {
+    document.body.style.overflow = "";
+});
 </script>
 
 <style lang="less">

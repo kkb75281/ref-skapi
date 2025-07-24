@@ -469,7 +469,7 @@
     }
 
     .search-ing-btn {
-        height: 40px;
+        height: 2.75rem;
         display: flex;
         align-items: center;
         gap: 10px;
@@ -481,6 +481,12 @@
             padding-left: 5px;
             color: #999;
             cursor: auto;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            width: 100%;
 
             &:hover {
                 color: #fff;
@@ -505,5 +511,5 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
 }

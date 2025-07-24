@@ -10,7 +10,7 @@ section
 
 hr
 
-section
+section.sec.service-set
     //- .flex-wrap.end(style="gap:10px;")
         button.inline.gray.sm(type="button" @click="editName") Rename
         button.inline.gray.sm(type="button" @click="editCors") CORS
@@ -20,10 +20,7 @@ section
         //- router-link(:to='"/delete-service/" + currentService.id')
             button.inline.sm.red Delete Service
 
-    br
-    br
-
-    .flex-wrap.space-between(style="gap: 20px;")
+    .flex-wrap.space-between.top-info
         .card-wrap(style="flex: 1; min-width: 300px;")
             .card
                 .flex-wrap.space-between
@@ -57,7 +54,7 @@ section
                         svg.svgIcon.nohover
                             use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
 
-    .flex-wrap.space-between(style="gap: 20px;")
+    .flex-wrap.space-between.bottom-info
         .card-wrap(style="flex: 2; min-width: 300px;")
             //- .card(style="background-color: #77DFA2; color: #121214;")
             .card
@@ -695,6 +692,39 @@ hr {
         ::v-deep(.tip) {
             max-width: 9rem;
         }
+    }
+}
+
+.sec {
+    &.service-set {
+        margin-top: 2rem;
+
+        .flex-wrap {
+            gap: 1.25rem;
+        }
+    }
+}
+
+.bottom-info {
+    .card-wrap {
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 430px) {
+    .sec {
+        &.service-set {
+            margin-top: 1rem;
+
+            .flex-wrap {
+                gap: 0.75rem;
+            }
+        }
+    }
+
+    .card-wrap {
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
     }
 }
 </style>

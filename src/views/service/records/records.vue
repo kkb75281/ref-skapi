@@ -33,9 +33,9 @@ section
                             use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
                     template(v-slot:tip) Show Columns
                 .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
-                    .inner(style="padding: 0.5rem;")
+                    .inner
                         template(v-for="c in columnList")
-                            Checkbox(v-model="c.value", style="display: flex; padding: 0.25rem 0;") {{ c.name }}
+                            Checkbox(v-model="c.value", style="display: flex;") {{ c.name }}
             .search-ing-btn(v-if="searchValue && !searchModalOpen")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
                 svg.svgIcon.reset-btn(@click="resetSearchModal")
@@ -435,20 +435,27 @@ const closeSearchModal = () => {
 // searchFor 변경 시 input 스타일 조정
 watch(
     searchFor,
-    (newValue) => {
-        if (newValue) {
+    (n, o) => {
+        if (n) {
             nextTick(() => {
                 const inputElement = document.querySelector("#searchInput");
                 const showSearchFor = document.querySelector("#showSearchFor");
 
-                if (inputElement && showSearchFor) {
-                    const gcr = showSearchFor.getBoundingClientRect().width;
-                    inputElement.style.paddingLeft = `${gcr + 8}px`;
-                    if (newValue !== "query") {
-                        inputElement.focus();
-                    }
+                if (!inputElement || !showSearchFor) {
+                    return;
                 }
+
+                const gcr = showSearchFor.getBoundingClientRect().width;
+
+                inputElement.style.paddingLeft = `${gcr + 8}px`;
+                inputElement.focus();
+                // if (newValue !== "query") {
+                // }
             });
+        }
+
+        if (n !== o) {
+            searchValue.value = "";
         }
     },
     { immediate: true }
@@ -811,7 +818,13 @@ textarea::placeholder {
         padding: 0.5rem;
 
         & > * {
-            padding: 0.25rem 0.5rem;
+            padding: 0.375rem 0.25rem !important;
+            gap: 0.25rem;
+        }
+
+        .svgIcon {
+            width: 22px;
+            height: 22px;
         }
     }
 }
@@ -827,9 +840,6 @@ textarea::placeholder {
         gap: 8px;
     }
 
-    // .customSelect {
-    //     flex-grow: 1;
-    // }
     .search {
         position: relative;
         flex-grow: 50;
