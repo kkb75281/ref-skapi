@@ -1,10 +1,10 @@
 <template lang="pug">
-section
-    .flex-wrap.space-between
-        .page-title Users
-        .flex-wrap.end
-            a.btn-docs(href='https://docs.skapi.com/authentication/create-account.html' target="_blank")
-                button.inline.sm.gray Go Docs
+section.page-header
+    .page-title Users
+    a.btn-docs(href='https://docs.skapi.com/authentication/create-account.html' target="_blank")
+        button.inline.icon-text.sm.gray
+            img(src="@/assets/img/landingpage/icon_docs.svg")
+            | Go Docs
 
 hr
 
@@ -986,8 +986,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                      new Date(dates[1]).setHours(23, 59, 59, 999)
-                  ).getTime()
+                    new Date(dates[1]).setHours(23, 59, 59, 999)
+                ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1460,7 +1460,7 @@ body {
     justify-content: space-between;
     // flex-direction: row-reverse;
 
-    & > * {
+    &>* {
         margin: 8px 0;
     }
 }
@@ -1483,7 +1483,7 @@ body {
 }
 
 .optionCol {
-    & > *:not(:last-child) {
+    &>*:not(:last-child) {
         margin-right: 8px;
     }
 }

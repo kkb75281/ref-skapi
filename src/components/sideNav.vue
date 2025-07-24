@@ -41,8 +41,9 @@
     .advanced-router
         div(v-if='currentService.service.group <= 1' @click='()=>openOffer=true' style='cursor:pointer;')
             .router.disabled(:to="`/my-services/${currentService.id}/newsletter`" :class="{'active': route.name == 'newsletter'}" @click="emit('closeMobileMenu');")
-                svg
+                //- svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-nav-bulk-mail")
+                img(src="@/assets/img/myservice/bulk_email.svg" alt="Bulk Email")
                 span.name Bulk Email
 
             .router.disabled(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}" @click="emit('closeMobileMenu');")
@@ -52,8 +53,9 @@
 
         template(v-else)
             router-link.router(:to="`/my-services/${currentService.id}/newsletter`" :class="{'active': route.name == 'newsletter'}" @click="emit('closeMobileMenu');")
-                svg
+                //- svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-nav-bulk-mail")
+                img(src="@/assets/img/myservice/bulk_email.svg" alt="Bulk Email")
                 span.name Bulk Email
 
             router-link.router(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}" @click="emit('closeMobileMenu');")

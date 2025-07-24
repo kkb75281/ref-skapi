@@ -1,10 +1,10 @@
 <template lang="pug">
-section
-    .flex-wrap.space-between
-        .page-title Client Secret Key
-        .flex-wrap.end
-            a(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
-                button.inline.sm.gray Go Docs
+section.page-header
+    .page-title Client Secret Key
+    a.btn-docs(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
+        button.inline.icon-text.sm.gray
+            img(src="@/assets/img/landingpage/icon_docs.svg")
+            | Go Docs
 
 hr
 

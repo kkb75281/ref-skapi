@@ -1,9 +1,10 @@
 <template lang="pug">
-section
-    .flex-wrap.space-between
-        .page-title Open ID Loggers
-        a(href='https://docs.skapi.com/authentication/openid-login.html' target="_blank")
-            button.inline.sm.gray Go Docs
+section.page-header
+    .page-title Open ID Loggers
+    a.btn-docs(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
+        button.inline.icon-text.sm.gray
+            img(src="@/assets/img/landingpage/icon_docs.svg")
+            | Go Docs
 
 hr
 
@@ -429,7 +430,7 @@ textarea::placeholder {
     .inner {
         padding-top: 0.25rem;
 
-        & > * {
+        &>* {
             padding: 0.25rem 0.5rem;
         }
 
@@ -568,7 +569,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }

@@ -1,9 +1,10 @@
 <template lang="pug">
-section
-    .flex-wrap.space-between
-        .page-title Bulk Email
-        a.btn-docs(href='https://docs.skapi.com/email/newsletters.html' target="_blank")
-            button.inline.sm.gray Go Docs
+section.page-header
+    .page-title Bulk Email
+    a.btn-docs(href='https://docs.skapi.com/email/newsletters.html' target="_blank")
+        button.inline.icon-text.sm.gray
+            img(src="@/assets/img/landingpage/icon_docs.svg")
+            | Go Docs
 
 hr
 

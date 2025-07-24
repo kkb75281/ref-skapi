@@ -1,12 +1,11 @@
 <template lang="pug">
-section
-    .flex-wrap.space-between(style="gap:10px")
-        .page-title {{ currentService.service.name }}
-        .flex-wrap
-            router-link(:to='`/subscription/${currentService.id}`')
-                button.inline.sm.blue Change Plan
-            router-link(:to='"/delete-service/" + currentService.id')
-                button.inline.sm.gray.caution Delete Service
+section.page-header
+    .page-title {{ currentService.service.name }}
+    .flex-wrap
+        router-link(:to='`/subscription/${currentService.id}`')
+            button.inline.sm.blue Change Plan
+        router-link(:to='"/delete-service/" + currentService.id')
+            button.inline.sm.gray.caution Delete Service
 
 hr
 
@@ -384,7 +383,10 @@ let changeName = () => {
                 throw err;
             });
     } else {
-        return false;
+        // If the name is not changed, just close the modal
+        updatingValue.name = false;
+        currentService.service.name = inputName;
+        modifyMode.name = false;
     }
 };
 
