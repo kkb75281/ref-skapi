@@ -1,40 +1,43 @@
 <template lang="pug">
-.infoBox(v-if='!currentService.service.subdomain' :class='{disabled: email_is_unverified_or_service_is_disabled}')
-    h2.page-title File Hosting 
+section
+    .flex-wrap.space-between
+        .page-title File Hosting
+        .flex-wrap
+            button.inline.sm.red.caution.btn-delete(v-if="currentService.service.subdomain" type="button" @click="removeHosting = true") Remove Hosting
+            a(href='https://docs.skapi.com/hosting/hosting.html' target="_blank")
+                button.inline.sm.gray Go Docs
 
-    hr
+hr
 
-    .area-wrap
-        .error(v-if='!user?.email_verified')
-            //- .material-symbols-outlined.notranslate.fill warning
-            svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-            router-link(to="/account-setting") Please verify your email address to modify settings.
-            
-        .error(v-else-if='currentService.service.active == 0')
-            //- .material-symbols-outlined.notranslate.fill warning
-            svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-            span This service is currently disabled.
+section
+    .error(v-if='!user?.email_verified')
+        svg
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+        router-link(to="/account-setting") Please verify your email address to modify settings.
+        
+    .error(v-else-if='currentService.service.active == 0')
+        svg
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+        span This service is currently disabled.
 
-        .error(v-else-if='currentService.service.active < 0')
-            //- .material-symbols-outlined.notranslate.fill warning
-            svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-            span This service is currently suspended.
+    .error(v-else-if='currentService.service.active < 0')
+        svg
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+        span This service is currently suspended.
 
-        p.
+template(v-if='!currentService.service.subdomain' :class='{nonClickable: email_is_unverified_or_service_is_disabled}')
+    section
+        p.desc(style="color: #888888; margin-bottom: 30px;").
             File hosting service let you host files and static websites.
             #[br]
-            To host your public files, please register a subdomain.
+            #[span.wordset To host your public files, please register a subdomain.]
+            #[br]
+            The subdomain can only be #[span.wordset alphanumeric and hyphen,] should be at least #[span.wordset 6 characters] minimum and #[span.wordset max 32 characters.]
 
-        p The subdomain can only be #[span.wordset alphanumeric and hyphen,] should be at least #[span.wordset 6 characters] minimum and #[span.wordset max 32 characters.]
-        
-        br
+        form#registerForm(@submit.prevent='registerSubdomain')
+            .email-alias
+                input.block(v-model='subdomain' pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' minlength="6" maxlength="32" :disabled="registerSubdomainRunning" placeholder="your-subdomain" required)
 
-        form.register(@submit.prevent='registerSubdomain')
-            .subdomain
-                input.big(v-model='subdomain' pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' minlength="6" maxlength="32" :disabled="registerSubdomainRunning" placeholder="your-subdomain" required)
             button.inline(:disabled='registerSubdomainRunning' :class='{disabled: registerSubdomainRunning}')
                 template(v-if="registerSubdomainRunning")
                     .loader(style="--loader-color:white; --loader-size:12px")
@@ -42,38 +45,7 @@
                     | Register
 
 template(v-else)
-    .infoBox(:class='{disabled: email_is_unverified_or_service_is_disabled || !subdomainReady}')
-        .flex-wrap.space-between(style="gap:10px")
-            h2.page-title File Hosting
-            .flex-wrap.end
-                button.inline.sm.red.caution.btn-delete(type="button" @click="removeHosting = true") Remove Hosting
-                a(href='https://docs.skapi.com/hosting/hosting.html' target="_blank")
-                    button.inline.sm.gray Go Docs
-
-        hr
-
-        .error(v-if='!user?.email_verified')
-            //- .material-symbols-outlined.notranslate.fill warning
-            svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-            router-link(to="/account-setting") Please verify your email address to modify settings.
-            br
-            br  
-        .error(v-else-if='currentService.service.active == 0')
-            //- .material-symbols-outlined.notranslate.fill warning
-            svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-            span This service is currently disabled.
-            br
-            br
-        .error(v-else-if='currentService.service.active < 0')
-            //- .material-symbols-outlined.notranslate.fill warning
-            svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-            span This service is currently suspended.
-            br
-            br
-
+    section
         .flex-wrap.space-between(style="gap: 20px;")
             .card-wrap(style="flex: 1; min-width: 300px;")
                 .card
@@ -108,49 +80,65 @@ template(v-else)
                                 svg.svgIcon.nohover
                                     use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
 
-    .table-menu-wrap
-        .table-actions
-            button.inline.only-icon.gray.sm(@click='uploadFileInp.click()' :class="{disabled : email_is_unverified_or_service_is_disabled || isPending || fetching}")
-                input(type="file" hidden multiple @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFileInp")
-                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
-                    template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-upload-file-fill")
-                    template(v-slot:tip) Upload Files
-            button.inline.only-icon.gray.sm(@click='uploadFolderInp.click()' :class="{disabled : email_is_unverified_or_service_is_disabled || isPending || fetching}")
-                input(type="file" hidden multiple directory webkitdirectory @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFolderInp")
-                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
-                    template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-drive-folder-upload-fill")
-                    template(v-slot:tip) Upload Folder
-            button.inline.only-icon.gray.sm(:class="{disabled : email_is_unverified_or_service_is_disabled || isPending || fetching || !Object.keys(checked).length}" @click='deleteSelected=true')
-                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
-                    template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
-                    template(v-slot:tip) Delete Selected
-
-    .hostingPart
-        #loading
-            template(v-if="fetching")
-                .loader(style="--loader-color:white; --loader-size:12px")
-                | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetching ...
-
-            template(v-else-if='!subdomainReady')
-                .loader(style="--loader-color:white; --loader-size:12px")
-                | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subdomain change in process ...
-            
-            template(v-else-if='currentService.pending.cdn')
-                .loader(style="--loader-color:white; --loader-size:12px")
-                | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDN Refresh in process... 
+    section
+        .table-menu-wrap
+            .table-actions
+                button.inline.only-icon.gray(@click='uploadFileInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
+                    input(type="file" hidden multiple @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFileInp")
+                    Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-upload-file-fill")
+                        template(v-slot:tip) Upload Files
+                button.inline.only-icon.gray(@click='uploadFolderInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
+                    input(type="file" hidden multiple directory webkitdirectory @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFolderInp")
+                    Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-drive-folder-upload-fill")
+                        template(v-slot:tip) Upload Folder
+                button.inline.only-icon.gray(:class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching || !Object.keys(checked).length}" @click='deleteSelected=true')
+                    Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                        template(v-slot:tip) Delete Selected
 
         Table(
             @dragover.stop.prevent="e=>{if(isPending) return; e.dataTransfer.dropEffect = 'copy'; dragHere = true;}"
             @dragleave.stop.prevent="dragHere = false;"
             @drop.stop.prevent="e => {dragHere = false; if(!isPending) onDrop(e, getFileList)}"
-            :class="{'nonClickable' : fetching || isPending || email_is_unverified_or_service_is_disabled, 'dragHere' : dragHere}"
+            :class="{disabled : fetching || isPending || email_is_unverified_or_service_is_disabled, 'dragHere' : dragHere}"
             resizable)
+            template(v-if="fetching" v-slot:msg)
+                .tableMsg.center
+                    .loader(style="--loader-color:white; --loader-size:12px")
+                    | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetching ...
+            
+            template(v-else-if="!subdomainReady" v-slot:msg)
+                .tableMsg.center
+                    .loader(style="--loader-color:white; --loader-size:12px")
+                    | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subdomain change in process ...
+
+            template(v-else-if="currentService.pending.cdn" v-slot:msg)
+                .tableMsg.center
+                    .loader(style="--loader-color:white; --loader-size:12px")
+                    | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDN Refresh in process... 
+
+            template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+                .tableMsg.center.empty 
+                    svg.svgIcon
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-upload")
+                    | Drag and drop files here
+            
+            template(v-else-if='uploadProgress.name' v-slot:msg)
+                .progress(:style="{ width: uploadProgress.progress + '%', height: '3px', background: 'var(--main-color)', position: 'absolute', top: '58px', left: '0px', zIndex: 1}")
+                .tableMsg.left
+                    svg.svgIcon.moving(style="margin-right: 13px;")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-upload")
+                    | Uploading: /{{ uploadProgress.name }}&nbsp;
+                    b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
+            
             template(v-slot:head)
                 tr
                     th.fixed(style="width:60px;")
@@ -182,11 +170,11 @@ template(v-else)
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
 
             template(v-slot:body)
-                template(v-if="fetching || isPending")
+                template(v-if="fetching || isPending || !subdomainReady || currentService.pending.cdn || uploadProgress.name || !listDisplay || listDisplay.length === 0")
                     tr.nohover
                         td(colspan="4")
 
-                template(v-else-if='uploadProgress.name')
+                //- template(v-else-if='uploadProgress.name')
                     .progress( :style="{ width: uploadProgress.progress + '%', height: '3px', background: 'var(--main-color)', position: 'absolute'}")
                     tr.uploadState(style="position:relative")
                         td
@@ -195,13 +183,6 @@ template(v-else)
                         td.left(colspan="3")
                             | Uploading: /{{ uploadProgress.name }}&nbsp;
                             b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
-
-                template(v-else-if="!listDisplay || listDisplay.length === 0")
-                    tr.empty
-                        td
-                            svg.svgIcon
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-upload")
-                        td.left(colspan="3") Drag and drop files here
 
                 template(v-else)
                     tr.nohover(:class='{hoverRow:currentDirectory}' @click='currentDirectory = currentDirectory.split("/").length === 1 ? "" : currentDirectory.split("/").slice(0, -1).join("/")')
@@ -228,10 +209,10 @@ template(v-else)
                     td(colspan="4")
 
     .table-page-wrap
-        button.inline.only-icon.gray.sm(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+        button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
-        button.inline.only-icon.gray.sm(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+        button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 
@@ -802,9 +783,8 @@ function openFile(ns: any) {
     let path = ns.path;
     let url;
     if (path.split("/").length > 1) {
-        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${
-            ns.name
-        }`;
+        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${ns.name
+            }`;
     } else {
         url = `https://${hostUrl.value}/${ns.name}`;
     }
@@ -881,21 +861,24 @@ watch(ascending, () => {
 </script>
 
 <style lang="less" scoped>
-form.register {
+#registerForm {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    max-width: 620px;
 
-    .subdomain {
-        display: inline-block;
+    .email-alias {
         position: relative;
+        flex-grow: 1;
 
         &::after {
-            content: ".skapi.com";
+            content: "@mail.skapi.com";
             position: absolute;
             right: 20px;
-            line-height: 44px;
+            top: 50%;
+            transform: translateY(-50%);
             color: #999;
             font-size: 0.8rem;
             font-weight: 400;
@@ -905,28 +888,69 @@ form.register {
         }
 
         input {
-            padding-right: 88px;
-            width: 100%;
+            padding-right: 132px;
         }
-
-        flex-grow: 1;
     }
-
-    // svg:hover {
-    //     border-radius: 50%;
-    //     background-color: rgba(41, 63, 230, 0.1);
-    // }
 
     button {
-        flex-shrink: 0;
+        width: 92px;
+    }
+
+    @media (max-width: 540px) {
+        button {
+            width: 100%;
+            max-width: 100%;
+        }
     }
 }
+
+// form.register {
+//     display: flex;
+//     flex-wrap: wrap;
+//     gap: 0.5rem;
+//     justify-content: flex-end;
+
+//     .subdomain {
+//         display: inline-block;
+//         position: relative;
+
+//         &::after {
+//             content: ".skapi.com";
+//             position: absolute;
+//             right: 20px;
+//             line-height: 44px;
+//             color: #999;
+//             font-size: 0.8rem;
+//             font-weight: 400;
+//             pointer-events: none;
+//             user-select: none;
+//             z-index: 1;
+//         }
+
+//         input {
+//             padding-right: 88px;
+//             width: 100%;
+//         }
+
+//         flex-grow: 1;
+//     }
+
+//     // svg:hover {
+//     //     border-radius: 50%;
+//     //     background-color: rgba(41, 63, 230, 0.1);
+//     // }
+
+//     button {
+//         flex-shrink: 0;
+//     }
+// }
 
 // table style below
 thead {
     th {
-        & > span {
+        &>span {
             @media (pointer: fine) {
+
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -942,7 +966,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }
@@ -1014,12 +1038,6 @@ thead {
     }
 }
 
-// new style (추후 삭제될 수도 있음)
-.area-wrap {
-    max-width: 37.5rem;
-    margin: 2rem auto;
-}
-
 tbody {
     tr {
         &.empty {
@@ -1029,7 +1047,7 @@ tbody {
                 background-color: transparent;
             }
 
-            ~ tr {
+            ~tr {
                 pointer-events: none;
 
                 &:hover {
@@ -1059,7 +1077,7 @@ tbody {
         gap: 0.5rem;
         flex: 1;
 
-        > div {
+        >div {
             width: 100%;
             height: 100%;
         }
@@ -1068,11 +1086,9 @@ tbody {
             display: inline-flex;
             align-items: center;
             height: 100%;
-            background: linear-gradient(
-                    0deg,
+            background: linear-gradient(0deg,
                     rgba(255, 255, 255, 0.05) 0%,
-                    rgba(255, 255, 255, 0.05) 100%
-                ),
+                    rgba(255, 255, 255, 0.05) 100%),
                 #16171a;
             border-radius: 0.5rem;
             padding: 0 1rem;
@@ -1087,11 +1103,9 @@ tbody {
     align-items: center;
     min-width: 2.5rem;
     height: 3rem;
-    background: linear-gradient(
-            0deg,
+    background: linear-gradient(0deg,
             rgba(255, 255, 255, 0.05) 0%,
-            rgba(255, 255, 255, 0.05) 100%
-        ),
+            rgba(255, 255, 255, 0.05) 100%),
         #16171a;
     border-radius: 0.5rem;
     padding: 0.5rem;

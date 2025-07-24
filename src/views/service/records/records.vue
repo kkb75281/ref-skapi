@@ -26,7 +26,7 @@ section
 section
     .table-menu-wrap
         .table-functions
-            button.inline.only-icon.gray.sm(@click.stop="(e)=>{showDropDown(e)}")
+            button.inline.only-icon.gray(@click.stop="(e)=>{showDropDown(e)}")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         svg.svgIcon
@@ -42,13 +42,13 @@ section
                     use(xlink:href="@/assets/img/material-icon.svg#icon-cancel-fill")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-search")
-            button.inline.only-icon.gray.sm.search-btn(v-else @click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray.search-btn(v-else @click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         svg.svgIcon
                             use(xlink:href="@/assets/img/material-icon.svg#icon-search")
                     template(v-slot:tip) Search
-            button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         svg.svgIcon
@@ -56,13 +56,13 @@ section
                     template(v-slot:tip) Refresh
 
         .table-actions
-            button.inline.only-icon.gray.sm(@click="()=>{ !user.email_verified ? false : selectedRecord = null; showDetail=true; }" :class="{ disabled : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
+            button.inline.only-icon.gray(@click="()=>{ !user.email_verified ? false : selectedRecord = null; showDetail=true; }" :class="{ disabled : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         svg.svgIcon
                             use(xlink:href="@/assets/img/material-icon.svg#icon-add")
                     template(v-slot:tip) Add Record
-            button.inline.only-icon.gray.sm(@click="openDeleteRecords=true" :class="{ disabled : !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
+            button.inline.only-icon.gray(@click="openDeleteRecords=true" :class="{ disabled : !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         svg.svgIcon
@@ -140,10 +140,10 @@ section
                     td(:colspan="colspan")
 
     .table-page-wrap
-        button.inline.only-icon.gray.sm(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+        button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
-        button.inline.only-icon.gray.sm(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+        button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 

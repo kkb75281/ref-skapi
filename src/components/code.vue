@@ -31,7 +31,8 @@ let copy = (e) => {
     // let copyMsg = e.currentTarget.querySelector('.copyMsg');
     // copyMsg.textContent = 'Copied!';
 
-    let copyMsg = document.getElementById('code-copy-msg');
+    let copyMsg = document.getElementById('copy-msg');
+    copyMsg.textContent = 'The code copied!';
     copyMsg.classList.add('show');
 
     setTimeout(() => {

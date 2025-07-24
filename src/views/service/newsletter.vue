@@ -48,7 +48,7 @@ template(v-if='!needsEmailAlias')
     section
         .table-menu-wrap
             .table-functions
-                button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
+                button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                         template(v-slot:tool)
                             svg.svgIcon
@@ -56,10 +56,10 @@ template(v-if='!needsEmailAlias')
                         template(v-slot:tip) Refresh
             .table-actions
                 //- a(:href="'mailto:' + newsletterEndpoint")
-                    button.inline.only-icon.gray.sm(:class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
+                    button.inline.only-icon.gray(:class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
                         svg.svgIcon
                             use(xlink:href="@/assets/img/material-icon.svg#icon-send")
-                button.inline.only-icon.gray.sm(:class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
+                button.inline.only-icon.gray(:class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                         template(v-slot:tool)
                             svg.svgIcon
@@ -152,10 +152,10 @@ template(v-if='!needsEmailAlias')
                     td(colspan="6")
 
     .table-page-wrap
-        button.inline.only-icon.gray.sm(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+        button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
-        button.inline.only-icon.gray.sm(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+        button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
 
@@ -550,7 +550,7 @@ const copyToClipboard = (text: string) => {
         doc.remove();
 
         // 복사 완료 메시지 표시
-        let copyMsg = document.getElementById("code-copy-msg");
+        let copyMsg = document.getElementById("copy-msg");
         copyMsg.classList.add("show");
 
         setTimeout(() => {
@@ -566,8 +566,9 @@ const copyToClipboard = (text: string) => {
 // table style below
 thead {
     th {
-        & > span {
+        &>span {
             @media (pointer: fine) {
+
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -583,7 +584,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }

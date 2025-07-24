@@ -2,7 +2,7 @@
 section
     .flex-wrap.space-between(style="gap:10px")
         .page-title {{ currentService.service.name }}
-        .flex-wrap.end(style="gap:10px; margin-left: auto;")
+        .flex-wrap
             router-link(:to='`/subscription/${currentService.id}`')
                 button.inline.sm.blue Change Plan
             router-link(:to='"/delete-service/" + currentService.id')
