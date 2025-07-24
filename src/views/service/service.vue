@@ -4,7 +4,7 @@ section.page-header
     .flex-wrap
         router-link(:to='`/subscription/${currentService.id}`')
             button.inline.sm.blue Change Plan
-        router-link(:to='"/delete-service/" + currentService.id')
+        router-link(v-if="currentService.plan == 'Trial' || currentService.plan == 'Unlimited' || currentService.service.plan == 'Canceled'" :to='"/delete-service/" + currentService.id')
             button.inline.sm.gray.caution Delete Service
 
 hr
