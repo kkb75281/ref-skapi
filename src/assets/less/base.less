@@ -172,11 +172,21 @@ input {
     &:-webkit-autofill,
     &:-webkit-autofill:hover,
     &:-webkit-autofill:focus,
-    &:-webkit-autofill:active(:not(:disabled)) {
+    &:-webkit-autofill:active {
+        -webkit-text-fill-color: #fff;
+        -webkit-box-shadow: 0 0 0px 1000px #16171a inset;
+        box-shadow: 0 0 0px 1000px #16171a inset;
         transition: background-color 5000s ease-in-out 0s;
-        -webkit-transition: background-color 9999s ease-out;
-        -webkit-box-shadow: 0 0 0px 1000px #16171a inset !important;
-        -webkit-text-fill-color: #fff !important;
+    }
+
+    &:autofill,
+    &:autofill:hover,
+    &:autofill:focus,
+    &:autofill:active {
+        -webkit-text-fill-color: #fff;
+        -webkit-box-shadow: 0 0 0px 1000px #16171a inset;
+        box-shadow: 0 0 0px 1000px #16171a inset;
+        transition: background-color 5000s ease-in-out 0s;
     }
 
     &:disabled {
