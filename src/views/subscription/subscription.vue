@@ -4,7 +4,7 @@ main#subscription
         .flex-wrap.space-between
             button.inline.icon-text.dark.btn-prev(type="button" @click="router.push('/my-services/' + serviceId + '/dashboard')")
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back-ios")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-left")
                 span Back
 
             //- button.inline.gray.caution.btn-cancel(v-if="serviceList[serviceId]?.service.plan !== 'Canceled' && serviceList[serviceId]?.service.plan !== 'Trial'" type="button" @click="()=>openCancelplan=true") Cancel Subscription

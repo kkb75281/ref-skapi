@@ -11,7 +11,7 @@ hr
 section
     .error(v-if='!user?.email_verified')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
         router-link(to="/account-setting") Please verify your email address to modify settings.
 
 section
@@ -37,7 +37,7 @@ section
         .flex-wrap.center.btn-wrap
             button.inline.icon-text.gray.sm.btn-copy(@click="copyToClipboard(newsletterEndpoint)")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-copy")
                 span Copy
             a(:href="'mailto:' + newsletterEndpoint" target="_blank")
                 button.inline.icon-text.gray.sm.btn-send
@@ -52,8 +52,9 @@ template(v-if='!needsEmailAlias')
                 button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                         template(v-slot:tool)
-                            svg.svgIcon
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                            .icon
+                                svg
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
                         template(v-slot:tip) Refresh
             .table-actions
                 //- a(:href="'mailto:' + newsletterEndpoint")
@@ -63,8 +64,9 @@ template(v-if='!needsEmailAlias')
                 button.inline.only-icon.gray(:class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                         template(v-slot:tool)
-                            svg.svgIcon
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                            .icon
+                                svg
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
                         template(v-slot:tip) Delete Selected
 
     Table(:class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
@@ -147,18 +149,20 @@ template(v-if='!needsEmailAlias')
                     td.center.buttonWrap(@click.stop)
                         //- .material-symbols-outlined.notranslate.fill.clickable.dangerIcon.hide(@click.stop="emailToDelete = ns") delete
                         svg.svgIcon.reactiveDanger.clickable.hide(@click.stop="emailToDelete = ns")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
                         
                 tr(v-for="i in (10 - listDisplay.length)")
                     td(colspan="6")
 
     .table-page-wrap
         button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
+            .icon
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
         button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
+            .icon
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
 
 //- modal :: delete email
 Modal.modal-deleteEmail(:open="emailToDelete" @close="emailToDelete=false")
@@ -567,8 +571,9 @@ const copyToClipboard = (text: string) => {
 // table style below
 thead {
     th {
-        & > span {
+        &>span {
             @media (pointer: fine) {
+
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -584,7 +589,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }

@@ -32,8 +32,9 @@ section.sec.service-set
                                 svg.svgIcon
                                     use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
                             template(v-slot:tip) Edit
-                        svg.svgIcon.nohover
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
 
             .card
                 .flex-wrap.space-between
@@ -41,8 +42,9 @@ section.sec.service-set
                         .title CORS
                         .data {{ currentService.service.cors || '*' }}
                     button.only-icon.gray.edit-btn(type="button" @click="editCors")
-                        svg.svgIcon.nohover
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
 
             .card
                 .flex-wrap.space-between
@@ -50,8 +52,9 @@ section.sec.service-set
                         .title Secret Key
                         .data {{ currentService.service.api_key ? currentService.service.api_key.slice(0, 2) + '*'.repeat(currentService.service.api_key.length - 2) + '...' : '-' }}
                     button.only-icon.gray.edit-btn(type="button" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" @click="editApiKey")
-                        svg.svgIcon.nohover
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
 
     .flex-wrap.space-between.bottom-info
         .card-wrap(style="flex: 2; min-width: 300px;")
@@ -131,7 +134,7 @@ section.sec.service-set
                         Tooltip(tip-background-color="var(--main-color)" text-color="white")
                             template(v-slot:tool)
                                 svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
                             template(v-slot:tip)
                                 | When the service is disabled, users cannot access the service.
                         //- .tooltip-icon
@@ -153,7 +156,7 @@ section.sec.service-set
                         Tooltip(tip-background-color="var(--main-color)" text-color="white")
                             template(v-slot:tool)
                                 svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
                             template(v-slot:tip)
                                 | When signup is disallowed, only the administrator can create accounts.
                         //- .tooltip-icon
@@ -175,7 +178,7 @@ section.sec.service-set
                         Tooltip(tip-background-color="var(--main-color)" text-color="white")
                             template(v-slot:tool)
                                 svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
                             template(v-slot:tip)
                                 | When inquiry is prevented, users cannot send inquiries via sendInquiry() to the service.
                         //- .tooltip-icon
@@ -197,7 +200,7 @@ section.sec.service-set
                         Tooltip(tip-background-color="var(--main-color)" text-color="white")
                             template(v-slot:tool)
                                 svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
                             template(v-slot:tip)
                                 | When the database is frozen, users cannot upload any data to the database.
                         //- .tooltip-icon
@@ -222,7 +225,7 @@ section.sec.service-set
 Modal(:open="modifyMode.name" @close="modifyMode.name = false")
     .modal-close(@click="modifyMode.name = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
 
     .modal-title Change Service Name
 
@@ -243,7 +246,7 @@ Modal(:open="modifyMode.name" @close="modifyMode.name = false")
 Modal(:open="modifyMode.cors" @close="modifyMode.cors = false")
     .modal-close(@click="modifyMode.cors = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
 
     .modal-title Change CORS
 
@@ -266,7 +269,7 @@ Modal(:open="modifyMode.cors" @close="modifyMode.cors = false")
 Modal(:open="modifyMode.api_key" @close="modifyMode.api_key = false")
     .modal-close(@click="modifyMode.api_key = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
     
     .modal-title Change API Key
 

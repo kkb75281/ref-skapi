@@ -77,22 +77,25 @@ const handleMouseEnter = (e) => {
             bottom: unset;
         }
     }
+
     &.left {
         .tip {
             left: unset;
             right: 0;
         }
     }
+
     &:hover {
         .tip {
             display: block;
         }
+
         .tip-arrow {
             display: block;
         }
     }
 
-    > .tool {
+    >.tool {
         text-align: inherit;
     }
 
@@ -143,6 +146,7 @@ const handleMouseEnter = (e) => {
             border-top-width: 4px;
             border-top-color: var(--tip-background-color);
         }
+
         &.bottom {
             z-index: 1;
             top: calc(100% + 4px);
@@ -158,7 +162,7 @@ const handleMouseEnter = (e) => {
 .table-menu-wrap {
     ._tooltip {
         .tip {
-            bottom: calc(100% + 4px);
+            bottom: calc(100% + 8px);
 
             &.left {
                 // left: -10px;
@@ -174,7 +178,7 @@ const handleMouseEnter = (e) => {
 
         .tip-arrow {
             &.top {
-                bottom: calc(100% + 0px);
+                bottom: calc(100% + 4px);
             }
         }
     }

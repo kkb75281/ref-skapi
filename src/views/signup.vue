@@ -68,7 +68,7 @@ br
         .error(v-if="error")
             //- .material-symbols-outlined.notranslate.fill error
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-error-fill")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-error")
             span {{ error }}
         
         br

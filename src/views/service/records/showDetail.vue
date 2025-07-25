@@ -113,7 +113,7 @@
         .key(style="margin-bottom: 0.5rem") Files 
         .add(:class="{disabled: restrictedAccess}" @click="addFile")
             svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-add-circle-fill")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-plus")
             span &nbsp;Add File
         .value(style="width:100%; flex: auto;")
             // already uploaded files
@@ -121,7 +121,7 @@
                     template(v-for="(file, index) in fileList")
                         div(style='display: flex;gap:8px;' :class="{disabled: restrictedAccess}")
                             svg.svgIcon.clickable(@click="deleteFile(key, index)")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-x")
 
                             div(style='display: flex;flex-wrap: wrap; gap:0.5rem 1rem;')
                                 input.line.key(style='width:unset;flex-grow:1;' :value="key" required placeholder="Key name for file" disabled)
@@ -131,7 +131,7 @@
             .file(v-for="(file, index) in addFileList")
                 div(style='display: flex;gap:8px;')
                     svg.svgIcon.clickable(@click="addFileList.splice(index, 1)" style="width: 18px; height: 18px;")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-x")
                     div(style='display: flex;flex-wrap: wrap; gap:0.5rem 1rem;')
                         input.line.key(style='width:unset;flex-grow:1;' v-model="file.key" required placeholder="Key name for file" :disabled='restrictedAccess')
                         label.filename {{ file.filename || "Choose a file"}}
@@ -485,11 +485,9 @@ let deleteFile = (key: string, index: number) => {
     }
 
     textarea {
-        background: linear-gradient(
-                0deg,
+        background: linear-gradient(0deg,
                 rgba(255, 255, 255, 0.05) 0%,
-                rgba(255, 255, 255, 0.05) 100%
-            ),
+                rgba(255, 255, 255, 0.05) 100%),
             #16171a;
         border: none;
         color: #fff;

@@ -1,11 +1,15 @@
 <template lang="pug">
 ._codeWrap
     div(style="text-align:right")
-        .copy(v-if='cpy_btn' @click="copy")
+        //- .copy(v-if='cpy_btn' @click="copy")
             span.copyMsg Copy code
             //- .material-symbols-outlined.notranslate.fill.nohover(style="font-size:20px;margin-left:5px") file_copy
             svg(height="16" width="16" style="margin-left: 5px;")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")            
+                use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")          
+        button.inline.icon-text.gray.btn-copy(v-if='cpy_btn' @click="copy")
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-copy")            
+            span.copyMsg Copy
     .code
         slot
 
@@ -18,7 +22,7 @@ let cpy_btn = !props.hidecopy;
 let copy = (e) => {
     let allcopy = document.querySelectorAll('.copyMsg');
     for (let i = 0; i < allcopy.length; i++) {
-        allcopy[i].textContent = 'Copy code';
+        allcopy[i].textContent = 'Copy';
     }
     let code = e.currentTarget.parentElement.nextElementSibling.querySelector('.code > pre');
     let doc = document.createElement('textarea');
@@ -47,24 +51,23 @@ let copy = (e) => {
     position: relative;
     margin-top: 8px;
 
-
-    .copy {
+    .btn-copy {
         position: absolute;
         bottom: 22px;
         right: 28px;
-        background-color: #1E1E20;
-        padding: 9px 14px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 7px;
-        // display: inline-block;
-        text-align: right;
-        font-size: 15px;
-        font-weight: 400;
-        cursor: pointer;
+        // background-color: #1E1E20;
+        // padding: 9px 14px;
+        // border: 1px solid rgba(255, 255, 255, 0.1);
+        // border-radius: 7px;
+        // // display: inline-block;
+        // text-align: right;
+        // font-size: 15px;
+        // font-weight: 400;
+        // cursor: pointer;
 
-        svg {
-            fill: #fff;
-        }
+        // svg {
+        //     fill: #fff;
+        // }
     }
 
     .copyMsg {

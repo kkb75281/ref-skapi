@@ -5,13 +5,13 @@ label._checkbox(:class="{'nonClickable' : disabled}" :style='{opacity: disabled 
     //- span.material-symbols-outlined.notranslate(:class='{fill:modelValue !== null}' :style='{"margin-top": hasSlotContent ? "-3px" : null}') {{ modelValue === null ? 'indeterminate_check_box' : modelValue ? 'check_box' : 'check_box_outline_blank' }}
     template(v-if="modelValue === null")
         svg.svgIcon.white(:class='{fill:modelValue !== null}')
-            use(xlink:href="@/assets/img/material-icon.svg#icon-indeterminate-check-box")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-minus-square")
     template(v-else-if="modelValue")
         svg.svgIcon.white(:class='{fill:modelValue !== null}')
-            use(xlink:href="@/assets/img/material-icon.svg#icon-check-box-fill")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-check-square")
     template(v-else)
         svg.svgIcon.white(:class='{fill:modelValue !== null}')
-            use(xlink:href="@/assets/img/material-icon.svg#icon-check-box-outline-blank")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-square")
 
     div
         slot

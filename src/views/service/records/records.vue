@@ -11,17 +11,17 @@ hr
 section
     .error(v-if='!user?.email_verified')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
         router-link(to="/account-setting") Please verify your email address to modify settings.
         
     .error(v-else-if='currentService.service.active == 0')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
         span This service is currently disabled.
 
     .error(v-else-if='currentService.service.active < 0')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
         span This service is currently suspended.
 
 section
@@ -30,8 +30,9 @@ section
             button.inline.only-icon.gray(@click.stop="(e)=>{showDropDown(e)}")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-columns")
                     template(v-slot:tip) Show Columns
                 .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
                     .inner
@@ -40,34 +41,38 @@ section
             .search-ing-btn(v-if="searchValue && searchValue.length > 0 && searchFor !== 'query'")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
                 svg.svgIcon.reset-btn(@click="() => { callParams = {}; resetSearchModal(); }")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-cancel-fill")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-x-circle")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-search")
             button.inline.only-icon.gray.search-btn(v-else @click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-search")
                     template(v-slot:tip) Search
             button.inline.only-icon.gray(@click="refresh" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
                     template(v-slot:tip) Refresh
 
         .table-actions
             button.inline.only-icon.gray(@click="()=>{ !user.email_verified ? false : selectedRecord = null; showDetail=true; }" :class="{ disabled : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-add")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-plus")
                     template(v-slot:tip) Add Record
             button.inline.only-icon.gray(@click="openDeleteRecords=true" :class="{ disabled : !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
                     template(v-slot:tip) Delete Selected
 
     Table(:key="tableKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" resizable)
@@ -103,13 +108,13 @@ section
                             td.overflow.left(v-if="c.key === 'table'") 
                                 span
                                     svg.svgIcon(v-if="rc.table.access_group == 'private' || rc.table.access_group == 99 || rc.table.access_group === 'admin'" style="margin-bottom: 2px")
-                                        use(xlink:href="@/assets/img/material-icon.svg#icon-vpn-key-fill")
+                                        use(xlink:href="@/assets/img/material-icon.svg#icon-key")
                                 span
                                     svg.svgIcon(v-if="rc.table.access_group == 'authorized' || typeof rc.table.access_group === 'number' && rc.table.access_group > 0" style="margin-bottom: 2px")
-                                        use(xlink:href="@/assets/img/material-icon.svg#icon-person-fill")
+                                        use(xlink:href="@/assets/img/material-icon.svg#icon-user")
                                 span
                                     svg.svgIcon(v-if="rc.table.access_group == 'public' || rc.table.access_group === 0" style="margin-bottom: 2px")
-                                        use(xlink:href="@/assets/img/material-icon.svg#icon-language")
+                                        use(xlink:href="@/assets/img/material-icon.svg#icon-globe")
                                 span(style="margin-left: 8px") {{ rc?.table?.name }}
 
                             td(v-if="c.key === 'record_id'")
@@ -142,18 +147,20 @@ section
 
     .table-page-wrap
         button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
+            .icon
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
         button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
+            .icon
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
 
 // modal :: search
 Modal.search-modal(:open="searchModalOpen")
     .modal-close
         button.btn-close(type="button" @click="resetSearchModal")
             svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-x")
     .top
         #showSearchFor.search-for
             svg.svgIcon
@@ -188,7 +195,7 @@ Modal.modal-scroll.modal-detailRecord(:open="showDetail" @close="closeModal")
             h4.title {{ selectedRecord?.record_id ? selectedRecord?.record_id : 'Create Record' }}
             button.btn-close(type="button" @click="closeModal")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-x")
         .modal-body
             RecDetails(v-if='showDetail' :data='selectedRecord')
         .modal-footer
@@ -576,11 +583,11 @@ let setUpNewPageList = async () => {
         sortBy: callParams?.index?.name || "record_id",
         order:
             callParams?.index?.name &&
-            (callParams?.index?.condition || "").includes("<")
+                (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                ? "asc"
-                : "desc",
+                    ? "asc"
+                    : "desc",
     });
 };
 
@@ -921,7 +928,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }

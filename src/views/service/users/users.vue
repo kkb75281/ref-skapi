@@ -11,17 +11,17 @@ hr
 section
     .error(v-if="!user?.email_verified")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
         router-link(to="/account-setting") Please verify your email address to modify settings.
 
     .error(v-else-if="currentService.service.active == 0")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
         span This service is currently disabled.
 
     .error(v-else-if="currentService.service.active < 0")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
         span This service is currently suspended.
 
 section
@@ -30,8 +30,9 @@ section
             button.inline.only-icon.gray(@click.stop="(e) => { showDropDown(e); }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-columns")
                     template(v-slot:tip) Show Columns
                 .moreVert(
                     @click.stop,
@@ -43,53 +44,58 @@ section
             .search-ing-btn(v-if="searchValue && !searchModalOpen")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
                 svg.svgIcon.reset-btn(@click="resetSearchModal")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-cancel-fill")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-x-circle")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-search")
             button.inline.only-icon.gray.sm.search-btn(v-else @click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-search")
                     template(v-slot:tip) Search
             button.inline.only-icon.gray.sm(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
                     template(v-slot:tip) Refresh
         .table-actions
             button.inline.only-icon.gray.sm(@click="openCreateUser = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-person-add-fill")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-plus")
                     template(v-slot:tip) Create User
             button.inline.only-icon.gray.sm(@click="currentService.plan == 'Trial' ? (openUpgrade = true) : (openInviteUser = true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0, deact: currentService.plan == 'Trial' }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-mark-email-unread-fill")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-mail")
                     template(v-slot:tip) Invite User
             button.inline.only-icon.gray.sm(@click.stop="(e) => { showDropDown(e); }" :class="{disabled: !Object.keys(checked).length || fetching}")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-more-vert")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-more-vertical")
                     template(v-slot:tip) More Actions
                 .moreVert(@click.stop style="--moreVert-right: 0; display: none; font-weight: normal;")
                     .inner
                         button.inline.icon-text.gray(@click="openGrantAccess = true" :class="{disabled: !Object.keys(checked).length || fetching}")
                             svg.svgIcon
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-supervisor-account-fill")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-users")
                             span Grant Access
                         button.inline.icon-text.gray(@click="openUnblockUser=true" :class="{disabled: !Object.keys(checked).length || fetching}")
                             svg.svgIcon
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-account-circle-fill")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-user")
                             span Unblock User
                         button.inline.icon-text.gray(@click="openBlockUser=true" :class="{disabled: !Object.keys(checked).length || fetching}" style="width:100%; justify-content: flex-start;")
                             svg.svgIcon
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-no-accounts-fill")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-user-x")
                             span Block User
                         button.inline.icon-text.gray(@click="openDeleteUser=true" :class="{disabled: !Object.keys(checked).length || fetching}" style="width:100%; justify-content: flex-start;")
                             svg.svgIcon
@@ -151,17 +157,19 @@ section
 
     .table-page-wrap
         button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
+            .icon
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
         button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
+            .icon
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
 
 // 1
 //- Modal(:open="searchModalOpen" style="padding: 2.5rem 2rem;")
     .modal-close(@click="searchModalOpen = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
 
     .modal-title Search Users
 
@@ -186,10 +194,10 @@ section
 //- Modal(:open="searchModalOpen" style="max-width: 560px; width: 100%;")
     .modal-prev(v-if="searchModalStep > 1" @click="searchModalStep--")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back-ios")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-left")
     .modal-close(@click="searchModalOpen = false; searchModalStep = 1; searchFor = 'user_id'; searchValue = '';")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
 
     .modal-title
         template(v-if="searchModalStep === 1") What do you want to search for...
@@ -222,18 +230,18 @@ section
 Modal.search-modal(:open="searchModalOpen")
     .modal-close(@click="searchModalOpen = false; searchModalStep = 1; searchFor = 'user_id'; searchValue = '';")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
 
     .top
         #showSearchFor.search-for
             svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-x-circle")
             span {{ searchFor + ' /' }}
         .search-input(:class="{'readonly': searchFor === 'timestamp' || searchFor === 'birthdate' || searchFor === 'locale'}")
             template(v-if="searchFor === 'timestamp' || searchFor === 'birthdate'")
                 input#searchInput.block(type="text" placeholder="YYYY-MM-DD ~ YYYY-MM-DD" v-model="searchValue" name="date" readonly)
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-calendar-today-fill")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-calendar")
             template(v-if="searchFor === 'locale'")
                 input#searchInput.block(type="text" placeholder="2 digit country code e.g. KR" v-model="searchValue" name="locale" readonly)
                 svg.svgIcon
@@ -268,7 +276,7 @@ Modal.search-modal(:open="searchModalOpen")
 Modal.modal-scroll.modal-createUser(:open="openCreateUser")
     .modal-close(@click="openCreateUser = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
 
     .modal-title Create User
 
@@ -421,7 +429,7 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
 
         .error(v-if="error")
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
             span {{ error }}
 
         br
@@ -436,7 +444,7 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
 Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
     .modal-close(@click="openInviteUser = false")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
 
     .modal-title Invite User
 
@@ -485,7 +493,7 @@ Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
 
         .error(v-if="error")
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
             span {{ error }}
 
         .modal-btns
@@ -500,7 +508,7 @@ Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
 Modal.modal-grantAccess(:open="openGrantAccess" @close="closeGrantAccess")
     .modal-close(@click="closeGrantAccess")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
 
     .modal-title Grant Access
 
@@ -588,7 +596,7 @@ Modal.modal-scroll.modal-detailUser(:open="showDetail" @close="closeModalUser")
             h4.title {{ selectedUser?.name || selectedUser?.email || selectedUser?.user_id }}
             button.btn-close(type="button" @click="closeModalUser")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-x")
         .modal-body
             UserDetails(v-if='showDetail' :data='selectedUser')
         .modal-footer
@@ -985,8 +993,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                      new Date(dates[1]).setHours(23, 59, 59, 999)
-                  ).getTime()
+                    new Date(dates[1]).setHours(23, 59, 59, 999)
+                ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1459,7 +1467,7 @@ body {
     justify-content: space-between;
     // flex-direction: row-reverse;
 
-    & > * {
+    &>* {
         margin: 8px 0;
     }
 }
@@ -1482,7 +1490,7 @@ body {
 }
 
 .optionCol {
-    & > *:not(:last-child) {
+    &>*:not(:last-child) {
         margin-right: 8px;
     }
 }

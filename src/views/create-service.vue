@@ -4,11 +4,11 @@ template(v-if="visible")
     .modal-content(@click.stop)
         .btn-prev(v-if="step > 1")
             svg.svgIcon(@click="step--")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back-ios")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-left")
 
         .btn-close(@click="handleClose" :style="isFirstService ? {display: 'none'} : {}")
             svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-x")
                 
         #create
             .form(v-if="step === 1")
@@ -31,7 +31,7 @@ template(v-if="visible")
                 input.block(placeholder="Service name (Max 40 chars)" maxlength="40" required v-model="newServiceName" style="margin-bottom: 0.75rem;")
                 button.block.icon-text(type="button" :class="{'disabled': !newServiceName}" :style="!newServiceName ? { backgroundColor: 'rgba(34, 35, 37, 1)' } : {}" @click="step++")
                     svg
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-add") 
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-plus") 
                     span Create
 
             template(v-else-if="step === 2")
@@ -491,50 +491,43 @@ const handleClose = () => {
 
                     &.user {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_user.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
                         }
                     }
 
                     &.data {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_data.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
                         }
                     }
 
                     &.file {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_file.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
                         }
                     }
 
                     &.mail {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_mail.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
                         }
                     }
 
                     &.forbiden {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_forbiden.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
                         }
                     }
 
                     &.invitation {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_invitation.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
                         }
                     }
 
                     &.global {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_global.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
                         }
                     }
                 }
@@ -633,8 +626,7 @@ const handleClose = () => {
     z-index: 999999;
 
     &.first-service {
-        background: url("@/assets/img/myservice/bg_gradation.png") no-repeat
-            center center;
+        background: url("@/assets/img/myservice/bg_gradation.png") no-repeat center center;
         background-size: cover;
         top: 4rem;
     }
