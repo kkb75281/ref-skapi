@@ -141,13 +141,13 @@ form#searchForm(@submit.prevent="callSearch")
                     .value
                         input.line(placeholder="xxxxxxxxxxxxxxxx" name='reference')
 
-            .row(:class="{'nonClickable': !tableName}")
+            .row.line(:class="{'nonClickable': !tableName}")
                 .key Tag
                 .value
                     input.line(name='tag' placeholder="Tag name. Alphanumeric and space only.")
 
             div(style='text-align:right')
-                button.btn.final.wideOnMobile(type="submit") Search
+                button.btn.sm.wideOnMobile.btn-search(type="submit") Search
 
 </template>
 
@@ -279,7 +279,7 @@ const props = defineProps({
 
     .btn {
         flex-grow: 1;
-        width: 140px;
+        width: 5.625rem;
     }
 
     .advanced {

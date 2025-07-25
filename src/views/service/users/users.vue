@@ -1516,6 +1516,8 @@ tbody {
             position: relative;
             color: var(--main-color);
             font-weight: 500;
+            height: 1.875rem;
+            line-height: 1.875rem;
 
             &::after {
                 position: absolute;

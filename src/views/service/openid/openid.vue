@@ -557,7 +557,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -568,6 +568,8 @@ tbody {
             position: relative;
             color: var(--main-color);
             font-weight: 500;
+            height: 1.875rem;
+            line-height: 1.875rem;
 
             &::after {
                 position: absolute;
