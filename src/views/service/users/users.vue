@@ -220,6 +220,10 @@ section
 
 // 3
 Modal.search-modal(:open="searchModalOpen")
+    .modal-close(@click="searchModalOpen = false; searchModalStep = 1; searchFor = 'user_id'; searchValue = '';")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+
     .top
         #showSearchFor.search-for
             svg.svgIcon
@@ -1544,6 +1548,26 @@ tbody {
                     display: block;
                 }
             }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-close {
+        z-index: 9999;
+        position: relative;
+        left: initial;
+        bottom: initial;
+        top: 0;
+        right: 0;
+        margin-bottom: 0.5rem;
+        margin-left: auto;
+
+        .btn-close {
+            padding: 0;
+            background: transparent;
+            height: 100%;
+            min-height: 100%;
         }
     }
 }
