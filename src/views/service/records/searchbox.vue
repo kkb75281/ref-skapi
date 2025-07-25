@@ -114,10 +114,13 @@ form#searchForm(@submit.prevent="callSearch")
                         input(placeholder="Unique_id or Record_id or User_id" name='reference' :disabled="!tableName")
 
                 .tit Tag
-                .row
+                .row.line
                     .key 
                     .value
                         input(name='tag' placeholder="Tag name. Alphanumeric and space only." :disabled="!tableName")
+
+            div(style='text-align:right')
+                button.btn.sm.wideOnMobile.btn-search(type="submit") Search
 
 </template>
 
@@ -154,13 +157,13 @@ watch(searchIndexCondition, (nv) => {
         console.log(select);
         nextTick(() => {
             select.classList.add("fix");
-        })
+        });
     } else {
         nextTick(() => {
             select.classList.remove("fix");
-        })
+        });
     }
-})
+});
 </script>
 
 <style scoped lang="less">
@@ -268,7 +271,7 @@ watch(searchIndexCondition, (nv) => {
 
     .btn {
         flex-grow: 1;
-        width: 140px;
+        width: 5.625rem;
     }
 
     .advanced {
@@ -302,7 +305,7 @@ watch(searchIndexCondition, (nv) => {
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
-        gap: .625rem;
+        gap: 0.625rem;
         margin-bottom: 1.5rem;
 
         &.line {
@@ -322,7 +325,7 @@ watch(searchIndexCondition, (nv) => {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: .625rem;
+            gap: 0.625rem;
             flex-grow: 1;
 
             input,

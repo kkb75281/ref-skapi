@@ -62,7 +62,7 @@ dialog {
     padding: 4rem;
 
     &::backdrop {
-        background-color: rgba(0, 0, 0, 0.7);
+        background-color: rgba(0, 0, 0, 0.9);
     }
 
     .modal-prev,
@@ -231,9 +231,10 @@ dialog {
 
 // 모달 스타일 추가 (스크롤O) :: e
 
+// 검색 모달
 .search-modal {
     max-width: 560px;
-    width: 100%;
+    width: calc(100% - 1rem);
     background-color: unset;
     padding: 0;
     border-radius: 0;

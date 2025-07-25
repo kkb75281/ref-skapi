@@ -220,6 +220,10 @@ section
 
 // 3
 Modal.search-modal(:open="searchModalOpen")
+    .modal-close(@click="searchModalOpen = false; searchModalStep = 1; searchFor = 'user_id'; searchValue = '';")
+        svg.svgIcon
+            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+
     .top
         #showSearchFor.search-for
             svg.svgIcon
@@ -981,8 +985,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                    new Date(dates[1]).setHours(23, 59, 59, 999)
-                ).getTime()
+                      new Date(dates[1]).setHours(23, 59, 59, 999)
+                  ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1455,7 +1459,7 @@ body {
     justify-content: space-between;
     // flex-direction: row-reverse;
 
-    &>* {
+    & > * {
         margin: 8px 0;
     }
 }
@@ -1478,7 +1482,7 @@ body {
 }
 
 .optionCol {
-    &>*:not(:last-child) {
+    & > *:not(:last-child) {
         margin-right: 8px;
     }
 }
@@ -1516,6 +1520,8 @@ tbody {
             position: relative;
             color: var(--main-color);
             font-weight: 500;
+            height: 1.875rem;
+            line-height: 1.875rem;
 
             &::after {
                 position: absolute;
@@ -1542,6 +1548,26 @@ tbody {
                     display: block;
                 }
             }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-close {
+        z-index: 9999;
+        position: relative;
+        left: initial;
+        bottom: initial;
+        top: 0;
+        right: 0;
+        margin-bottom: 0.5rem;
+        margin-left: auto;
+
+        .btn-close {
+            padding: 0;
+            background: transparent;
+            height: 100%;
+            min-height: 100%;
         }
     }
 }

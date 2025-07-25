@@ -37,9 +37,9 @@ section
                     .inner
                         template(v-for="c in columnList")
                             Checkbox(v-model="c.value", style="display: flex;") {{ c.name }}
-            .search-ing-btn(v-if="searchValue && !searchModalOpen")
+            .search-ing-btn(v-if="searchValue && searchValue.length > 0 && searchFor !== 'query'")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
-                svg.svgIcon.reset-btn(@click="resetSearchModal")
+                svg.svgIcon.reset-btn(@click="() => { callParams = {}; resetSearchModal(); }")
                     use(xlink:href="@/assets/img/material-icon.svg#icon-cancel-fill")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-search")
@@ -49,7 +49,7 @@ section
                         svg.svgIcon
                             use(xlink:href="@/assets/img/material-icon.svg#icon-search")
                     template(v-slot:tip) Search
-            button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray(@click="refresh" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         svg.svgIcon
@@ -150,6 +150,10 @@ section
 
 // modal :: search
 Modal.search-modal(:open="searchModalOpen")
+    .modal-close
+        button.btn-close(type="button" @click="resetSearchModal")
+            svg.svgIcon
+                use(xlink:href="@/assets/img/material-icon.svg#icon-close")
     .top
         #showSearchFor.search-for
             svg.svgIcon
@@ -162,7 +166,7 @@ Modal.search-modal(:open="searchModalOpen")
         .flex-wrap.center(style="margin-bottom: 2rem")
             button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value;") {{ option.option }}
         .key-desc.flex-wrap.center
-            .key
+            .key(v-if="searchFor !== 'query'")
                 span.name enter
                 span.action search
             .key
@@ -352,85 +356,54 @@ const getSearchPlaceholder = () => {
     }
 };
 
-// 키보드 이벤트 핸들러
+// 키보드 이벤트
 const handleSearchKeydown = (e) => {
-    if (e.key === "Enter" && searchFor.value !== "query") {
+    if (e.key === "Enter") {
         e.preventDefault();
         performSearch();
     } else if (e.key === "Escape") {
-        closeSearchModal();
+        callParams = {};
+        resetSearchModal();
     }
 };
 
-// SearchBox에서 submit 이벤트를 받는 핸들러
+// SearchBox에서 submit 이벤트 받음
 const handleSearchBoxSubmit = async (formElement) => {
     try {
-        await callSearch(formElement); // 기존 callSearch 함수 활용
-        closeSearchModal();
+        await callSearch(formElement);
+        resetSearchModal();
     } catch (error) {
         console.error("Search error:", error);
     }
 };
 
-// 간단 검색 실행 (Record ID, Unique ID)
+// 검색 실행
 const performSearch = async () => {
+    // Query 검색은 SearchBox 컴포넌트에서 처리
     if (searchFor.value === "query") {
-        // Query 검색은 SearchBox 컴포넌트에서 처리
         return;
     }
-
-    if (!searchValue.value.trim()) {
-        alert(`Please enter a ${searchFor.value.replace("_", " ")}`);
-        return;
-    }
-
-    // 가상의 form 엘리먼트 생성하여 기존 callSearch 함수 활용
-    const mockFormData = new FormData();
-    mockFormData.append("service", currentService.id);
-    mockFormData.append("owner", currentService.owner);
-    mockFormData.append(searchFor.value, searchValue.value.trim());
-
-    const mockForm = {
-        elements: {},
-        // FormData를 시뮬레이션
-        querySelector: () => null,
-        querySelectorAll: () => [],
-    };
-
-    // skapi.util.extractFormData가 올바르게 동작하도록 mock form 설정
-    Object.defineProperty(mockForm, "elements", {
-        value: {
-            [searchFor.value]: { value: searchValue.value.trim() },
-            service: { value: currentService.id },
-            owner: { value: currentService.owner },
-        },
-    });
 
     try {
-        await callSearch(mockForm);
-        closeSearchModal();
+        if (searchFor.value === "record_id") {
+            callParams = {
+                record_id: searchValue.value.trim(),
+            };
+        } else if (searchFor.value === "unique_id") {
+            callParams = {
+                unique_id: searchValue.value.trim(),
+            };
+        }
+
+        await setUpNewPageList();
+        searchModalOpen.value = false;
+        searchFor.value = "record_id";
+        currentPage.value = 1;
+        getPage(true);
     } catch (error) {
         console.error("Search error:", error);
         alert("Search failed. Please try again.");
     }
-};
-
-// 검색 초기화
-const resetSearch = () => {
-    searchValue.value = "";
-    // SearchBox 내부의 리셋은 SearchBox 컴포넌트에서 처리하도록 이벤트 발생
-    if (searchFor.value === "query") {
-        const searchBoxElement = document.querySelector(".search-wrap form");
-        if (searchBoxElement) {
-            searchBoxElement.reset();
-        }
-    }
-};
-
-// 모달 닫기
-const closeSearchModal = () => {
-    searchModalOpen.value = false;
-    resetSearch();
 };
 
 // searchFor 변경 시 input 스타일 조정
@@ -446,12 +419,15 @@ watch(
                     return;
                 }
 
-                const gcr = showSearchFor.getBoundingClientRect().width;
-
+                const gcr = showSearchFor.getBoundingClientRect().width || 114;
                 inputElement.style.paddingLeft = `${gcr + 8}px`;
-                inputElement.focus();
-                // if (newValue !== "query") {
-                // }
+
+                if (n !== "query") {
+                    inputElement.focus();
+                    inputElement.style.pointerEvents = "auto";
+                } else {
+                    inputElement.style.pointerEvents = "none";
+                }
             });
         }
 
@@ -462,7 +438,6 @@ watch(
     { immediate: true }
 );
 
-// ESC 키로 모달 닫기 (전역 이벤트)
 onMounted(() => {
     document.addEventListener("keydown", handleSearchModal);
 });
@@ -471,37 +446,52 @@ onUnmounted(() => {
     document.removeEventListener("keydown", handleSearchModal);
 });
 
-function handleSearchModal(e: KeyboardEvent) {
+const handleSearchModal = (e: KeyboardEvent) => {
     if (!searchModalOpen.value) return;
 
     if (e.key === "Escape") {
+        callParams = {};
         resetSearchModal();
     }
 
     if (e.key === "Enter") {
         e.preventDefault();
+        performSearch();
 
-        // input 유효성 검사
-        const inputEl = document.querySelector(
-            "#searchInput"
-        ) as HTMLInputElement;
-        if (inputEl && !inputEl.checkValidity()) {
-            inputEl.reportValidity(); // 브라우저 기본 alert
-            return; // 검색 실행하지 않음
+        // Query 검색이 아닌 경우에만 간단 검색 실행 (Query 검색 경우 SearchBox 내부에서 처리)
+        if (searchFor.value !== "query") {
+            performSearch();
         }
-
-        searchModalOpen.value = false;
-        getPage(true);
     }
-}
+};
 
-function resetSearchModal() {
+// 검색 초기화
+const resetSearchModal = () => {
     searchModalOpen.value = false;
     searchFor.value = "record_id";
-    searchValue.value = "";
     currentPage.value = 1;
+    searchValue.value = "";
     getPage(true);
-}
+};
+
+// 새로고침
+const refresh = () => {
+    if (fetching.value) return;
+    fetching.value = true;
+    callParams = {};
+
+    // reset pager
+    serviceRecords[currentService.id] = null;
+    endOfList.value = false;
+    currentPage.value = 1;
+    maxPage.value = 0;
+
+    // reinitialize
+    setUpNewPageList().then(() => {
+        getPage(true);
+        fetching.value = false;
+    });
+};
 
 let countMyFiles = (rc: any) => {
     let count = 0;
@@ -524,19 +514,6 @@ watch(currentPage, (n, o) => {
         currentPage.value = o;
     }
 });
-
-// watch(showDetail, (nv) => {
-//     if (nv) {
-//         nextTick(() => {
-//             let scrollTarget = document.querySelector(".detailRecord .content");
-//             let detailRecord = document.querySelector(".detailRecord");
-//             let targetTop =
-//                 window.scrollY + detailRecord.getBoundingClientRect().top;
-//             scrollTarget.scrollTop = 0;
-//             window.scrollTo(0, targetTop);
-//         });
-//     }
-// });
 
 let pager: Pager = null;
 let listDisplay = ref(null);
@@ -599,15 +576,16 @@ let setUpNewPageList = async () => {
         sortBy: callParams?.index?.name || "record_id",
         order:
             callParams?.index?.name &&
-                (callParams?.index?.condition || "").includes("<")
+            (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                    ? "asc"
-                    : "desc",
+                ? "asc"
+                : "desc",
     });
 };
 
 let getPage = async (refresh?: boolean) => {
+    console.log("== getPage실행 ==");
     pager = serviceRecords[currentService.id];
     if (!refresh) {
         if (maxPage.value >= currentPage.value || endOfList.value) {
@@ -794,6 +772,7 @@ let copyID = (e) => {
 // checks
 let checked: any = ref({});
 
+// close record detail modal
 const closeModal = () => {
     showDetail.value = false;
     selectedRecord.value = null;
@@ -942,7 +921,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -953,6 +932,8 @@ tbody {
             position: relative;
             color: var(--main-color);
             font-weight: 500;
+            height: 1.875rem;
+            line-height: 1.875rem;
 
             &::after {
                 position: absolute;
@@ -983,19 +964,7 @@ tbody {
     }
 }
 
-// // new style (추후 삭제될 수도 있음)
-// .infoBox {
-//     .titleHead {
-//         margin: 0 0 1.375rem;
-//         padding-bottom: 1.375rem;
-//         border-bottom: 1px solid rgba(225, 225, 225, 0.1);
-
-//         >* {
-//             margin: 0;
-//         }
-//     }
-// }
-
+// new style (추후 삭제될 수도 있음)
 label._checkbox svg {
     margin-right: 0;
 }
@@ -1036,6 +1005,32 @@ label._checkbox svg {
         width: 1.125rem;
         height: 1.125rem;
         fill: #fff;
+    }
+}
+
+.search-modal {
+    .search-wrap {
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-close {
+        z-index: 9999;
+        position: relative;
+        left: initial;
+        bottom: initial;
+        top: 0;
+        right: 0;
+        margin-bottom: 0.5rem;
+        margin-left: auto;
+
+        .btn-close {
+            padding: 0;
+            background: transparent;
+            height: 100%;
+            min-height: 100%;
+        }
     }
 }
 </style>
