@@ -37,9 +37,9 @@ section
                     @click.stop,
                     style="--moreVert-left: 0; display: none; font-weight: normal;"
                     )
-                    .inner(style="padding: 0.5rem;")
+                    .inner
                         template(v-for="c in columnList")
-                            Checkbox(v-model="c.value", style="display: flex;") {{ c.name }}
+                            Checkbox(v-model="c.value") {{ c.name }}
             button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
@@ -424,18 +424,6 @@ textarea::placeholder {
     margin-left: 8px;
     cursor: pointer;
     box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
-}
-
-.moreVert {
-    .inner {
-        padding-top: 0.25rem;
-
-        &>* {
-            padding: 0.25rem 0.5rem;
-        }
-
-        padding-bottom: 0.25rem;
-    }
 }
 
 #searchForm {

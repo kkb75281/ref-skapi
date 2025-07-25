@@ -747,7 +747,7 @@ img.symbol.mobile {
         .dropdown-menu {
             display: block;
             text-align: left;
-            padding: 0.625rem 0 1.25rem;
+            padding: 0.625rem 0 .8125rem;
 
             .dropdown-list {
                 display: flex;
