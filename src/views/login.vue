@@ -183,22 +183,6 @@ form {
     }
 }
 
-// .passwordInput {
-//     position: relative;
-
-//     .passwordIcon {
-//         position: absolute;
-//         right: 15px;
-//         bottom: 10px;
-//         opacity: 0.5;
-//         cursor: pointer;
-//     }
-// }
-
-input {
-    border: 1px solid rgba(225, 225, 225, 0.2);
-}
-
 .btn-signup {
     display: inline-block;
     margin-left: 0.5rem;

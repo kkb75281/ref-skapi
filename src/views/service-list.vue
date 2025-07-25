@@ -1,5 +1,5 @@
 <template lang="pug">
-div(v-if="fetchingServiceList" style="display: flex; justify-content: center; align-items: center; padding-top: 3rem;")
+div.loading-wrap(v-if="fetchingServiceList")
 	.loader(style="--loader-color:white; --loader-size:12px")
 .first-service(v-else-if="isFirstService && !fetchingServiceList")
 	modalCreateService(:visible="true")
@@ -610,6 +610,17 @@ a {
         width: var(--loader-size);
         height: var(--loader-size);
     }
+}
+
+.loading-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 3rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -155%);
 }
 
 @media (max-width: 1080px) {

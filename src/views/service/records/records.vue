@@ -159,7 +159,7 @@ Modal.search-modal(:open="searchModalOpen")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-search")
             span {{ searchFor + ' /' }}
-        input#searchInput.block(type="text" v-model="searchValue" @keydown="handleSearchKeydown" :placeholder="getSearchPlaceholder()")
+        input#searchInput.block(type="text" spellcheck="false" v-model="searchValue" @keydown="handleSearchKeydown" :placeholder="getSearchPlaceholder()")
     
     .bottom
         .tit Search for
