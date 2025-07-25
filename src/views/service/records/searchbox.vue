@@ -3,157 +3,129 @@ form#searchForm(@submit.prevent="callSearch")
     .inner
         input(hidden name='service' :value='currentService.id')
         input(hidden name='owner' :value='currentService.owner')
-        
-        .content
-            .row
-                .key Table
 
+        .content 
+            .tit Table
             .row
-                .key.txt-sm Access Group
-                .key(style="width: 10rem")
-                    select(v-model='accessGroup' style='width: 100%;')
+                .key Access Group
+                .value
+                    select.fix(v-model='accessGroup')
                         option(selected value='public') Public
                         option(value='auth') Access Group
                         option(value='private') Private
-                        
-                .value(v-if='accessGroup === "auth"')
-                    input.line(required placeholder="1 ~ 99" value='1' type='number' name='table[access_group]')
 
-                template(v-else)
-                    input.line(hidden v-if='accessGroup === "public"' placeholder="1 ~ 99" value='public' name='table[access_group]')
-                    input.line(hidden v-else-if='accessGroup === "Private"' value='Private' name='table[access_group]')
-
+                    input(v-if='accessGroup === "public"' value='public' name='table[access_group]' disabled)
+                    input(v-else-if='accessGroup === "auth"' placeholder="1 ~ 99" value='1' type='number' name='table[access_group]' required)
+                    input(v-else-if='accessGroup === "private"' value='private' name='table[access_group]' disabled)
             .row
-                .key.txt-sm Table Name
+                .key Name
                 .value
-                    input.line(placeholder="Table.Name" name='table[name]' v-model='tableName')
-            
-
-            .row.line(:class="{'nonClickable': !tableName}")
-                .key.txt-sm Subscription
+                    input(placeholder="Table.Name" name='table[name]' v-model='tableName')
+            .row.line(:class="{'disabled': !tableName}")
+                .key Subscription
                 .value
-                    input.line(placeholder="xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" name='table[subscription]')
+                    input(placeholder="xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" name='table[subscription]' :disabled="!tableName")
 
-            .row
-                .key Index
-
-            .row(:class="{'nonClickable': !tableName}")
-                .key.txt-sm Search By
-                .value
-                    select(v-model='searchIndex')
-                        option(selected value='name') By Index Name
-                        option(value='$updated') By Updated Timestamp
-                        option(value='$uploaded') By Uploaded Timestamp
-                        option(value='$referenced_count') By Referenced Count
-                        option(value='$user_id') By User ID
-
-            .row(v-if='searchIndex == "name"' :class="{'nonClickable': !tableName}")
-                .key.txt-sm Index Name
-                .value
-                    input.line(name='index[name]' placeholder='Alphanumeric, periods only.')
-            
-            input(v-else name='index[name]' hidden :value='searchIndex')
-
-            template(v-if='searchIndex == "name"')
-                .row(:class="{'nonClickable': !tableName}")
-                    .key.txt-sm Value
+            div(:class="{'disabled': !tableName}")
+                .tit Index
+                .row
+                    .key Search By
                     .value
-                        select(v-model='searchIndexType' style="width: 10rem;")
-                            option(value='string' selected) String
-                            option(value='number') Number
-                            option(value='boolean') Boolean
+                        select(v-model='searchIndex' :disabled="!tableName")
+                            option(selected value='name') By Index Name
+                            option(value='$updated') By Updated Timestamp
+                            option(value='$uploaded') By Uploaded Timestamp
+                            option(value='$referenced_count') By Referenced Count
+                            option(value='$user_id') By User ID
+                .row
+                    .key Name
+                    .value
+                        input(v-if='searchIndex == "name"' name='index[name]' placeholder='Alphanumeric, periods only.' :disabled="!tableName")
+                        input(v-else name='index[name]' :value='searchIndex' :disabled="!tableName || searchIndex !== 'name'")
+                
+                .row(:class="{line: searchIndex === '$user_id'}")
+                    .key Value
+                    .value
+                        template(v-if='searchIndex == "name"')
+                            select.fix(v-model='searchIndexType' :disabled="!tableName")
+                                option(value='string' selected) String
+                                option(value='number') Number
+                                option(value='boolean') Boolean
 
-                        input.line(
-                            v-if="searchIndexType !== 'boolean'"
+                            input(v-if="searchIndexType !== 'boolean'"
                                 name='index[value]'
+                                :disabled="!tableName"
                                 :type='searchIndexType' :placeholder='searchIndexType === "string" ? "Alphanumeric, space only." : searchIndexType === "number" ? "Number value" : "Boolean value"'
-                                style="flex-grow:30; width:unset; vertical-align:middle;")
-                        
-                        template(v-else)
-                            label(style='width:unset;display: flex;align-items: center;')
-                                input(type='radio' name='index[value]' value='true' checked style='margin:0;width:unset;')
-                                | &nbsp;True
-                            label(style='width:unset;display: flex;align-items: center;')
-                                input(type='radio' name='index[value]' value='false' style='margin:0;width:unset;')
-                                | &nbsp;False
+                            )
 
-                .row.line(v-if='searchIndexType !== "boolean"' :class="{'nonClickable': !tableName}")
-                    .key.txt-sm Condition
-                    .value
-                        select(v-model='searchIndexCondition' style="width: 10rem;")
-                            option(value='=' selected) =
-                            option(value='>=') Greater or =
-                            option(value='>') Greater
-                            option(value='<=') Less or =
-                            option(value='<') Less
-                            option(value='range') Range
-
-                        input(v-if='searchIndexCondition !== "range"' hidden :value='searchIndexCondition' name='index[condition]')
-                        template(v-else)
-                            input.line(
-                                name='index[range]'
-                                :type='searchIndexType' :placeholder='searchIndexType === "string" ? "Alphanumeric, space only." : searchIndexType === "number" ? "Number value" : "Boolean value"'
-                                style="flex-grow:30; width:unset; vertical-align:middle;")
-
-            template(v-else-if='searchIndex == "$user_id"')
-                .row(:class="{'nonClickable': !tableName}")
-                    .key.txt-sm Value
-                    .value
-                        input.line(
+                            .flex-wrap.toggle-wrap(v-else style="flex-grow:1;")
+                                input(hidden type='radio' name='index[value]' :value="booleanToggle" :disabled="!tableName")
+                                Toggle(
+                                    :disabled="!tableName"
+                                    :active="booleanToggle"
+                                    @click="booleanToggle = !booleanToggle"
+                                )
+                        template(v-else-if='searchIndex == "$user_id"')
+                            input(
                             name='index[value]'
                             type='string' placeholder='xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
                             required
                             pattern='[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
                             title='Invalid user\'s ID'
-                            style="flex-grow:30; width:unset; vertical-align:middle;")
-
-            template(v-else)
-                .row(:class="{'nonClickable': !tableName}")
-                    .key.txt-sm Value
-                    .value
-                        input.line(
+                            :disabled="!tableName"
+                        )
+                        template(v-else)
+                            input(
                                 name='index[value]'
                                 type='number' :placeholder='searchIndex == "$referenced_count" ? "Number of references" : "1234567890123"'
-                                required
-                                style="flex-grow:30; width:unset; vertical-align:middle;")
+                                :disabled="!tableName"
+                                required)
 
-                .row.line(:class="{'nonClickable': !tableName}")
-                    .key.txt-sm Condition
+                .row.line(v-if='searchIndex !== "$user_id"')
+                    .key Condition
                     .value
-                        select(v-model='searchIndexCondition' name='index[condition]' style="width: 10rem;")
-                            option(value='=' selected) =
-                            option(value='>=') Greater or =
-                            option(value='>') Greater
-                            option(value='<=') Less or =
-                            option(value='<') Less
-                            option(value='range') Range
+                        template(v-if='searchIndex == "name"')
+                            select#selectCondition(v-model='searchIndexCondition' :disabled="!tableName")
+                                option(value='=' selected) =
+                                option(value='>=') Greater or =
+                                option(value='>') Greater
+                                option(value='<=') Less or =
+                                option(value='<') Less
+                                option(value='range') Range
 
-                        input(v-if='searchIndexCondition !== "range"' hidden :value='searchIndexCondition' name='index[condition]')
+                            input(v-if='searchIndexCondition !== "range"' hidden :value='searchIndexCondition' name='index[condition]' :disabled="!tableName")
+                            input(v-else name='index[range]' :type='searchIndexType' :placeholder='searchIndexType === "string" ? "Alphanumeric, space only." : searchIndexType === "number" ? "Number value" : "Boolean value"' :disabled="!tableName")
                         template(v-else)
-                            input.line(
-                                name='index[range]'
-                                type='name' :placeholder='searchIndex == "$referenced_count" ? "Number of references" : "1234567890123"'
-                                required
-                                style="flex-grow:30; width:unset; vertical-align:middle;")
+                            select#selectCondition(v-model="searchIndexCondition" :disabled="!tableName")
+                                option(value='=' selected) =
+                                option(value='>=') Greater or =
+                                option(value='>') Greater
+                                option(value='<=') Less or =
+                                option(value='<') Less
+                                option(value='range') Range
 
-            .row.line(:class="{'nonClickable': !tableName}")
-                    .key Reference
+                            input(v-if='searchIndexCondition !== "range"' hidden :value='searchIndexCondition' name='index[condition]' :disabled="!tableName")
+                            input(v-else name='index[range]' type='name' :placeholder='searchIndex == "$referenced_count" ? "Number of references" : "1234567890123"' required :disabled="!tableName")
+
+                .tit Reference
+                .row.line
+                    .key
                     .value
-                        input.line(placeholder="xxxxxxxxxxxxxxxx" name='reference')
+                        input(placeholder="Unique_id or Record_id or User_id" name='reference' :disabled="!tableName")
 
-            .row(:class="{'nonClickable': !tableName}")
-                .key Tag
-                .value
-                    input.line(name='tag' placeholder="Tag name. Alphanumeric and space only.")
-
-            //- div(style='text-align:right')
-                button.btn.final.wideOnMobile(type="submit") Search
+                .tit Tag
+                .row
+                    .key 
+                    .value
+                        input(name='tag' placeholder="Tag name. Alphanumeric and space only." :disabled="!tableName")
 
 </template>
 
 <script setup lang="ts">
 import { currentService } from "@/views/service/main";
-import { ref, reactive } from "vue";
+import { ref, reactive, watch, nextTick } from "vue";
+
+import Toggle from "@/components/toggle.vue";
 
 // let { callSearch } = defineProps({
 //     callSearch: Function,
@@ -164,6 +136,7 @@ let searchIndex = ref("name");
 let searchIndexCondition = ref("=");
 let searchIndexType = ref("string");
 let accessGroup = ref("public");
+let booleanToggle = ref(true);
 
 const props = defineProps({
     callSearch: Function,
@@ -172,16 +145,32 @@ const props = defineProps({
         default: false,
     },
 });
+
+watch(searchIndexCondition, (nv) => {
+    let select = document.getElementById("selectCondition");
+    if (!select) return;
+
+    if (nv === "range") {
+        console.log(select);
+        nextTick(() => {
+            select.classList.add("fix");
+        })
+    } else {
+        nextTick(() => {
+            select.classList.remove("fix");
+        })
+    }
+})
 </script>
 
 <style scoped lang="less">
 #searchForm {
-    .inner {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 8px;
-    }
+    // .inner {
+    //     display: flex;
+    //     flex-wrap: wrap;
+    //     align-items: center;
+    //     gap: 8px;
+    // }
 
     .search {
         position: relative;
@@ -296,68 +285,55 @@ const props = defineProps({
 }
 
 .content {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 20px;
-    font-size: 0.8rem;
+    padding: 0;
+    text-align: center;
+
+    .disabled {
+        cursor: default;
+        pointer-events: none;
+
+        .key {
+            opacity: 0.5;
+        }
+    }
 
     .row {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        margin-bottom: 12px;
-
-        &.indent {
-            // padding-left: 20px;
-
-            .key {
-                font-weight: normal;
-                width: 150px;
-            }
-        }
-    }
-
-    .key {
-        font-weight: 500;
-        width: 170px;
-    }
-
-    .value {
-        flex-grow: 1;
-        min-width: 270px;
-        margin: 6px 0 6px;
-
-        input {
-            width: 100%;
-        }
-    }
-}
-
-// new style
-.content {
-    font-size: 1rem;
-    width: 100%;
-    padding: 0;
-    overflow: visible;
-
-    .value {
-        margin: 0;
-    }
-
-    .row {
-        text-align: left;
+        justify-content: space-between;
+        gap: .625rem;
         margin-bottom: 1.5rem;
-
-        .value {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.625rem;
-        }
 
         &.line {
             border-bottom: 1px solid rgba(225, 225, 225, 0.1);
             padding-bottom: 1.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .key {
+            width: 150px;
+            width: 100%;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .value {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .625rem;
+            flex-grow: 1;
+
+            input,
+            select {
+                flex-grow: 1;
+            }
+
+            .fix {
+                flex-grow: unset;
+                width: 180px;
+            }
         }
     }
 }
