@@ -17,17 +17,21 @@ label._checkbox(:class="{'nonClickable' : disabled}" :style='{opacity: disabled 
         slot
 </template>
 <script setup>
-import { ref, onMounted, useSlots, watch } from 'vue';
-let { disabled, modelValue = ref(false), name } = defineProps({
+import { ref, onMounted, useSlots, watch } from "vue";
+let {
+    disabled,
+    modelValue = ref(false),
+    name,
+} = defineProps({
     disabled: Boolean,
     modelValue: {
         type: Boolean,
-        default: false
+        default: false,
     },
-    name: String
+    name: String,
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(["update:modelValue"]);
 const slots = useSlots();
 let hasSlotContent = ref(false);
 onMounted(() => {
@@ -43,24 +47,26 @@ label._checkbox {
     cursor: pointer;
     user-select: none;
 
-    &>div {
+    & > div {
         // font-size: 0.8rem;
         font-size: 1rem;
         font-weight: 300;
         white-space: nowrap;
     }
 
-    span+div:not(:empty) {
+    span + div:not(:empty) {
         margin-left: 4px;
     }
 
-    input:checked+* {
+    input:checked + * {
         // color: var(--main-color);
         color: inherit;
     }
 
     svg {
         margin-right: 4px;
+        width: 22px;
+        height: 22px;
     }
 }
 
@@ -68,7 +74,7 @@ label._checkbox {
     label._checkbox {
         align-items: unset;
 
-        &>div {
+        & > div {
             white-space: wrap;
             margin-top: 4px;
         }

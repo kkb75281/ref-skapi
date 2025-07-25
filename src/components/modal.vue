@@ -331,7 +331,7 @@ dialog {
         max-height: calc(100% - 1rem);
         width: calc(100% - 1rem);
         height: fit-content;
-        border-radius: 0;
+        // border-radius: 0;
         padding: 4rem 1.5rem;
     }
 }

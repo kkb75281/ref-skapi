@@ -252,7 +252,7 @@ Modal.search-modal(:open="searchModalOpen")
                 input#searchInput.block(type="text" spellcheck="false" placeholder="Gender" v-model="searchValue" name="gender")
     .bottom
         .tit Search for
-        .flex-wrap.center(style="margin-bottom: 1.2rem")
+        .flex-wrap.center(style="margin-bottom: 1.5rem")
             button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value;") {{ option.option }}
         .key-desc.flex-wrap.center
             .key

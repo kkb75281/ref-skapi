@@ -510,6 +510,7 @@ a {
                 font-size: 0.75rem;
                 font-weight: 500;
                 color: #000;
+                letter-spacing: -0.7px;
 
                 &.trial {
                     background-color: #3c94ff;

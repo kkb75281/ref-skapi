@@ -2,15 +2,7 @@
 template(v-if="visible")
     .modal-overlay(:class="{ 'first-service': isFirstService }" @click="handleClose")
     .modal-wrap
-        .modal-content(@click.stop)
-            //- .btn-prev(v-if="step > 1")
-            //-     svg.svgIcon(@click="step--")
-            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back-ios")
-
-            //- .btn-close(@click="handleClose" :style="isFirstService ? {display: 'none'} : {}")
-            //-     svg.svgIcon
-            //-         use(xlink:href="@/assets/img/material-icon.svg#icon-close")
-                    
+        .modal-content(@click.stop)                    
             #create
                 .btn-prev(v-if="step > 1")
                     svg.svgIcon(@click="step--")
@@ -43,7 +35,7 @@ template(v-if="visible")
                         span Create
 
                 .step-plan(v-else-if="step === 2")
-                    h3.title(style="padding-top:3rem; padding-bottom:1rem") Choose a plan
+                    h3.title(style="margin: 4.5rem 0 2rem;") Choose a plan
                     .plan-wrap
                         .plan-item.blue(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
                             svg.mark
@@ -663,7 +655,7 @@ const handleClose = () => {
 .modal-content {
     width: calc(100% - 1rem);
     max-width: 75rem;
-    max-height: calc(100% - 4rem);
+    max-height: calc(100% - 1rem);
     overflow-y: auto;
     z-index: 999999;
     text-align: center;
@@ -689,20 +681,6 @@ const handleClose = () => {
         margin-bottom: 3.125rem;
         display: block;
     }
-
-    // &::-webkit-scrollbar {
-    //     width: .375rem;
-    //     height: .375rem;
-    // }
-
-    // &::-webkit-scrollbar-thumb {
-    //     background: rgba(255, 255, 255, 0.5);
-    //     border-radius: 12px 12px 12px 12px;
-    // }
-
-    // &::-webkit-scrollbar-track {
-    //     background: transparent;
-    // }
 }
 
 #create {
@@ -782,7 +760,7 @@ const handleClose = () => {
     .plan-wrap {
         flex-direction: column;
         align-items: center;
-        padding: 4rem;
+        padding: 0 4rem 4rem;
 
         .plan-item {
             width: 20.375rem;
@@ -798,7 +776,7 @@ const handleClose = () => {
     }
 
     .plan-wrap {
-        padding: 4.5rem 2rem;
+        padding: 0 2rem 2rem;
     }
 }
 
