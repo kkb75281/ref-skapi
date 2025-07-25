@@ -1009,7 +1009,7 @@ label._checkbox svg {
 }
 
 .search-modal {
-    .bottom {
+    .search-wrap {
         margin-bottom: 0;
     }
 }
