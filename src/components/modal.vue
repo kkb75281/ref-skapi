@@ -259,6 +259,7 @@ dialog {
             top: 50%;
             transform: translateY(-50%);
             color: #666;
+            z-index: 2;
 
             svg {
                 fill: #666;
