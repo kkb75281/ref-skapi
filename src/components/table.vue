@@ -235,7 +235,7 @@ let setResize = async () => {
 </script>
 
 <style lang="less">
-.customTbl.resizable>thead>tr>th>.resizer {
+.customTbl.resizable > thead > tr > th > .resizer {
     cursor: col-resize;
 }
 
@@ -247,8 +247,8 @@ let setResize = async () => {
     border-radius: 10px;
 
     &::-webkit-scrollbar {
-        width: 0.375rem;
-        height: 0.375rem;
+        width: 0.25rem;
+        height: 0.25rem;
     }
 
     &::-webkit-scrollbar-thumb {
@@ -283,7 +283,7 @@ let setResize = async () => {
     }
 
     &.empty {
-        &~.customTbl {
+        & ~ .customTbl {
             tbody {
                 tr {
                     pointer-events: none;
@@ -306,7 +306,6 @@ let setResize = async () => {
     &.resizable {
         thead {
             th {
-
                 &.hovered,
                 &:hover {
                     .resizer {
@@ -393,9 +392,11 @@ let setResize = async () => {
             &.nohover,
             &.fixed {
                 &:hover {
-                    background: linear-gradient(0deg,
+                    background: linear-gradient(
+                            0deg,
                             rgba(255, 255, 255, 0.03) 0%,
-                            rgba(255, 255, 255, 0.03) 100%),
+                            rgba(255, 255, 255, 0.03) 100%
+                        ),
                         #141315;
 
                     .resizer {
@@ -538,9 +539,11 @@ let setResize = async () => {
             }
 
             &:hover {
-                background: linear-gradient(0deg,
+                background: linear-gradient(
+                        0deg,
                         rgba(255, 255, 255, 0.03) 0%,
-                        rgba(255, 255, 255, 0.03) 100%),
+                        rgba(255, 255, 255, 0.03) 100%
+                    ),
                     #141315;
             }
         }
@@ -555,9 +558,11 @@ let setResize = async () => {
 
             &:hover {
                 cursor: pointer;
-                background: linear-gradient(0deg,
+                background: linear-gradient(
+                        0deg,
                         rgba(255, 255, 255, 0.03) 0%,
-                        rgba(255, 255, 255, 0.03) 100%),
+                        rgba(255, 255, 255, 0.03) 100%
+                    ),
                     #141315;
 
                 td {
@@ -575,9 +580,11 @@ let setResize = async () => {
 
                 &::before,
                 &::after {
-                    background: linear-gradient(0deg,
+                    background: linear-gradient(
+                            0deg,
                             rgba(255, 255, 255, 0.03) 0%,
-                            rgba(255, 255, 255, 0.03) 100%),
+                            rgba(255, 255, 255, 0.03) 100%
+                        ),
                         #141315;
                     border-top: 1px solid rgba(255, 255, 255, 0.1);
                     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -617,7 +624,7 @@ let setResize = async () => {
         cursor: default;
         height: fit-content;
 
-        ~tr {
+        ~ tr {
             &:hover {
                 cursor: default;
                 background: transparent;
@@ -638,7 +645,7 @@ let setResize = async () => {
             cursor: default;
             background: transparent;
 
-            ~tr {
+            ~ tr {
                 pointer-events: none;
 
                 &:hover {
