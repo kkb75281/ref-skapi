@@ -32,6 +32,7 @@ main#confirmation
 
         br
         br
+        br
         
         .flex-wrap.end
             button.inline.gray.btn-cancel(type="submit" :class="{disabled: !iUnderstand, red: iUnderstand}" @click='deleteService()') Delete Service
@@ -110,7 +111,7 @@ ul {
 
 @media (max-width: 430px) {
     #confirmation {
-        padding: 30px 20px 40px;
+        padding: 30px 20px 60px;
     }
 }
 </style>

@@ -63,7 +63,9 @@ onUnmounted(() => {
 </script>
 
 <style lang="less">
-dialog {
+dialog,
+.dialog {
+    position: relative;
     border-radius: 16px;
     border: 1px solid rgba(0, 0, 0, 0.2);
     outline: none;
@@ -146,6 +148,18 @@ dialog {
 
         &.end {
             justify-content: flex-end;
+        }
+    }
+
+    @media (max-width: 430px) {
+        .modal-btns {
+            flex-direction: column-reverse;
+            align-items: center;
+            gap: 0.5rem;
+
+            button {
+                width: 100%;
+            }
         }
     }
 }

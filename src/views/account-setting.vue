@@ -7,10 +7,6 @@
 
     hr
 
-    //- .page-desc Edit your account details down below.
-
-    br
-
     .card-wrap
         .card
             .flex-wrap.space-between
@@ -149,8 +145,7 @@ watch(emailSubscribed, async (n, o) => {
 .account-setting {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 10px;
-    padding-top: 3rem;
+    padding: 3rem 10px 1rem;
     width: 100%;
 }
 
@@ -158,7 +153,7 @@ watch(emailSubscribed, async (n, o) => {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    margin-bottom: 20px;
+    padding: 1rem 0;
 
     .card {
         position: relative;

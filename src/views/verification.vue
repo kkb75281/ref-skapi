@@ -1,28 +1,25 @@
 <template lang="pug">
-br
-br
-br
-
 #verify
     template(v-if="step == 1")
         router-link(to="/")
-            img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px;")
+            img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px; margin-bottom: .625rem")
 
-        .bottomLineTitle Email Verification
+        .page-title Email Verification
+
     template(v-else)
-        //- .material-symbols-outlined.notranslate.fill(style="font-size:50px;color:rgba(90, 216, 88, 1);") check_circle
-        svg.svgIcon(style="fill: rgba(90, 216, 88, 1); height: 50px; width: 50px")
+        svg.svgIcon(style="height: 50px; width: 50px; margin-bottom: .625rem")
             use(xlink:href="@/assets/img/material-icon.svg#icon-check-circle")
-        .bottomLineTitle Success
+        .page-title Success
+
+    hr
 
     template(v-if="step === 1")
         form(@submit="verifyEmail")
-            p Verification code has been sent to #[b {{skapi.user.email}}]
-            p Please check your email and enter the code.
+            .page-desc Verification code has been sent to #[b {{skapi.user.email}}]. #[br]Please check your email and enter the code.
 
             label
                 | Code
-                input.big(
+                input.block(
                 type="text"
                 @input="(e) => { error = ''; }"
                 name='code'
@@ -39,7 +36,6 @@ br
             br
 
             .error(v-if="error") 
-                //- .material-symbols-outlined.notranslate.mid error
                 svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-error")
                 span {{ error }}
@@ -48,23 +44,19 @@ br
 
             .bottom
                 div(v-if="promiseRunning" style="width:100%; text-align:center")
-                    .loader(style="--loader-color:blue; --loader-size:12px")
+                    .loader(style="--loader-color:white; --loader-size:12px")
                 template(v-else)
                     router-link(to='/account-setting') Back
-                    button.final(type="submit") Submit
+                    button.inline(type="submit") Submit
 
     template(v-else-if="step === 2")
-        p #[b {{ skapi.user.email }}] has been successfully verified.
+        .page-desc #[b {{ skapi.user.email }}] has been successfully verified. #[br]You can now proceed to your account settings.
 
+        br
         br
 
         div(style="text-align:right")
-            button.final(@click="router.push('/account-setting')") Confirm
-
-br
-br
-br
-
+            button.inline(@click="router.push('/account-setting')") Confirm
 </template>
 
 <script setup lang="ts">
@@ -94,22 +86,10 @@ let verifyEmail = e => {
 
 <style scoped lang="less">
 #verify {
-    max-width: 640px;
-    padding: 0 20px;
+    max-width: 480px;
+    padding: 5rem 20px;
     margin: 0 auto;
 }
-
-// .passwordInput {
-//     position: relative;
-
-//     .passwordIcon {
-//         position: absolute;
-//         right: 15px;
-//         bottom: 10px;
-//         opacity: 0.5;
-//         cursor: pointer;
-//     }
-// }
 
 .navigator {
     text-align: center;
