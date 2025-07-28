@@ -141,6 +141,7 @@ onUnmounted(() => {
         text-decoration: none;
         color: #f5f5f5;
         white-space: nowrap;
+        user-select: none;
 
         &.active {
             background: #0d0d0d;

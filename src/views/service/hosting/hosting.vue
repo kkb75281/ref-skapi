@@ -2,7 +2,7 @@
 section.page-header
     .page-title File Hosting
     .flex-wrap
-        button.inline.sm.red.caution.btn-delete(v-if="currentService.service.subdomain" type="button" @click="removeHosting = true") Remove Hosting
+        //- button.inline.sm.red.caution.btn-delete(v-if="currentService.service.subdomain" type="button" @click="removeHosting = true") Remove Hosting
         a.btn-docs(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
             button.inline.icon-text.sm.gray
                 img(src="@/assets/img/landingpage/icon_docs.svg")
@@ -54,6 +54,10 @@ template(v-else)
                         .text
                             span.title Storage in-use
                             span.data {{ currentService.dirInfo?.size ? getFileSize(currentService.dirInfo?.size || 0) : '...' }}
+                        button.only-icon.gray.delete-btn(type="button" @click="removeHosting = true")
+                            .icon
+                                svg
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
 
                 .card
                     .flex-wrap.space-between

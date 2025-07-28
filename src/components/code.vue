@@ -7,8 +7,9 @@
             svg(height="16" width="16" style="margin-left: 5px;")
                 use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")          
         button.inline.icon-text.gray.btn-copy(v-if='cpy_btn' @click="copy")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-copy")            
+            .icon
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-copy")            
             span.copyMsg Copy
     .code
         slot
@@ -53,8 +54,9 @@ let copy = (e) => {
 
     .btn-copy {
         position: absolute;
-        bottom: 22px;
-        right: 28px;
+        // bottom: 22px;
+        bottom: 18px;
+        right: 18px;
         // background-color: #1E1E20;
         // padding: 9px 14px;
         // border: 1px solid rgba(255, 255, 255, 0.1);
@@ -90,6 +92,7 @@ let copy = (e) => {
             font-size: 16px;
             margin: 0;
             padding: 28px 0 52px 32px;
+            // padding: 28px 0 28px 32px;
             min-height: 44px;
         }
     }
