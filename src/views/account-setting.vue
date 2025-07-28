@@ -331,4 +331,5 @@ watch(emailSubscribed, async (n, o) => {
 //             transform: translateY(-50%);
 //         }
 //     }
-// }</style>
+// }
+</style>

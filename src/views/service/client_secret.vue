@@ -126,7 +126,7 @@ Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModa
                     .key Client Secret
                     .value
                         input.block(type="text" v-model="selectedClient.client_secret" placeholder="string1234..." required :disabled='uploading')
-                label.row
+                label.row.locked
                     .key Locked &nbsp;
                         Tooltip(tip-background-color="var(--main-color)" text-color="white")
                             template(v-slot:tool)
@@ -406,7 +406,6 @@ let saveKey = async () => {
 .content {
     flex-grow: 1;
     overflow-y: auto;
-    padding: 20px;
     font-size: 0.8rem;
 
     .value {
@@ -418,7 +417,6 @@ let saveKey = async () => {
 
     .row {
         display: flex;
-        flex-wrap: wrap;
         align-items: center;
         margin-bottom: 1.5rem;
         margin-top: 0;
@@ -535,9 +533,43 @@ table {
     }
 }
 
+.modal-scroll {
+    .key {
+        .svgIcon {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
+    }
+}
+
 @media (pointer: coarse) {
     .hide {
         display: block !important;
+    }
+}
+
+@media (max-width: 430px) {
+    .modal-detailClient {
+        .row {
+            flex-direction: column;
+            align-items: flex-start;
+
+            .key {
+                width: 100%;
+            }
+
+            &.locked {
+                flex-direction: row;
+
+                .key {
+                    width: 6.25rem;
+                }
+            }
+
+            .value {
+                width: 100%;
+            }
+        }
     }
 }
 </style>

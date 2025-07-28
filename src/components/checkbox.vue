@@ -72,11 +72,11 @@ label._checkbox {
 
 @media (max-width: 430px) {
     label._checkbox {
-        align-items: unset;
+        // align-items: unset;
 
         & > div {
-            white-space: wrap;
-            margin-top: 4px;
+            // white-space: wrap;
+            // margin-top: 4px;
         }
     }
 }

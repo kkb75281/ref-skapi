@@ -1,7 +1,7 @@
 <template lang="pug">
 section.page-header
     .page-title Database
-    a.btn-docs(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
+    a.btn-docs(href='https://docs.skapi.com/database/create.html' target="_blank")
         button.inline.icon-text.sm.gray
             img(src="@/assets/img/landingpage/icon_docs.svg")
             | Go Docs
@@ -582,11 +582,11 @@ let setUpNewPageList = async () => {
         sortBy: callParams?.index?.name || "record_id",
         order:
             callParams?.index?.name &&
-                (callParams?.index?.condition || "").includes("<")
+            (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                    ? "asc"
-                    : "desc",
+                ? "asc"
+                : "desc",
     });
 };
 
@@ -620,6 +620,7 @@ let getPage = async (refresh?: boolean) => {
         .catch((err) => {
             alert(err);
             fetching.value = false;
+            listDisplay.value = [];
             throw err;
         });
 
@@ -927,7 +928,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -1036,6 +1037,14 @@ label._checkbox svg {
             background: transparent;
             height: 100%;
             min-height: 100%;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .table-menu-wrap {
+        .search-ing-btn {
+            max-width: 12.75rem;
         }
     }
 }

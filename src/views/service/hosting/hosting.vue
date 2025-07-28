@@ -3,7 +3,7 @@ section.page-header
     .page-title File Hosting
     .flex-wrap
         //- button.inline.sm.red.caution.btn-delete(v-if="currentService.service.subdomain" type="button" @click="removeHosting = true") Remove Hosting
-        a.btn-docs(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
+        a.btn-docs(href='https://docs.skapi.com/hosting/hosting.html' target="_blank")
             button.inline.icon-text.sm.gray
                 img(src="@/assets/img/landingpage/icon_docs.svg")
                 | Go Docs

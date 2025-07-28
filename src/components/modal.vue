@@ -32,12 +32,24 @@ watch(
         if (nv) {
             dialog.value.showModal();
             document.body.style.overflow = "hidden";
+            document.body.style.position = "fixed";
         } else {
             dialog.value.close();
             document.body.style.overflow = "";
+            document.body.style.position = "";
         }
     }
 );
+
+window.addEventListener("focusin", () => {
+    // 키보드 올라올 때
+    document.body.style.height = "100vh";
+});
+
+window.addEventListener("focusout", () => {
+    // 키보드 내려갈 때
+    document.body.style.height = "";
+});
 
 onMounted(() => {
     if (props.open) {
@@ -60,6 +72,7 @@ dialog {
     color: #fff;
     text-align: center;
     padding: 4rem;
+    position: fixed;
 
     &::backdrop {
         background-color: rgba(0, 0, 0, 0.9);
@@ -169,8 +182,8 @@ dialog {
     background-color: #16171a;
     padding: 0 2rem;
     text-align: left;
-    width: calc(100% - 1rem);
-    max-height: calc(100% - 1rem);
+    width: calc(100% - 0.5rem);
+    max-height: calc(100% - 0.5rem);
     max-width: 50rem;
 
     button {
@@ -333,6 +346,10 @@ dialog {
         height: fit-content;
         // border-radius: 0;
         padding: 4rem 1.5rem;
+    }
+
+    .modal-scroll {
+        padding: 0 1rem;
     }
 }
 </style>

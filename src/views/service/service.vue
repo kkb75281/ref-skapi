@@ -9,9 +9,9 @@ section.page-header
                     svg
                         use(xlink:href="@/assets/img/material-icon.svg#icon-change")
                 | Change Plan
-        router-link(v-if="currentService.plan == 'Trial' || currentService.plan == 'Unlimited' || currentService.service.plan == 'Canceled'" :to='"/delete-service/" + currentService.id')
+        router-link(v-if="currentService.plan == 'Trial' || currentService.plan == 'Unlimited' || currentService.service.plan == 'Canceled'" :to='"/delete-service/" + currentService.id' :class="{'nonClickable': currentService.service.active <= 0 || currentService.service.suspended || updatingValue.enableDisable }")
             //- button.inline.sm.gray.caution Delete Service
-            button.inline.icon-text.sm.gray.caution
+            button.inline.icon-text.sm.gray.caution(type="button" )
                 .icon
                     svg
                         use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
@@ -530,6 +530,10 @@ hr {
     .toggle-div {
         margin-bottom: 14px;
     }
+
+    .flex-wrap {
+        gap: 0.5rem;
+    }
 }
 
 .card-wrap {
@@ -556,12 +560,12 @@ hr {
         }
 
         .data {
-            // font-size: 14px;
+            font-size: 14px;
             font-weight: 300;
             max-width: 12.5rem;
 
             @media (max-width: 600px) {
-                font-size: 12px;
+                // font-size: 12px;
             }
         }
 
@@ -571,7 +575,7 @@ hr {
             opacity: 0.6;
 
             @media (max-width: 600px) {
-                font-size: 12px;
+                // font-size: 12px;
             }
         }
 
