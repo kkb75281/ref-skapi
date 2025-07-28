@@ -1,17 +1,11 @@
 <template lang="pug">
-br
-br
-br
-br
-br
-
 #login
     router-link(to="/")
-        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px;")
+        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px; margin-bottom: .625rem")
 
-    .bottomLineTitle Login
+    .page-title Login
 
-    br
+    hr
 
     form(@submit.prevent="login")
         label
@@ -149,7 +143,7 @@ let login = (e) => {
 <style scoped lang="less">
 #login {
     max-width: 480px;
-    padding: 0 20px 2rem;
+    padding: 5rem 20px;
     margin: 0 auto;
     width: 100%;
 }

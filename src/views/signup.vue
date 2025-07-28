@@ -1,19 +1,13 @@
 <template lang="pug">
-br
-br
-br
-
 #signup
     router-link(to="/")
-        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px;")
+        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px; margin-bottom: .625rem")
 
-    .bottomLineTitle Sign Up
+    .page-title Sign Up
 
-    form(@submit.prevent="signup")
-        p Enter your Email and create a password.
+    hr
 
-        br
-        
+    form(@submit.prevent="signup")        
         label
             | Email
             input.block(type="email" 
@@ -82,10 +76,6 @@ br
                 .signup 
                     | Have an account?&nbsp;
                     RouterLink(:to="{name: 'login'}") Login
-        
-br
-br
-br
 </template>
 
 <script setup lang="ts">
@@ -168,7 +158,7 @@ let signup = (e) => {
 <style scoped lang="less">
 #signup {
     max-width: 480px;
-    padding: 0 20px;
+    padding: 5rem 20px;
     margin: 0 auto;
     width: 100%;
 }

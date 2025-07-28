@@ -550,7 +550,7 @@ Modal(:open="openUnblockUser", @close="openUnblockUser = false")
       .loader(style="--loader-color: white; --loader-size: 12px")
     template(v-else)
       button.gray.btn-cancel(type="button" @click="openUnblockUser = false;") Cancel
-      button.btn-unblock(type="button", @click="changeUserApprovalState('unblock')") Unblock
+      button.btn-unblock(type="button" @click="changeUserApprovalState('unblock')") Unblock
 
 //- modal :: block user
 Modal(:open="openBlockUser", @close="openBlockUser = false")
@@ -593,7 +593,7 @@ Modal(:open="openUpgrade", @close="openUpgrade = false")
 Modal.modal-scroll.modal-detailUser(:open="showDetail" @close="closeModalUser")
     form.modal-container(@submit.prevent='upload')
         .modal-header
-            h4.title {{ selectedUser?.name || selectedUser?.email || selectedUser?.user_id }}
+            .title {{ selectedUser?.name || selectedUser?.email || selectedUser?.user_id }}
             button.btn-close(type="button" @click="closeModalUser")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-x")

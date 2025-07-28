@@ -1,27 +1,20 @@
 <template lang="pug">
-br
-br
-br
-br
-br
-
 #forgot
     template(v-if="step < 4")
         router-link(to="/")
-            img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px;")
+            img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px; margin-bottom: .625rem")
 
-        .bottomLineTitle Forgot Password
+        .page-title Forgot Password
     template(v-else)
-        //- .material-symbols-outlined.notranslate.fill(style="font-size:50px;color:rgba(90, 216, 88, 1);") check_circle
-        svg.svgIcon(style="fill: rgba(90, 216, 88, 1); height: 50px; width: 50px")
+        svg.svgIcon(style="height: 50px; width: 50px; margin-bottom: .625rem")
             use(xlink:href="@/assets/img/material-icon.svg#icon-check-circle")
-        .bottomLineTitle Success
+        .page-title Success
+
+    hr
 
     template(v-if="step === 1")
         form(@submit.prevent="forgotPassword")
-            p Please enter your login email address.
-
-            br
+            .page-desc Please enter your login email address.
 
             label
                 | Email
@@ -34,7 +27,6 @@ br
             br
             
             .error(v-if="error")
-                //- .material-symbols-outlined.notranslate.fill error
                 svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-error")
                 span {{ error }}
@@ -50,10 +42,7 @@ br
 
     template(v-else-if="step === 2")
         form(@submit.prevent="step++")
-            p Verification code has been sent to: #[b {{email}}]
-            p Please check your email and enter the code.
-
-            br
+            .page-desc Verification code has been sent to: #[b {{email}}]. #[br]Please check your email and enter the code.
 
             label
                 | Code
@@ -74,7 +63,6 @@ br
             br
 
             .error(v-if="error") 
-                //- .material-symbols-outlined.notranslate.mid error
                 svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-error")
                 span {{ error }}
@@ -87,9 +75,7 @@ br
 
     template(v-else-if="step === 3")
         form(@submit.prevent="changePassword" action="")
-            p Create a new password.
-
-            br
+            .page-desc Create a new password.
 
             label.passwordInput(style="margin-bottom:16px")
                 | New password
@@ -140,22 +126,19 @@ br
                     button.inline(type="submit") Submit
 
     template(v-else-if="step === 4")
-        p Your password has been successfully changed. Please login with the new password.
-        
+        .page-desc Your password has been successfully changed. Please login with the new password.
+
+        br
         br
         
         div(style="text-align:right")
-            button.final(@click="router.replace('/login')") Login
+            button.inline(@click="router.replace('/login')") Login
 
     br
     br
 
     .navigator(v-if="step <= 3")
         .ball(v-for="num in 3" :class="{'active': step === num}")
-br
-br
-br
-
 </template>
 
 <script setup lang="ts">
@@ -245,7 +228,7 @@ let changePassword = async () => {
 <style scoped lang="less">
 #forgot {
     max-width: 480px;
-    padding: 0 20px;
+    padding: 5rem 20px;
     margin: 0 auto;
     width: 100%;
 }

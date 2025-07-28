@@ -110,7 +110,7 @@ let processDelete = async () => {
 
 @media (max-width: 430px) {
     #confirmation {
-        padding: 30px 20px;
+        padding: 30px 20px 50px;
     }
 }
 </style>

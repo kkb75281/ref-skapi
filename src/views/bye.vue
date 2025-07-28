@@ -1,19 +1,16 @@
 <template lang="pug">
-br
-br
-br
-
-#success
+#bye
     router-link(to="/")
-        img(src="@/assets/img/logo/logo.png" style="height: 2em;")
+        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px; margin-bottom: .625rem")
+    
+    .page-title Deleted Complete
 
-    p Your account and all your subscription plan has been disabled.
-    p All your services will no longer be accessible and will be completely removed in 30 days.
-    p You can re-enable your account within 30 days.
+    hr
 
-br
-br
-br
+    .page-desc #[span.wordset Your account and all your subscription plan] #[span.wordset has been disabled.] #[span.wordset All your services will no longer be accessible] #[span.wordset and will be completely removed in 30 days.] #[span.wordset You can re-enable your account within 30 days.]
+
+    div(style="display:block;text-align:center")
+        button.block(@click="router.push('/')") Go Skapi
 </template>
 
 <script setup lang="ts">
@@ -23,9 +20,9 @@ const route = useRoute();
 </script>
 
 <style scoped lang="less">
-#success {
+#bye {
     max-width: 480px;
-    padding: 0 20px;
+    padding: 5rem 20px;
     margin: 0 auto;
 }
 </style>
