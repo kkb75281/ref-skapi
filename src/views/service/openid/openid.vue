@@ -11,17 +11,17 @@ hr
 section
     .error(v-if="!user?.email_verified")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
         router-link(to="/account-setting") Please verify your email address to modify settings.
 
     .error(v-else-if="currentService.service.active == 0")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
         span This service is currently disabled.
 
     .error(v-else-if="currentService.service.active < 0")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
         span This service is currently suspended.
 
 section
@@ -30,8 +30,9 @@ section
             button.inline.only-icon.gray(@click.stop="(e) => { showDropDown(e); }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-columns")
                     template(v-slot:tip) Show Columns
                 .moreVert(
                     @click.stop,
@@ -43,21 +44,24 @@ section
             button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
                     template(v-slot:tip) Refresh
         .table-actions
             button.inline.only-icon.gray(@click="()=>{ !user.email_verified ? false : selectedLogger = null; showDetail=true; }" :class="{ disabled : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-add")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-plus")
                     template(v-slot:tip) Add Logger
             button.inline.only-icon.gray(@click="openDeleteRecords=true" :class="{ disabled : !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
                     template(v-slot:tip) Delete Selected
 
     Table(:key="tableKey" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}" resizable)
@@ -109,11 +113,13 @@ section
 
     .table-page-wrap
         button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
+            .icon
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
         button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
+            .icon
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
 
 //- modal :: delete records
 Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
@@ -136,7 +142,7 @@ Modal.modal-scroll.modal-logger(:open="showDetail" @close="showDetail=false; sel
             h4.title {{ selectedLogger?.id ? selectedLogger.id : 'Register Logger' }}
             button.btn-close(type="button" @click="showDetail=false; selectedLogger=null;")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-x")
         .modal-body
             RecDetails(v-if='showDetail' :data='selectedLogger')
         .modal-footer
@@ -557,7 +563,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }

@@ -3,22 +3,23 @@ section.page-header
     .page-title {{ currentService.service.name }}
     .flex-wrap
         router-link(:to='`/subscription/${currentService.id}`')
-            button.inline.sm.blue Change Plan
+            //- button.inline.sm.blue Change Plan
+            button.inline.icon-text.sm.blue
+                .icon
+                    svg
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-change")
+                | Change Plan
         router-link(v-if="currentService.plan == 'Trial' || currentService.plan == 'Unlimited' || currentService.service.plan == 'Canceled'" :to='"/delete-service/" + currentService.id')
-            button.inline.sm.gray.caution Delete Service
+            //- button.inline.sm.gray.caution Delete Service
+            button.inline.icon-text.sm.gray.caution
+                .icon
+                    svg
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                | Delete Service
 
 hr
 
 section.sec.service-set
-    //- .flex-wrap.end(style="gap:10px;")
-        button.inline.gray.sm(type="button" @click="editName") Rename
-        button.inline.gray.sm(type="button" @click="editCors") CORS
-        button.inline.gray.sm(type="button" @click="editApiKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}") Secret Key
-        //- router-link(:to='`/subscription/${currentService.id}`')
-            button.inline.sm.blue Change Plan
-        //- router-link(:to='"/delete-service/" + currentService.id')
-            button.inline.sm.red Delete Service
-
     .flex-wrap.space-between.top-info
         .card-wrap(style="flex: 1; min-width: 300px;")
             .card
@@ -32,8 +33,9 @@ section.sec.service-set
                                 svg.svgIcon
                                     use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
                             template(v-slot:tip) Edit
-                        svg.svgIcon.nohover
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
 
             .card
                 .flex-wrap.space-between
@@ -41,8 +43,9 @@ section.sec.service-set
                         .title CORS
                         .data {{ currentService.service.cors || '*' }}
                     button.only-icon.gray.edit-btn(type="button" @click="editCors")
-                        svg.svgIcon.nohover
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
 
             .card
                 .flex-wrap.space-between
@@ -50,14 +53,13 @@ section.sec.service-set
                         .title Secret Key
                         .data {{ currentService.service.api_key ? currentService.service.api_key.slice(0, 2) + '*'.repeat(currentService.service.api_key.length - 2) + '...' : '-' }}
                     button.only-icon.gray.edit-btn(type="button" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" @click="editApiKey")
-                        svg.svgIcon.nohover
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                        .icon
+                            svg
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
 
     .flex-wrap.space-between.bottom-info
         .card-wrap(style="flex: 2; min-width: 300px;")
-            //- .card(style="background-color: #77DFA2; color: #121214;")
             .card
-                //- .title Plan
                 .plan-name 
                     span {{ currentService.service.plan + ' Plan' }}
                 .flex-wrap.space-between
@@ -108,30 +110,17 @@ section.sec.service-set
             //-         .data {{ currentServiceSpec.dataSize?.cloud || 0 }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
             //-         .bar-wrap
             //-             .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
-        .card-wrap(style="flex: 1; min-width: 300px;")
+
+        .card-wrap.toggle-wrap(style="flex: 1; min-width: 300px;")
             .card
-                //- .title Toggle Switches
-
-                //- .flex-wrap.center(style="gap: 10px; padding: 1rem;")
-                    button.only-icon.gray(type="button" @click="editName")
-                        svg.svgIcon.nohover
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
-                    button.only-icon.gray(type="button" @click="editCors")
-                        svg.svgIcon.nohover
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-add-link")
-                    button.only-icon.gray(type="button" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" @click="editApiKey")
-                        svg.svgIcon.nohover
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-key")
-
-                //- hr
-
-                .flex-wrap.space-between
+                .title Service Settings
+                .flex-wrap.space-between.toggle-div
                     .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;") 
                         span.label Disable/Enable
                         Tooltip(tip-background-color="var(--main-color)" text-color="white")
                             template(v-slot:tool)
                                 svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
                             template(v-slot:tip)
                                 | When the service is disabled, users cannot access the service.
                         //- .tooltip-icon
@@ -145,15 +134,13 @@ section.sec.service-set
                         @click="enableDisable"
                     )
                 
-                br
-
-                .flex-wrap.space-between
+                .flex-wrap.space-between.toggle-div
                     .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
                         span.label Allow Signup
                         Tooltip(tip-background-color="var(--main-color)" text-color="white")
                             template(v-slot:tool)
                                 svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
                             template(v-slot:tip)
                                 | When signup is disallowed, only the administrator can create accounts.
                         //- .tooltip-icon
@@ -167,15 +154,13 @@ section.sec.service-set
                         @click="changeCreateUserMode(!currentService.service.prevent_signup)"
                     )
 
-                br
-
-                .flex-wrap.space-between
+                .flex-wrap.space-between.toggle-div
                     .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
                         span.label Prevent Inquiry
                         Tooltip(tip-background-color="var(--main-color)" text-color="white")
                             template(v-slot:tool)
                                 svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
                             template(v-slot:tip)
                                 | When inquiry is prevented, users cannot send inquiries via sendInquiry() to the service.
                         //- .tooltip-icon
@@ -189,15 +174,13 @@ section.sec.service-set
                         @click="changePreventInquiry(!currentService.service.prevent_inquiry)"
                     )
 
-                br
-
-                .flex-wrap.space-between
+                .flex-wrap.space-between.toggle-div
                     .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
                         span.label Freeze Database
                         Tooltip(tip-background-color="var(--main-color)" text-color="white")
                             template(v-slot:tool)
                                 svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
                             template(v-slot:tip)
                                 | When the database is frozen, users cannot upload any data to the database.
                         //- .tooltip-icon
@@ -210,19 +193,11 @@ section.sec.service-set
                         :disabled='updatingValue.freeze_database'
                         @click="changeFreezeDatabase(!currentService.service.freeze_database)"
                     )
-                
-                br
-
-                //- button.inline.gray(type="button" @click="editName") Rename
-                //- br
-                //- button.inline.gray(type="button" @click="editCors") CORS
-                //- br
-                //- button.inline.gray(type="button" @click="editApiKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}") Secret Key
 
 Modal(:open="modifyMode.name" @close="modifyMode.name = false")
     .modal-close(@click="modifyMode.name = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
 
     .modal-title Change Service Name
 
@@ -243,7 +218,7 @@ Modal(:open="modifyMode.name" @close="modifyMode.name = false")
 Modal(:open="modifyMode.cors" @close="modifyMode.cors = false")
     .modal-close(@click="modifyMode.cors = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
 
     .modal-title Change CORS
 
@@ -266,7 +241,7 @@ Modal(:open="modifyMode.cors" @close="modifyMode.cors = false")
 Modal(:open="modifyMode.api_key" @close="modifyMode.api_key = false")
     .modal-close(@click="modifyMode.api_key = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
     
     .modal-title Change API Key
 
@@ -511,55 +486,13 @@ let changeFreezeDatabase = async (onlyAdmin: boolean) => {
 </script>
 
 <style lang="less" scoped>
-.middle-title {
-    font-size: 26px;
-    margin-bottom: 16px;
+a {
+    text-decoration: none;
 }
 
 hr {
     background: rgba(255, 255, 255, 0.1);
 }
-
-// button {
-//     display: inline-flex;
-//     max-width: 240px;
-//     padding: 0 0.875rem;
-//     width: 100%;
-//     justify-content: center;
-//     align-items: center;
-//     gap: 10px;
-//     border-radius: 13px;
-//     background: #0a4df1;
-//     border: 0;
-//     color: #fff;
-//     font-size: 16px;
-//     font-weight: 500;
-//     line-height: 1.5;
-//     white-space: nowrap;
-
-//     &:hover {
-//         background-color: #1656f2;
-//     }
-// }
-
-// .inline-btn {
-//     background-color: rgba(255, 255, 255, 0.03);
-//     border: 1px solid rgba(255, 255, 255, 0.1);
-//     font-size: 14px;
-//     width: auto;
-
-//     &:hover {
-//         background-color: rgba(255, 255, 255, 0.1);
-//     }
-
-//     &.blue {
-//         background-color: #0a4df1;
-
-//         &:hover {
-//             background-color: #1656f2;
-//         }
-//     }
-// }
 
 .tooltip-icon {
     position: absolute;
@@ -586,6 +519,16 @@ hr {
         font-size: 18px;
         border-radius: 5px;
         font-weight: bold;
+    }
+}
+
+.toggle-wrap {
+    .title {
+        margin-bottom: 1rem !important;
+    }
+
+    .toggle-div {
+        margin-bottom: 14px;
     }
 }
 
@@ -632,12 +575,6 @@ hr {
             }
         }
 
-        // .edit-btn {
-        //     position: absolute;
-        //     top: 20px;
-        //     right: 20px;
-        // }
-
         .bar-wrap {
             margin-top: 10px;
             height: 8px;
@@ -661,26 +598,6 @@ hr {
         }
     }
 }
-
-// .question {
-//     display: inline-block;
-//     font-size: 14px;
-//     color: var(--black-4);
-//     vertical-align: middle;
-
-//     &:hover {
-//         text-decoration: none;
-//     }
-// }
-
-// .svgIcon.nohover {
-//     background-color: unset;
-// }
-
-// .svgIcon:hover {
-//     border-radius: 50%;
-//     background-color: #293FE61A;
-// }
 
 .data {
     .svgIcon {

@@ -34,7 +34,7 @@ div.loading-wrap(v-if="fetchingServiceList")
 			.title Create a new service
 			button.icon-text(@click="openCreateService")
 				svg
-					use(xlink:href="@/assets/img/material-icon.svg#icon-add") 
+					use(xlink:href="@/assets/img/material-icon.svg#icon-plus") 
 				span Create
 			modalCreateService(:visible="showCreateModal" @close="showCreateModal = false")
 	section.section.my-services-list
@@ -250,8 +250,7 @@ a {
         position: absolute;
         bottom: 0;
         right: 0;
-        background: url("@/assets/img/myservice/img_docs.png") no-repeat center
-            right;
+        background: url("@/assets/img/myservice/img_docs.png") no-repeat center right;
     }
 
     &:last-child {
@@ -306,8 +305,7 @@ a {
         position: absolute;
         bottom: 0;
         right: 0;
-        background: url("@/assets/img/myservice/img_announce.png") no-repeat
-            center right;
+        background: url("@/assets/img/myservice/img_announce.png") no-repeat center right;
     }
 
     &:nth-child(2) {
@@ -335,7 +333,7 @@ a {
 
     .swiper-pagination-fraction,
     .swiper-pagination-custom,
-    .swiper-horizontal > .swiper-pagination-bullets,
+    .swiper-horizontal>.swiper-pagination-bullets,
     .swiper-pagination-bullets.swiper-pagination-horizontal {
         width: initial;
     }
@@ -450,11 +448,9 @@ a {
 
                 &:hover {
                     cursor: pointer;
-                    background: linear-gradient(
-                            0deg,
+                    background: linear-gradient(0deg,
                             rgba(255, 255, 255, 0.03) 0%,
-                            rgba(255, 255, 255, 0.03) 100%
-                        ),
+                            rgba(255, 255, 255, 0.03) 100%),
                         #141315;
 
                     td {
@@ -472,7 +468,7 @@ a {
                 }
 
                 &.hidden {
-                    > *:not(.name) {
+                    >*:not(.name) {
                         opacity: 0.5;
                     }
                 }
@@ -582,8 +578,7 @@ a {
                     display: block;
                     width: 1.25rem;
                     height: 1.25rem;
-                    background: url("@/assets/img/myservice/icon_lock.svg")
-                        no-repeat center;
+                    background: url("@/assets/img/myservice/icon_lock.svg") no-repeat center;
                 }
             }
         }

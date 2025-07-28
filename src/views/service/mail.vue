@@ -12,7 +12,7 @@ template(v-if='needsEmailAlias')
     section
         .error(v-if='!user?.email_verified')
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
             router-link(to="/account-setting") Please verify your email address to modify settings.
 
     section
@@ -36,17 +36,17 @@ template(v-else)
     section
         .error(v-if='!user?.email_verified')
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
             router-link(to="/account-setting") Please verify your email address to modify settings.
             
         .error(v-else-if='currentService.service.active == 0')
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
             span This service is currently disabled.
 
         .error(v-else-if='currentService.service.active < 0')
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
             span This service is currently suspended.
 
     section
@@ -100,7 +100,7 @@ template(v-else)
             .flex-wrap.center
                 button.inline.icon-text.gray.sm.btn-copy(@click="copy(email_templates[group])")
                     svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-copy")
                     span Copy
                 button.inline.icon-text.gray.sm.btn-preview(@click="showPreview = true; previewModal.current = true; previewModal.subject = null; beforeTemp = null;")
                     svg.svgIcon
@@ -120,15 +120,17 @@ template(v-else)
                 button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                         template(v-slot:tool)
-                            svg.svgIcon
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                            .icon
+                                svg
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
                         template(v-slot:tip) Refresh
             .table-actions
                 button.inline.only-icon.gray(@click="emailToDelete = true" :class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                         template(v-slot:tool)
-                            svg.svgIcon
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                            .icon
+                                svg
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
                         template(v-slot:tip) Delete Selected
 
         Table(:key="tableKey" :class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
@@ -177,10 +179,10 @@ template(v-else)
                         td.overflow
                             template(v-if='currentService.service?.["template_" + group]?.url === ns.url')
                                 svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-verified-fill")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-check-circle")
                             template(v-else)
                                 svg.svgIcon.reactive.clickable.hide(@click.stop="emailToUse = ns")
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-verified")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-circle")
                         td.overflow {{ converter(ns.subject) }}
                         td.overflow {{ dateFormat(ns.timestamp) }}
                     tr.nohover(v-for="i in (10 - listDisplay.length)")
@@ -188,11 +190,13 @@ template(v-else)
 
         .table-page-wrap
             button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
+                .icon
+                    svg
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
             button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
+                .icon
+                    svg
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
 
 //- modal :: preview mail template
 Modal.modal-scroll.modal-previewMail(:open="showPreview" @close="closePreview")
@@ -201,7 +205,7 @@ Modal.modal-scroll.modal-previewMail(:open="showPreview" @close="closePreview")
             h4.title {{ previewModal.current ? "Current" : "Before" }} Template
             button.btn-close(type="button" @click="closePreview")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-x")
         .modal-body
             div(v-if='htmls[group] === null')
                 .loader(style="--loader-color:white; --loader-size:12px")
@@ -1034,8 +1038,9 @@ li {
 // table style below
 thead {
     th {
-        & > span {
+        &>span {
             @media (pointer: fine) {
+
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -1051,7 +1056,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }

@@ -2,7 +2,7 @@
 section.page-header
     .page-title File Hosting
     .flex-wrap
-        button.inline.sm.red.caution.btn-delete(v-if="currentService.service.subdomain" type="button" @click="removeHosting = true") Remove Hosting
+        //- button.inline.sm.red.caution.btn-delete(v-if="currentService.service.subdomain" type="button" @click="removeHosting = true") Remove Hosting
         a.btn-docs(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
             button.inline.icon-text.sm.gray
                 img(src="@/assets/img/landingpage/icon_docs.svg")
@@ -13,17 +13,17 @@ hr
 section
     .error(v-if='!user?.email_verified')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
         router-link(to="/account-setting") Please verify your email address to modify settings.
         
     .error(v-else-if='currentService.service.active == 0')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
         span This service is currently disabled.
 
     .error(v-else-if='currentService.service.active < 0')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
         span This service is currently suspended.
 
 template(v-if='!currentService.service.subdomain' :class='{nonClickable: email_is_unverified_or_service_is_disabled}')
@@ -54,6 +54,10 @@ template(v-else)
                         .text
                             span.title Storage in-use
                             span.data {{ currentService.dirInfo?.size ? getFileSize(currentService.dirInfo?.size || 0) : '...' }}
+                        button.only-icon.gray.delete-btn(type="button" @click="removeHosting = true")
+                            .icon
+                                svg
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
 
                 .card
                     .flex-wrap.space-between
@@ -61,8 +65,9 @@ template(v-else)
                             span.title URL
                             span.data {{ hostUrl}}
                         button.only-icon.gray.edit-btn(type="button" @click="editSubdomain")
-                            svg.svgIcon.nohover
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                            .icon
+                                svg
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
 
                 .card
                     .flex-wrap.space-between
@@ -71,15 +76,15 @@ template(v-else)
                             span.data {{ sdInfo?.['404'] || '-' }}
                         .flex-wrap.end(style="gap: 10px;")
                             button.only-icon.gray.edit-btn(:class='{disabled: email_is_unverified_or_service_is_disabled || isPending}' @click="open404FileInp")
-                                template(v-if="sdInfo?.['404']")
-                                    svg.svgIcon
+                                .icon
+                                    svg(v-if="sdInfo?.['404']")
                                         use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
-                                template(v-else)
-                                    svg.svgIcon
+                                    svg(v-else)
                                         use(xlink:href="@/assets/img/material-icon.svg#icon-upload")
                             button.only-icon.gray.edit-btn(v-if='!updatingValue.page404 && sdInfo?.["404"] && sdInfo?.["404"] !== "..."' @click="openRemove404=true")
-                                svg.svgIcon.nohover
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+                                .icon
+                                    svg
+                                        use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
 
     section
         .table-menu-wrap
@@ -88,21 +93,24 @@ template(v-else)
                     input(type="file" hidden multiple @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFileInp")
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                         template(v-slot:tool)
-                            svg.svgIcon
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-upload-file-fill")
+                            .icon
+                                svg
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-file-plus")
                         template(v-slot:tip) Upload Files
                 button.inline.only-icon.gray(@click='uploadFolderInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
                     input(type="file" hidden multiple directory webkitdirectory @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFolderInp")
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                         template(v-slot:tool)
-                            svg.svgIcon
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-drive-folder-upload-fill")
+                            .icon
+                                svg
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-folder-plus")
                         template(v-slot:tip) Upload Folder
                 button.inline.only-icon.gray(:class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching || !Object.keys(checked).length}" @click='deleteSelected=true')
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                         template(v-slot:tool)
-                            svg.svgIcon
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                            .icon
+                                svg
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
                         template(v-slot:tip) Delete Selected
 
         Table(
@@ -211,22 +219,24 @@ template(v-else)
 
     .table-page-wrap
         button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-left")
+            .icon
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
         button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
-            svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-keyboard-arrow-right")
+            .icon
+                svg
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
 
     .dragPopup(:class="{'show' : dragHere}")
         svg.svgIcon(style="width: 64px; height: 64px; fill: white")
-            use(xlink:href="@/assets/img/material-icon.svg#icon-cloud-upload")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-upload-cloud")
         p Drop your files to upload
 
 //- modal :: change subdomain
 Modal(:open="modifyMode.subdomain")
     .modal-close(@click="modifyMode.subdomain = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
 
     .modal-title Change Subdomain
 
@@ -275,7 +285,7 @@ Modal.modal-removeHosting(:open="removeHosting" @close="removeHosting=false")
 Modal.modal-upload404(:open="modifyMode.page404" @close="modifyMode.page404 = false; selected404File = null;")
     .modal-close(@click="modifyMode.page404 = false; selected404File = null;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
 
     .modal-title Upload 404 Page
 

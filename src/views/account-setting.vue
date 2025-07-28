@@ -18,8 +18,9 @@
                     .title Email
                     .data {{ user.email }}
                 button.only-icon.gray.edit-btn(type="button" @click="modifyEmail = true")
-                    svg.svgIcon.nohover
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                    .icon
+                        svg
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
         
         .card
             .flex-wrap.space-between
@@ -27,8 +28,9 @@
                     .title Password
                     .data *********
                 button.only-icon.gray.edit-btn(type="button" @click="router.push('/change-password')")
-                    svg.svgIcon.nohover
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                    .icon
+                        svg
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
 
         .card
             .flex-wrap.space-between
@@ -45,7 +47,7 @@
 Modal(:open="modifyEmail" @close="modifyEmail = false")
     .modal-close(@click="modifyEmail = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
 
     .modal-title Change Email
     .modal-desc.

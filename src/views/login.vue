@@ -43,7 +43,7 @@ br
         .error(v-if="error")
             //- .material-symbols-outlined.notranslate.fill error
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-error-fill")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-error")
             div(v-if="enableAccount")
                 | {{ error }}
                 br
@@ -157,7 +157,7 @@ let login = (e) => {
 form {
     padding: 8px;
 
-    > label {
+    >label {
         margin-bottom: 16px;
     }
 
