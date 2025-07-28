@@ -1087,6 +1087,7 @@ thead {
         border-radius: 1.5rem;
         font-size: 1rem;
         cursor: pointer;
+        user-select: none;
 
         &:hover,
         &.active {

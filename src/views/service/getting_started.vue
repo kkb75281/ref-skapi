@@ -1,10 +1,16 @@
 <template lang="pug">
-section
+section.page-header
     .page-title Getting Started
+    a.btn-docs(href='https://docs.skapi.com/introduction/getting-started.html' target="_blank")
+        button.inline.icon-text.sm.gray
+            img(src="@/assets/img/landingpage/icon_docs.svg")
+            | Go Docs
 
-    hr
+hr
+br
 
-    p Service Name: {{ currentService.service.name }}
+section
+    .middle-title For HTML Projects
     p.desc Add the following code to your HTML website to get started:
 
     Code(style="margin: 36px 0 60px 0")
@@ -18,13 +24,13 @@ section
     p.desc If you are developing a Single Page Application (SPA), please refer to the following steps:
     p(style='margin-bottom: 0') 1. Install the library
 
-    Code(style="margin: 20px 0 40px")
+    Code(style="margin: 16px 0 40px")
         pre npm install skapi-js
 
 
     p(style='margin-bottom: 0') 2. Initialize Skapi from your main.js
 
-    Code(style="margin: 20px 0 40px")
+    Code(style="margin: 16px 0 40px")
         pre.
             #[span(style="color:#999") // main.js]
             #[span(style="color:#44E9FF") import] { Skapi } #[span(style="color:#44E9FF") from] #[span(style="color:#FFED91") "skapi-js"]
@@ -32,7 +38,7 @@ section
             #[span(style="color:#44E9FF") export] { skapi } #[span(style="color:#999") // Import the instance in your components]
 
 
-    p For more details, please refer to the #[a(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") Documentation]
+    //- p For more details, please refer to the #[a(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") Documentation]
 
 </template>
 
