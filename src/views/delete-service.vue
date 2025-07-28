@@ -47,11 +47,11 @@ main#confirmation
 </template>
 
 <script setup lang="ts">
-import { skapi } from '@/main';
-import { currentService } from '@/views/service/main';
-import { useRoute, useRouter } from 'vue-router';
-import Checkbox from '@/components/checkbox.vue';
-import { ref } from 'vue';
+import { skapi } from "@/main";
+import { currentService } from "@/views/service/main";
+import { useRoute, useRouter } from "vue-router";
+import Checkbox from "@/components/checkbox.vue";
+import { ref } from "vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -64,15 +64,14 @@ let deleteService = async () => {
     try {
         await currentService.deleteSubscription();
         await currentService.deleteService();
-        let url = window.location.origin + '/my-services';
+        let url = window.location.origin + "/my-services";
         window.location = url;
-    }
-    catch (err) {
+    } catch (err) {
         promiseRunning.value = false;
         alert(err.message);
         return;
     }
-}
+};
 </script>
 
 <style scoped lang="less">
@@ -111,7 +110,7 @@ ul {
 
 @media (max-width: 430px) {
     #confirmation {
-        padding: 30px 20px;
+        padding: 30px 20px 40px;
     }
 }
 </style>

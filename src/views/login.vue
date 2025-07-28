@@ -149,7 +149,7 @@ let login = (e) => {
 <style scoped lang="less">
 #login {
     max-width: 480px;
-    padding: 0 20px;
+    padding: 0 20px 2rem;
     margin: 0 auto;
     width: 100%;
 }
@@ -181,22 +181,6 @@ form {
             margin: 16px 0;
         }
     }
-}
-
-// .passwordInput {
-//     position: relative;
-
-//     .passwordIcon {
-//         position: absolute;
-//         right: 15px;
-//         bottom: 10px;
-//         opacity: 0.5;
-//         cursor: pointer;
-//     }
-// }
-
-input {
-    border: 1px solid rgba(225, 225, 225, 0.2);
 }
 
 .btn-signup {

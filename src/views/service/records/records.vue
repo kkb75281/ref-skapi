@@ -166,11 +166,11 @@ Modal.search-modal(:open="searchModalOpen")
             svg.svgIcon
                 use(xlink:href="@/assets/img/material-icon.svg#icon-search")
             span {{ searchFor + ' /' }}
-        input#searchInput.block(type="text" v-model="searchValue" @keydown="handleSearchKeydown" :placeholder="getSearchPlaceholder()")
+        input#searchInput.block(type="text" spellcheck="false" v-model="searchValue" @keydown="handleSearchKeydown" :placeholder="getSearchPlaceholder()")
     
     .bottom
         .tit Search for
-        .flex-wrap.center(style="margin-bottom: 2rem")
+        .flex-wrap.center(style="margin-bottom: 1.5rem")
             button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value;") {{ option.option }}
         .key-desc.flex-wrap.center
             .key(v-if="searchFor !== 'query'")
@@ -496,7 +496,6 @@ const refresh = () => {
     // reinitialize
     setUpNewPageList().then(() => {
         getPage(true);
-        fetching.value = false;
     });
 };
 
