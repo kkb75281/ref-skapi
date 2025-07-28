@@ -571,9 +571,8 @@ const copyToClipboard = (text: string) => {
 // table style below
 thead {
     th {
-        &>span {
+        & > span {
             @media (pointer: fine) {
-
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -589,7 +588,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -679,7 +678,7 @@ form.register {
         border: 1px solid rgba(255, 255, 255, 0.2);
 
         svg {
-            opacity: 0.6;
+            // opacity: 0.6;
         }
 
         &:hover {
