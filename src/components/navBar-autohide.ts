@@ -4,24 +4,26 @@ let navCss: CSSStyleDeclaration;
 let parentEl: HTMLElement | Window | any;
 let scrollOffset = 0;
 let topOffset = 0;
-let offsetProp = 'pageYOffset';
+let offsetProp = "pageYOffset";
 let autoHide: any;
 let host: HTMLElement;
 const body = document.body;
-export let routeName: Ref<string> = ref('');
+export let routeName: Ref<string> = ref("");
 let navTop = 0;
 
+let isModalOpen = false;
+
 watch(routeName, (nv) => {
-	if(nv === 'home') {
-		navTop = 20;
-		body.style.setProperty('--nav-position', 'fixed');
-		body.style.setProperty('--nav-top', navTop + 'px');
-	} else {
-		navTop = 10;
-		body.style.setProperty('--nav-position', 'sticky'); // apply css variable
-		body.style.setProperty('--nav-top', navTop + 'px');
-	}
-})
+    if (nv === "home") {
+        navTop = 20;
+        body.style.setProperty("--nav-position", "fixed");
+        body.style.setProperty("--nav-top", navTop + "px");
+    } else {
+        navTop = 10;
+        body.style.setProperty("--nav-position", "sticky"); // apply css variable
+        body.style.setProperty("--nav-top", navTop + "px");
+    }
+});
 
 let prep = () => {
     if (autoHide === undefined) {
@@ -35,7 +37,7 @@ let prep = () => {
     }
 
     if (autoHide) {
-        if (typeof autoHide === 'string') {
+        if (typeof autoHide === "string") {
             // html attributes are string
             try {
                 autoHide = JSON.parse(autoHide);
@@ -44,32 +46,34 @@ let prep = () => {
             }
         }
 
-        if (typeof autoHide === 'boolean') {
+        if (typeof autoHide === "boolean") {
             // if 'true' | 'false' is given.
             autoHide = autoHide ? 3 : 0;
-        }
-
-        else if (typeof autoHide === 'number') {
+        } else if (typeof autoHide === "number") {
             if (autoHide < 0) {
                 // if value is less than 0
                 autoHide = 0;
             }
-        }
-
-        else {
+        } else {
             // other types are not allowed
             autoHide = 0;
         }
-        if(autoHide) {
+        if (autoHide) {
             load();
         }
     }
-}
+};
 
 let calcNavbarPosition = () => {
+    // 모달이 열려있으면 네비게이션 위치 계산 중단
+    if (isModalOpen) {
+        return;
+    }
+
     window.requestAnimationFrame(() => {
         const navHeight = parseInt(navCss.height);
-        const scrollOffsetCond = parentEl[offsetProp] < 0 ? 0 : parentEl[offsetProp]; // on mobile, offsetProp can be negative
+        const scrollOffsetCond =
+            parentEl[offsetProp] < 0 ? 0 : parentEl[offsetProp]; // on mobile, offsetProp can be negative
         const offsetDifference = (scrollOffset - scrollOffsetCond) / autoHide;
 
         const topOffsetRes = (() => {
@@ -88,64 +92,61 @@ let calcNavbarPosition = () => {
 
         scrollOffset = scrollOffsetCond; // update scroll offset
         topOffset = topOffsetRes;
-        body.style.setProperty('--nav-top', `${topOffsetRes}px`); // apply css variable
+        body.style.setProperty("--nav-top", `${topOffsetRes}px`); // apply css variable
     });
 };
 
-
 export let removeListener = () => {
     // remove windows event
-    if (offsetProp === 'pageYOffset') {
-        document.removeEventListener('scroll', calcNavbarPosition);
+    if (offsetProp === "pageYOffset") {
+        document.removeEventListener("scroll", calcNavbarPosition);
+    } else {
+        parentEl.removeEventListener("scroll", calcNavbarPosition);
     }
-    else {
-        parentEl.removeEventListener('scroll', calcNavbarPosition);
-    }
-}
+};
 
 let load = () => {
     navCss = window.getComputedStyle(host);
     // get body element
 
-	// body.style.setProperty('--nav-position', 'sticky'); // apply css variable
+    // body.style.setProperty('--nav-position', 'sticky'); // apply css variable
 
     if (autoHide) {
-        let seekScrollableParent = (el:HTMLElement) => {
+        let seekScrollableParent = (el: HTMLElement) => {
             if (el) {
-                if (el.scrollHeight > el.clientHeight && 'hidden' !== window.getComputedStyle(el).overflowY) {
+                if (
+                    el.scrollHeight > el.clientHeight &&
+                    "hidden" !== window.getComputedStyle(el).overflowY
+                ) {
                     return el;
-                }
-                else {
+                } else {
                     return seekScrollableParent(el.parentElement);
                 }
-            }
-            else {
+            } else {
                 return el;
             }
         };
 
         let scrollableParent = seekScrollableParent(host.parentElement);
-        if (scrollableParent && scrollableParent.tagName.toLowerCase() !== 'html') {
-            offsetProp = 'scrollTop';
+        if (
+            scrollableParent &&
+            scrollableParent.tagName.toLowerCase() !== "html"
+        ) {
+            offsetProp = "scrollTop";
             parentEl = scrollableParent;
-            parentEl.addEventListener(
-                'scroll',
-                calcNavbarPosition,
-                { passive: true }
-            );
+            parentEl.addEventListener("scroll", calcNavbarPosition, {
+                passive: true,
+            });
         } else {
             parentEl = window;
-            document.addEventListener(
-                'scroll',
-                calcNavbarPosition,
-                { passive: true }
-            );
+            document.addEventListener("scroll", calcNavbarPosition, {
+                passive: true,
+            });
         }
-
     }
-}
+};
 
-export let setAutoHide = (el:HTMLElement, value: any) => {
+export let setAutoHide = (el: HTMLElement, value: any) => {
     /*
       Note:
         - additional attribute "auto-hide" hides nav element when parent is scrolled.
@@ -156,4 +157,9 @@ export let setAutoHide = (el:HTMLElement, value: any) => {
     host = el;
     autoHide = value;
     prep();
-}
+};
+
+// 모달 상태 업데이트
+export let setModalOpen = (open: boolean) => {
+    isModalOpen = open;
+};

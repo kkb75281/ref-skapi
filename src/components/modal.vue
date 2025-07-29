@@ -5,6 +5,7 @@ dialog(ref='dialog' @keydown.esc.prevent="emit('close')" :class="modalClass")
 
 <script setup lang="ts">
 import { onMounted, ref, watch, computed, onUnmounted } from "vue";
+import { setModalOpen } from "@/components/navBar-autohide.ts";
 
 // ** 기본 모달 제외 (스크롤 가능한 모달 경우) '.modal-scroll' 클래스명 추가하여 사용 (ex. Modal.modal-scroll)
 
@@ -29,6 +30,9 @@ const modalClass = computed(() => {
 watch(
     () => props.open,
     (nv) => {
+        // 모달 상태 업데이트 (네비게이션 스크롤 방지용)
+        setModalOpen(nv);
+
         if (nv) {
             dialog.value.showModal();
             document.body.style.overflow = "hidden";
@@ -43,7 +47,7 @@ watch(
 
 window.addEventListener("focusin", () => {
     // 키보드 올라올 때
-    document.body.style.height = "100vh";
+    document.body.style.height = "100dvh";
 });
 
 window.addEventListener("focusout", () => {
@@ -75,9 +79,13 @@ dialog,
     text-align: center;
     padding: 4rem;
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    // top: 50%;
+    // left: 50%;
+    // transform: translate(-50%, -50%);
+
+    overscroll-behavior: contain;
+    touch-action: manipulation;
+    -webkit-overflow-scrolling: touch;
 
     &::backdrop {
         background-color: rgba(0, 0, 0, 0.9);
@@ -356,7 +364,8 @@ dialog {
 }
 
 @media (max-width: 430px) {
-    dialog {
+    dialog,
+    .dialog {
         max-width: calc(100% - 1rem);
         max-height: calc(100% - 1rem);
         width: calc(100% - 1rem);
