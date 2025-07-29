@@ -40,7 +40,7 @@ section
                     )
                     .inner
                         template(v-for="c in columnList")
-                            Checkbox(v-model="c.value") {{ c.name }}
+                            Checkbox(v-model="c.value" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
             .search-ing-btn(v-if="searchValue && !searchModalOpen")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
                 svg.svgIcon.reset-btn(@click="resetSearchModal")
@@ -1438,6 +1438,11 @@ let closeGrantAccess = () => {
 const closeModalUser = () => {
     showDetail.value = false;
     selectedUser.value = null;
+};
+
+// table > show columns
+const showTableColumns = () => {
+    return columnList.filter((c) => c.value).length;
 };
 </script>
 <style scoped lang="less">

@@ -38,7 +38,7 @@ section
                 .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
                     .inner
                         template(v-for="c in columnList")
-                            Checkbox(v-model="c.value") {{ c.name }}
+                            Checkbox(v-model="c.value" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
             button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
@@ -400,6 +400,11 @@ let saveKey = async () => {
         .finally(() => {
             uploading.value = false;
         });
+};
+
+// table > show columns
+const showTableColumns = () => {
+    return columnList.filter((c) => c.value).length;
 };
 </script>
 <style scoped lang="less">

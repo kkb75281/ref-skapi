@@ -37,7 +37,7 @@ section
                 .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
                     .inner
                         template(v-for="c in columnList")
-                            Checkbox(v-model="c.value", style="display: flex;") {{ c.name }}
+                            Checkbox(v-model="c.value", style="display: flex;" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
             .search-ing-btn(v-if="searchValue && searchValue.length > 0 && searchFor !== 'query'")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
                 svg.svgIcon.reset-btn(@click="() => { callParams = {}; resetSearchModal(); }")
@@ -799,6 +799,11 @@ let checked: any = ref({});
 const closeModal = () => {
     showDetail.value = false;
     selectedRecord.value = null;
+};
+
+// table > show columns
+const showTableColumns = () => {
+    return columnList.filter((c) => c.value).length;
 };
 </script>
 
