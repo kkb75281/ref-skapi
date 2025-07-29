@@ -40,11 +40,13 @@
                 option(value='private') Private
                 
         .value(v-if='accessGroup === "authorized"' style='min-width: 300px;')
-            input.line(required placeholder="1 ~ 99" :value='accessGroup === "authorized" ? 1 : accessGroup' type='number' name='config[table][access_group]' :disabled='restrictedAccess')
+            //- input.line(required placeholder="1 ~ 99" :value='accessGroup === "authorized" ? 1 : accessGroup' type='number' name='config[table][access_group]' :disabled='restrictedAccess')
+            //- input.line(required placeholder="1 ~ 99" :value='typeof selectedRecord.table.access_group === "number" && selectedRecord.table.access_group !== 99 ? selectedRecord.table.access_group : 1' type='number' name='config[table][access_group]' :disabled='restrictedAccess')
+            input.line(required placeholder="1 ~ 99" v-model='authorizedValue' type='number' name='config[table][access_group]' min="1" max="99" :disabled='restrictedAccess')
 
         template(v-else)
             input.line(hidden v-if='accessGroup === "public"' value='public' name='config[table][access_group]' :disabled='restrictedAccess')
-            input.line(hidden v-else-if='accessGroup === "Private"' value='Private' name='config[table][access_group]' :disabled='restrictedAccess')
+            input.line(hidden v-else-if='accessGroup === "private"' value='private' name='config[table][access_group]' :disabled='restrictedAccess')
 
     .row.line
         .key.txt-sm Table Name
@@ -186,6 +188,7 @@ let def: any = {
 };
 
 let accessGroup = ref("public");
+let authorizedValue = ref(1);
 let indexName = ref("");
 let indexValueType = ref("string");
 
@@ -201,14 +204,32 @@ let selectedRecord = ref(def);
 
 function load(rec: any) {
     rec = rec || def;
-    selectedRecord.value = rec;
+    // selectedRecord.value = rec;
+    selectedRecord.value = JSON.parse(JSON.stringify(rec));
 
     deleteFileList.value = [];
     addFileList.value = [];
-    accessGroup.value =
-        typeof rec.table.access_group === "number"
-            ? "authorized"
-            : rec.table.access_group;
+
+    // accessGroup.value =
+    //     typeof rec.table.access_group === "number" && rec.table.access_group > 0
+    //         ? "authorized"
+    //         : rec.table.access_group;
+
+    if (typeof rec.table.access_group === "number") {
+        accessGroup.value = "authorized";
+        authorizedValue.value = rec.table.access_group;
+    } else if (rec.table.access_group === "admin") {
+        // admin은 99로 처리
+        accessGroup.value = "authorized";
+        authorizedValue.value = 99;
+    } else if (rec.table.access_group === "private") {
+        accessGroup.value = "private";
+        authorizedValue.value = 1;
+    } else {
+        accessGroup.value = rec.table.access_group || "public";
+        authorizedValue.value = 1;
+    }
+
     indexName.value = rec?.index?.name || "";
     indexValue.value = rec.index?.value || "";
 
@@ -485,9 +506,11 @@ let deleteFile = (key: string, index: number) => {
     }
 
     textarea {
-        background: linear-gradient(0deg,
+        background: linear-gradient(
+                0deg,
                 rgba(255, 255, 255, 0.05) 0%,
-                rgba(255, 255, 255, 0.05) 100%),
+                rgba(255, 255, 255, 0.05) 100%
+            ),
             #16171a;
         border: none;
         color: #fff;

@@ -65,7 +65,7 @@ onUnmounted(() => {
 <style lang="less">
 dialog,
 .dialog {
-    position: relative;
+    // position: relative;
     border-radius: 16px;
     border: 1px solid rgba(0, 0, 0, 0.2);
     outline: none;
@@ -75,6 +75,9 @@ dialog,
     text-align: center;
     padding: 4rem;
     position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
     &::backdrop {
         background-color: rgba(0, 0, 0, 0.9);

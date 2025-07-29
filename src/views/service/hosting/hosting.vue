@@ -151,7 +151,7 @@ template(v-else)
             template(v-slot:head)
                 tr
                     th.fixed(style="width:60px;")
-                        Checkbox(@click.stop  :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.name] = d)); else checked = {}; }" :class='{nonClickable: !listDisplay.length}')
+                        Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.name] = d)); else checked = {}; }" :class='{nonClickable: !listDisplay.length}')
                         .resizer.fixed
                     th.left(style='width:320px;')
                         span(@click='toggleSort("name")')

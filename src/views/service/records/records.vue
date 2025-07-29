@@ -85,7 +85,7 @@ section
         template(v-slot:head)
             tr
                 th.fixed(style='width:60px;')
-                    Checkbox(@click.stop :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.record_id] = d)); else checked = {}; }" style="display:inline-block")
+                    Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.record_id] = d)); else checked = {}; }" style="display:inline-block")
                     .resizer.fixed
                 template(v-for="c in columnList")
                     th.overflow(v-if="c.value", style="width: 200px")
@@ -555,6 +555,22 @@ let callSearch = async (e: HTMLFormElement) => {
         delete toFetch.data.index;
     }
 
+    // if (toFetch.data?.table?.access_group) {
+    //     if (toFetch.data.table.access_group === "private") {
+    //         toFetch.data.table.access_group = "private";
+    //     } else if (
+    //         toFetch.data.table.access_group === "authorized" ||
+    //         toFetch.data.table.access_group === 99 ||
+    //         toFetch.data.table.access_group === "admin" ||
+    //         (typeof toFetch.data.table.access_group === "number" &&
+    //             toFetch.data.table.access_group > 0)
+    //     ) {
+    //         toFetch.data.table.access_group = "authorized";
+    //     } else {
+    //         toFetch.data.table.access_group = "public";
+    //     }
+    // }
+
     if (!toFetch.data?.table?.name) {
         if (toFetch.data?.record_id || toFetch.data?.unique_id) {
             callParams = {
@@ -567,6 +583,7 @@ let callSearch = async (e: HTMLFormElement) => {
     } else {
         callParams = toFetch.data;
     }
+
     await setUpNewPageList();
     getPage(true);
 };
@@ -591,7 +608,6 @@ let setUpNewPageList = async () => {
 };
 
 let getPage = async (refresh?: boolean) => {
-    console.log("== getPage실행 ==");
     pager = serviceRecords[currentService.id];
     if (!refresh) {
         if (maxPage.value >= currentPage.value || endOfList.value) {

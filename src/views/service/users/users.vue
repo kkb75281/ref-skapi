@@ -114,7 +114,7 @@ section
                 th.fixed(style="width: 60px")
                     Checkbox(
                         @click.stop
-                        :modelValue="!!Object.keys(checked).length"
+                        :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length"
                         @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.user_id] = d)); else checked = {}; }"
                         :class="{ nonClickable: !listDisplay || !listDisplay?.length }"
                         style="display: inline-block"

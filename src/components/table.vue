@@ -665,4 +665,19 @@ let setResize = async () => {
         }
     }
 }
+
+@media (max-width: 768px) {
+    .customTbl {
+        tbody {
+            tr {
+                &:hover {
+                    &::before,
+                    &::after {
+                        border-right: none;
+                    }
+                }
+            }
+        }
+    }
+}
 </style>

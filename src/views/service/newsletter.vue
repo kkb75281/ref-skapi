@@ -73,7 +73,7 @@ template(v-if='!needsEmailAlias')
         template(v-slot:head)
             tr(:class="{'nonClickable' : fetching}")
                 th.fixed(style='width:60px;')
-                    Checkbox(@click.stop :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.url] = d)); else checked = {}; }" style="display:inline-block")
+                    Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.url] = d)); else checked = {}; }" style="display:inline-block")
                     .resizer.fixed
                 th(style='width: 250px;')
                     span(@click='toggleSort("subject")')
