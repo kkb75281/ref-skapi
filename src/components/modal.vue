@@ -5,6 +5,7 @@ dialog(ref='dialog' @keydown.esc.prevent="emit('close')" :class="modalClass")
 
 <script setup lang="ts">
 import { onMounted, ref, watch, computed, onUnmounted } from "vue";
+import { setModalOpen } from "@/components/navBar-autohide.ts";
 
 // ** 기본 모달 제외 (스크롤 가능한 모달 경우) '.modal-scroll' 클래스명 추가하여 사용 (ex. Modal.modal-scroll)
 
@@ -29,15 +30,30 @@ const modalClass = computed(() => {
 watch(
     () => props.open,
     (nv) => {
+        // 모달 상태 업데이트 (네비게이션 스크롤 방지용)
+        setModalOpen(nv);
+
         if (nv) {
             dialog.value.showModal();
             document.body.style.overflow = "hidden";
+            document.body.style.position = "fixed";
         } else {
             dialog.value.close();
             document.body.style.overflow = "";
+            document.body.style.position = "";
         }
     }
 );
+
+window.addEventListener("focusin", () => {
+    // 키보드 올라올 때
+    document.body.style.height = "100dvh";
+});
+
+window.addEventListener("focusout", () => {
+    // 키보드 내려갈 때
+    document.body.style.height = "";
+});
 
 onMounted(() => {
     if (props.open) {
@@ -53,7 +69,7 @@ onUnmounted(() => {
 <style lang="less">
 dialog,
 .dialog {
-    position: relative;
+    // position: relative;
     border-radius: 16px;
     border: 1px solid rgba(0, 0, 0, 0.2);
     outline: none;
@@ -62,6 +78,14 @@ dialog,
     color: #fff;
     text-align: center;
     padding: 4rem;
+    position: fixed;
+    // top: 50%;
+    // left: 50%;
+    // transform: translate(-50%, -50%);
+
+    overscroll-behavior: contain;
+    touch-action: manipulation;
+    -webkit-overflow-scrolling: touch;
 
     &::backdrop {
         background-color: rgba(0, 0, 0, 0.9);
@@ -183,8 +207,8 @@ dialog {
     background-color: #16171a;
     padding: 0 2rem;
     text-align: left;
-    width: calc(100% - 1rem);
-    max-height: calc(100% - 1rem);
+    width: calc(100% - 0.5rem);
+    max-height: calc(100% - 0.5rem);
     max-width: 50rem;
 
     button {
@@ -340,13 +364,18 @@ dialog {
 }
 
 @media (max-width: 430px) {
-    dialog {
+    dialog,
+    .dialog {
         max-width: calc(100% - 1rem);
         max-height: calc(100% - 1rem);
         width: calc(100% - 1rem);
         height: fit-content;
         // border-radius: 0;
         padding: 4rem 1.5rem;
+    }
+
+    .modal-scroll {
+        padding: 0 1rem;
     }
 }
 </style>

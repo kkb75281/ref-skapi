@@ -40,7 +40,7 @@ section
                     )
                     .inner
                         template(v-for="c in columnList")
-                            Checkbox(v-model="c.value") {{ c.name }}
+                            Checkbox(v-model="c.value" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
             button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
@@ -73,7 +73,7 @@ section
         template(v-slot:head)
             tr
                 th.fixed(style='width:60px;')
-                    Checkbox(@click.stop :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.id] = d)); else checked = {}; }" style="display:inline-block")
+                    Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.id] = d)); else checked = {}; }" style="display:inline-block")
                     .resizer.fixed
                 template(v-for="c in columnList")
                     th.overflow(v-if="c.value", style="width: 200px")
@@ -416,6 +416,11 @@ let deleteRecords = () => {
 
 // checks
 let checked: any = ref({});
+
+// table > show columns
+const showTableColumns = () => {
+    return columnList.filter((c) => c.value).length;
+};
 </script>
 
 <style scoped lang="less">
@@ -563,7 +568,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }

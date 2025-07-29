@@ -40,7 +40,7 @@ section
                     )
                     .inner
                         template(v-for="c in columnList")
-                            Checkbox(v-model="c.value") {{ c.name }}
+                            Checkbox(v-model="c.value" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
             .search-ing-btn(v-if="searchValue && !searchModalOpen")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
                 svg.svgIcon.reset-btn(@click="resetSearchModal")
@@ -114,7 +114,7 @@ section
                 th.fixed(style="width: 60px")
                     Checkbox(
                         @click.stop
-                        :modelValue="!!Object.keys(checked).length"
+                        :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length"
                         @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.user_id] = d)); else checked = {}; }"
                         :class="{ nonClickable: !listDisplay || !listDisplay?.length }"
                         style="display: inline-block"
@@ -235,7 +235,7 @@ Modal.search-modal(:open="searchModalOpen")
     .top
         #showSearchFor.search-for
             svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-x-circle")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-search")
             span {{ searchFor + ' /' }}
         .search-input(:class="{'readonly': searchFor === 'timestamp' || searchFor === 'birthdate' || searchFor === 'locale'}")
             template(v-if="searchFor === 'timestamp' || searchFor === 'birthdate'")
@@ -993,8 +993,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                    new Date(dates[1]).setHours(23, 59, 59, 999)
-                ).getTime()
+                      new Date(dates[1]).setHours(23, 59, 59, 999)
+                  ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1439,6 +1439,11 @@ const closeModalUser = () => {
     showDetail.value = false;
     selectedUser.value = null;
 };
+
+// table > show columns
+const showTableColumns = () => {
+    return columnList.filter((c) => c.value).length;
+};
 </script>
 <style scoped lang="less">
 body {
@@ -1467,7 +1472,7 @@ body {
     justify-content: space-between;
     // flex-direction: row-reverse;
 
-    &>* {
+    & > * {
         margin: 8px 0;
     }
 }
@@ -1490,7 +1495,7 @@ body {
 }
 
 .optionCol {
-    &>*:not(:last-child) {
+    & > *:not(:last-child) {
         margin-right: 8px;
     }
 }
@@ -1562,20 +1567,24 @@ tbody {
 
 @media (max-width: 768px) {
     .modal-close {
-        z-index: 9999;
-        position: relative;
-        left: initial;
-        bottom: initial;
-        top: 0;
-        right: 0;
-        margin-bottom: 0.5rem;
-        margin-left: auto;
-
         .btn-close {
             padding: 0;
             background: transparent;
             height: 100%;
             min-height: 100%;
+        }
+    }
+
+    .search-modal {
+        .modal-close {
+            z-index: 9999;
+            position: relative;
+            left: initial;
+            bottom: initial;
+            top: 0;
+            right: 0;
+            margin-bottom: 0.5rem;
+            margin-left: auto;
         }
     }
 }

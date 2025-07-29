@@ -1,7 +1,7 @@
 <template lang="pug">
 section.page-header
     .page-title Database
-    a.btn-docs(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
+    a.btn-docs(href='https://docs.skapi.com/database/create.html' target="_blank")
         button.inline.icon-text.sm.gray
             img(src="@/assets/img/landingpage/icon_docs.svg")
             | Go Docs
@@ -37,7 +37,7 @@ section
                 .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
                     .inner
                         template(v-for="c in columnList")
-                            Checkbox(v-model="c.value", style="display: flex;") {{ c.name }}
+                            Checkbox(v-model="c.value", style="display: flex;" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
             .search-ing-btn(v-if="searchValue && searchValue.length > 0 && searchFor !== 'query'")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
                 svg.svgIcon.reset-btn(@click="() => { callParams = {}; resetSearchModal(); }")
@@ -85,7 +85,7 @@ section
         template(v-slot:head)
             tr
                 th.fixed(style='width:60px;')
-                    Checkbox(@click.stop :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.record_id] = d)); else checked = {}; }" style="display:inline-block")
+                    Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.record_id] = d)); else checked = {}; }" style="display:inline-block")
                     .resizer.fixed
                 template(v-for="c in columnList")
                     th.overflow(v-if="c.value", style="width: 200px")
@@ -555,6 +555,22 @@ let callSearch = async (e: HTMLFormElement) => {
         delete toFetch.data.index;
     }
 
+    // if (toFetch.data?.table?.access_group) {
+    //     if (toFetch.data.table.access_group === "private") {
+    //         toFetch.data.table.access_group = "private";
+    //     } else if (
+    //         toFetch.data.table.access_group === "authorized" ||
+    //         toFetch.data.table.access_group === 99 ||
+    //         toFetch.data.table.access_group === "admin" ||
+    //         (typeof toFetch.data.table.access_group === "number" &&
+    //             toFetch.data.table.access_group > 0)
+    //     ) {
+    //         toFetch.data.table.access_group = "authorized";
+    //     } else {
+    //         toFetch.data.table.access_group = "public";
+    //     }
+    // }
+
     if (!toFetch.data?.table?.name) {
         if (toFetch.data?.record_id || toFetch.data?.unique_id) {
             callParams = {
@@ -567,6 +583,7 @@ let callSearch = async (e: HTMLFormElement) => {
     } else {
         callParams = toFetch.data;
     }
+
     await setUpNewPageList();
     getPage(true);
 };
@@ -582,16 +599,15 @@ let setUpNewPageList = async () => {
         sortBy: callParams?.index?.name || "record_id",
         order:
             callParams?.index?.name &&
-                (callParams?.index?.condition || "").includes("<")
+            (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                    ? "asc"
-                    : "desc",
+                ? "asc"
+                : "desc",
     });
 };
 
 let getPage = async (refresh?: boolean) => {
-    console.log("== getPage실행 ==");
     pager = serviceRecords[currentService.id];
     if (!refresh) {
         if (maxPage.value >= currentPage.value || endOfList.value) {
@@ -620,6 +636,7 @@ let getPage = async (refresh?: boolean) => {
         .catch((err) => {
             alert(err);
             fetching.value = false;
+            listDisplay.value = [];
             throw err;
         });
 
@@ -783,6 +800,11 @@ const closeModal = () => {
     showDetail.value = false;
     selectedRecord.value = null;
 };
+
+// table > show columns
+const showTableColumns = () => {
+    return columnList.filter((c) => c.value).length;
+};
 </script>
 
 <style scoped lang="less">
@@ -927,7 +949,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }
@@ -1036,6 +1058,14 @@ label._checkbox svg {
             background: transparent;
             height: 100%;
             min-height: 100%;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .table-menu-wrap {
+        .search-ing-btn {
+            max-width: 12.75rem;
         }
     }
 }

@@ -38,7 +38,7 @@ section
                 .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
                     .inner
                         template(v-for="c in columnList")
-                            Checkbox(v-model="c.value") {{ c.name }}
+                            Checkbox(v-model="c.value" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
             button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
@@ -69,7 +69,7 @@ section
         template(v-slot:head)
             tr
                 th.fixed(style='width:60px;')
-                    Checkbox(@click.stop :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.name] = d)); else checked = {}; }" style="display:inline-block")
+                    Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.name] = d)); else checked = {}; }" style="display:inline-block")
                     .resizer.fixed
                 template(v-for="c in columnList")
                     th.overflow(v-if="c.value", style="width: 200px")
@@ -126,7 +126,7 @@ Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModa
                     .key Client Secret
                     .value
                         input.block(type="text" v-model="selectedClient.client_secret" placeholder="string1234..." required :disabled='uploading')
-                label.row
+                label.row.locked
                     .key Locked &nbsp;
                         Tooltip(tip-background-color="var(--main-color)" text-color="white")
                             template(v-slot:tool)
@@ -401,12 +401,16 @@ let saveKey = async () => {
             uploading.value = false;
         });
 };
+
+// table > show columns
+const showTableColumns = () => {
+    return columnList.filter((c) => c.value).length;
+};
 </script>
 <style scoped lang="less">
 .content {
     flex-grow: 1;
     overflow-y: auto;
-    padding: 20px;
     font-size: 0.8rem;
 
     .value {
@@ -418,7 +422,6 @@ let saveKey = async () => {
 
     .row {
         display: flex;
-        flex-wrap: wrap;
         align-items: center;
         margin-bottom: 1.5rem;
         margin-top: 0;
@@ -535,9 +538,43 @@ table {
     }
 }
 
+.modal-scroll {
+    .key {
+        .svgIcon {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
+    }
+}
+
 @media (pointer: coarse) {
     .hide {
         display: block !important;
+    }
+}
+
+@media (max-width: 430px) {
+    .modal-detailClient {
+        .row {
+            flex-direction: column;
+            align-items: flex-start;
+
+            .key {
+                width: 100%;
+            }
+
+            &.locked {
+                flex-direction: row;
+
+                .key {
+                    width: 6.25rem;
+                }
+            }
+
+            .value {
+                width: 100%;
+            }
+        }
     }
 }
 </style>

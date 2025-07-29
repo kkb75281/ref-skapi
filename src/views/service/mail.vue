@@ -1,7 +1,7 @@
 <template lang="pug">
 section.page-header
     .page-title Automated Email
-    a.btn-docs(href='https://docs.skapi.com/authentication/create-account.html' target="_blank")
+    a.btn-docs(href='https://docs.skapi.com/email/email-templates.html' target="_blank")
         button.inline.icon-text.sm.gray
             img(src="@/assets/img/landingpage/icon_docs.svg")
             | Go Docs
@@ -143,7 +143,7 @@ template(v-else)
             template(v-slot:head)
                 tr(:class="{'nonClickable' : fetching}")
                     th.fixed(style='width:60px;')
-                        Checkbox(@click.stop :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.message_id] = d)); else checked = {}; }" style="display:inline-block")
+                        Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.message_id] = d)); else checked = {}; }" style="display:inline-block")
                         .resizer.fixed
                     th(style="width:66px; padding:0;text-align:center;")
                         span In-Use
@@ -1038,9 +1038,8 @@ li {
 // table style below
 thead {
     th {
-        &>span {
+        & > span {
             @media (pointer: fine) {
-
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -1056,7 +1055,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    &>* {
+    & > * {
         margin-bottom: 8px;
     }
 }

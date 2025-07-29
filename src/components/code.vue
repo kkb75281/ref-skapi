@@ -17,34 +17,37 @@
 </template>
 
 <script setup>
-let props = defineProps(['hidecopy']);
+let props = defineProps(["hidecopy"]);
 let cpy_btn = !props.hidecopy;
 
 let copy = (e) => {
-    let allcopy = document.querySelectorAll('.copyMsg');
+    let allcopy = document.querySelectorAll(".copyMsg");
     for (let i = 0; i < allcopy.length; i++) {
-        allcopy[i].textContent = 'Copy';
+        allcopy[i].textContent = "Copy";
     }
-    let code = e.currentTarget.parentElement.nextElementSibling.querySelector('.code > pre');
-    let doc = document.createElement('textarea');
+    let code =
+        e.currentTarget.parentElement.nextElementSibling.querySelector(
+            ".code > pre"
+        );
+    let doc = document.createElement("textarea");
     doc.textContent = code.textContent;
     document.body.append(doc);
     doc.select();
-    document.execCommand('copy');
+    document.execCommand("copy");
     doc.remove();
 
     // let copyMsg = e.currentTarget.querySelector('.copyMsg');
     // copyMsg.textContent = 'Copied!';
 
-    let copyMsg = document.getElementById('copy-msg');
-    copyMsg.textContent = 'The code copied!';
-    copyMsg.classList.add('show');
+    let copyMsg = document.getElementById("copy-msg");
+    copyMsg.textContent = "The code copied!";
+    copyMsg.classList.add("show");
 
     setTimeout(() => {
         // copyMsg.textContent = 'Copy code';
-        copyMsg.classList.remove('show');
+        copyMsg.classList.remove("show");
     }, 2000);
-}
+};
 </script>
 
 <style lang="less">
@@ -81,17 +84,17 @@ let copy = (e) => {
         margin-top: 8px;
         border-radius: 6px;
         box-shadow: 2px 2px 3px 0px rgba(0, 0, 0, 0.15);
-        color: #FFF;
+        color: #fff;
         overflow-x: auto;
         background: #121214;
 
         pre {
-            font-family: 'Space Mono', monospace;
+            font-family: "Space Mono", monospace;
             // display: flex;
             align-items: center;
             font-size: 16px;
             margin: 0;
-            padding: 28px 0 52px 32px;
+            padding: 28px 0 68px 32px;
             // padding: 28px 0 28px 32px;
             min-height: 44px;
         }
