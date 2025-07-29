@@ -470,11 +470,26 @@ let remove404 = async () => {
     modalPromise.value = true;
 
     try {
+        const current404File = currentService.subdInfo["404"];
+
         await currentService.set404({
             path: null,
         });
 
         delete currentService.subdInfo["404"];
+
+        // 테이블에서도 해당 파일 제거
+        if (current404File && folders["!"]) {
+            const pager = folders["!"].pager;
+            if (pager.list?.[current404File]) {
+                await pager.deleteItem(current404File);
+                // 현재 페이지가 루트 디렉토리일 때만 리스트 업데이트
+                if (!currentDirectory.value) {
+                    getFileList();
+                }
+            }
+        }
+
         openRemove404.value = false;
         selected404File.value = null;
     } catch (err: any) {
@@ -606,6 +621,13 @@ let deleteFiles = async () => {
     try {
         let currDir = currentDirectory.value || "!";
         let pager = folders[currDir].pager;
+
+        // 404 파일이 삭제 대상에 포함되어 있는지 확인
+        const current404File = currentService.subdInfo?.["404"];
+        const is404FileDeleted = toDel.some(
+            (file) => file.name === current404File
+        );
+
         await currentService.deleteHostFiles({
             paths: toDel.map(
                 (v) =>
@@ -623,6 +645,14 @@ let deleteFiles = async () => {
 
         for (let v of toDel) {
             await pager.deleteItem(v.name);
+        }
+
+        // 404 파일이 삭제되었다면 404 설정도 해제
+        if (is404FileDeleted && current404File) {
+            await currentService.set404({
+                path: null,
+            });
+            delete currentService.subdInfo["404"];
         }
 
         getFileList().then(() => {
