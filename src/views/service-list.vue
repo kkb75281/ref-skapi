@@ -1,105 +1,116 @@
 <template lang="pug">
 div.loading-wrap(v-if="fetchingServiceList")
-	.loader(style="--loader-color:white; --loader-size:12px")
-.first-service(v-else-if="isFirstService && !fetchingServiceList")
-	modalCreateService(:visible="true")
-.service-list(v-else)
-	section.section.top-area
-		a.top-item(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank")
-			.title Documents
-			.desc Refer to the documentation for details, including a dedicated page for training your AI.
-		.top-item.service-swiper
-			swiper(
-				:slidesPerView="1"
-				:spaceBetween="30"
-				:loop="true"
-				:autoplay="{ delay: 2000, disableOnInteraction: false }"
-				:pagination="{ clickable: true }"
-				:modules="[Pagination, Autoplay]"
+    .loader(style="--loader-color:white; --loader-size:12px")
+template(v-else)
+    .first-service(v-if="isFirstService")
+        modalCreateService(:visible="true")
+    .service-list(v-else)
+        section.section.top-area
+            a.top-item(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank")
+                .title Documents
+                .desc Refer to the documentation for details, including a dedicated page for training your AI.
+            .top-item.service-swiper
+                swiper(
+                    :slidesPerView="1"
+                    :spaceBetween="30"
+                    :loop="true"
+                    :autoplay="{ delay: 2000, disableOnInteraction: false }"
+                    :pagination="{ clickable: true }"
+                    :modules="[Pagination, Autoplay]"
 
-			)
-				swiper-slide.service-swiper-item
-					.title Announcement
-					.desc Stable release is live, and services are running smoothly! You’re good to go.
-				swiper-slide.service-swiper-item
-					.title Use Cases
-					.desc Explore our example use cases for more project inspiration.
-					a.btn-more(href="#") See more
-				swiper-slide.service-swiper-item
-					.title New Features
-					.desc A new feature just dropped! Check your dashboard and enjoy the update.
+                )
+                    swiper-slide.service-swiper-item
+                        .title Announcement
+                        .desc Stable release is live, and services are running smoothly! You’re good to go.
+                    swiper-slide.service-swiper-item
+                        .title Use Cases
+                        .desc Explore our example use cases for more project inspiration.
+                        a.btn-more(href="#") See more
+                    swiper-slide.service-swiper-item
+                        .title New Features
+                        .desc A new feature just dropped! Check your dashboard and enjoy the update.
 
-				.swiper-pagination
-		.top-item.create-service
-			.title Create a new service
-			button.icon-text(@click="openCreateService")
-				svg
-					use(xlink:href="@/assets/img/material-icon.svg#icon-plus") 
-				span Create
-			modalCreateService(:visible="showCreateModal" @close="showCreateModal = false")
-	section.section.my-services-list
-		.title My Services
+                    .swiper-pagination
+            .top-item.create-service
+                .title Create a new service
+                button.icon-text(@click="openCreateService")
+                    svg
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-plus") 
+                    span Create
+                modalCreateService(:visible="showCreateModal" @close="showCreateModal = false")
+        section.section.my-services-list
+            .title My Services
 
-		Table.tb-services-list(resizable style="width:100%;")
-			template(v-slot:head)
-				tr
-					th.th.overflow Service Name
-					th.th.overflow Plan
-					th.th.overflow State
-					th.th.overflow Users
-					th.th.overflow Database
-					th.th.overflow File Storage
-					th.th.overflow File Hosting
-					th.th.overflow Email
+            Table.tb-services-list(resizable style="width:100%;")
+                template(v-if="fetchingServiceList" v-slot:msg)
+                    .tableMsg.center
+                        .loader(style="--loader-color:white; --loader-size:12px")
+                template(v-else-if="!Object.keys(serviceIdList).length" v-slot:msg)
+                    .tableMsg.center.empty You have no services yet.
 
-			template(v-slot:body)
-				tr(v-if="fetchingServiceList")
-					td(colspan="8").
-						Loading ... &nbsp;
-						#[.loader(style="--loader-color:black; --loader-size:12px")]
-				tr(v-else-if="!Object.keys(serviceIdList).length")
-					td(colspan="8") You have no services yet.
+                template(v-slot:head)
+                    tr
+                        th.th.overflow Service Name
+                        th.th.overflow Plan
+                        th.th.overflow State
+                        th.th.overflow Users
+                        th.th.overflow Database
+                        th.th.overflow File Storage
+                        th.th.overflow File Hosting
+                        th.th.overflow Email
 
-				template(v-else v-for="id in serviceIdList")
-					tr(v-if="serviceList[id]" @click="() => goServiceDashboard(serviceList[id])" @mousedown="(e) => e.currentTarget.classList.add('active')" @mouseleave="(e) => e.currentTarget.classList.remove('active')" :class="{'hidden': serviceList[id].service.active === 0 || serviceList[id].service.suspended}")
-						td.name {{ serviceList[id].service.name }}
-						td.plan
-							.state(v-if="serviceList[id].service.subs_id && !serviceList[id].subscription")
-								.loader(style="--loader-color:black; --loader-size:12px")
-							span.badge(v-else :class="serviceList[id].plan?.toLowerCase().split(' ')[0]") {{ serviceList[id].service.plan || serviceList[id].plan }}
-						td.state
-							span.running(v-if="serviceList[id].service.active > 0") Running
-							span.disabled(v-else-if="serviceList[id].service.active == 0") Disabled
-							span.suspended(v-else-if="serviceList[id].service.suspended") Suspended
-							span.empty(v-else) -
-						td.users
-							span.value(:class="getClass(serviceSpecList[id], 'users')")
-								template(v-if="serviceSpecList[id]?.plan === 'Unlimited'")
-									| Unlimited
-								template(v-else)
-									span.num {{ serviceSpecList[id]?.dataSize?.users }}
-									|  / {{ serviceSpecList[id]?.servicePlan?.users }}
+                template(v-slot:body)
+                    //- tr(v-if="fetchingServiceList")
+                        td(colspan="8").
+                            Loading ... &nbsp;
+                            #[.loader(style="--loader-color:white; --loader-size:12px")]
+                    //- tr(v-else-if="!Object.keys(serviceIdList).length")
+                        td(colspan="8") You have no services yet.
 
-						td.database
-							span.value(:class="getClass(serviceSpecList[id], 'database')") {{ typeof(serviceSpecList[id]?.dataPercent?.database) === 'string' ? serviceSpecList[id]?.dataPercent?.database : serviceSpecList[id]?.dataPercent?.database + '%' }}
+                    template(v-if="fetchingServiceList || !Object.keys(serviceIdList).length")
+                        tr.nohover
+                            td(colspan="8")
 
-						td.file-storage
-							span.value(:class="getClass(serviceSpecList[id], 'cloud')") {{ typeof(serviceSpecList[id]?.dataPercent?.cloud) === 'string' ? serviceSpecList[id]?.dataPercent?.cloud : serviceSpecList[id]?.dataPercent?.cloud + '%' }}
+                    template(v-else v-for="id in serviceIdList")
+                        tr(v-if="serviceList[id]" @click="() => goServiceDashboard(serviceList[id])" @mousedown="(e) => e.currentTarget.classList.add('active')" @mouseleave="(e) => e.currentTarget.classList.remove('active')" :class="{'hidden': serviceList[id].service.active === 0 || serviceList[id].service.suspended}")
+                            td.name {{ serviceList[id].service.name }}
+                            td.plan
+                                .state(v-if="serviceList[id].service.subs_id && !serviceList[id].subscription")
+                                    .loader(style="--loader-color:white; --loader-size:12px")
+                                span.badge(v-else :class="serviceList[id].plan?.toLowerCase().split(' ')[0]") {{ serviceList[id].service.plan || serviceList[id].plan }}
+                            td.state
+                                span.running(v-if="serviceList[id].service.active > 0") Running
+                                span.disabled(v-else-if="serviceList[id].service.active == 0") Disabled
+                                span.suspended(v-else-if="serviceList[id].service.suspended") Suspended
+                                span.empty(v-else) -
+                            td.users
+                                span.value(:class="getClass(serviceSpecList[id], 'users')")
+                                    template(v-if="serviceSpecList[id]?.plan === 'Unlimited'")
+                                        | Unlimited
+                                    template(v-else)
+                                        span.num {{ serviceSpecList[id]?.dataSize?.users }}
+                                        |  / {{ serviceSpecList[id]?.servicePlan?.users }}
 
-						td.hosting
-							span.value(:class="getClass(serviceSpecList[id], 'host')") {{ typeof(serviceSpecList[id]?.dataPercent?.host) === 'string' ? serviceSpecList[id]?.dataPercent?.host : serviceSpecList[id]?.dataPercent?.host + '%' }}
+                            td.database
+                                span.value(:class="getClass(serviceSpecList[id], 'database')") {{ typeof(serviceSpecList[id]?.dataPercent?.database) === 'string' ? serviceSpecList[id]?.dataPercent?.database : serviceSpecList[id]?.dataPercent?.database + '%' }}
 
-						td.email
-							span.value(:class="getClass(serviceSpecList[id], 'email')") {{ typeof(serviceSpecList[id]?.dataPercent?.email) === 'string' ? serviceSpecList[id]?.dataPercent?.email : serviceSpecList[id]?.dataPercent?.email + '%' }}
+                            td.file-storage
+                                span.value(:class="getClass(serviceSpecList[id], 'cloud')") {{ typeof(serviceSpecList[id]?.dataPercent?.cloud) === 'string' ? serviceSpecList[id]?.dataPercent?.cloud : serviceSpecList[id]?.dataPercent?.cloud + '%' }}
+
+                            td.hosting
+                                span.value(:class="getClass(serviceSpecList[id], 'host')") {{ typeof(serviceSpecList[id]?.dataPercent?.host) === 'string' ? serviceSpecList[id]?.dataPercent?.host : serviceSpecList[id]?.dataPercent?.host + '%' }}
+
+                            td.email
+                                span.value(:class="getClass(serviceSpecList[id], 'email')") {{ typeof(serviceSpecList[id]?.dataPercent?.email) === 'string' ? serviceSpecList[id]?.dataPercent?.email : serviceSpecList[id]?.dataPercent?.email + '%' }}
 
 #loading(v-if="loading")
-	.loader
-	//- span.text Creating service...
+    .loader
+    //- span.text Creating service...
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
-import { watch, ref, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { watch, ref, computed, onMounted } from "vue";
 import {
     fetchingServiceList,
     serviceList,
@@ -117,12 +128,22 @@ import "swiper/css"; // import Swiper styles
 import "swiper/css/pagination";
 
 const router = useRouter();
+const route = useRoute();
+
+let routeQuery = route.query;
+
+onMounted(() => {
+    if (routeQuery?.redirect === 'create' && !isFirstService.value) {
+        openCreateService();
+    }
+});
 
 const showCreateModal = ref(false);
 const loading = ref(false);
 
 // 첫 번째 서비스인지 계산
 const isFirstService = computed(() => {
+    console.log("isFirstService called");
     // 로딩 중이면 false 반환 (로딩 완료 후 판단)
     if (fetchingServiceList.value) {
         return false;

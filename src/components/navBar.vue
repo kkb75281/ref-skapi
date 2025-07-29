@@ -188,7 +188,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                                         img(src="@/assets/img/landingpage/icon_facebook.svg")
 #proceeding(v-if="running")
     .inner    
-        .loader(style="--loader-color:black; --loader-size: 20px")
+        .loader(style="--loader-color:white; --loader-size: 20px")
         h4 Page Loading
 </template>
 

@@ -66,8 +66,10 @@ import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { onMounted, ref } from "vue";
 import Checkbox from "@/components/checkbox.vue";
+
 const router = useRouter();
 const route = useRoute();
+
 skapi.logout().then(() => {
     for (let k in user) {
         delete user[k];
@@ -108,11 +110,13 @@ let login = (e) => {
             for (let k in u) {
                 user[k] = u[k];
             }
-            if (route.query?.suc_redirect) {
-                router.push(route.query?.suc_redirect);
-            } else {
-                router.push("/my-services");
-            }
+            // if (route.query?.suc_redirect) {
+            //     // router.push(route.query?.suc_redirect);
+            //     router.push({ path: "/my-services", query: { redirect: route.query?.suc_redirect } });
+            // } else {
+            //     router.push("/my-services");
+            // }
+            router.push("/my-services");
         })
         .catch((err) => {
             for (let k in user) {

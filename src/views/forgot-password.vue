@@ -35,7 +35,7 @@
 
             .bottom
                 div(v-if="promiseRunning" style="width:100%; text-align:center")
-                    .loader(style="--loader-color:blue; --loader-size:12px")
+                    .loader(style="--loader-color:white; --loader-size:12px")
                 template(v-else)
                     router-link(to='/login') Back to Login
                     button.inline(type="submit") Continue
@@ -121,7 +121,7 @@
 
             .bottom(style="justify-content: flex-end;")
                 div(v-if="promiseRunning" style="width:100%; text-align:center")
-                    .loader(style="--loader-color:blue; --loader-size:12px")
+                    .loader(style="--loader-color:white; --loader-size:12px")
                 template(v-else)
                     button.inline(type="submit") Submit
 
