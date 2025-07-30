@@ -134,7 +134,7 @@ template(v-if="visible")
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted, onUnmounted } from "vue";
 import {
     serviceIdList,
     serviceList,
@@ -303,6 +303,23 @@ const enableBodyScroll = () => {
     document.body.style.overflow = "";
 };
 
+const handleKey = (e: KeyboardEvent) => {
+    if (!props.visible) return;
+
+    if (e.key === "Enter" && step.value === 1 && newServiceName.value) {
+        e.preventDefault();
+        step.value++;
+    }
+};
+
+onMounted(() => {
+    document.addEventListener("keydown", handleKey);
+});
+
+onUnmounted(() => {
+    document.removeEventListener("keydown", handleKey);
+});
+
 // 모달이 열리고 닫힐 때 상태 관리
 watch(
     () => props.visible,
@@ -324,6 +341,11 @@ const handleClose = () => {
     enableBodyScroll(); // 모달 닫을 때 스크롤 복원
     emit("close");
 };
+
+
+function resetSearchModal() {
+    throw new Error("Function not implemented.");
+}
 </script>
 
 <style scoped lang="less">

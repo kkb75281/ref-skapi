@@ -39,7 +39,7 @@
         span.name Automated Email
 
     .advanced-router
-        div(v-if='currentService.service.group <= 1' @click='()=>openOffer=true' style='cursor:pointer;')
+        div(v-if='currentService.service.group <= 1' @click='serviceUpgradeOffer=true' style='cursor:pointer;')
             .router.disabled(:to="`/my-services/${currentService.id}/newsletter`" :class="{'active': route.name == 'newsletter'}" @click="emit('closeMobileMenu');")
                 //- svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-nav-bulk-mail")
@@ -71,6 +71,7 @@ import {
     currentService,
     setService,
     serviceMainLoaded,
+    serviceUpgradeOffer
 } from "@/views/service/main";
 
 const router = useRouter();

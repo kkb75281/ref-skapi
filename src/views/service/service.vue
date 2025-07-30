@@ -1,6 +1,7 @@
 <template lang="pug">
 section.page-header
-    .page-title {{ currentService.service.name }}
+    //- .page-title {{ currentService.service.name }}
+    .page-title Service Settings
     .flex-wrap
         router-link(:to='`/subscription/${currentService.id}`')
             //- button.inline.sm.blue Change Plan
@@ -16,6 +17,10 @@ section.page-header
                     svg
                         use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
                 | Delete Service
+        a.btn-docs(href='https://docs.skapi.com/service-settings/service-settings.html' target="_blank")
+            button.inline.icon-text.sm.gray
+                img(src="@/assets/img/landingpage/icon_docs.svg")
+                | Go Docs
 
 hr
 
@@ -23,7 +28,7 @@ section
     .info-value-set
         .info-edit-wrap
             .info
-                .title Service Information
+                .title Service Name
                 .value {{ currentService.service.name }}
             button.only-icon.gray.edit-btn(type="button" @click="editName")
                 //- Tooltip(tip-background-color="rgb(45 46 48)" text-color="white")
