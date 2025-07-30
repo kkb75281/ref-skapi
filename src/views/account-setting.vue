@@ -7,38 +7,35 @@
 
     hr
 
-    .card-wrap
-        .card
-            .flex-wrap.space-between
-                div
-                    .title Email
-                    .data {{ user.email }}
-                button.only-icon.gray.edit-btn(type="button" @click="modifyEmail = true")
-                    .icon
-                        svg
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
-        
-        .card
-            .flex-wrap.space-between
-                div
-                    .title Password
-                    .data *********
-                button.only-icon.gray.edit-btn(type="button" @click="router.push('/change-password')")
-                    .icon
-                        svg
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+    .info-value-set
+        .info-edit-wrap
+            .info
+                .title Email
+                .value {{ user.email }}
+            button.only-icon.gray.edit-btn(type="button" @click="modifyEmail = true")
+                .icon
+                    svg
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
 
-        .card
-            .flex-wrap.space-between
-                div
-                    .title Newsletters
-                    .data {{ emailSubscribed ? "Subscribed" : "Unsubscribed" }}
-                Toggle(
-                    style='display:inline-flex;align-items:center;'
-                    :disabled="!user.email_verified || subing_email || emailSubscribed === null"
-                    :active="emailSubscribed"
-                    @click="emailSubscribed = !emailSubscribed"
-                )
+        .info-edit-wrap
+            .info
+                .title Password
+                .value *********
+            button.only-icon.gray.edit-btn(type="button" @click="router.push('/change-password')")
+                .icon
+                    svg
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+
+        .info-edit-wrap
+            .info
+                .title Newsletters
+                .value {{ emailSubscribed ? "Subscribed" : "Unsubscribed" }}
+            Toggle(
+                style='display:inline-flex;align-items:center;'
+                :disabled="!user.email_verified || subing_email || emailSubscribed === null"
+                :active="emailSubscribed"
+                @click="emailSubscribed = !emailSubscribed"
+            )
 
 Modal(:open="modifyEmail" @close="modifyEmail = false")
     .modal-close(@click="modifyEmail = false;")

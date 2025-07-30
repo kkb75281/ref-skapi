@@ -20,7 +20,7 @@ section.page-header
 hr
 
 section
-    .flex-wrap.space-between.service-set
+    .info-value-set
         .info-edit-wrap
             .info
                 .title Service Information
@@ -54,7 +54,7 @@ section
 
     br
 
-    .flex-wrap.space-between.service-set
+    .info-value-set
         .card-wrap(style="flex: 2;")
             .card
                 .plan-name 
@@ -477,23 +477,6 @@ hr {
 .title {
     margin-bottom: 10px;
     opacity: 0.6;
-}
-
-.service-set {
-    gap: 1.25rem;
-
-    >div {
-        flex: 1;
-        min-width: 300px;
-    }
-
-    @media (max-width: 430px) {
-        gap: 0.75rem;
-
-        >div {
-            min-width: 100%;
-        }
-    }
 }
 
 .plan-name {

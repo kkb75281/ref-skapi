@@ -46,7 +46,7 @@ template(v-if='!currentService.service.subdomain' :class='{nonClickable: email_i
 
 template(v-else)
     section
-        .flex-wrap.space-between.hosting-set
+        .info-value-set
             .info-edit-wrap
                 .info
                     .title Storage in-use
@@ -936,23 +936,6 @@ watch(ascending, () => {
         button {
             width: 100%;
             max-width: 100%;
-        }
-    }
-}
-
-.hosting-set {
-    gap: 1.25rem;
-
-    >div {
-        flex: 1;
-        min-width: 300px;
-    }
-
-    @media (max-width: 430px) {
-        gap: 0.75rem;
-
-        >div {
-            min-width: 100%;
         }
     }
 }
