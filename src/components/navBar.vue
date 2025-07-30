@@ -186,10 +186,12 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                                 li.item
                                     a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
                                         img(src="@/assets/img/landingpage/icon_facebook.svg")
-#proceeding(v-if="running")
+//- #proceeding(v-if="!running")
     .inner    
         .loader(style="--loader-color:white; --loader-size: 20px")
         h4 Page Loading
+#loading(v-if="running")
+    .loader
 </template>
 
 <script setup>
@@ -489,6 +491,28 @@ img.symbol.mobile {
     align-items: center;
     justify-content: center;
     text-align: center;
+}
+
+#loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+
+    .loader {
+        --loader-color: #fff;
+        --loader-size: 1rem;
+        width: var(--loader-size);
+        height: var(--loader-size);
+    }
 }
 
 #navBar {
