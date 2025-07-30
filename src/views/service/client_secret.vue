@@ -39,7 +39,7 @@ section
                     .inner
                         template(v-for="c in columnList")
                             Checkbox(v-model="c.value" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
-            button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray(@click="getPage(true)" :disabled="!user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         .icon
@@ -47,14 +47,14 @@ section
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
                     template(v-slot:tip) Refresh
         .table-actions
-            button.inline.only-icon.gray(@click="openDetailModal(addClient, -1)" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray(@click="openDetailModal(addClient, -1)" :disabled="!user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
                             svg
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-plus")
                     template(v-slot:tip) Add Key
-            button.inline.only-icon.gray(@click="showDeleteMsg=true" :class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
+            button.inline.only-icon.gray(@click="showDeleteMsg=true" :disabled="!Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
@@ -99,11 +99,11 @@ section
                     td(:colspan="colspan")
 
     .table-page-wrap
-        button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+        button.inline.only-icon.gray(@click="currentPage--;" :disabled="fetching || currentPage <= 1")
             .icon
                 svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-        button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+        button.inline.only-icon.gray(@click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
             .icon
                 svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")

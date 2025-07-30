@@ -49,7 +49,7 @@ template(v-if='!needsEmailAlias')
     section.table-area
         .table-menu-wrap
             .table-functions
-                button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
+                button.inline.only-icon.gray(@click="getPage(true)" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                         template(v-slot:tool)
                             .icon
@@ -61,7 +61,7 @@ template(v-if='!needsEmailAlias')
                     button.inline.only-icon.gray(:class="{ disabled : fetching || !user?.email_verified || currentService.service.active <= 0}")
                         svg.svgIcon
                             use(xlink:href="@/assets/img/material-icon.svg#icon-send")
-                button.inline.only-icon.gray(:class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
+                button.inline.only-icon.gray(:disabled="!Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0")
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                         template(v-slot:tool)
                             .icon
@@ -155,11 +155,11 @@ template(v-if='!needsEmailAlias')
                     td(colspan="6")
 
     .table-page-wrap
-        button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+        button.inline.only-icon.gray(@click="currentPage--;" :disabled="fetching || currentPage <= 1")
             .icon
                 svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-        button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+        button.inline.only-icon.gray(@click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
             .icon
                 svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
@@ -571,8 +571,9 @@ const copyToClipboard = (text: string) => {
 // table style below
 thead {
     th {
-        & > span {
+        &>span {
             @media (pointer: fine) {
+
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -588,7 +589,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }

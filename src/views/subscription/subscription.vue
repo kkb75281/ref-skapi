@@ -50,7 +50,7 @@ main#subscription
                 .middle
                     .price $19
                         span /mon
-                    button.block.gray(type="button" :class="{'disabled': promiseRunning || availablePlans[0] === false || availablePlans[0] === null}" @click="selectedPlan('standard')")
+                    button.block.gray(type="button" :disabled="promiseRunning || availablePlans[0] === false || availablePlans[0] === null" @click="selectedPlan('standard')")
                         template(v-if="changeMode == 'standard' && promiseRunning")
                             .loader(style="--loader-color:white; --loader-size: 12px")
                         template(v-else-if="availablePlans[0]") {{ availablePlans[0] }}
@@ -75,7 +75,7 @@ main#subscription
                 .middle
                     .price $89
                         span /mon
-                    button.block.gray(type="button" :class="{'disabled': promiseRunning || availablePlans[1] === false || availablePlans[1] === null}" @click="selectedPlan('premium')")
+                    button.block.gray(type="button" :disabled="promiseRunning || availablePlans[1] === false || availablePlans[1] === null" @click="selectedPlan('premium')")
                         template(v-if="changeMode == 'premium' && promiseRunning")
                             .loader(style="--loader-color:white; --loader-size: 12px")
                         template(v-else-if="availablePlans[1]") {{ availablePlans[1] }}

@@ -59,7 +59,7 @@ Modal(:open="modifyEmail" @close="modifyEmail = false")
             template(v-else-if="!user.email_verified")
                 button.block.red(v-if="user.email_verified" style="width:100%;" @click="proceedVerification = true;") Verify Email
             template(v-else)
-                button.block(type="submit" :class="{disabled: updatingValue || inputEmail === user.email}") Change
+                button.block(type="submit" :disabled="updatingValue || inputEmail === user.email") Change
 
 Modal(:open="proceedVerification" @close="proceedVerification=false")
     .modal-title Email Verification
@@ -326,5 +326,4 @@ watch(emailSubscribed, async (n, o) => {
 //             transform: translateY(-50%);
 //         }
 //     }
-// }
-</style>
+// }</style>

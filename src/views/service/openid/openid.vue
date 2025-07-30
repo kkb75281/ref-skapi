@@ -41,7 +41,7 @@ section
                     .inner
                         template(v-for="c in columnList")
                             Checkbox(v-model="c.value" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
-            button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray(@click="getPage(true)" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         .icon
@@ -49,14 +49,14 @@ section
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
                     template(v-slot:tip) Refresh
         .table-actions
-            button.inline.only-icon.gray(@click="()=>{ !user.email_verified ? false : selectedLogger = null; showDetail=true; }" :class="{ disabled : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
+            button.inline.only-icon.gray(@click="()=>{ !user.email_verified ? false : selectedLogger = null; showDetail=true; }" :disabled="showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
                             svg
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-plus")
                     template(v-slot:tip) Add Logger
-            button.inline.only-icon.gray(@click="openDeleteRecords=true" :class="{ disabled : !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
+            button.inline.only-icon.gray(@click="openDeleteRecords=true" :disabled="!Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0" )
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
@@ -112,11 +112,11 @@ section
                     td(:colspan="colspan")
 
     .table-page-wrap
-        button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+        button.inline.only-icon.gray(@click="currentPage--;" :disabled="fetching || currentPage <= 1")
             .icon
                 svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-        button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+        button.inline.only-icon.gray(@click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
             .icon
                 svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
@@ -553,13 +553,6 @@ textarea::placeholder {
     .advanced {
         font-size: 0.8rem;
         user-select: none;
-
-        .infoBox {
-            input {
-                outline: 0;
-                background-color: rgba(0, 0, 0, 0.05);
-            }
-        }
     }
 }
 
@@ -568,7 +561,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }

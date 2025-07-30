@@ -29,7 +29,7 @@ template(v-if="visible")
                                 br
                                 | You can create and manage multiple projects.
                         input.block(placeholder="Service name (Max 40 chars)" maxlength="40" required v-model="newServiceName" style="margin-bottom: 0.75rem;")
-                        button.block.icon-text(type="button" :class="{'disabled': !newServiceName}" :style="!newServiceName ? { backgroundColor: 'rgba(34, 35, 37, 1)' } : {}" @click="step++")
+                        button.block.icon-text(type="button" :disabled="!newServiceName" :style="!newServiceName ? { backgroundColor: 'rgba(34, 35, 37, 1)' } : {}" @click="step++")
                             svg
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-plus") 
                             span Create
@@ -49,7 +49,7 @@ template(v-if="visible")
                                     .price Free
                                         //- .faktum {{ '$' + planSpec['Trial'].price }}
                                         //- span /mo
-                                    button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('trial')") 
+                                    button.block(type="button" :disabled="promiseRunning" @click="selectedPlan('trial')") 
                                         template(v-if="serviceMode == 'trial' && promiseRunning")
                                             .loader(style="--loader-color:white; --loader-size: 12px")
                                         template(v-else) Select
@@ -81,7 +81,7 @@ template(v-if="visible")
                                         template(v-else)
                                             .faktum {{ '$' + planSpec['Standard (Perpetual License)'].price }}
                                             span /only-once
-                                    button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('standard')")
+                                    button.block(type="button" :disabled="promiseRunning" @click="selectedPlan('standard')")
                                         template(v-if="(serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning")
                                             .loader(style="--loader-color:white; --loader-size: 12px")
                                         template(v-else) Select
@@ -115,7 +115,7 @@ template(v-if="visible")
                                             .faktum {{ '$' + planSpec['Premium (Perpetual License)'].price }}
                                             span /only-once
                                     //- .desc Empower your business with formcarry, #[span.wordset for big businesses]
-                                    button.block(type="button" :class="{'disabled': promiseRunning}" @click="selectedPlan('premium')")
+                                    button.block(type="button" :disabled="promiseRunning" @click="selectedPlan('premium')")
                                         template(v-if="(serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning")
                                             .loader(style="--loader-color:white; --loader-size: 12px")
                                         template(v-else) Select
@@ -491,50 +491,43 @@ const handleClose = () => {
 
                     &.user {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_user.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
                         }
                     }
 
                     &.data {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_data.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
                         }
                     }
 
                     &.file {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_file.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
                         }
                     }
 
                     &.mail {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_mail.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
                         }
                     }
 
                     &.forbiden {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_forbiden.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
                         }
                     }
 
                     &.invitation {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_invitation.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
                         }
                     }
 
                     &.global {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_global.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
                         }
                     }
                 }
@@ -633,8 +626,7 @@ const handleClose = () => {
     z-index: 999999;
 
     &.first-service {
-        background: url("@/assets/img/myservice/bg_gradation.png") no-repeat
-            center center;
+        background: url("@/assets/img/myservice/bg_gradation.png") no-repeat center center;
         background-size: cover;
         top: 4rem;
     }

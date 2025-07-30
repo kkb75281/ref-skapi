@@ -35,7 +35,7 @@ main#confirmation
         br
         
         .flex-wrap.end
-            button.inline.gray.btn-cancel(type="submit" :class="{disabled: !iUnderstand, red: iUnderstand}" @click='deleteService()') Delete Service
+            button.inline.gray.btn-cancel(type="submit" :disabled="!iUnderstand" :class="{red: iUnderstand}" @click='deleteService()') Delete Service
 
         //- .bottom
             div(v-if="promiseRunning" style="width:100%; text-align:center")

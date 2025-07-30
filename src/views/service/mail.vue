@@ -16,7 +16,7 @@ template(v-if='needsEmailAlias')
             router-link(to="/account-setting") Please verify your email address to modify settings.
 
     section
-        p.desc(style="color: #888888; margin-bottom: 30px;").
+        p.page-desc.
             You can set automated email templates for your service.
             #[br]
             To proceed, please register your email alias address that will be used to send out the emails.
@@ -27,7 +27,7 @@ template(v-if='needsEmailAlias')
             .email-alias
                 input.block(v-model='emailAliasVal' pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' :disabled="registerAliasRunning" placeholder="your-email-alias" required)
 
-            button.inline(:disabled='registerAliasRunning' :class='{disabled: registerAliasRunning}')
+            button.inline(:disabled='registerAliasRunning')
                 template(v-if="registerAliasRunning")
                     .loader(style="--loader-color:white; --loader-size:12px; margin: 12px")
                 template(v-else)
@@ -117,7 +117,7 @@ template(v-else)
     section.table-area
         .table-menu-wrap
             .table-functions
-                button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                button.inline.only-icon.gray(@click="getPage(true)" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                         template(v-slot:tool)
                             .icon
@@ -125,7 +125,7 @@ template(v-else)
                                     use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
                         template(v-slot:tip) Refresh
             .table-actions
-                button.inline.only-icon.gray(@click="emailToDelete = true" :class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
+                button.inline.only-icon.gray(@click="emailToDelete = true" :disabled="!Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0")
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                         template(v-slot:tool)
                             .icon
@@ -189,11 +189,11 @@ template(v-else)
                         td(colspan="4")
 
         .table-page-wrap
-            button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+            button.inline.only-icon.gray(@click="currentPage--;" :disabled="fetching || currentPage <= 1")
                 .icon
                     svg
                         use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-            button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+            button.inline.only-icon.gray(@click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
                 .icon
                     svg
                         use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
@@ -1038,8 +1038,9 @@ li {
 // table style below
 thead {
     th {
-        & > span {
+        &>span {
             @media (pointer: fine) {
+
                 // only for mouse pointer devices
                 &:hover {
                     cursor: pointer;
@@ -1055,7 +1056,7 @@ thead {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }

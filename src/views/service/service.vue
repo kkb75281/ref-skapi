@@ -19,46 +19,43 @@ section.page-header
 
 hr
 
-section.sec.service-set
-    .flex-wrap.space-between.top-info
-        .card-wrap(style="flex: 1; min-width: 300px;")
-            .card
-                .flex-wrap.space-between
-                    div
-                        .title Service Name
-                        .data {{ currentService.service.name }}
-                    button.only-icon.gray.edit-btn(type="button" @click="editName")
-                        //- Tooltip(tip-background-color="rgb(45 46 48)" text-color="white")
-                            template(v-slot:tool)
-                                svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
-                            template(v-slot:tip) Edit
-                        .icon
-                            svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+section
+    .flex-wrap.space-between.service-set
+        .info-edit-wrap
+            .info
+                .title Service Information
+                .value {{ currentService.service.name }}
+            button.only-icon.gray.edit-btn(type="button" @click="editName")
+                //- Tooltip(tip-background-color="rgb(45 46 48)" text-color="white")
+                    template(v-slot:tool)
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                    template(v-slot:tip) Edit
+                .icon
+                    svg
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+        .info-edit-wrap
+            .info
+                .title CORS
+                .value {{ currentService.service.cors || '*' }}
+            button.only-icon.gray.edit-btn(type="button" @click="editCors")
+                .icon
+                    svg
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
 
-            .card
-                .flex-wrap.space-between
-                    div
-                        .title CORS
-                        .data {{ currentService.service.cors || '*' }}
-                    button.only-icon.gray.edit-btn(type="button" @click="editCors")
-                        .icon
-                            svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+        .info-edit-wrap
+            .info
+                .title Secret Key
+                .value {{ currentService.service.api_key ? currentService.service.api_key.slice(0, 2) + '*'.repeat(currentService.service.api_key.length - 2) + '...' : '-' }}
+            button.only-icon.gray.edit-btn(type="button" :disabled="!user?.email_verified || currentService.service.active <= 0" @click="editApiKey")
+                .icon
+                    svg
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
 
-            .card
-                .flex-wrap.space-between
-                    div
-                        .title Secret Key
-                        .data {{ currentService.service.api_key ? currentService.service.api_key.slice(0, 2) + '*'.repeat(currentService.service.api_key.length - 2) + '...' : '-' }}
-                    button.only-icon.gray.edit-btn(type="button" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" @click="editApiKey")
-                        .icon
-                            svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+    br
 
-    .flex-wrap.space-between.bottom-info
-        .card-wrap(style="flex: 2; min-width: 300px;")
+    .flex-wrap.space-between.service-set
+        .card-wrap(style="flex: 2;")
             .card
                 .plan-name 
                     span {{ currentService.service.plan + ' Plan' }}
@@ -111,88 +108,71 @@ section.sec.service-set
             //-         .bar-wrap
             //-             .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
 
-        .card-wrap.toggle-wrap(style="flex: 1; min-width: 300px;")
-            .card
-                .title Service Settings
-                .flex-wrap.space-between.toggle-div
-                    .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;") 
-                        span.label Disable/Enable
-                        Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                            template(v-slot:tool)
-                                svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
-                            template(v-slot:tip)
-                                | When the service is disabled, users cannot access the service.
-                        //- .tooltip-icon
-                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                                template(v-slot:tip)
-                                    | When the service is disabled, users cannot access the service.
-                    Toggle(
-                        style='display:inline-flex;align-items:center;'
-                        :disabled="!user?.email_verified || currentService.service.suspended || updatingValue.enableDisable"
-                        :active="currentService.service.active >= 1"
-                        @click="enableDisable"
-                    )
-                
-                .flex-wrap.space-between.toggle-div
-                    .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
-                        span.label Allow Signup
-                        Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                            template(v-slot:tool)
-                                svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
-                            template(v-slot:tip)
-                                | When signup is disallowed, only the administrator can create accounts.
-                        //- .tooltip-icon
-                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                                template(v-slot:tip)
-                                    | When signup is disallowed, only the administrator can create accounts.
-                    Toggle(
-                        style='display:inline-flex;align-items:center;'
-                        :active='!currentService.service.prevent_signup'
-                        :disabled='updatingValue.prevent_signup'
-                        @click="changeCreateUserMode(!currentService.service.prevent_signup)"
-                    )
+        .toggle-wrap
+            .title Service Settings
+            .flex-wrap.space-between.toggle-div
+                .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;") 
+                    span.label Disable/Enable
+                    Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
+                        template(v-slot:tip)
+                            | When the service is disabled, users cannot access the service.
+                Toggle(
+                    style='display:inline-flex;align-items:center;'
+                    :disabled="!user?.email_verified || currentService.service.suspended || updatingValue.enableDisable"
+                    :active="currentService.service.active >= 1"
+                    @click="enableDisable"
+                )
+            
+            .flex-wrap.space-between.toggle-div
+                .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
+                    span.label Allow Signup
+                    Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
+                        template(v-slot:tip)
+                            | When signup is disallowed, only the administrator can create accounts.
+                Toggle(
+                    style='display:inline-flex;align-items:center;'
+                    :active='!currentService.service.prevent_signup'
+                    :disabled='updatingValue.prevent_signup'
+                    @click="changeCreateUserMode(!currentService.service.prevent_signup)"
+                )
 
-                .flex-wrap.space-between.toggle-div
-                    .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
-                        span.label Prevent Inquiry
-                        Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                            template(v-slot:tool)
-                                svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
-                            template(v-slot:tip)
-                                | When inquiry is prevented, users cannot send inquiries via sendInquiry() to the service.
-                        //- .tooltip-icon
-                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                                template(v-slot:tip)
-                                    | You can prevent users from sending inquiries via sendInquiry() to the service.
-                    Toggle(
-                        style='display:inline-flex;align-items:center;'
-                        :active='currentService.service.prevent_inquiry'
-                        :disabled='updatingValue.prevent_inquiry'
-                        @click="changePreventInquiry(!currentService.service.prevent_inquiry)"
-                    )
+            .flex-wrap.space-between.toggle-div
+                .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
+                    span.label Prevent Inquiry
+                    Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
+                        template(v-slot:tip)
+                            | When inquiry is prevented, users cannot send inquiries via sendInquiry() to the service.
+                Toggle(
+                    style='display:inline-flex;align-items:center;'
+                    :active='currentService.service.prevent_inquiry'
+                    :disabled='updatingValue.prevent_inquiry'
+                    @click="changePreventInquiry(!currentService.service.prevent_inquiry)"
+                )
 
-                .flex-wrap.space-between.toggle-div
-                    .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
-                        span.label Freeze Database
-                        Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                            template(v-slot:tool)
-                                svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
-                            template(v-slot:tip)
-                                | When the database is frozen, users cannot upload any data to the database.
-                        //- .tooltip-icon
-                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                                template(v-slot:tip)
-                                    | You can prevent users from uploading any data to the database by freezing the database.
-                    Toggle(
-                        style='display:inline-flex;align-items:center;'
-                        :active='currentService.service.freeze_database'
-                        :disabled='updatingValue.freeze_database'
-                        @click="changeFreezeDatabase(!currentService.service.freeze_database)"
-                    )
+            .flex-wrap.space-between.toggle-div
+                .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
+                    span.label Freeze Database
+                    Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
+                        template(v-slot:tip)
+                            | When the database is frozen, users cannot upload any data to the database.
+                Toggle(
+                    style='display:inline-flex;align-items:center;'
+                    :active='currentService.service.freeze_database'
+                    :disabled='updatingValue.freeze_database'
+                    @click="changeFreezeDatabase(!currentService.service.freeze_database)"
+                )
 
 Modal(:open="modifyMode.name" @close="modifyMode.name = false")
     .modal-close(@click="modifyMode.name = false;")
@@ -494,28 +474,32 @@ hr {
     background: rgba(255, 255, 255, 0.1);
 }
 
-.tooltip-icon {
-    position: absolute;
-    right: -30px;
-    top: 50%;
-    transform: translateY(-57%);
-    z-index: 1;
+.title {
+    margin-bottom: 10px;
+    opacity: 0.6;
 }
 
-.icon-btn {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 8px;
-    margin: 0 4px;
-    border-radius: 50%;
-    cursor: pointer;
+.service-set {
+    gap: 1.25rem;
+
+    >div {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    @media (max-width: 430px) {
+        gap: 0.75rem;
+
+        >div {
+            min-width: 100%;
+        }
+    }
 }
 
 .plan-name {
     margin-bottom: 20px;
 
     span {
-        // background-color: #77DFA2;
-        // color: #121214;
         font-size: 18px;
         border-radius: 5px;
         font-weight: bold;
@@ -523,12 +507,29 @@ hr {
 }
 
 .toggle-wrap {
+    padding: 20px;
+    border-radius: 13px;
+    background-color: #121214;
+
     .title {
         margin-bottom: 1rem !important;
     }
 
     .toggle-div {
         margin-bottom: 14px;
+
+        .svgIcon {
+            width: 1.25rem;
+            height: 1.25rem;
+            position: relative;
+            top: -2px;
+        }
+
+        ._tooltip {
+            ::v-deep(.tip) {
+                max-width: 9rem;
+            }
+        }
     }
 
     .flex-wrap {
@@ -540,7 +541,6 @@ hr {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    margin-bottom: 20px;
 
     .card {
         position: relative;
@@ -552,12 +552,6 @@ hr {
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
-
-        .title {
-            // font-size: 20px;
-            margin-bottom: 10px;
-            opacity: 0.6;
-        }
 
         .data {
             font-size: 14px;
@@ -600,54 +594,6 @@ hr {
                 font-size: 12px;
             }
         }
-    }
-}
-
-.data {
-    .svgIcon {
-        width: 1.25rem;
-        height: 1.25rem;
-        position: relative;
-        top: -2px;
-    }
-
-    ._tooltip {
-        ::v-deep(.tip) {
-            max-width: 9rem;
-        }
-    }
-}
-
-.sec {
-    &.service-set {
-        margin-top: 2rem;
-
-        .flex-wrap {
-            gap: 1.25rem;
-        }
-    }
-}
-
-.bottom-info {
-    .card-wrap {
-        margin-bottom: 0;
-    }
-}
-
-@media (max-width: 430px) {
-    .sec {
-        &.service-set {
-            margin-top: 1rem;
-
-            .flex-wrap {
-                gap: 0.75rem;
-            }
-        }
-    }
-
-    .card-wrap {
-        gap: 0.75rem;
-        margin-bottom: 0.75rem;
     }
 }
 </style>

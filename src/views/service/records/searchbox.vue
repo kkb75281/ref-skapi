@@ -277,13 +277,6 @@ watch(searchIndexCondition, (nv) => {
     .advanced {
         font-size: 0.8rem;
         user-select: none;
-
-        .infoBox {
-            input {
-                outline: 0;
-                background-color: rgba(0, 0, 0, 0.05);
-            }
-        }
     }
 }
 

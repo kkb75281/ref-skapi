@@ -35,7 +35,7 @@ main#confirmation
         br
 
         .flex-wrap.end
-            button.inline.gray.btn-cancel(type="submit" :class="{disabled: !iUnderstand, red: iUnderstand}" @click='processDelete' style="width: 148px") 
+            button.inline.gray.btn-cancel(type="submit" :disabled="!iUnderstand" :class="{red: iUnderstand}" @click='processDelete' style="width: 148px") 
                 template(v-if="promiseRunning")
                     .loader(style="--loader-color:white; --loader-size:12px")
                 template(v-else) Delete Account

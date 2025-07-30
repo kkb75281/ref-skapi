@@ -44,14 +44,14 @@ section
                     use(xlink:href="@/assets/img/material-icon.svg#icon-x-circle")
                 svg.svgIcon
                     use(xlink:href="@/assets/img/material-icon.svg#icon-search")
-            button.inline.only-icon.gray.search-btn(v-else @click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray.search-btn(v-else @click="searchModalOpen = true" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         .icon
                             svg
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-search")
                     template(v-slot:tip) Search
-            button.inline.only-icon.gray(@click="refresh" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray(@click="refresh" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         .icon
@@ -60,14 +60,14 @@ section
                     template(v-slot:tip) Refresh
 
         .table-actions
-            button.inline.only-icon.gray(@click="()=>{ !user.email_verified ? false : selectedRecord = null; showDetail=true; }" :class="{ disabled : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
+            button.inline.only-icon.gray(@click="()=>{ !user.email_verified ? false : selectedRecord = null; showDetail=true; }" :disabled="showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
                             svg
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-plus")
                     template(v-slot:tip) Add Record
-            button.inline.only-icon.gray(@click="openDeleteRecords=true" :class="{ disabled : !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
+            button.inline.only-icon.gray(@click="openDeleteRecords=true" :disabled="!Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0" )
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
@@ -146,11 +146,11 @@ section
                     td(:colspan="colspan")
 
     .table-page-wrap
-        button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+        button.inline.only-icon.gray(@click="currentPage--;" :disabled="fetching || currentPage <= 1")
             .icon
                 svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-        button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+        button.inline.only-icon.gray(@click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
             .icon
                 svg
                     use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
@@ -599,11 +599,11 @@ let setUpNewPageList = async () => {
         sortBy: callParams?.index?.name || "record_id",
         order:
             callParams?.index?.name &&
-            (callParams?.index?.condition || "").includes("<")
+                (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                ? "asc"
-                : "desc",
+                    ? "asc"
+                    : "desc",
     });
 };
 
@@ -934,13 +934,6 @@ textarea::placeholder {
     .advanced {
         font-size: 0.8rem;
         user-select: none;
-
-        .infoBox {
-            input {
-                outline: 0;
-                background-color: rgba(0, 0, 0, 0.05);
-            }
-        }
     }
 }
 
@@ -949,7 +942,7 @@ textarea::placeholder {
     flex-wrap: wrap;
     justify-content: space-between;
 
-    & > * {
+    &>* {
         margin-bottom: 8px;
     }
 }
@@ -1017,22 +1010,6 @@ label._checkbox svg {
             width: 1.125rem;
             height: 1.125rem;
         }
-    }
-}
-
-.iconClick {
-    font-size: 1rem;
-    font-weight: 500;
-    color: #fff;
-
-    &.square {
-        padding: 0.375rem 0.625rem;
-    }
-
-    .svgIcon {
-        width: 1.125rem;
-        height: 1.125rem;
-        fill: #fff;
     }
 }
 

@@ -11,7 +11,7 @@ br
 
 section
     .middle-title For HTML Projects
-    p.desc Add the following code to your HTML website to get started:
+    p.page-desc Add the following code to your HTML website to get started:
 
     Code(style="margin: 36px 0 60px 0")
         pre.
@@ -21,7 +21,11 @@ section
             #[span(style="color:#999") &lt;/]#[span(style="color:#33adff") script]#[span(style="color:#999") &gt;]
 
     .middle-title For SPA Projects
-    p.desc If you are developing a Single Page Application (SPA), please refer to the following steps:
+    p.page-desc If you are developing a Single Page Application (SPA), please refer to the following steps:
+
+    br
+    br
+
     p(style='margin-bottom: 0') 1. Install the library
 
     Code(style="margin: 16px 0 40px")
@@ -60,10 +64,5 @@ hr {
 p {
     margin: 0;
     margin-bottom: 11px;
-}
-
-.desc {
-    color: #888888;
-    margin-bottom: 30px;
 }
 </style>
