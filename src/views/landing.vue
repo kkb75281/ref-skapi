@@ -3,7 +3,7 @@
 	.bg-blue.hero-bg
 		section.hero
 			.title #[span.linear-gradient Zero-Setup] #[span.wordset Backend API]
-			.desc Skapi is a serverless backend platform that gives frontend developers,no-coders, and product teams everything they need: auth, database,file storage, and real-time APIs.  Launch your app in minutes.
+			.desc Skapi is a serverless backend platform that gives frontend developers, no-coders, and product teams everything they need: auth, database, file storage, and real-time APIs. #[br]Launch your app in minutes.
 			template(v-if="user?.user_id")
 				button(type="button" data-aos="fade-up" data-aos-duration="500" @click="$router.push('/my-services')") Go to My Services
 			router-link(v-else to="/signup")
@@ -553,7 +553,8 @@ section {
     }
 
     .desc {
-        max-width: 43.75rem;
+        // max-width: 43.75rem;
+        max-width: 44.6rem;
         margin: 0 auto;
         line-height: 1.5;
         margin-bottom: 1.875rem;
