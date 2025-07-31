@@ -22,7 +22,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                 template(v-if="isDesktop")
                     template(v-if="user?.user_id")
                         li.list.go-community(ref="communityEl")
-                            .dropdown-container(@mouseenter="showDropdown" @mouseleave="hideDropdown")
+                            .dropdown-container(@mouseenter="showCommunityDropdown" @mouseleave="hideCommunityDropdown")
                                 .ser.dropdown Community
                                     img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
                                 .moreVert.community(ref="moreVert" :style="{ '--moreVert-right': 0, display: communityDropdownVisible ? 'block' : 'none' }")
@@ -45,6 +45,9 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                                         li.item
                                             a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
                                                 img(src="@/assets/img/landingpage/icon_facebook.svg")
+                                        li.item
+                                            a.link(href="https://dev.to/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_devto.svg")
                         li.list.go-docs
                             a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
                                 img(src="@/assets/img/landingpage/icon_docs.svg")
@@ -57,26 +60,27 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                             router-link.ser(to="/my-services") 
                                 img(src="@/assets/img/logo/symbol-logo-white.svg")
                                 | My Services
-                        li.list.user-profile(@click.stop="(e)=>{showDropDown(e)}")
-                            .img-profile-wrap
-                                img(src="@/assets/img/landingpage/icon_profile.svg")
-                            .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
-                                .account 
-                                    span.user-id {{ userEmail.split("@")[0] }}
-                                    | @{{ userEmail.split("@")[1] }}
-                                ul.dropdown-menu
-                                    li.dropdown-list(@click="openBillingPage")
-                                        img(src="@/assets/img/landingpage/icon_billing.svg")
-                                        span Billing
-                                    li.dropdown-list(@click="navigateToPage")
-                                        img(src="@/assets/img/landingpage/icon_setting.svg")
-                                        span Account Settings
-                                    li.dropdown-list(@click="logout")
-                                        img(src="@/assets/img/landingpage/icon_logout.svg")
-                                        span Logout
+                        li.list.user-profile
+                            .dropdown-container(@mouseenter="showProfileDropdown" @mouseleave="hideProfileDropdown")
+                                .img-profile-wrap
+                                    img(src="@/assets/img/landingpage/icon_profile.svg")
+                                .moreVert.profile(ref="moreVert" @click.stop :style="{ '--moreVert-right': 0, display: profileDropdownVisible ? 'block' : 'none' }")
+                                    .account 
+                                        span.user-id {{ userEmail.split("@")[0] }}
+                                        | @{{ userEmail.split("@")[1] }}
+                                    ul.dropdown-menu
+                                        li.dropdown-list(@click="openBillingPage")
+                                            img(src="@/assets/img/landingpage/icon_billing.svg")
+                                            span Billing
+                                        li.dropdown-list(@click="navigateToPage")
+                                            img(src="@/assets/img/landingpage/icon_setting.svg")
+                                            span Account Settings
+                                        li.dropdown-list(@click="logout")
+                                            img(src="@/assets/img/landingpage/icon_logout.svg")
+                                            span Logout
                     template(v-else)
                         li.list.go-community(ref="communityEl")
-                            .dropdown-container(@mouseenter="showDropdown" @mouseleave="hideDropdown")
+                            .dropdown-container(@mouseenter="showCommunityDropdown" @mouseleave="hideCommunityDropdown")
                                 .ser.dropdown Community
                                     img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
                                     .moreVert.community(ref="moreVert" :style="{ '--moreVert-right': 0, display: communityDropdownVisible ? 'block' : 'none' }")
@@ -99,6 +103,9 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                                             li.item
                                                 a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
                                                     img(src="@/assets/img/landingpage/icon_facebook.svg")
+                                            li.item
+                                                a.link(href="https://dev.to/skapi_api" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_devto.svg")
                         li.list.go-docs
                             a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
                                 img(src="@/assets/img/landingpage/icon_docs.svg")
@@ -186,6 +193,9 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                                 li.item
                                     a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
                                         img(src="@/assets/img/landingpage/icon_facebook.svg")
+                                li.item
+                                    a.link(href="https://dev.to/skapi_api" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_devto.svg")
 //- #proceeding(v-if="!running")
     .inner    
         .loader(style="--loader-color:white; --loader-size: 20px")
@@ -219,8 +229,10 @@ const navSecEl = ref(null);
 const navMenuEl = ref(null);
 const communityEl = ref(null);
 const communityDropdownVisible = ref(false);
+const profileDropdownVisible = ref(false);
 let currentRoutePath = ref("");
-let hideTimeout = null;
+let communityHideTimeout = null;
+let profileHideTimeout = null;
 const landingPageRef = ref(null);
 
 const updateServiceName = () => {
@@ -349,18 +361,34 @@ function handleMouseOut(container, selector, event) {
 }
 
 // community dropdown
-const showDropdown = () => {
-    if (hideTimeout) {
-        clearTimeout(hideTimeout);
-        hideTimeout = null;
+const showCommunityDropdown = () => {
+    if (communityHideTimeout) {
+        clearTimeout(communityHideTimeout);
+        communityHideTimeout = null;
     }
     communityDropdownVisible.value = true;
 };
 
-const hideDropdown = () => {
+const hideCommunityDropdown = () => {
     // 약간의 지연을 두어 사용자가 popup으로 마우스를 이동할 시간을 제공
-    hideTimeout = setTimeout(() => {
+    communityHideTimeout = setTimeout(() => {
         communityDropdownVisible.value = false;
+    }, 100);
+};
+
+// profile dropdown
+const showProfileDropdown = () => {
+    if (profileHideTimeout) {
+        clearTimeout(profileHideTimeout);
+        profileHideTimeout = null;
+    }
+    profileDropdownVisible.value = true;
+};
+
+const hideProfileDropdown = () => {
+    // 약간의 지연을 두어 사용자가 popup으로 마우스를 이동할 시간을 제공
+    profileHideTimeout = setTimeout(() => {
+        profileDropdownVisible.value = false;
     }, 100);
 };
 
@@ -417,8 +445,11 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-    if (hideTimeout) {
-        clearTimeout(hideTimeout);
+    if (communityHideTimeout) {
+        clearTimeout(communityHideTimeout);
+    }
+    if (profileHideTimeout) {
+        clearTimeout(profileHideTimeout);
     }
 
     removeListener();

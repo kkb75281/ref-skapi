@@ -5,7 +5,7 @@ section.page-header
         button.inline.icon-text.sm.gray
             img(src="@/assets/img/landingpage/icon_docs.svg")
             | Go Docs
-    
+
 hr
 
 template(v-if='needsEmailAlias')
@@ -17,11 +17,9 @@ template(v-if='needsEmailAlias')
 
     section
         p.page-desc.
-            You can set automated email templates for your service.
-            #[br]
-            To proceed, please register your email alias address that will be used to send out the emails.
-            #[br]
-            The email alias can only be #[span.wordset alphanumeric and hyphen.]
+            You can set automated email templates #[span.wordset for your service.]
+            #[span.wordset To proceed, please register your email alias address #[span.wordset that will be used to send out the emails.]]
+            #[span.wordset The email alias can only be alphanumeric and hyphen.]
 
         form#registerForm(@submit.prevent='registerAlias')
             .email-alias
@@ -111,8 +109,6 @@ template(v-else)
                         svg.svgIcon
                             use(xlink:href="@/assets/img/material-icon.svg#icon-send")
                         span Send
-
-        br
 
     section.table-area
         .table-menu-wrap
@@ -862,14 +858,13 @@ init();
 </script>
 
 <style lang="less" scoped>
-section {
-    position: relative;
+.page-desc {
+    text-align: center;
+    margin: 2rem auto;
+    max-width: 620px;
 }
 
 .txt-required {
-    // position: absolute;
-    // top: -1rem;
-    // right: 14px;
     margin-right: 14px;
 }
 
@@ -880,6 +875,7 @@ section {
     justify-content: space-between;
     gap: 10px;
     max-width: 620px;
+    margin: 0 auto;
 
     .email-alias {
         position: relative;

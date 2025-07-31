@@ -69,7 +69,7 @@ section
                             svg
                                 use(xlink:href="@/assets/img/material-icon.svg#icon-plus")
                     template(v-slot:tip) Create User
-            button.inline.only-icon.gray.sm(@click="currentService.plan == 'Trial' ? (openUpgrade = true) : (openInviteUser = true)" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
+            button.inline.only-icon.gray.sm(@click="currentService.plan == 'Trial' ? (serviceUpgradeOffer = true) : (openInviteUser = true)" :class="{'trial' : currentService.plan == 'Trial'}" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
@@ -578,17 +578,6 @@ Modal(:open="openDeleteUser", @close="openDeleteUser = false")
       button.gray.btn-cancel(type="button" @click="openDeleteUser = false;") Cancel
       button.red.btn-delete(type="button", @click="deleteUser") Delete
 
-//- modal :: upgrade service
-Modal(:open="openUpgrade", @close="openUpgrade = false")
-  .modal-title Upgrade
-
-  .modal-desc You can access more features like sending newsletters, #[br] inviting users and file hosting by upgrading your service. #[br]Would you like you check out our service plans?
-
-  .modal-btns
-    button.gray.btn-cancel(type="button", @click="openUpgrade = false") No
-    router-link(:to="`/subscription/${currentService.id}`" style="display: inline-block; width: 100%")
-      button.btn-upgrade(type="button") Yes
-
 //- modal :: show user detail
 Modal.modal-scroll.modal-detailUser(:open="showDetail" @close="closeModalUser")
     form.modal-container(@submit.prevent='upload')
@@ -627,7 +616,7 @@ import {
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { showDropDown } from "@/assets/js/event.js";
-import { currentService, serviceUsers } from "@/views/service/main";
+import { currentService, serviceUsers, serviceUpgradeOffer } from "@/views/service/main";
 import { Countries } from "@/code/countries";
 import { devLog } from "@/code/logger";
 import UserDetails from "./showDetail.vue";
@@ -905,7 +894,6 @@ let openCreateUser = ref(false);
 let openBlockUser = ref(false);
 let openUnblockUser = ref(false);
 let openDeleteUser = ref(false);
-let openUpgrade = ref(false);
 let openGrantAccess = ref(false);
 let successGrantAccess = ref(false);
 let gender_public = ref(false);
@@ -1452,6 +1440,16 @@ body {
 
 .label {
     position: relative;
+}
+
+button {
+    &.trial {
+        background-color: rgba(34, 35, 37, 0.6);
+
+        .icon {
+            opacity: 0.6;
+        }
+    }
 }
 
 #createForm {

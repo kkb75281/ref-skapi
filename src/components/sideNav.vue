@@ -1,7 +1,7 @@
 <template lang="pug">
 .sideNav(:class="{'mobile': isMobile}")
     .service-plan-name
-        span.plan(:class="currentService.plan.toLowerCase()") {{ currentService.plan }}
+        span.plan(:class="currentService.plan.toLowerCase()") {{ currentService.plan.includes('Perpetual') ? currentService.plan.split(' ')[0] : currentService.plan }}
         .name {{ currentService.service.name }}
     router-link.router(:to="`/my-services/${currentService.id}`" :class="{'active': route.name == 'service'}" @click="emit('closeMobileMenu');")
         svg
@@ -110,6 +110,7 @@ onUnmounted(() => {
 
         .plan {
             color: #000;
+            background-color: #888;
             font-size: 11px;
             padding: 4px 8px;
             border-radius: 5px;

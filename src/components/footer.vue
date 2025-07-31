@@ -43,6 +43,8 @@ footer#footer(:class="{ 'service-main-footer': currentRoutePath === 'my-services
                         img(src="@/assets/img/landingpage/icon_linkedin.svg")
                     a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
                         img(src="@/assets/img/landingpage/icon_facebook.svg")
+                    a.link(href="https://dev.to/skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_devto.svg")
     template(v-else)
         .footer-wrap
             .left
@@ -66,7 +68,9 @@ footer#footer(:class="{ 'service-main-footer': currentRoutePath === 'my-services
                         img(src="@/assets/img/landingpage/icon_linkedin.svg")
                     a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
                         img(src="@/assets/img/landingpage/icon_facebook.svg")
-            
+                    a.link(href="https://dev.to/skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_devto.svg")
+
 </template>
 <script setup>
 import { onMounted, onUnmounted, ref, watch } from "vue";

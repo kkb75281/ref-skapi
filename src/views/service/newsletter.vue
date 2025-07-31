@@ -8,44 +8,79 @@ section.page-header
 
 hr
 
-section
-    .error(v-if='!user?.email_verified')
-        svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
-        router-link(to="/account-setting") Please verify your email address to modify settings.
+template(v-if='needsEmailAlias')
+    section
+        .error(v-if='!user?.email_verified')
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            router-link(to="/account-setting") Please verify your email address to modify settings.
 
-section
-    ul.tab-menu
-        li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
+    section
+        p.page-desc.
+            You can send bulk emails to your newsletter subscribers.
+            #[span.wordset To proceed, please register your email alias address that will be used to send out the emails.]
+            #[span.wordset The email alias can only be alphanumeric and hyphen.]
+        
+        form#registerForm(@submit.prevent='registerAlias')
+            .email-alias
+                input.block(v-model='emailAliasVal' pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' :disabled="registerAliasRunning" placeholder="your-email-alias" required)
 
-    .desc-wrap
-        template(v-if='mailType === "Newsletter"')
-            p.
-                Once the users have subscribed #[span.wordset to your newsletter,]
-                #[br] they will be able to receive your emails sent to the address provided below:
-        template(v-else)
-            p.
-                Once the users have subscribed to your service mail,
-                they will be able to receive your emails sent to the address provided below:
+            button.inline( :disabled='registerAliasRunning')
+                template(v-if="registerAliasRunning")
+                    .loader(style="--loader-color:white; --loader-size:12px")
+                template(v-else)
+                    | Register
 
-            p(style="max-width: 23.75rem;").
-                User must be logged in to subscribe to Service Mail,
-                and the user must have their email verified.
+template(v-else)
+    section
+        .error(v-if='!user?.email_verified')
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            router-link(to="/account-setting") Please verify your email address to modify settings.
+        
+        .error(v-else-if='currentService.service.active == 0')
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            span This service is currently disabled.
 
-    .email-btn-wrap
-        span.email {{ newsletterEndpoint || '...' }}
-        .flex-wrap.center.btn-wrap
-            button.inline.icon-text.gray.sm.btn-copy(@click="copyToClipboard(newsletterEndpoint)")
-                svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-copy")
-                span Copy
-            a(:href="'mailto:' + newsletterEndpoint" target="_blank")
-                button.inline.icon-text.gray.sm.btn-send
+        .error(v-else-if='currentService.service.active < 0')
+            svg
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            span This service is currently suspended.
+
+    section
+        ul.tab-menu
+            li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
+
+        .desc-wrap
+            template(v-if='mailType === "Newsletter"')
+                p.
+                    Once the users have subscribed #[span.wordset to your newsletter,]
+                    #[br]
+                    they will be able to receive your emails sent to the address provided below:
+            template(v-else)
+                p.
+                    Once the users have subscribed to your service mail,
+                    they will be able to receive your emails sent to the address provided below:
+
+                p(style="max-width: 23.75rem;").
+                    User must be logged in to subscribe to Service Mail,
+                    and the user must have their email verified.
+
+        .email-btn-wrap
+            .email {{ newsletterEndpoint || '...' }}
+
+            .flex-wrap.center.btn-wrap
+                button.inline.icon-text.gray.sm.btn-copy(@click="copyToClipboard(newsletterEndpoint)")
                     svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-send")
-                    span Send
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-copy")
+                    span Copy
+                a(:href="'mailto:' + newsletterEndpoint" target="_blank")
+                    button.inline.icon-text.gray.sm.btn-send
+                        svg.svgIcon
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-send")
+                        span Send
 
-template(v-if='!needsEmailAlias')
     section.table-area
         .table-menu-wrap
             .table-functions
@@ -69,100 +104,94 @@ template(v-if='!needsEmailAlias')
                                     use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
                         template(v-slot:tip) Delete Selected
 
-    Table(:class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
-        template(v-slot:head)
-            tr(:class="{'nonClickable' : fetching}")
-                th.fixed(style='width:60px;')
-                    Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.url] = d)); else checked = {}; }" style="display:inline-block")
-                    .resizer.fixed
-                th(style='width: 250px;')
-                    span(@click='toggleSort("subject")')
-                        | Subject
-                        //- span.material-symbols-outlined.notranslate.fill(v-if='searchFor === "subject"') {{ascending ? 'arrow_drop_down' : 'arrow_drop_up'}}
-                        svg.svgIcon(v-if='searchFor === "subject" && ascending' style="fill: black")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
-                        svg.svgIcon(v-if='searchFor === "subject" && !ascending' style="fill: black")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
-                    .resizer
-                th(style='width: 120px;')
-                    span(@click='toggleSort("timestamp")')
-                        | Sent
-                        //- span.material-symbols-outlined.notranslate.fill(v-if='searchFor === "timestamp"') {{ascending ? 'arrow_drop_down' : 'arrow_drop_up'}}
-                        svg.svgIcon(v-if='searchFor === "timestamp" && ascending' style="fill: black")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
-                        svg.svgIcon(v-if='searchFor === "timestamp" && !ascending' style="fill: black")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
-                    .resizer
-                th(style='width: 120px;')
-                    span(@click='toggleSort("read")')
-                        | Reads
-                        //- span.material-symbols-outlined.notranslate.fill(v-if='searchFor === "read"') {{ascending ? 'arrow_drop_down' : 'arrow_drop_up'}}
-                        svg.svgIcon(v-if='searchFor === "read" && ascending' style="fill: black")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
-                        svg.svgIcon(v-if='searchFor === "read" && !ascending' style="fill: black")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
-                    .resizer
-                th(style='width: 120px;')
-                    span(@click='toggleSort("complaint")')
-                        | Complaint
-                        //- span.material-symbols-outlined.notranslate.fill(v-if='searchFor === "complaint"') {{ascending ? 'arrow_drop_down' : 'arrow_drop_up'}}
-                        svg.svgIcon(v-if='searchFor === "complaint" && ascending' style="fill: black")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
-                        svg.svgIcon(v-if='searchFor === "complaint" && !ascending' style="fill: black")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
-                    .resizer
-                th(style='width: 120px;')
-                    span(@click='toggleSort("bounced")')
-                        | Bounced
-                        //- span.material-symbols-outlined.notranslate.fill(v-if='searchFor === "bounced"') {{ascending ? 'arrow_drop_down' : 'arrow_drop_up'}}
-                        svg.svgIcon(v-if='searchFor === "bounced" && ascending' style="fill: black")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
-                        svg.svgIcon(v-if='searchFor === "bounced" && !ascending' style="fill: black")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
-                th.center(style="width:60px; padding:0")
+        Table(:class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
+            template(v-slot:head)
+                tr(:class="{'nonClickable' : fetching}")
+                    th.fixed(style='width:60px;')
+                        Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.url] = d)); else checked = {}; }" style="display:inline-block")
+                        .resizer.fixed
+                    th(style='width: 250px;')
+                        span(@click='toggleSort("subject")')
+                            | Subject
+                            svg.svgIcon(v-if='searchFor === "subject" && ascending' style="fill: black")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                            svg.svgIcon(v-if='searchFor === "subject" && !ascending' style="fill: black")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                        .resizer
+                    th(style='width: 120px;')
+                        span(@click='toggleSort("timestamp")')
+                            | Sent
+                            svg.svgIcon(v-if='searchFor === "timestamp" && ascending' style="fill: black")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                            svg.svgIcon(v-if='searchFor === "timestamp" && !ascending' style="fill: black")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                        .resizer
+                    th(style='width: 120px;')
+                        span(@click='toggleSort("read")')
+                            | Reads
+                            svg.svgIcon(v-if='searchFor === "read" && ascending' style="fill: black")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                            svg.svgIcon(v-if='searchFor === "read" && !ascending' style="fill: black")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                        .resizer
+                    th(style='width: 120px;')
+                        span(@click='toggleSort("complaint")')
+                            | Complaint
+                            svg.svgIcon(v-if='searchFor === "complaint" && ascending' style="fill: black")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                            svg.svgIcon(v-if='searchFor === "complaint" && !ascending' style="fill: black")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                        .resizer
+                    th(style='width: 120px;')
+                        span(@click='toggleSort("bounced")')
+                            | Bounced
+                            svg.svgIcon(v-if='searchFor === "bounced" && ascending' style="fill: black")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                            svg.svgIcon(v-if='searchFor === "bounced" && !ascending' style="fill: black")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                    th.center(style="width:60px; padding:0")
 
-        template(v-slot:body)
-            template(v-if="fetching")
-                tr.empty-value
-                    td#loading(colspan="6").
-                        Loading {{mailType}} ... &nbsp;
-                        #[.loader(style="--loader-color:white; --loader-size:12px")]
-                tr(v-for="i in 9")
-                    td(colspan="6")
-            template(v-else-if="!listDisplay || listDisplay.length === 0")
-                tr.empty-value
-                    td(colspan="6") No {{mailType}} Sent
-                tr(v-for="i in 9")
-                    td(colspan="6")
-            template(v-else)
-                tr.hoverRow(v-for="ns in listDisplay" @click='openNewsletter(ns.url)')
-                    td
-                        Checkbox(@click.stop
-                            :modelValue="!!checked?.[ns?.url]"
-                            @update:modelValue="(value) => { if (value) checked[cs?.url] = value; else delete checked[ns?.url]; }"
-                            )
-                    td.overflow {{ converter(ns.subject) }}
-                    td.overflow {{ dateFormat(ns.timestamp) }}
-                    td.overflow {{ ns.read }}
-                    td.overflow {{ ns.complaint }}
-                    td.overflow {{ ns.bounced }}
-                    td.center.buttonWrap(@click.stop)
-                        //- .material-symbols-outlined.notranslate.fill.clickable.dangerIcon.hide(@click.stop="emailToDelete = ns") delete
-                        svg.svgIcon.reactiveDanger.clickable.hide(@click.stop="emailToDelete = ns")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
-                        
-                tr(v-for="i in (10 - listDisplay.length)")
-                    td(colspan="6")
+            template(v-slot:body)
+                template(v-if="fetching")
+                    tr.empty-value
+                        td#loading(colspan="6").
+                            Loading {{mailType}} ... &nbsp;
+                            #[.loader(style="--loader-color:white; --loader-size:12px")]
+                    tr(v-for="i in 9")
+                        td(colspan="6")
+                template(v-else-if="!listDisplay || listDisplay.length === 0")
+                    tr.empty-value
+                        td(colspan="6") No {{mailType}} Sent
+                    tr(v-for="i in 9")
+                        td(colspan="6")
+                template(v-else)
+                    tr.hoverRow(v-for="ns in listDisplay" @click='openNewsletter(ns.url)')
+                        td
+                            Checkbox(@click.stop
+                                :modelValue="!!checked?.[ns?.url]"
+                                @update:modelValue="(value) => { if (value) checked[cs?.url] = value; else delete checked[ns?.url]; }"
+                                )
+                        td.overflow {{ converter(ns.subject) }}
+                        td.overflow {{ dateFormat(ns.timestamp) }}
+                        td.overflow {{ ns.read }}
+                        td.overflow {{ ns.complaint }}
+                        td.overflow {{ ns.bounced }}
+                        td.center.buttonWrap(@click.stop)
+                            svg.svgIcon.reactiveDanger.clickable.hide(@click.stop="emailToDelete = ns")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                            
+                    tr(v-for="i in (10 - listDisplay.length)")
+                        td(colspan="6")
 
-    .table-page-wrap
-        button.inline.only-icon.gray(@click="currentPage--;" :disabled="fetching || currentPage <= 1")
-            .icon
-                svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-        button.inline.only-icon.gray(@click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
-            .icon
-                svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+        .table-page-wrap
+            button.inline.only-icon.gray(@click="currentPage--;" :disabled="fetching || currentPage <= 1")
+                .icon
+                    svg
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
+            button.inline.only-icon.gray(@click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
+                .icon
+                    svg
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
 
 //- modal :: delete email
 Modal.modal-deleteEmail(:open="emailToDelete" @close="emailToDelete=false")
@@ -600,22 +629,31 @@ thead {
     }
 }
 
-form.register {
+.page-desc {
+    text-align: center;
+    margin: 2rem auto;
+    max-width: 620px;
+}
+
+#registerForm {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    max-width: 620px;
+    margin: 0 auto;
 
-    .emailAlias {
-        display: inline-block;
+    .email-alias {
         position: relative;
-        height: 44px;
+        flex-grow: 1;
 
         &::after {
             content: "@mail.skapi.com";
             position: absolute;
             right: 20px;
-            line-height: 44px;
+            top: 50%;
+            transform: translateY(-50%);
             color: #999;
             font-size: 0.8rem;
             font-weight: 400;
@@ -627,17 +665,17 @@ form.register {
         input {
             padding-right: 132px;
         }
-
-        flex-grow: 1;
-    }
-
-    svg:hover {
-        border-radius: 50%;
-        background-color: rgba(41, 63, 230, 0.1);
     }
 
     button {
-        flex-shrink: 0;
+        width: 92px;
+    }
+
+    @media (max-width: 540px) {
+        button {
+            width: 100%;
+            max-width: 100%;
+        }
     }
 }
 

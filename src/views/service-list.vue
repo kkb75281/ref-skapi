@@ -77,7 +77,7 @@ template(v-else)
                             td.plan
                                 .state(v-if="serviceList[id].service.subs_id && !serviceList[id].subscription")
                                     .loader(style="--loader-color:white; --loader-size:12px")
-                                span.badge(v-else :class="serviceList[id].plan?.toLowerCase().split(' ')[0]") {{ serviceList[id].service.plan || serviceList[id].plan }}
+                                span.badge(v-else :class="serviceList[id].plan?.toLowerCase().split(' ')[0]") {{ serviceList[id].plan.includes('Perpetual') ? serviceList[id].plan.split(' ')[0] : serviceList[id].plan }}
                             td.state
                                 span.running(v-if="serviceList[id].service.active > 0") Running
                                 span.disabled(v-else-if="serviceList[id].service.active == 0") Disabled

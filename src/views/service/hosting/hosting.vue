@@ -29,10 +29,8 @@ template(v-if='!currentService.service.subdomain' :class='{nonClickable: email_i
     section
         p.page-desc.
             File hosting service let you host files and static websites.
-            #[br]
-            #[span.wordset To host your public files, please register a subdomain.]
-            #[br]
-            The subdomain can only be #[span.wordset alphanumeric and hyphen,] should be at least #[span.wordset 6 characters] minimum and #[span.wordset max 32 characters.]
+            To host your public files, please register a subdomain.
+            The subdomain can only be alphanumeric and hyphen, #[span.wordset should be at least 6 characters minimum and max 32 characters.]
 
         form#registerForm(@submit.prevent='registerSubdomain')
             .email-alias
@@ -897,6 +895,12 @@ watch(ascending, () => {
 </script>
 
 <style lang="less" scoped>
+.page-desc {
+    max-width: 620px;
+    margin: 2rem auto;
+    text-align: center;
+}
+
 #registerForm {
     display: flex;
     flex-wrap: wrap;
@@ -904,6 +908,7 @@ watch(ascending, () => {
     justify-content: space-between;
     gap: 10px;
     max-width: 620px;
+    margin: 0 auto;
 
     .email-alias {
         position: relative;
