@@ -4,13 +4,13 @@ label._checkbox(:class="{'nonClickable' : disabled}" :style='{opacity: disabled 
     input(type="checkbox" :checked='modelValue' @input.stop="e=>{$emit('update:modelValue', e.target.checked)}" :disabled="disabled" :name="name" hidden)
     template(v-if="modelValue === null")
         svg.svgIcon.white(:class='{fill:modelValue !== null}')
-            use(xlink:href="@/assets/img/material-icon.svg#icon-minus-square")
+            use(xlink:href="/material-icon.svg#icon-minus-square")
     template(v-else-if="modelValue")
         svg.svgIcon.white(:class='{fill:modelValue !== null}')
-            use(xlink:href="@/assets/img/material-icon.svg#icon-check-square")
+            use(xlink:href="/material-icon.svg#icon-check-square")
     template(v-else)
         svg.svgIcon.white(:class='{fill:modelValue !== null}')
-            use(xlink:href="@/assets/img/material-icon.svg#icon-square")
+            use(xlink:href="/material-icon.svg#icon-square")
 
     div
         slot

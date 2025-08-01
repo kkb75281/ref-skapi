@@ -6,10 +6,10 @@ template(v-if="visible")
                 #create
                     .btn-prev(v-if="step > 1")
                         svg.svgIcon(@click="step--")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-left")
+                            use(xlink:href="/material-icon.svg#icon-arrow-left")
                     .btn-close(@click="handleClose" :style="isFirstService ? {display: 'none'} : {}")
                         svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
+                            use(xlink:href="/material-icon.svg#icon-x")
 
                     .form(v-if="step === 1")
                         h3.title
@@ -31,7 +31,7 @@ template(v-if="visible")
                         input.block(placeholder="Service name (Max 40 chars)" maxlength="40" required v-model="newServiceName" style="margin-bottom: 0.75rem;")
                         button.block.icon-text(type="button" :disabled="!newServiceName" :style="!newServiceName ? { backgroundColor: 'rgba(34, 35, 37, 1)' } : {}" @click="step++")
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-plus") 
+                                use(xlink:href="/material-icon.svg#icon-plus") 
                             span Create
 
                     .step-plan(v-else-if="step === 2")
@@ -39,7 +39,7 @@ template(v-if="visible")
                         .plan-wrap
                             .plan-item.blue(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
                                 svg.mark
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+                                    use(xlink:href="/material-icon.svg#icon-card-mark")
                                 .top
                                     .title Trial
                                     .desc Best for testing and prototyping.
@@ -67,7 +67,7 @@ template(v-if="visible")
 
                             .plan-item.green(:class="{'selected' : (serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'standard' && serviceMode !== 'standard-perpetual') && promiseRunning}")
                                 svg.mark
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+                                    use(xlink:href="/material-icon.svg#icon-card-mark")
                                 .top
                                     .title Standard
                                     .desc Suit best for small businesses, MVP, small projects, etc.
@@ -100,7 +100,7 @@ template(v-if="visible")
                                         li(v-for="(des) in planSpec['Standard'].description") {{ des }}
                             .plan-item.yellow(:class="{'selected' : (serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'premium' && serviceMode !== 'premium-perpetual') && promiseRunning}")
                                 svg.mark
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+                                    use(xlink:href="/material-icon.svg#icon-card-mark")
                                 .top
                                     .title Premium 
                                     .desc Suit best for huge projects, Saas, social media, AI application, etc.

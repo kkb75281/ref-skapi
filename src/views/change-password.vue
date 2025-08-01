@@ -7,7 +7,7 @@
         .page-title Change Password
     template(v-else)
         svg.svgIcon(style="height: 50px; width: 50px; margin-bottom: .625rem")
-            use(xlink:href="@/assets/img/material-icon.svg#icon-check-circle")
+            use(xlink:href="/material-icon.svg#icon-check-circle")
 
         .page-title Success
 
@@ -34,14 +34,14 @@
                 //- .passwordIcon(@click="showPassword = !showPassword")
                 //-     template(v-if="showPassword")
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
                 //-     template(v-else)
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
             .error(v-if="error")
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-error")
+                    use(xlink:href="/material-icon.svg#icon-error")
                 span {{ error }}
 
             br
@@ -69,11 +69,11 @@
                 //- .passwordIcon(@click="showNewPassword = !showNewPassword")
                 //-     template(v-if="showNewPassword")
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
                         
                 //-     template(v-else)
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
             label.passwordInput
                 | Confirm new password
@@ -90,14 +90,14 @@
                 //- .passwordIcon(@click="showConfirmPassword = !showConfirmPassword")
                 //-     template(v-if="showConfirmPassword")
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
                 //-     template(v-else)
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
             .error(v-if="error")
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-error")
+                    use(xlink:href="/material-icon.svg#icon-error")
                 span {{ error }}
 
             br

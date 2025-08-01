@@ -2,7 +2,7 @@
 main#confirmation 
     button.inline.icon-text.dark.btn-prev(type="button" @click="router.push('/my-services/' + serviceId + '/dashboard')")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-left")
+            use(xlink:href="/material-icon.svg#icon-arrow-left")
         span Back
 
     br

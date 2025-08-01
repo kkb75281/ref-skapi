@@ -11,17 +11,17 @@ hr
 section
     .error(v-if='!user?.email_verified')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         router-link(to="/account-setting") Please verify your email address to modify settings.
 
     .error(v-else-if='currentService.service.active == 0')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently disabled.
 
     .error(v-else-if='currentService.service.active < 0')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently suspended.
 
 section
@@ -32,7 +32,7 @@ section
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-columns")
+                                use(xlink:href="/material-icon.svg#icon-columns")
                     template(v-slot:tip) Show Columns
 
                 .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
@@ -44,7 +44,7 @@ section
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                                use(xlink:href="/material-icon.svg#icon-refresh")
                     template(v-slot:tip) Refresh
         .table-actions
             button.inline.only-icon.gray(aria-label="Add Key" @click="openDetailModal(addClient, -1)" :disabled="!user?.email_verified || currentService.service.active <= 0")
@@ -52,14 +52,14 @@ section
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-plus")
+                                use(xlink:href="/material-icon.svg#icon-plus")
                     template(v-slot:tip) Add Key
             button.inline.only-icon.gray(aria-label="Delete Selected" @click="showDeleteMsg=true" :disabled="!Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                                use(xlink:href="/material-icon.svg#icon-delete")
                     template(v-slot:tip) Delete Selected
 
     Table(:key="tableKey" :class="{disabled : !user?.email_verified || currentService.service.active <= 0}" resizable)
@@ -93,7 +93,7 @@ section
                             td.overflow(v-if="c.key === 'client_secret'") {{ cs.client_secret ? cs.client_secret.slice(0,2) + '*'.repeat(cs.client_secret.length - 2) : '' }}
                             td.overflow(v-if="c.key === 'locked'")
                                 svg.svgIcon(v-if="cs?.locked" style="fill: white")
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-check")
+                                    use(xlink:href="/material-icon.svg#icon-check")
 
                 tr.nohover(v-for="i in 10 - Object.keys(listDisplay || {}).length")
                     td(:colspan="colspan")
@@ -102,11 +102,11 @@ section
         button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
+                    use(xlink:href="/material-icon.svg#icon-chevron-left")
         button.inline.only-icon.gray(aria-label="Next" @click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+                    use(xlink:href="/material-icon.svg#icon-chevron-right")
 
 // modal :: client secret key detail (edit/add)
 Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModal")
@@ -115,7 +115,7 @@ Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModa
             h4.title Client Secret Key
             button.btn-close(type="button" @click="closeDetailModal")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-x")
+                    use(xlink:href="/material-icon.svg#icon-x")
         .modal-body
             .content(v-if="showDetail")
                 label.row
@@ -131,7 +131,7 @@ Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModa
                         Tooltip(tip-background-color="var(--main-color)" text-color="white")
                             template(v-slot:tool)
                                 svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
+                                    use(xlink:href="/material-icon.svg#icon-help-circle")
                             template(v-slot:tip)
                                 | When LOCKED only signed users can have access to the client secret key.
                     .value

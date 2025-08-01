@@ -5,37 +5,37 @@
         .name {{ currentService.service.name }}
     router-link.router(:to="`/my-services/${currentService.id}`" :class="{'active': route.name == 'service'}" @click="emit('closeMobileMenu');")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-home")
+            use(xlink:href="/material-icon.svg#icon-nav-home")
         span.name Getting Started
         
     router-link.router(:to="`/my-services/${currentService.id}/dashboard`" :class="{'active': route.name == 'dashboard'}" @click="emit('closeMobileMenu');")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-setting")
+            use(xlink:href="/material-icon.svg#icon-nav-setting")
         span.name Service Settings
 
     router-link.router(:to="`/my-services/${currentService.id}/users`" :class="{'active': route.name == 'users'}" @click="emit('closeMobileMenu');")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-users")
+            use(xlink:href="/material-icon.svg#icon-nav-users")
         span.name Users
     
     router-link.router(:to="`/my-services/${currentService.id}/openid`" :class="{'active': route.name == 'openid'}" @click="emit('closeMobileMenu');")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-user-shield")
+            use(xlink:href="/material-icon.svg#icon-nav-user-shield")
         span.name OpenID Logger
 
     router-link.router(:to="`/my-services/${currentService.id}/clientsecret`" :class="{'active': route.name == 'clientsecret'}" @click="emit('closeMobileMenu');")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-lock")
+            use(xlink:href="/material-icon.svg#icon-nav-lock")
         span.name Client Secret Key
 
     router-link.router(:to="`/my-services/${currentService.id}/records`" :class="{'active': route.name == 'records'}" @click="emit('closeMobileMenu');")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-database")
+            use(xlink:href="/material-icon.svg#icon-nav-database")
         span.name Database
 
     router-link.router(:to="`/my-services/${currentService.id}/mail`" :class="{'active': route.name == 'mail'}" @click="emit('closeMobileMenu');")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-nav-mail")
+            use(xlink:href="/material-icon.svg#icon-nav-mail")
         span.name Automated Email
 
     .advanced-router
@@ -46,7 +46,7 @@
 
             .router.disabled(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}" @click="emit('closeMobileMenu');")
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-hosting")
+                    use(xlink:href="/material-icon.svg#icon-nav-hosting")
                 span.name File Hosting
 
         template(v-else)
@@ -56,7 +56,7 @@
 
             router-link.router(:to="`/my-services/${currentService.id}/hosting`" :class="{'active': route.name == 'hosting'}" @click="emit('closeMobileMenu');")
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-nav-hosting")
+                    use(xlink:href="/material-icon.svg#icon-nav-hosting")
                 span.name File Hosting
 </template>
 

@@ -3,7 +3,7 @@
     button(type='button')
         span {{ showValue }}
         svg.svgIcon.black()
-            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+            use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
 
     .moreVert(style="--moreVert-left:0;display:none;--moreVert-width:100%")
         .inner
