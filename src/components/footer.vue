@@ -320,6 +320,14 @@ onUnmounted(() => {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
+
+            .link {
+                img {
+                    width: 2.25rem;
+                    height: 2.25rem;
+                }
+            }
+
         }
     }
 
@@ -397,6 +405,13 @@ onUnmounted(() => {
             right: -7px;
             bottom: -8px;
             text-align: end;
+
+            .link {
+                img {
+                    width: 2.25rem;
+                    height: 2.25rem;
+                }
+            }
         }
     }
 }

@@ -47,7 +47,7 @@ template(v-if="visible")
                                         TabMenu(v-model="activeTabs.trial" :tabs="['basic']")
                                 .middle
                                     .price Free
-                                        //- .faktum {{ '$' + planSpec['Trial'].price }}
+                                        //- .num {{ '$' + planSpec['Trial'].price }}
                                         //- span /mo
                                     button.block(type="button" :disabled="promiseRunning" @click="selectedPlan('trial')") 
                                         template(v-if="serviceMode == 'trial' && promiseRunning")
@@ -76,10 +76,10 @@ template(v-if="visible")
                                 .middle
                                     .price
                                         template(v-if="activeTabs.standard === 0") 
-                                            .faktum {{ '$' + planSpec['Standard'].price }}
+                                            .num {{ '$' + planSpec['Standard'].price }}
                                             span /mon
                                         template(v-else)
-                                            .faktum {{ '$' + planSpec['Standard (Perpetual License)'].price }}
+                                            .num {{ '$' + planSpec['Standard (Perpetual License)'].price }}
                                             span /only-once
                                     button.block(type="button" :disabled="promiseRunning" @click="selectedPlan('standard')")
                                         template(v-if="(serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning")
@@ -109,10 +109,10 @@ template(v-if="visible")
                                 .middle
                                     .price
                                         template(v-if="activeTabs.premium === 0") 
-                                            .faktum {{ '$' + planSpec['Premium'].price }}
+                                            .num {{ '$' + planSpec['Premium'].price }}
                                             span /mon
                                         template(v-else)
-                                            .faktum {{ '$' + planSpec['Premium (Perpetual License)'].price }}
+                                            .num {{ '$' + planSpec['Premium (Perpetual License)'].price }}
                                             span /only-once
                                     //- .desc Empower your business with formcarry, #[span.wordset for big businesses]
                                     button.block(type="button" :disabled="promiseRunning" @click="selectedPlan('premium')")
