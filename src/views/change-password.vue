@@ -7,7 +7,7 @@
         .page-title Change Password
     template(v-else)
         svg.svgIcon(style="height: 50px; width: 50px; margin-bottom: .625rem")
-            use(xlink:href="@/assets/img/material-icon.svg#icon-check-circle" alt="Check Circle Icon")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-check-circle")
 
         .page-title Success
 
@@ -41,7 +41,7 @@
 
             .error(v-if="error")
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-error" alt="Error Icon")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-error")
                 span {{ error }}
 
             br
@@ -97,7 +97,7 @@
 
             .error(v-if="error")
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-error" alt="Error Icon")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-error")
                 span {{ error }}
 
             br

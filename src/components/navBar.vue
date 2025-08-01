@@ -38,7 +38,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                                                 img(src="@/assets/img/landingpage/icon_youtube.svg" alt="YouTube icon")
                                         li.item
                                             a.link(href="https://x.com/skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_x.svg" alt="X icon")
+                                                img(src="@/assets/img/landingpage/icon_x.svg" alt="X (formerly Twitter) icon")
                                         li.item
                                             a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
                                                 img(src="@/assets/img/landingpage/icon_linkedin.svg" alt="LinkedIn icon")
@@ -96,7 +96,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                                                     img(src="@/assets/img/landingpage/icon_youtube.svg" alt="YouTube icon")
                                             li.item
                                                 a.link(href="https://x.com/skapi_api" target="_blank")
-                                                    img(src="@/assets/img/landingpage/icon_x.svg" alt="X icon")
+                                                    img(src="@/assets/img/landingpage/icon_x.svg" alt="X (formerly Twitter) icon")
                                             li.item
                                                 a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
                                                     img(src="@/assets/img/landingpage/icon_linkedin.svg" alt="LinkedIn icon")
@@ -186,7 +186,7 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                                         img(src="@/assets/img/landingpage/icon_youtube.svg" alt="YouTube icon")
                                 li.item
                                     a.link(href="https://x.com/skapi_api" target="_blank")
-                                        img(src="@/assets/img/landingpage/icon_x.svg" alt="X icon")
+                                        img(src="@/assets/img/landingpage/icon_x.svg" alt="X (formerly Twitter) icon")
                                 li.item
                                     a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
                                         img(src="@/assets/img/landingpage/icon_linkedin.svg" alt="LinkedIn icon")

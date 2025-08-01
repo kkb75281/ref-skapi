@@ -57,7 +57,7 @@
 
         .error(v-if="error")
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-error" alt="Error Icon")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-error")
             span {{ error }}
         
         br
