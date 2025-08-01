@@ -1,7 +1,7 @@
 <template lang="pug">
 #verify
     router-link(to="/")
-        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px; margin-bottom: .625rem")
+        img(src="@/assets/img/logo/symbol-logo.png" alt="Skapi Logo" style="width: 40px; margin-bottom: .625rem")
 
     .page-title Enable Account
 

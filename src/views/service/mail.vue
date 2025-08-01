@@ -3,7 +3,7 @@ section.page-header
     .page-title Automated Email
     a.btn-docs(href='https://docs.skapi.com/email/email-templates.html' target="_blank")
         button.inline.icon-text.sm.gray
-            img(src="@/assets/img/landingpage/icon_docs.svg")
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
             | Go Docs
 
 hr
@@ -12,7 +12,7 @@ template(v-if='needsEmailAlias')
     section
         .error(v-if='!user?.email_verified')
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning" alt="Warning Icon")
             router-link(to="/account-setting") Please verify your email address to modify settings.
 
     section
@@ -34,17 +34,17 @@ template(v-else)
     section
         .error(v-if='!user?.email_verified')
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning" alt="Warning Icon")
             router-link(to="/account-setting") Please verify your email address to modify settings.
             
         .error(v-else-if='currentService.service.active == 0')
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning" alt="Warning Icon")
             span This service is currently disabled.
 
         .error(v-else-if='currentService.service.active < 0')
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning" alt="Warning Icon")
             span This service is currently suspended.
 
     section
@@ -84,7 +84,7 @@ template(v-else)
 
         .placeholder-wrap
             svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-info")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-info" alt="Info Icon")
             span.label placeholders: 
             span.placeholder.required(v-for="(placeholder, i) in emailPlaceholders[group].required" :key="'req-' + i")
                 | {{ placeholder }}
@@ -98,16 +98,16 @@ template(v-else)
             .flex-wrap.center
                 button.inline.icon-text.gray.sm.btn-copy(@click="copy(email_templates[group])")
                     svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-copy")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-copy" alt="Copy Icon")
                     span Copy
                 button.inline.icon-text.gray.sm.btn-preview(@click="showPreview = true; previewModal.current = true; previewModal.subject = null; beforeTemp = null;")
                     svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-preview")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-preview" alt="Preview Icon")
                     span Preview
                 a(:href="'mailto:' + mailEndpoint")
                     button.inline.icon-text.gray.sm.btn-send
                         svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-send")
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-send" alt="Send Icon")
                         span Send
 
     section.table-area
@@ -118,7 +118,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh" alt="Refresh Icon")
                         template(v-slot:tip) Refresh
             .table-actions
                 button.inline.only-icon.gray(@click="emailToDelete = true" :disabled="!Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0")
@@ -126,7 +126,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete" alt="Delete Icon")
                         template(v-slot:tip) Delete Selected
 
         Table(:key="tableKey" :class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
@@ -148,17 +148,17 @@ template(v-else)
                         span(@click='toggleSort("subject")')
                             | Subject
                             svg.svgIcon(v-if='searchFor === "subject" && ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down" alt="Sort Ascending Icon")
                             svg.svgIcon(v-if='searchFor === "subject" && !ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up" alt="Sort Descending Icon")
                         .resizer
                     th(style="width:160px;")
                         span(@click='toggleSort("timestamp")')
                             | Date
-                            svg.svgIcon(v-if='searchFor === "timestamp" && ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                            svg.svgIcon(v-if='searchFor === "timestamp" && ascending' )
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down" alt="Sort Ascending Icon")
                             svg.svgIcon(v-if='searchFor === "timestamp" && !ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up" alt="Sort Descending Icon")
                         .resizer
 
             template(v-slot:body)
@@ -175,10 +175,10 @@ template(v-else)
                         td.overflow
                             template(v-if='currentService.service?.["template_" + group]?.url === ns.url')
                                 svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-check-circle")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-check-circle" alt="In Use Icon")
                             template(v-else)
                                 svg.svgIcon.reactive.clickable.hide(@click.stop="emailToUse = ns")
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-circle")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-circle" alt="Set Template Icon")
                         td.overflow {{ converter(ns.subject) }}
                         td.overflow {{ dateFormat(ns.timestamp) }}
                     tr.nohover(v-for="i in (10 - listDisplay.length)")
@@ -188,11 +188,11 @@ template(v-else)
             button.inline.only-icon.gray(@click="currentPage--;" :disabled="fetching || currentPage <= 1")
                 .icon
                     svg
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left" alt="Previous Icon")
             button.inline.only-icon.gray(@click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
                 .icon
                     svg
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right" alt="Next Icon")
 
 //- modal :: preview mail template
 Modal.modal-scroll.modal-previewMail(:open="showPreview" @close="closePreview")
@@ -201,7 +201,7 @@ Modal.modal-scroll.modal-previewMail(:open="showPreview" @close="closePreview")
             h4.title {{ previewModal.current ? "Current" : "Before" }} Template
             button.btn-close(type="button" @click="closePreview")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-x")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-x" alt="Close Icon")
         .modal-body
             div(v-if='htmls[group] === null')
                 .loader(style="--loader-color:white; --loader-size:12px")

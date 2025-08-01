@@ -3,7 +3,7 @@ section.page-header
     .page-title Bulk Email
     a.btn-docs(href='https://docs.skapi.com/email/newsletters.html' target="_blank")
         button.inline.icon-text.sm.gray
-            img(src="@/assets/img/landingpage/icon_docs.svg")
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
             | Go Docs
 
 hr
@@ -12,7 +12,7 @@ template(v-if='needsEmailAlias')
     section
         .error(v-if='!user?.email_verified')
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning" alt="Warning Icon")
             router-link(to="/account-setting") Please verify your email address to modify settings.
 
     section
@@ -35,17 +35,17 @@ template(v-else)
     section
         .error(v-if='!user?.email_verified')
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning" alt="Warning Icon")
             router-link(to="/account-setting") Please verify your email address to modify settings.
         
         .error(v-else-if='currentService.service.active == 0')
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning" alt="Warning Icon")
             span This service is currently disabled.
 
         .error(v-else-if='currentService.service.active < 0')
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-warning" alt="Warning Icon")
             span This service is currently suspended.
 
     section
@@ -73,12 +73,12 @@ template(v-else)
             .flex-wrap.center.btn-wrap
                 button.inline.icon-text.gray.sm.btn-copy(@click="copyToClipboard(newsletterEndpoint)")
                     svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-copy")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-copy" alt="Copy Icon")
                     span Copy
                 a(:href="'mailto:' + newsletterEndpoint" target="_blank")
                     button.inline.icon-text.gray.sm.btn-send
                         svg.svgIcon
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-send")
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-send" alt="Send Icon")
                         span Send
 
     section.table-area
@@ -89,7 +89,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh" alt="Refresh Icon")
                         template(v-slot:tip) Refresh
             .table-actions
                 //- a(:href="'mailto:' + newsletterEndpoint")
@@ -101,7 +101,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete" alt="Delete Icon")
                         template(v-slot:tip) Delete Selected
 
         Table(:class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
@@ -113,42 +113,42 @@ template(v-else)
                     th(style='width: 250px;')
                         span(@click='toggleSort("subject")')
                             | Subject
-                            svg.svgIcon(v-if='searchFor === "subject" && ascending' style="fill: black")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='searchFor === "subject" && !ascending' style="fill: black")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                            svg.svgIcon(v-if='searchFor === "subject" && ascending')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down" alt="Sort Ascending Icon")
+                            svg.svgIcon(v-if='searchFor === "subject" && !ascending')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up" alt="Sort Descending Icon" )
                         .resizer
                     th(style='width: 120px;')
                         span(@click='toggleSort("timestamp")')
                             | Sent
-                            svg.svgIcon(v-if='searchFor === "timestamp" && ascending' style="fill: black")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='searchFor === "timestamp" && !ascending' style="fill: black")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                            svg.svgIcon(v-if='searchFor === "timestamp" && ascending')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down" alt="Sort Ascending Icon")
+                            svg.svgIcon(v-if='searchFor === "timestamp" && !ascending')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up" alt="Sort Descending Icon")
                         .resizer
                     th(style='width: 120px;')
                         span(@click='toggleSort("read")')
                             | Reads
-                            svg.svgIcon(v-if='searchFor === "read" && ascending' style="fill: black")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='searchFor === "read" && !ascending' style="fill: black")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                            svg.svgIcon(v-if='searchFor === "read" && ascending')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down" alt="Sort Ascending Icon")
+                            svg.svgIcon(v-if='searchFor === "read" && !ascending')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up" alt="Sort Descending Icon")
                         .resizer
                     th(style='width: 120px;')
                         span(@click='toggleSort("complaint")')
                             | Complaint
-                            svg.svgIcon(v-if='searchFor === "complaint" && ascending' style="fill: black")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='searchFor === "complaint" && !ascending' style="fill: black")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                            svg.svgIcon(v-if='searchFor === "complaint" && ascending')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down" alt="Sort Ascending Icon")
+                            svg.svgIcon(v-if='searchFor === "complaint" && !ascending')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up" alt="Sort Descending Icon")
                         .resizer
                     th(style='width: 120px;')
                         span(@click='toggleSort("bounced")')
                             | Bounced
-                            svg.svgIcon(v-if='searchFor === "bounced" && ascending' style="fill: black")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='searchFor === "bounced" && !ascending' style="fill: black")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                            svg.svgIcon(v-if='searchFor === "bounced" && ascending')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down" alt="Sort Ascending Icon")
+                            svg.svgIcon(v-if='searchFor === "bounced" && !ascending')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up" alt="Sort Descending Icon")
                     th.center(style="width:60px; padding:0")
 
             template(v-slot:body)
@@ -178,7 +178,7 @@ template(v-else)
                         td.overflow {{ ns.bounced }}
                         td.center.buttonWrap(@click.stop)
                             svg.svgIcon.reactiveDanger.clickable.hide(@click.stop="emailToDelete = ns")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete" alt="Delete Icon")
                             
                     tr(v-for="i in (10 - listDisplay.length)")
                         td(colspan="6")
@@ -187,29 +187,25 @@ template(v-else)
             button.inline.only-icon.gray(@click="currentPage--;" :disabled="fetching || currentPage <= 1")
                 .icon
                     svg
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left" alt="Previous Icon")
             button.inline.only-icon.gray(@click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
                 .icon
                     svg
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right" alt="Next Icon")
 
 //- modal :: delete email
 Modal.modal-deleteEmail(:open="emailToDelete" @close="emailToDelete=false")
-    h4.modal-title Delete Email
+    .modal-title Delete Email
 
-    hr
+    .modal-desc.
+        Are you sure you want to delete email:
+        #[br]
+        "#[b {{ emailToDelete?.subject }}]"?
+        #[br]
+        This action cannot be undone.
 
-    div.modal-desc
-        p.
-            Are you sure you want to delete email:
-            #[br]
-            "#[b {{ emailToDelete?.subject }}]"?
-            #[br]
-            #[br]
-            This action cannot be undone.
-    br
-    div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
-        div(v-if="deleteMailLoad" style="width:100%; text-align:center")
+    .modal-btns
+        .loader-wrap(v-if="deleteMailLoad")
             .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else)
             button.gray.btn-cancel(@click="emailToDelete = null") Cancel

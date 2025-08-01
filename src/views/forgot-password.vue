@@ -2,12 +2,12 @@
 #forgot
     template(v-if="step < 4")
         router-link(to="/")
-            img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px; margin-bottom: .625rem")
+            img(src="@/assets/img/logo/symbol-logo.png" alt="Skapi Logo" style="width: 40px; margin-bottom: .625rem")
 
         .page-title Forgot Password
     template(v-else)
         svg.svgIcon(style="height: 50px; width: 50px; margin-bottom: .625rem")
-            use(xlink:href="@/assets/img/material-icon.svg#icon-check-circle")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-check-circle" alt="Check Circle Icon")
         .page-title Success
 
     hr
@@ -28,7 +28,7 @@
             
             .error(v-if="error")
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-error")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-error" alt="Error Icon")
                 span {{ error }}
 
             br
@@ -64,7 +64,7 @@
 
             .error(v-if="error") 
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-error")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-error" alt="Error Icon")
                 span {{ error }}
 
             br

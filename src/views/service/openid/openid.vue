@@ -3,7 +3,7 @@ section.page-header
     .page-title Open ID Loggers
     a.btn-docs(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
         button.inline.icon-text.sm.gray
-            img(src="@/assets/img/landingpage/icon_docs.svg")
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
             | Go Docs
 
 hr
@@ -11,17 +11,17 @@ hr
 section
     .error(v-if="!user?.email_verified")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning" alt="Warning Icon")
         router-link(to="/account-setting") Please verify your email address to modify settings.
 
     .error(v-else-if="currentService.service.active == 0")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning" alt="Warning Icon")
         span This service is currently disabled.
 
     .error(v-else-if="currentService.service.active < 0")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning" alt="Warning Icon")
         span This service is currently suspended.
 
 section
@@ -32,7 +32,7 @@ section
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-columns")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-columns" alt="Columns Icon")
                     template(v-slot:tip) Show Columns
                 .moreVert(
                     @click.stop,
@@ -46,7 +46,7 @@ section
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh" alt="Refresh Icon")
                     template(v-slot:tip) Refresh
         .table-actions
             button.inline.only-icon.gray(@click="()=>{ !user.email_verified ? false : selectedLogger = null; showDetail=true; }" :disabled="showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0")
@@ -54,14 +54,14 @@ section
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-plus")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-plus" alt="Add Icon")
                     template(v-slot:tip) Add Logger
             button.inline.only-icon.gray(@click="openDeleteRecords=true" :disabled="!Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0" )
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete" alt="Delete Icon")
                     template(v-slot:tip) Delete Selected
 
     Table(:key="tableKey" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}" resizable)
@@ -115,11 +115,11 @@ section
         button.inline.only-icon.gray(@click="currentPage--;" :disabled="fetching || currentPage <= 1")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left" alt="Previous Icon")
         button.inline.only-icon.gray(@click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right" alt="Next Icon")
 
 //- modal :: delete records
 Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
@@ -142,7 +142,7 @@ Modal.modal-scroll.modal-logger(:open="showDetail" @close="showDetail=false; sel
             h4.title {{ selectedLogger?.id ? selectedLogger.id : 'Register Logger' }}
             button.btn-close(type="button" @click="showDetail=false; selectedLogger=null;")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-x")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-x" alt="Close Icon")
         .modal-body
             RecDetails(v-if='showDetail' :data='selectedLogger')
         .modal-footer

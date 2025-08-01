@@ -3,7 +3,7 @@ section.page-header
     .page-title Getting Started
     a.btn-docs(href='https://docs.skapi.com/introduction/getting-started.html' target="_blank")
         button.inline.icon-text.sm.gray
-            img(src="@/assets/img/landingpage/icon_docs.svg")
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
             | Go Docs
 
 hr

@@ -4,7 +4,7 @@ section.page-header
     .flex-wrap
         a.btn-docs(href='https://docs.skapi.com/hosting/hosting.html' target="_blank")
             button.inline.icon-text.sm.gray
-                img(src="@/assets/img/landingpage/icon_docs.svg")
+                img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
                 | Go Docs
 
 hr
@@ -12,17 +12,17 @@ hr
 section
     .error(v-if='!user?.email_verified')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning" alt="Warning Icon")
         router-link(to="/account-setting") Please verify your email address to modify settings.
         
     .error(v-else-if='currentService.service.active == 0')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning" alt="Warning Icon")
         span This service is currently disabled.
 
     .error(v-else-if='currentService.service.active < 0')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-warning" alt="Warning Icon")
         span This service is currently suspended.
 
 template(v-if='!currentService.service.subdomain' :class='{nonClickable: email_is_unverified_or_service_is_disabled}')
@@ -52,7 +52,7 @@ template(v-else)
                 button.only-icon.gray.delete-btn(type="button" @click="removeHosting = true")
                     .icon
                         svg
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-delete" alt="Delete Icon")
 
             .info-edit-wrap
                 .info
@@ -61,7 +61,7 @@ template(v-else)
                 button.only-icon.gray.edit-btn(type="button" @click="editSubdomain")
                     .icon
                         svg
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit" alt="Edit Icon")
 
             .info-edit-wrap
                 .info
@@ -71,13 +71,13 @@ template(v-else)
                     button.only-icon.gray.edit-btn(:disabled='email_is_unverified_or_service_is_disabled || isPending' @click="open404FileInp")
                         .icon
                             svg(v-if="sdInfo?.['404']")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit" alt="Edit Icon")
                             svg(v-else)
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-upload")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-upload" alt="Upload Icon")
                     button.only-icon.gray.edit-btn(v-if='!updatingValue.page404 && sdInfo?.["404"] && sdInfo?.["404"] !== "..."' @click="openRemove404=true")
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete" alt="Delete Icon")
 
     section
         .table-menu-wrap
@@ -87,7 +87,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh" alt="Refresh Icon")
                         template(v-slot:tip) Refresh CDN
             .table-actions
                 button.inline.only-icon.gray(@click='uploadFileInp.click()' :disabled="email_is_unverified_or_service_is_disabled || isPending || fetching")
@@ -96,7 +96,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-file-plus")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-file-plus" alt="Upload File Icon")
                         template(v-slot:tip) Upload Files
                 button.inline.only-icon.gray(@click='uploadFolderInp.click()' :disabled="email_is_unverified_or_service_is_disabled || isPending || fetching")
                     input(type="file" hidden multiple directory webkitdirectory @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFolderInp")
@@ -104,14 +104,14 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-folder-plus")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-folder-plus" alt="Upload Folder Icon")
                         template(v-slot:tip) Upload Folder
                 button.inline.only-icon.gray(:disabled="email_is_unverified_or_service_is_disabled || isPending || fetching || !Object.keys(checked).length" @click='deleteSelected=true')
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete" alt="Delete Selected Icon")
                         template(v-slot:tip) Delete Selected
 
         Table(
@@ -143,14 +143,14 @@ template(v-else)
             template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
                 .tableMsg.center.empty 
                     svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-upload")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-upload" alt="Upload Icon")
                     | Drag and drop files here
             
             template(v-else-if='uploadProgress.name' v-slot:msg)
                 .progress(:style="{ width: uploadProgress.progress + '%', height: '3px', background: 'var(--main-color)', position: 'absolute', top: '58px', left: '0px', zIndex: 1}")
                 .tableMsg.left
                     svg.svgIcon.moving(style="margin-right: 13px;")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-upload")
+                        use(xlink:href="@/assets/img/material-icon.svg#icon-upload" alt="Upload Icon")
                     | Uploading: /{{ uploadProgress.name }}&nbsp;
                     b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
             
@@ -163,26 +163,26 @@ template(v-else)
                         span(@click='toggleSort("name")')
                             | Filename
                             svg.svgIcon(v-if='sortBy === "name" && ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down" alt="Sort Ascending Icon")
                             svg.svgIcon(v-if='sortBy === "name" && !ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up" alt="Sort Descending Icon")
                         .resizer
 
                     th(style='width:160px;')
                         span(@click='toggleSort("size")')
                             | Size
                             svg.svgIcon(v-if='sortBy === "size" && ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down" alt="Sort Ascending Icon")
                             svg.svgIcon(v-if='sortBy === "size" && !ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up" alt="Sort Descending Icon")
                         .resizer
                     th(style='width:220px;')
                         span(@click='toggleSort("upl")')
                             | Uploaded
                             svg.svgIcon(v-if='sortBy === "upl" && ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down" alt="Sort Ascending Icon")
                             svg.svgIcon(v-if='sortBy === "upl" && !ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up" alt="Sort Descending Icon")
 
             template(v-slot:body)
                 template(v-if="fetching || isPending || !subdomainReady || currentService.pending.cdn || uploadProgress.name || !listDisplay || listDisplay.length === 0")
@@ -203,7 +203,7 @@ template(v-else)
                     tr.nohover(:class='{hoverRow:currentDirectory}' @click='currentDirectory = currentDirectory.split("/").length === 1 ? "" : currentDirectory.split("/").slice(0, -1).join("/")')
                         td
                             svg.svgIcon
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-folder-open-fill")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-folder-open-fill" alt="Open Folder Icon")
 
                         td.left(colspan="3")
                             | {{hostUrl}}/{{ currentDirectory ? currentDirectory + '/' : '' }}
@@ -214,7 +214,7 @@ template(v-else)
 
                         td.overflow.left(v-if='ns.name[0] == "#"')
                             svg.svgIcon(style='height: 22px; width: 22px; vertical-align: sub;')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-folder-fill")
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-folder-fill" alt="Folder Icon")
                             | &nbsp;{{ ns.name.slice(1) }}
                         td.overflow.left(v-else) {{ ns.name }}
                         td.overflow {{ getFileSize(ns.size) }}
@@ -227,15 +227,15 @@ template(v-else)
         button.inline.only-icon.gray(@click="currentPage--;" :disabled="fetching || currentPage <= 1")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left" alt="Previous Page Icon")
         button.inline.only-icon.gray(@click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right" alt="Next Page Icon")
 
     .dragPopup(:class="{'show' : dragHere}")
         svg.svgIcon(style="width: 64px; height: 64px; fill: white")
-            use(xlink:href="@/assets/img/material-icon.svg#icon-upload-cloud")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-upload-cloud" alt="Upload Cloud Icon")
         p Drop your files to upload
 
 //- modal :: refresh CDN
@@ -262,7 +262,7 @@ Modal(:open="openRefreshCdn")
 Modal(:open="modifyMode.subdomain")
     .modal-close(@click="modifyMode.subdomain = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x" alt="Close Icon")
 
     .modal-title Change Subdomain
 
@@ -311,7 +311,7 @@ Modal.modal-removeHosting(:open="removeHosting" @close="removeHosting=false")
 Modal.modal-upload404(:open="modifyMode.page404" @close="modifyMode.page404 = false; selected404File = null;")
     .modal-close(@click="modifyMode.page404 = false; selected404File = null;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
+            use(xlink:href="@/assets/img/material-icon.svg#icon-x" alt="Close Icon")
 
     .modal-title Upload 404 Page
 

@@ -1,7 +1,7 @@
 <template lang="pug">
 #signup
     router-link(to="/")
-        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px; margin-bottom: .625rem")
+        img(src="@/assets/img/logo/symbol-logo.png" alt="Skapi Logo" style="width: 40px; margin-bottom: .625rem")
 
     .page-title Sign Up
 
@@ -57,7 +57,7 @@
 
         .error(v-if="error")
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-error")
+                use(xlink:href="@/assets/img/material-icon.svg#icon-error" alt="Error Icon")
             span {{ error }}
         
         br
