@@ -34,7 +34,6 @@ import { currentService, setService, serviceMainLoaded, serviceUpgradeOffer } fr
 
 import SideNav from "@/components/sideNav.vue";
 import Modal from "@/components/modal.vue";
-import MaterialIcon from "@/assets/img/material-icon.svg"
 
 const router = useRouter();
 const route = useRoute();

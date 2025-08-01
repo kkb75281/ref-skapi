@@ -218,14 +218,12 @@ import { computed, ref, watch } from "vue";
 import type { Ref } from "vue";
 import { currentService, serviceBulkMails } from "./main";
 import { user } from "@/code/user";
-import Table from "@/components/table.vue";
 import { skapi } from "@/main";
 import { dateFormat } from "@/code/admin";
-import Pager from "@/code/pager";
 
+import Pager from "@/code/pager";
+import Table from "@/components/table.vue";
 import Modal from "@/components/modal.vue";
-import type { Newsletters } from "skapi-js/js/Types";
-import Select from "@/components/select.vue";
 import Checkbox from "@/components/checkbox.vue";
 import Tooltip from "@/components/tooltip.vue";
 

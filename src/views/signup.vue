@@ -79,6 +79,7 @@ import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { onMounted, ref } from "vue";
 import Checkbox from "@/components/checkbox.vue";
+
 const router = useRouter();
 const route = useRoute();
 

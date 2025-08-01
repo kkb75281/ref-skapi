@@ -596,12 +596,13 @@ Modal.modal-scroll.modal-detailUser(:open="showDetail" @close="closeModalUser")
 </template>
 <script setup lang="ts">
 import Table from "@/components/table.vue";
-import Select from "@/components/select.vue";
 import Checkbox from "@/components/checkbox.vue";
 import Modal from "@/components/modal.vue";
 import Calendar from "@/components/calendar.vue";
 import Locale from "@/components/locale.vue";
 import Pager from "@/code/pager";
+import UserDetails from "./showDetail.vue";
+import Tooltip from "@/components/tooltip.vue";
 
 import {
     nextTick,
@@ -617,10 +618,6 @@ import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { showDropDown } from "@/assets/js/event.js";
 import { currentService, serviceUsers, serviceUpgradeOffer } from "@/views/service/main";
-import { Countries } from "@/code/countries";
-import { devLog } from "@/code/logger";
-import UserDetails from "./showDetail.vue";
-import Tooltip from "@/components/tooltip.vue";
 
 onMounted(() => {
     document.addEventListener("keydown", handleSearchModal);
@@ -1091,8 +1088,6 @@ let getPage = async (refresh?: boolean) => {
             callParams.value.condition = "<=";
         }
 
-        // devLog({ callParams: callParams.value });
-
         let fetchedData = await skapi
             .getUsers(callParams.value, {
                 fetchMore: !refresh,
@@ -1102,8 +1097,6 @@ let getPage = async (refresh?: boolean) => {
                 fetching.value = false;
                 alert(err);
             });
-
-        // devLog({ fetchedData })
 
         // save endOfList status
         serviceUsers[currentService.id].endOfList = fetchedData.endOfList;

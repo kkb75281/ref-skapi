@@ -246,10 +246,9 @@ Modal(:open="modifyMode.api_key" @close="modifyMode.api_key = false")
 </template>
 
 <script setup lang="ts">
-import { nextTick, reactive, ref, computed, onMounted } from "vue";
+import { nextTick, reactive, ref } from "vue";
 import { currentService } from "@/views/service/main";
 import { dateFormat } from "@/code/admin";
-import { devLog } from "@/code/logger";
 import { user } from "@/code/user";
 import { currentServiceSpec } from "@/views/service/service-spec";
 

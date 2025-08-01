@@ -144,11 +144,10 @@ import { useRoute, useRouter } from "vue-router";
 import { serviceList } from "@/views/service-list";
 import { user, customer } from "@/code/user";
 import { skapi } from "@/main";
-import { currentServiceId, currentService } from '@/views/service/main';
+import { currentService } from '@/views/service/main';
 import { planSpec, currentServiceSpec } from "@/views/service/service-spec";
 
 import Modal from "@/components/modal.vue";
-import TabMenu from '@/components/tab.vue';
 
 const router = useRouter();
 const route = useRoute();

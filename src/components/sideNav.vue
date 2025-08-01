@@ -69,8 +69,6 @@ import { useRoute, useRouter } from "vue-router";
 import { onMounted, onUnmounted, ref } from "vue";
 import {
     currentService,
-    setService,
-    serviceMainLoaded,
     serviceUpgradeOffer
 } from "@/views/service/main";
 

@@ -110,15 +110,14 @@ template(v-else)
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
-import { watch, ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { user } from "@/code/user";
 import {
     fetchingServiceList,
     serviceList,
     serviceIdList,
     serviceSpecList,
 } from "@/views/service-list";
-import { user } from "@/code/user";
-import type Service from "@/code/service";
 import Table from "@/components/table.vue";
 import modalCreateService from "@/views/create-service.vue";
 

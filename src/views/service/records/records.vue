@@ -223,14 +223,13 @@ import Table from "@/components/table.vue";
 import Checkbox from "@/components/checkbox.vue";
 import Modal from "@/components/modal.vue";
 import Pager from "@/code/pager";
-import Guide from "./guide.vue";
 import SearchBox from "./searchbox.vue";
 import RecDetails from "./showDetail.vue";
+import Tooltip from "@/components/tooltip.vue";
 
 import type { Ref } from "vue";
 import {
     ref,
-    computed,
     watch,
     nextTick,
     onMounted,
@@ -239,10 +238,8 @@ import {
 } from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
-import { devLog } from "@/code/logger";
 import { currentService, serviceRecords } from "@/views/service/main";
 import { showDropDown } from "@/assets/js/event.js";
-import Tooltip from "@/components/tooltip.vue";
 
 // table columns
 let tableKey = ref(0);

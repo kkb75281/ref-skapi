@@ -127,9 +127,10 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
-import { ref, nextTick } from 'vue';
+import { ref } from 'vue';
 import { skapi } from '@/main';
 import { user } from '@/code/user';
+
 const router = useRouter();
 const route = useRoute();
 

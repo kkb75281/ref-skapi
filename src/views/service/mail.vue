@@ -256,14 +256,11 @@ import { currentService, serviceAutoMails } from "./main";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { dateFormat } from "@/code/admin";
-import { devLog } from "@/code/logger";
-import Code from "@/components/code.vue";
+
 import Table from "@/components/table.vue";
 import Modal from "@/components/modal.vue";
 import Pager from "@/code/pager";
-import Select from "@/components/select.vue";
 import Toggle from "@/components/toggle.vue";
-import TabMenu from "@/components/tab.vue";
 import Checkbox from "@/components/checkbox.vue";
 import Tooltip from "@/components/tooltip.vue";
 
@@ -732,7 +729,6 @@ let useEmail = (ns: Newsletter) => {
 
 let service = currentService.service;
 let email_templates = currentService.service.email_triggers.template_setters;
-// devLog(currentService.service)
 let parseOpt: any = ref(true);
 
 let currentTemp = computed(() => {

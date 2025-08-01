@@ -73,8 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, ref, watch, type Ref } from "vue";
-import Checkbox from "@/components/checkbox.vue";
+import { ref, watch } from "vue";
 import { user } from "@/code/user";
 import { currentService } from "@/views/service/main";
 
@@ -299,11 +298,9 @@ let handleKey = (e: any) => {
     }
 
     textarea {
-        background: linear-gradient(
-                0deg,
+        background: linear-gradient(0deg,
                 rgba(255, 255, 255, 0.05) 0%,
-                rgba(255, 255, 255, 0.05) 100%
-            ),
+                rgba(255, 255, 255, 0.05) 100%),
             #16171a;
         border: none;
         color: #fff;

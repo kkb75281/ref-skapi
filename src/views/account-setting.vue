@@ -79,7 +79,6 @@ import { ref, nextTick, watch } from "vue";
 
 import Modal from "@/components/modal.vue";
 import Toggle from "@/components/toggle.vue";
-import Tooltip from "@/components/tooltip.vue";
 
 const router = useRouter();
 const route = useRoute();

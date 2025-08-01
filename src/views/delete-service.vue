@@ -48,11 +48,10 @@ main#confirmation
 </template>
 
 <script setup lang="ts">
-import { skapi } from "@/main";
 import { currentService } from "@/views/service/main";
 import { useRoute, useRouter } from "vue-router";
-import Checkbox from "@/components/checkbox.vue";
 import { ref } from "vue";
+import Checkbox from "@/components/checkbox.vue";
 
 const router = useRouter();
 const route = useRoute();

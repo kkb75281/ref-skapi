@@ -346,16 +346,9 @@ Modal.modal-remove404(:open="openRemove404" @close="openRemove404=false")
 
 <script setup lang="ts">
 import { reactive, ref, computed, watch, nextTick } from "vue";
-import type { ComputedRef, Ref } from "vue";
-import { currentService } from "@/views/service/main";
-import Code from "@/components/code.vue";
-import Table from "@/components/table.vue";
-import Modal from "@/components/modal.vue";
-import Pager from "@/code/pager";
-import { getFileSize } from "@/code/admin";
-import { skapi } from "@/main";
 import { user } from "@/code/user";
-import Checkbox from "@/components/checkbox.vue";
+import { currentService } from "@/views/service/main";
+import { getFileSize } from "@/code/admin";
 import {
     serviceFolders,
     uploadFiles,
@@ -364,7 +357,11 @@ import {
     uploadCount,
     uploadProgress,
 } from "@/views/service/hosting/file";
+import Table from "@/components/table.vue";
+import Modal from "@/components/modal.vue";
+import Pager from "@/code/pager";
 import Tooltip from "@/components/tooltip.vue";
+import Checkbox from "@/components/checkbox.vue";
 
 let folders = {}; // cache folders
 let domain = import.meta.env.VITE_DOMAIN;

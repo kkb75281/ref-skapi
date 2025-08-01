@@ -299,16 +299,17 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch, onUnmounted, onBeforeUnmount } from "vue";
+import { onMounted, ref, onUnmounted, onBeforeUnmount } from "vue";
 import { npmVersion } from "@/main.ts";
 import { user } from "@/code/user";
+
+import TabMenu from "@/components/tab.vue";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css"; // import Swiper styles
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import TabMenu from "@/components/tab.vue";
 
 const activeTabs = ref({
     contents: 0,

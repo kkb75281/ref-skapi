@@ -162,10 +162,9 @@ import RecDetails from "./showDetail.vue";
 import Tooltip from "@/components/tooltip.vue";
 
 import type { Ref } from "vue";
-import { ref, computed, watch, nextTick, reactive } from "vue";
+import { ref, watch, nextTick, reactive } from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
-import { devLog } from "@/code/logger";
 import { currentService, serviceLoggers } from "@/views/service/main";
 import { showDropDown } from "@/assets/js/event.js";
 
