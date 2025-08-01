@@ -565,7 +565,7 @@ section {
 }
 
 .bg-colorful {
-    background: url("@/assets/img/landingpage/bg_price.png") lightgray 50% / cover no-repeat;
+    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% / cover no-repeat;
 }
 
 .hero-bg {
@@ -1259,15 +1259,15 @@ section {
         display: flex;
         flex-direction: column;
         border-radius: 1rem;
-        background: url("@/assets/img/landingpage/bg_contents1.png") lightgray 50% / cover no-repeat;
+        background: url("@/assets/img/landingpage/bg_contents1.svg") lightgray 50% / cover no-repeat;
         color: #000;
 
         &:nth-child(2) {
-            background-image: url("@/assets/img/landingpage/bg_contents2.png");
+            background-image: url("@/assets/img/landingpage/bg_contents2.svg");
         }
 
         &:nth-child(3) {
-            background-image: url("@/assets/img/landingpage/bg_contents3.png");
+            background-image: url("@/assets/img/landingpage/bg_contents3.svg");
         }
 
         .title {
