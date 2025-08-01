@@ -239,13 +239,14 @@ a {
 }
 
 .top-item {
+    position: relative;
     color: #000;
     padding: 1.5rem 9rem 1.5rem 1.625rem;
     border-radius: 0.875rem;
     overflow: hidden;
     height: 13.125rem;
     position: relative;
-    background: url("@/assets/img/myservice/bg_blue.svg") no-repeat center;
+    background: #3C75FF;
     flex: 1;
     max-width: 27.125rem;
 
@@ -271,6 +272,20 @@ a {
         bottom: 0;
         right: 0;
         background: url("@/assets/img/myservice/img_docs.png") no-repeat center right;
+    }
+
+    &:first-child {
+        &::after {
+            content: "";
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            position: absolute;
+            background: url("@/assets/img/myservice/bg_texture.svg") no-repeat center;
+            opacity: 0.2;
+            z-index: 1;
+        }
     }
 
     &:last-child {
@@ -300,11 +315,24 @@ a {
 
 // swiper
 .service-swiper {
+    position: relative;
     padding: 0;
     flex: none;
 
     &::before {
         content: none;
+    }
+
+    &::after {
+        content: "";
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        position: absolute;
+        background: url("@/assets/img/myservice/bg_texture.svg") no-repeat center;
+        opacity: 0.2;
+        z-index: 1;
     }
 
     .swiper {
@@ -327,7 +355,7 @@ a {
     }
 
     &.ann {
-        background: url("@/assets/img/myservice/bg_green.svg") no-repeat center;
+        background: #60DE87;
 
         &::before {
             background: url("@/assets/img/myservice/img_announce.png") no-repeat center right;
@@ -335,7 +363,7 @@ a {
     }
 
     &.use {
-        background: url("@/assets/img/myservice/bg_purple.svg") no-repeat center;
+        background: #FFD54A;
 
         &::before {
             background: url("@/assets/img/myservice/img_useCase.png") no-repeat center right;
@@ -343,7 +371,7 @@ a {
     }
 
     &.new {
-        background: url("@/assets/img/myservice/bg_yellow.svg") no-repeat center;
+        background: #675DFF;
 
         &::before {
             background: url("@/assets/img/myservice/img_newFeature.png") no-repeat center right;
