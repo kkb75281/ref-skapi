@@ -18,10 +18,6 @@
 
 :root {
     --main-color: rgb(20, 99, 255);
-    //   --main-color: #293fe6;
-    // --main-color: #101828;
-    // --main-color: #344054;
-    //  --main-color: rgb(29, 41, 57);
     --caution-color: #f04e4e;
     --black-8: rgba(0, 0, 0, 0.88);
     --black-6: rgba(0, 0, 0, 0.66);
@@ -66,21 +62,17 @@ h4,
 h5,
 h6 {
     font-weight: 600;
-    // color: var(--black-8);
 }
 
 hr {
-    // background: rgba(0, 0, 0, 0.15);
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
     height: 1px;
     border: 0;
     margin: 1rem 0;
-    // box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.06);
 }
 
 b {
     font-weight: 600;
-    // color: var(--black-8);
 }
 
 a {
@@ -98,17 +90,6 @@ p {
 }
 
 select {
-    // box-sizing: border-box;
-    // margin: 0;
-    // outline: none;
-    // border: 0;
-    // padding: 4px 8px;
-    // border-radius: 4px;
-    // font-size: 0.8rem;
-    // background-color: rgba(0, 0, 0, 0.05);
-    // font-family: inherit;
-    // font-weight: normal;
-
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -150,7 +131,6 @@ input {
         ),
         #16171a;
     color: #fff;
-    // border: 1px solid rgba(225, 225, 225, 0.4);
     border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 0 1.25rem;
     min-height: 3rem;
@@ -204,81 +184,10 @@ input {
     }
 }
 
-// input {
-//     border: 0;
-//     padding: 4px;
-//     background-color: rgba(0, 0, 0, 0.05);
-//     font-size: 0.8rem;
-//     font-weight: 400;
-
-//     &::placeholder {
-//         color: var(--black-4);
-//     }
-
-//     // &[type="password"] {
-//     //   &::-ms-reveal,
-//     //   &::-ms-clear {
-//     //     display: none;
-//     //   }
-//     // }
-
-//     &.big {
-//         background-color: white;
-//         width: 100%;
-//         height: 44px;
-//         padding: 12px 10px;
-//         // border-radius: 6px;
-//         border-radius: 12px;
-//         outline: 1px solid rgba(0, 0, 0, 0.5);
-
-//         &:hover {
-//             outline: 1px solid var(--main-color);
-//         }
-
-//         &:focus,
-//         &:active {
-//             outline: 2px solid var(--main-color) !important;
-//         }
-
-//         &.disabled {
-//             background-color: rgba(0, 0, 0, 0.05);
-//         }
-//     }
-
-//     &:disabled {
-//         opacity: 0.5;
-//     }
-
-//     &.line {
-//         outline: none;
-//         background-color: unset;
-//         border-bottom: 1px solid;
-//         height: 1.5rem;
-//         padding: 0;
-//         border-radius: 0;
-
-//         &:focus {
-//             border-color: var(--main-color);
-//             // border-bottom: 2px solid var(--main-color) !important; // 이거 쓰면 input이 커짐
-//             box-shadow: 0 1px 0 0 var(--main-color);
-//         }
-//     }
-
-//     // &[type=search] {padding-right: 15px;}
-//     // &::-webkit-search-decoration,
-//     // &::-webkit-search-cancel-button,
-//     // &::-webkit-search-results-button,
-//     // &::-webkit-search-results-decoration{
-//     //     display:none;
-//     // }
-// }
-
 form {
     label:not(._checkbox) {
         display: block;
-        // color: var(--black-6);
         font-size: 16px;
-        // font-weight: 700;
 
         input {
             margin-top: 8px;
@@ -295,7 +204,6 @@ button,
     position: relative;
     display: inline-flex;
     max-width: 240px;
-    // padding: 0.8438rem 4.375rem;
     padding: 0.8438rem 1.25rem;
     width: 100%;
     height: 2.75rem;
@@ -402,18 +310,6 @@ button,
                 object-fit: cover;
             }
         }
-
-        // svg {
-        //     margin: 13px 10px;
-        //     width: 20px;
-        //     height: 20px;
-        // }
-
-        // &.sm {
-        //     svg {
-        //         margin: 9px 6px;
-        //     }
-        // }
     }
 
     &.selected {
@@ -430,80 +326,6 @@ button,
     max-width: 100%;
 }
 
-// button {
-//     height: 44px;
-//     //   border-radius: 6px;
-//     border-radius: 12px;
-//     padding: 0 1.4rem;
-//     background-color: unset;
-//     color: var(--main-color);
-//     font-size: 0.8rem;
-//     font-weight: 700;
-//     cursor: pointer;
-//     box-sizing: border-box;
-//     font-family: inherit;
-//     user-select: none;
-//     outline: none;
-//     position: relative;
-//     overflow: hidden;
-
-//     // &:not(.disabled, .noLine, .unFinished):hover::before {
-//     //   content: "";
-//     //   position: absolute;
-//     //   top: 0;
-//     //   left: 0;
-//     //   width: 100%;
-//     //   height: 100%;
-//     //   background-color: rgba(0, 0, 0, 0.04);
-//     //   display: block;
-//     // }
-
-//     &.noLine {
-//         border: 0;
-
-//         &.warning {
-//             color: var(--caution-color);
-//         }
-
-//         &:first-child {
-//             padding-left: 10px;
-//             background-color: unset;
-//         }
-//     }
-
-//     &.unFinished {
-//         box-shadow: 1px 1px var(--black-2);
-//         border: 2px solid currentColor;
-
-//         &:active {
-//             box-shadow: unset;
-//             left: 1px;
-//             top: 1px;
-//         }
-
-//         &.warning {
-//             color: var(--caution-color);
-//         }
-//     }
-
-//     &.final {
-//         box-shadow: 1px 1px var(--black-2);
-//         border: 0;
-//         background-color: var(--main-color);
-//         color: #fff;
-
-//         &:active {
-//             box-shadow: unset;
-//             left: 1px;
-//             top: 1px;
-//         }
-
-//         &.warning {
-//             background-color: var(--caution-color);
-//         }
-//     }
-// }
-
 body {
     width: 100%;
     margin: 0;
@@ -513,9 +335,6 @@ body {
     font-family: "Inter", "Faktum", -apple-system, BlinkMacSystemFont,
         "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
         "Helvetica Neue", sans-serif;
-    // font-family: "Radio Canada", 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-    // font-family: 'Noto Sans', sans-serif, 'Radio Canada', serif, 'Space Mono', monospace, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue";
-    // font-family: 'Noto Sans', sans-serif, serif, 'Space Mono', monospace, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue";
     font-weight: 400; // 기본 굵기 400 - 특정 모니터에서 폰트가 너무 얇아 보이는 경우가 있었음
 
     font-optical-sizing: auto;
@@ -533,15 +352,3 @@ body {
 svg {
     vertical-align: middle;
 }
-// /* IE의 경우 input(type="search") x 버튼 제거 */
-// input::-ms-clear,
-// input::-ms-reveal{
-//     display:none;
-// }
-// /* IE의 경우 input(type="search") x 버튼 제거 */
-// input::-webkit-search-decoration,
-// input::-webkit-search-cancel-button,
-// input::-webkit-search-results-button,
-// input::-webkit-search-results-decoration{
-//     display:none;
-// }

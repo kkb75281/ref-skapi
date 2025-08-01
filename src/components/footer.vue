@@ -362,6 +362,11 @@ onUnmounted(() => {
             width: 7.5rem;
             height: 2.25rem;
             margin-bottom: 1.25rem;
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
         }
 
         .company-info {

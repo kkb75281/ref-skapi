@@ -475,10 +475,6 @@ a {
     text-decoration: none;
 }
 
-hr {
-    background: rgba(255, 255, 255, 0.1);
-}
-
 .title {
     margin-bottom: 10px;
     opacity: 0.6;

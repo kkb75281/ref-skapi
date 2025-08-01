@@ -23,9 +23,6 @@ section
     .middle-title For SPA Projects
     p.page-desc If you are developing a Single Page Application (SPA), please refer to the following steps:
 
-    br
-    br
-
     p(style='margin-bottom: 0') 1. Install the library
 
     Code(style="margin: 16px 0 40px")
@@ -55,14 +52,5 @@ import { currentService } from '@/views/service/main';
 .middle-title {
     font-size: 26px;
     margin-bottom: 16px;
-}
-
-hr {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-p {
-    margin: 0;
-    margin-bottom: 11px;
 }
 </style>

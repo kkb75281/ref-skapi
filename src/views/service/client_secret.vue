@@ -452,104 +452,12 @@ const showTableColumns = () => {
     }
 }
 
-.table-form {
-    position: relative;
-
-    .table-tootlip {
-        position: absolute;
-        left: 18px;
-        top: 17px;
-        z-index: 999;
-    }
-}
-
-.updown {
-    background-color: #fff;
-    background-color: var(--main-color);
-    border-radius: 50%;
-    margin-left: 8px;
-    cursor: pointer;
-    box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
-}
-
-input {
-    width: 100%;
-}
-
-table {
-    form {
-        display: block;
-    }
-
-    tr {
-        &:hover {
-            .hide {
-                display: block;
-            }
-        }
-
-        .hide {
-            display: none;
-        }
-    }
-
-    td,
-    th {
-        padding: 0 4px 0 10px;
-    }
-}
-
-.buttonWrap {
-    display: flex;
-    height: 60px;
-    align-items: center;
-    gap: 8px;
-    padding: 0;
-}
-
-.save,
-.cancel {
-    position: relative;
-    font-size: 1.3rem;
-    font-weight: 500;
-    cursor: pointer;
-
-    &::after {
-        position: absolute;
-        content: "";
-        top: 50%;
-        left: 50%;
-        width: 100%;
-        height: 100%;
-        padding: 4px;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        background-color: #293fe61a;
-        display: none;
-    }
-
-    &:hover::after {
-        display: block;
-    }
-
-    &:hover {
-        border-radius: 50%;
-        background-color: #293fe61a;
-    }
-}
-
 .modal-scroll {
     .key {
         .svgIcon {
             width: 1.125rem;
             height: 1.125rem;
         }
-    }
-}
-
-@media (pointer: coarse) {
-    .hide {
-        display: block !important;
     }
 }
 

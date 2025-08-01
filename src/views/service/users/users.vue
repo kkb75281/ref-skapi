@@ -1464,40 +1464,6 @@ button {
     }
 }
 
-.tableMenu {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    // flex-direction: row-reverse;
-
-    &>* {
-        margin: 8px 0;
-    }
-}
-
-.userPart {
-    position: relative;
-    overflow: hidden;
-}
-
-#loading {
-    position: absolute;
-    top: 60px;
-    left: 20px;
-    height: 60px;
-    z-index: 2;
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    font-size: 0.8rem;
-}
-
-.optionCol {
-    &>*:not(:last-child) {
-        margin-right: 8px;
-    }
-}
-
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -1506,44 +1472,6 @@ input::-webkit-inner-spin-button {
 
 input[type="number"] {
     -moz-appearance: textfield;
-}
-
-tbody {
-    td {
-        .click {
-            position: relative;
-            color: var(--main-color);
-            font-weight: 500;
-            height: 1.875rem;
-            line-height: 1.875rem;
-
-            &::after {
-                position: absolute;
-                content: "copied!";
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                border-radius: 4px;
-                text-align: center;
-                background-color: var(--main-color);
-                color: #fff;
-                display: none;
-            }
-
-            &:hover {
-                text-decoration: underline;
-                cursor: pointer;
-            }
-
-            &.clicked {
-                &::after {
-                    display: block;
-                }
-            }
-        }
-    }
 }
 
 @media (max-width: 768px) {

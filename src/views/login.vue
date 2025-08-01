@@ -20,11 +20,9 @@
             name="password" placeholder="Enter password" required)
             //- .passwordIcon(@click.stop="showPassword = !showPassword")
             //-     template(v-if="showPassword")
-            //-         //- .material-symbols-outlined.notranslate.fill visibility
             //-         svg.svgIcon(style="fill: var(--black-6)")
             //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
             //-     template(v-else)
-            //-         //- .material-symbols-outlined.notranslate.fill visibility_off
             //-         svg.svgIcon(style="fill: var(--black-6)")
             //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
 
@@ -35,7 +33,6 @@
         br
 
         .error(v-if="error")
-            //- .material-symbols-outlined.notranslate.fill error
             svg
                 use(xlink:href="@/assets/img/material-icon.svg#icon-error")
             div(v-if="enableAccount")

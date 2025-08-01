@@ -81,6 +81,14 @@ template(v-else)
 
     section
         .table-menu-wrap
+            .table-functions
+                button.inline.only-icon.gray(@click="openRefreshCdn=true" :disabled="email_is_unverified_or_service_is_disabled || isPending || fetching")
+                    Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                        template(v-slot:tool)
+                            .icon
+                                svg
+                                    use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                        template(v-slot:tip) Refresh CDN
             .table-actions
                 button.inline.only-icon.gray(@click='uploadFileInp.click()' :disabled="email_is_unverified_or_service_is_disabled || isPending || fetching")
                     input(type="file" hidden multiple @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFileInp")
@@ -116,6 +124,11 @@ template(v-else)
                 .tableMsg.center
                     .loader(style="--loader-color:white; --loader-size:12px")
                     | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetching ...
+            
+            template(v-else-if="!subdomainReady" v-slot:msg)
+                .tableMsg.center
+                    .loader(style="--loader-color:white; --loader-size:12px")
+                    | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subdomain change in process ...
             
             template(v-else-if="!subdomainReady" v-slot:msg)
                 .tableMsg.center
@@ -173,7 +186,7 @@ template(v-else)
 
             template(v-slot:body)
                 template(v-if="fetching || isPending || !subdomainReady || currentService.pending.cdn || uploadProgress.name || !listDisplay || listDisplay.length === 0")
-                    tr.nohover
+                    tr.nohover(v-for="i in 10")
                         td(colspan="4")
 
                 //- template(v-else-if='uploadProgress.name')
@@ -195,20 +208,20 @@ template(v-else)
                         td.left(colspan="3")
                             | {{hostUrl}}/{{ currentDirectory ? currentDirectory + '/' : '' }}
                 
-                tr.hoverRow(v-for="(ns, i) in listDisplay" @click='()=>{ns.name[0] != "#" ? openFile(ns) : currentDirectory = setNewDir(ns) }')
-                    td
-                        Checkbox(@click.stop :modelValue="!!checked?.[ns?.name]" @update:modelValue="(value) => { if (value) checked[ns?.name] = value; else delete checked[ns?.name]; }")
+                    tr.hoverRow(v-for="(ns, i) in listDisplay" @click='()=>{ns.name[0] != "#" ? openFile(ns) : currentDirectory = setNewDir(ns) }')
+                        td
+                            Checkbox(@click.stop :modelValue="!!checked?.[ns?.name]" @update:modelValue="(value) => { if (value) checked[ns?.name] = value; else delete checked[ns?.name]; }")
 
-                    td.overflow.left(v-if='ns.name[0] == "#"')
-                        svg.svgIcon(style='height: 22px; width: 22px; vertical-align: sub;')
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-folder-fill")
-                        | &nbsp;{{ ns.name.slice(1) }}
-                    td.overflow.left(v-else) {{ ns.name }}
-                    td.overflow {{ getFileSize(ns.size) }}
-                    td.overflow {{ new Date(ns.upl).toLocaleString() }}
+                        td.overflow.left(v-if='ns.name[0] == "#"')
+                            svg.svgIcon(style='height: 22px; width: 22px; vertical-align: sub;')
+                                use(xlink:href="@/assets/img/material-icon.svg#icon-folder-fill")
+                            | &nbsp;{{ ns.name.slice(1) }}
+                        td.overflow.left(v-else) {{ ns.name }}
+                        td.overflow {{ getFileSize(ns.size) }}
+                        td.overflow {{ new Date(ns.upl).toLocaleString() }}
 
-                tr(v-for="i in (10 - listDisplay.length)")
-                    td(colspan="4")
+                    tr(v-for="i in (10 - listDisplay.length)")
+                        td(colspan="4")
 
     .table-page-wrap
         button.inline.only-icon.gray(@click="currentPage--;" :disabled="fetching || currentPage <= 1")
@@ -224,6 +237,26 @@ template(v-else)
         svg.svgIcon(style="width: 64px; height: 64px; fill: white")
             use(xlink:href="@/assets/img/material-icon.svg#icon-upload-cloud")
         p Drop your files to upload
+
+//- modal :: refresh CDN
+Modal(:open="openRefreshCdn")
+    .modal-title Refresh CDN
+
+    .modal-desc.
+        If you have overwritten files, 
+        #[br]
+        you can refresh the CDN #[span.wordset to apply the changes.]
+        #[br]
+        While in process you will not be #[span.wordset able to upload or delete files.]
+        #[br]
+        This process will take a few minutes.
+
+    .modal-btns
+        .loader-wrap(v-if='isPending')
+                .loader(style="--loader-color:white; --loader-size:12px")
+        template(v-else)
+            button.gray.btn-cancel(@click="openRefreshCdn = false") Cancel
+            button.btn-delete(@click="refreshCdn") Refresh
 
 //- modal :: change subdomain
 Modal(:open="modifyMode.subdomain")
@@ -250,7 +283,7 @@ Modal(:open="modifyMode.subdomain")
 
 //- modal :: delete selected
 Modal.modal-deleteSel(:open="deleteSelected" @close="deleteSelected = false")
-    h4.modal-title Delete Files
+    .modal-title Delete Files
 
     .modal-desc Delete {{ Object.keys(checked).length }} file(s) from your hosting? #[br] This action cannot be undone.
 
@@ -263,7 +296,7 @@ Modal.modal-deleteSel(:open="deleteSelected" @close="deleteSelected = false")
 
 //- modal :: remove hosting
 Modal.modal-removeHosting(:open="removeHosting" @close="removeHosting=false")
-    h4.modal-title Remove Hosting
+    .modal-title Remove Hosting
 
     .modal-desc Are you sure you want to remove hosting? #[br] This will remove all the files and release your subdomain address. #[br] This action cannot be undone.
 
@@ -334,6 +367,7 @@ import {
 import Tooltip from "@/components/tooltip.vue";
 
 let folders = {}; // cache folders
+let domain = import.meta.env.VITE_DOMAIN;
 
 let email_is_unverified_or_service_is_disabled = computed(
     () => !user?.email_verified || currentService.service.active <= 0
@@ -347,14 +381,23 @@ let isPending = computed(
 );
 let sdInfo = computed(() => currentService.subdInfo);
 
-let dragHere = ref(false);
 // fileinputs
-let uploadFileInp = ref();
-let uploadFolderInp = ref();
-let domain = import.meta.env.VITE_DOMAIN;
+let uploadFileInp = ref(null);
+let uploadFolderInp = ref(null);
 
+let dragHere = ref(false);
 let registerSubdomainRunning = ref(false);
 let modalPromise = ref(false);
+
+let refreshCdn = async () => {
+    openRefreshCdn.value = false;
+    await currentService.refreshCDN();
+    // currentService.refreshCDN({
+    //     checkStatus: res => {
+    //         cdnPending.value = false;
+    //     }
+    // });
+}
 
 let subdomain = ref(""); // register input value. not the actual subdomain
 let registerSubdomain = async () => {
@@ -970,10 +1013,6 @@ watch(ascending, () => {
     color: var(--main-color);
     font-size: 24px;
     animation: motion 0.3s linear 1s infinite alternate;
-}
-
-.table-actions {
-    margin-left: auto;
 }
 
 @keyframes motion {

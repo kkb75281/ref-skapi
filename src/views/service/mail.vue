@@ -1018,45 +1018,6 @@ init();
     }
 }
 
-.plch {
-    font-weight: normal;
-}
-
-ul {
-    margin-top: 0.5rem;
-}
-
-li {
-    margin-bottom: 8px;
-    font-size: 0.8rem;
-}
-
-// table style below
-thead {
-    th {
-        &>span {
-            @media (pointer: fine) {
-
-                // only for mouse pointer devices
-                &:hover {
-                    cursor: pointer;
-                    text-decoration: underline;
-                }
-            }
-        }
-    }
-}
-
-.tableMenu {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-
-    &>* {
-        margin-bottom: 8px;
-    }
-}
-
 @media (pointer: coarse) {
     .hide {
         display: block !important;

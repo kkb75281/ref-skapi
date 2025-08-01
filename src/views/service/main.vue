@@ -23,7 +23,6 @@
 div(v-else style='width:100%;text-align: center;margin-top: 100px;')
     .loader(style="--loader-color:white; --loader-size:12px")
 
-
 </template>
 
 <script setup lang="ts">

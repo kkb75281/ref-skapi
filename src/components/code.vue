@@ -3,7 +3,6 @@
     div(style="text-align:right")
         //- .copy(v-if='cpy_btn' @click="copy")
             span.copyMsg Copy code
-            //- .material-symbols-outlined.notranslate.fill.nohover(style="font-size:20px;margin-left:5px") file_copy
             svg(height="16" width="16" style="margin-left: 5px;")
                 use(xlink:href="@/assets/img/material-icon.svg#icon-file-copy-fill")          
         button.inline.icon-text.gray.btn-copy(v-if='cpy_btn' @click="copy")
