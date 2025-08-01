@@ -19,14 +19,14 @@ template(v-else)
                     :modules="[Pagination, Autoplay]"
 
                 )
-                    swiper-slide.service-swiper-item
+                    swiper-slide.service-swiper-item.ann
                         .title Announcement
                         .desc Stable release is live, and services are running smoothly! You’re good to go.
-                    swiper-slide.service-swiper-item
+                    swiper-slide.service-swiper-item.use
                         .title Use Cases
                         .desc Explore our example use cases for more project inspiration.
                         a.btn-more(href="#") See more
-                    swiper-slide.service-swiper-item
+                    swiper-slide.service-swiper-item.new
                         .title New Features
                         .desc A new feature just dropped! Check your dashboard and enjoy the update.
 
@@ -315,7 +315,6 @@ a {
 
 .service-swiper-item {
     padding: 1.5rem 9rem 1.5rem 1.625rem;
-    background: url("@/assets/img/myservice/bg_green.png") no-repeat center;
     position: relative;
 
     &::before {
@@ -326,22 +325,29 @@ a {
         position: absolute;
         bottom: 0;
         right: 0;
-        background: url("@/assets/img/myservice/img_announce.png") no-repeat center right;
     }
 
-    &:nth-child(2) {
-        background-image: url("@/assets/img/myservice/bg_purple.png");
+    &.ann {
+        background: url("@/assets/img/myservice/bg_green.png") no-repeat center;
 
         &::before {
-            background-image: url("@/assets/img/myservice/img_useCase.png");
+            background: url("@/assets/img/myservice/img_announce.png") no-repeat center right;
         }
     }
 
-    &:last-child {
-        background-image: url("@/assets/img/myservice/bg_yellow.png");
+    &.use {
+        background: url("@/assets/img/myservice/bg_purple.png") no-repeat center;
 
         &::before {
-            background-image: url("@/assets/img/myservice/img_newFeature.png");
+            background: url("@/assets/img/myservice/img_useCase.png") no-repeat center right;
+        }
+    }
+
+    &.new {
+        background: url("@/assets/img/myservice/bg_yellow.png") no-repeat center;
+
+        &::before {
+            background: url("@/assets/img/myservice/img_newFeature.png") no-repeat center right;
         }
     }
 
