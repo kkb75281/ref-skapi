@@ -648,7 +648,7 @@ function resetSearchModal() {
     z-index: 999999;
 
     &.first-service {
-        background: url("@/assets/img/myservice/bg_gradation.png") no-repeat center center;
+        background: url("@/assets/img/myservice/bg_gradation.svg") no-repeat center center;
         background-size: cover;
         top: 4rem;
     }

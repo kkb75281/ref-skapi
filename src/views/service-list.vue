@@ -218,7 +218,7 @@ a {
     // width: 100%;
     // height: 100%;
     // min-height: calc(100vh - var(--footer-height, 0) - 4rem);
-    // background: url("@/assets/img/myservice/bg_gradation.png") no-repeat center center;
+    // background: url("@/assets/img/myservice/bg_gradation.svg") no-repeat center center;
     // background-size: cover;
 }
 
@@ -246,7 +246,7 @@ a {
     overflow: hidden;
     height: 13.125rem;
     position: relative;
-    background: url("@/assets/img/myservice/bg_blue.png") no-repeat center;
+    background: url("@/assets/img/myservice/bg_blue.svg") no-repeat center;
     flex: 1;
     max-width: 27.125rem;
 
@@ -328,7 +328,7 @@ a {
     }
 
     &.ann {
-        background: url("@/assets/img/myservice/bg_green.png") no-repeat center;
+        background: url("@/assets/img/myservice/bg_green.svg") no-repeat center;
 
         &::before {
             background: url("@/assets/img/myservice/img_announce.png") no-repeat center right;
@@ -336,7 +336,7 @@ a {
     }
 
     &.use {
-        background: url("@/assets/img/myservice/bg_purple.png") no-repeat center;
+        background: url("@/assets/img/myservice/bg_purple.svg") no-repeat center;
 
         &::before {
             background: url("@/assets/img/myservice/img_useCase.png") no-repeat center right;
@@ -344,7 +344,7 @@ a {
     }
 
     &.new {
-        background: url("@/assets/img/myservice/bg_yellow.png") no-repeat center;
+        background: url("@/assets/img/myservice/bg_yellow.svg") no-repeat center;
 
         &::before {
             background: url("@/assets/img/myservice/img_newFeature.png") no-repeat center right;
