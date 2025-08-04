@@ -108,6 +108,7 @@ let changeEmail = async () => {
             email: inputEmail.value,
         });
         updatingValue.value = false;
+        alert("Email updated successfully.");
     } catch (err) {
         updatingValue.value = false;
         nextTick(() => {
