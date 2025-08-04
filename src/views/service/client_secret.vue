@@ -461,6 +461,10 @@ const showTableColumns = () => {
     }
 }
 
+.error {
+    margin-bottom: 1rem;
+}
+
 @media (max-width: 430px) {
     .modal-detailClient {
         .row {

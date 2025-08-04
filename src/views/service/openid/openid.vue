@@ -421,3 +421,9 @@ const showTableColumns = () => {
     return columnList.filter((c) => c.value).length;
 };
 </script>
+
+<style lang="less" scoped>
+.error {
+    margin-bottom: 1rem;
+}
+</style>

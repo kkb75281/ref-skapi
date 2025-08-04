@@ -751,6 +751,10 @@ const copyToClipboard = (text: string) => {
     margin-top: 3.5rem;
 }
 
+.error {
+    margin-bottom: 1rem;
+}
+
 @media (max-width: 430px) {
     .tab-menu {
         width: 100%;
