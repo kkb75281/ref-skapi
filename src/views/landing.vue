@@ -152,7 +152,7 @@
 							use(xlink:href="/material-icon.svg#icon-card-mark")
 						.top
 							.title Trial
-							.desc Best for testing and prototyping.
+							.desc Best for testing and prototyping. #[br]#[br]
 						.middle
 							.price Free
 							router-link(:to="user?.user_id ? '/create' : '/signup'")
