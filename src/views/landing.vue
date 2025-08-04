@@ -155,7 +155,7 @@
 							.desc Best for testing and prototyping.
 						.middle
 							.price Free
-							router-link(:to="user?.user_id ? '/create' : '/signup'")
+							router-link(:to="user?.user_id ? { path: '/my-services', query: { redirect: 'create' } } : { path: '/signup', query: { suc_redirect: 'create' } }")
 								button(type="button") Get
 						.bottom
 							p Core includes:
@@ -376,12 +376,12 @@ function handleScroll() {
     // 비디오 재생 제어
     if (progress >= 1) {
         // videoElement.value.play();
-        if (player.value && typeof player.value.playVideo === 'function') {
+        if (player.value && typeof player.value.playVideo === "function") {
             player.value.playVideo();
         }
     } else {
         // videoElement.value.pause();
-        if (player.value && typeof player.value.pauseVideo === 'function') {
+        if (player.value && typeof player.value.pauseVideo === "function") {
             player.value.pauseVideo();
         }
     }
@@ -408,8 +408,8 @@ function onPlayerStateChange(event) {
 
 onMounted(async () => {
     // youtube iframe API 로드
-    if (!document.getElementById('youtube-iframe-api')) {
-        const tag = document.createElement('script');
+    if (!document.getElementById("youtube-iframe-api")) {
+        const tag = document.createElement("script");
         tag.src = "https://www.youtube.com/iframe_api";
         tag.id = "youtube-iframe-api";
         document.body.appendChild(tag);
@@ -417,13 +417,13 @@ onMounted(async () => {
 
     // 반드시 window에 등록!
     window.onYouTubeIframeAPIReady = () => {
-        player.value = new window.YT.Player('player', {
-            width: '100%',
-            height: '100%',
-            videoId: 'Mek4XOg6ViU',
+        player.value = new window.YT.Player("player", {
+            width: "100%",
+            height: "100%",
+            videoId: "Mek4XOg6ViU",
             events: {
-                'onStateChange': onPlayerStateChange
-            }
+                onStateChange: onPlayerStateChange,
+            },
         });
     };
 
@@ -514,7 +514,7 @@ onUnmounted(() => {
         heroArea.classList.remove("active");
     }
 
-    const tag = document.getElementById('youtube-iframe-api');
+    const tag = document.getElementById("youtube-iframe-api");
     if (tag) {
         tag.remove();
     }
@@ -566,7 +566,8 @@ section {
 }
 
 .bg-colorful {
-    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% / cover no-repeat;
+    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% /
+        cover no-repeat;
 }
 
 .hero-bg {
@@ -610,11 +611,13 @@ section {
     }
 
     .linear-gradient {
-        background-image: linear-gradient(92.16deg,
-                #0156ff 3.64%,
-                #079af2 37.09%,
-                #49c48d 61.65%,
-                #e0fa1c 100%);
+        background-image: linear-gradient(
+            92.16deg,
+            #0156ff 3.64%,
+            #079af2 37.09%,
+            #49c48d 61.65%,
+            #e0fa1c 100%
+        );
         background-clip: text;
         -webkit-background-clip: text;
         color: transparent;
@@ -956,6 +959,7 @@ section {
 
                 .desc {
                     width: 280px;
+                    height: 2.8125rem;
                     font-size: 1.0625rem;
                     font-weight: 300;
                     line-height: 1.3;
@@ -1020,43 +1024,50 @@ section {
 
                         &.user {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_user.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.data {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_data.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.file {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_file.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.mail {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_mail.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.forbiden {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_forbiden.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.invitation {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_invitation.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.global {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_global.svg")
+                                    no-repeat;
                             }
                         }
                     }
@@ -1260,7 +1271,8 @@ section {
         display: flex;
         flex-direction: column;
         border-radius: 1rem;
-        background: url("@/assets/img/landingpage/bg_contents1.svg") lightgray 50% / cover no-repeat;
+        background: url("@/assets/img/landingpage/bg_contents1.svg") lightgray
+            50% / cover no-repeat;
         color: #000;
 
         &:nth-child(2) {
@@ -1361,11 +1373,13 @@ section {
         margin: 0 auto 0;
 
         .title {
-            background-image: linear-gradient(92.16deg,
-                    #0156ff 3.64%,
-                    #079af2 37.09%,
-                    #49c48d 51.65%,
-                    #e0fa1c 80%);
+            background-image: linear-gradient(
+                92.16deg,
+                #0156ff 3.64%,
+                #079af2 37.09%,
+                #49c48d 51.65%,
+                #e0fa1c 80%
+            );
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
@@ -1658,7 +1672,6 @@ section {
 @media (max-width: 480px) {
     .review {
         .review-swiper {
-
             .swiper-button-prev,
             .swiper-button-next {
                 display: none;
@@ -1757,7 +1770,6 @@ section {
         }
 
         .review-swiper {
-
             .swiper-button-prev,
             .swiper-button-next {
                 width: 56px;
