@@ -5,14 +5,12 @@
             input#here(type="date" hidden)
             input.big#year(type="text" :value="currentYear" @change.stop="(e) => updateCalendar(e, 'year')" @keyup.stop="(e) => {e.target.value=e.target.value.replace(/[^0-9]/g,'')}" style='cursor: text;')
             .month
-                //- .material-symbols-outlined.notranslate.prev(@click="reRender('prev')") arrow_back_ios
                 svg.svgIcon.reactive.prev(@click="reRender('prev')")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-left" style="pointer-events: none;")
+                    use(xlink:href="/material-icon.svg#icon-arrow-left" style="pointer-events: none;")
                 select(style='background-color:transparent' @change="(e) => updateCalendar(e, 'month')")
                     option(v-for="(m,i) in monthObj" :value="i" :selected="currentMonth === i") {{ m }}
-                //- .material-symbols-outlined.notranslate.next(@click="reRender('next')") arrow_forward_ios
                 svg.svgIcon.reactive.prev(@click="reRender('next')")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-right" style="pointer-events: none;")
+                    use(xlink:href="/material-icon.svg#icon-arrow-right" style="pointer-events: none;")
         .timeCont 
             .days 
                 .day Mo
@@ -27,15 +25,13 @@
     .timeSettingWrap
         .input(@mouseover="startDate ? showIcon.start = true : showIcon.start = false" @mouseleave="showIcon.start = false")
             input#start(type="text" placeholder="Start" readonly v-model="startDate" :class="{'active' : activeDate}" @click="activeDate = true")
-            //- .material-symbols-outlined.notranslate.fill.delete(:class="{'show' : showIcon.start}" @click="deleteDate") cancel
             svg.svgIcon.black.delete(:class="{'show' : showIcon.start}" @click="deleteDate")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-x-circle")
+                use(xlink:href="/material-icon.svg#icon-x-circle")
         span ~
         .input(@mouseover="endDate ? showIcon.end = true : showIcon.end = false" @mouseleave="showIcon.end = false") 
             input#end(type="text" placeholder="End" readonly v-model="endDate" :class="{'active' : !activeDate}" @click="activeDate = false")
-            //- .material-symbols-outlined.notranslate.fill.delete(:class="{'show' : showIcon.end}" @click="deleteDate") cancel
             svg.svgIcon.black.delete(:class="{'show' : showIcon.end}" @click="deleteDate")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-x-circle")
+                use(xlink:href="/material-icon.svg#icon-x-circle")
 </template>
 
 <script setup>

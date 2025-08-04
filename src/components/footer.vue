@@ -14,11 +14,11 @@ footer#footer(:class="{ 'service-main-footer': currentRoutePath === 'my-services
                     ul.nav
                         li
                             a(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
-                                img(src="@/assets/img/landingpage/icon_docs.svg", alt="GitHub")
+                                img(src="@/assets/img/landingpage/icon_docs.svg", alt="Docs icon")
                                 span Docs
                         li
                             a(href="https://github.com/broadwayinc/skapi-js" target="_blank") 
-                                img(src="@/assets/img/landingpage/icon_github.svg", alt="GitHub")
+                                img(src="@/assets/img/landingpage/icon_github.svg", alt="GitHub icon")
                                 span Github
                         li
                             router-link(to="/my-services")
@@ -32,17 +32,19 @@ footer#footer(:class="{ 'service-main-footer': currentRoutePath === 'my-services
                 span BROADWAYINC PTE. LTD. Singapore.
                 .icon-wrap
                     a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                        img(src="@/assets/img/landingpage/icon_tiktok.svg" alt="TikTok icon")
                     a.link(href="https://www.instagram.com/skapi_api" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_instagram.svg")
+                        img(src="@/assets/img/landingpage/icon_instagram.svg" alt="Instagram icon")
                     a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_youtube.svg")
+                        img(src="@/assets/img/landingpage/icon_youtube.svg" alt="YouTube icon")
                     a.link(href="https://x.com/skapi_api" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_x.svg")
+                        img(src="@/assets/img/landingpage/icon_x.svg" alt="X (formerly Twitter) icon")
                     a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                        img(src="@/assets/img/landingpage/icon_linkedin.svg" alt="LinkedIn icon")
                     a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_facebook.svg")
+                        img(src="@/assets/img/landingpage/icon_facebook.svg" alt="Facebook icon")
+                    a.link(href="https://dev.to/skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_devto.svg" alt="Dev.to icon")
     template(v-else)
         .footer-wrap
             .left
@@ -55,18 +57,20 @@ footer#footer(:class="{ 'service-main-footer': currentRoutePath === 'my-services
                 span.email support@broadwayinc.com
                 .icon-wrap
                     a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                        img(src="@/assets/img/landingpage/icon_tiktok.svg" alt="TikTok icon")
                     a.link(href="https://www.instagram.com/skapi_api" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_instagram.svg")
+                        img(src="@/assets/img/landingpage/icon_instagram.svg" alt="Instagram icon")
                     a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_youtube.svg")
+                        img(src="@/assets/img/landingpage/icon_youtube.svg" alt="YouTube icon")
                     a.link(href="https://x.com/skapi_api" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_x.svg")
+                        img(src="@/assets/img/landingpage/icon_x.svg" alt="X (formerly Twitter) icon")
                     a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                        img(src="@/assets/img/landingpage/icon_linkedin.svg" alt="LinkedIn icon")
                     a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_facebook.svg")
-            
+                        img(src="@/assets/img/landingpage/icon_facebook.svg" alt="Facebook icon")
+                    a.link(href="https://dev.to/skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_devto.svg" alt="Dev.to icon")
+
 </template>
 <script setup>
 import { onMounted, onUnmounted, ref, watch } from "vue";
@@ -316,6 +320,14 @@ onUnmounted(() => {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
+
+            .link {
+                img {
+                    width: 2.25rem;
+                    height: 2.25rem;
+                }
+            }
+
         }
     }
 
@@ -358,6 +370,11 @@ onUnmounted(() => {
             width: 7.5rem;
             height: 2.25rem;
             margin-bottom: 1.25rem;
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
         }
 
         .company-info {
@@ -388,6 +405,13 @@ onUnmounted(() => {
             right: -7px;
             bottom: -8px;
             text-align: end;
+
+            .link {
+                img {
+                    width: 2.25rem;
+                    height: 2.25rem;
+                }
+            }
         }
     }
 }

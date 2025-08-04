@@ -3,7 +3,7 @@
 	.bg-blue.hero-bg
 		section.hero
 			.title #[span.linear-gradient Zero-Setup] #[span.wordset Backend API]
-			.desc Skapi is a serverless backend platform that gives frontend developers,no-coders, and product teams everything they need: auth, database,file storage, and real-time APIs.  Launch your app in minutes.
+			.desc Skapi is a serverless backend platform that gives frontend developers, no-coders, and product teams everything they need: auth, database, file storage, and real-time APIs. #[br]Launch your app in minutes.
 			template(v-if="user?.user_id")
 				button(type="button" data-aos="fade-up" data-aos-duration="500" @click="$router.push('/my-services')") Go to My Services
 			router-link(v-else to="/signup")
@@ -11,8 +11,10 @@
 
 		section.video(ref="videoSection")
 			.wrap
-				.inner
-					video.video-skapi(src="@/assets/img/landingpage/video_skapi.mp4", autoplay muted loop playsinline ref="videoElement")
+				#player.video-skapi(ref="player")
+				//- .inner
+					//- iframe(width="560" height="315" src="https://www.youtube.com/embed/Mek4XOg6ViU?si=NwvFNXQFnVGchcA4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen)
+					//- video.video-skapi(src="@/assets/img/landingpage/video_skapi.mp4", autoplay muted loop playsinline ref="videoElement")
 						source(src="@/assets/img/landingpage/video_skapi.mp4", type="video/mp4")
 						p Your browser does not support the video tag.
 
@@ -49,7 +51,7 @@
 					:loop="true"
 					:pagination="{ clickable: true }"
 					:navigation="{ nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }"
-                    :autoplay="{ delay: 3000, disableOnInteraction: false }"
+					:autoplay="{ delay: 3000, disableOnInteraction: false }"
 					:modules="[Pagination, Navigation, Autoplay]"
 					@swiper="onSwiperReady"
 				)
@@ -147,7 +149,7 @@
 				)
 					swiper-slide.plan-item.blue
 						svg.mark
-							use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+							use(xlink:href="/material-icon.svg#icon-card-mark")
 						.top
 							.title Trial
 							.desc Best for testing and prototyping.
@@ -166,14 +168,14 @@
 
 					swiper-slide.plan-item.green
 						svg.mark
-							use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+							use(xlink:href="/material-icon.svg#icon-card-mark")
 						.top
 							.title Standard
 							.desc Suit best for small businesses, MVP, small projects, etc.
 						.middle
 							.price $19
 								span /mon
-							router-link(:to="user?.user_id ? '/create' : { path: '/signup', query: { suc_redirect: '/create' } }")
+							router-link(:to="user?.user_id ? { path: '/my-services', query: { redirect: 'create' } } : { path: '/signup', query: { suc_redirect: 'create' } }")
 								button(type="button") Get
 						.bottom
 							p Includes all Trial Plan features, but more functions:
@@ -186,14 +188,14 @@
 
 					swiper-slide.plan-item.yellow
 						svg.mark
-							use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+							use(xlink:href="/material-icon.svg#icon-card-mark")
 						.top
 							.title Premium
 							.desc Suit best for huge projects, Saas, social media, AI application, etc.
 						.middle
 							.price $89
 								span /mon
-							router-link(:to="user?.user_id ? '/create' : { path: '/signup', query: { suc_redirect: '/create' } }")
+							router-link(:to="user?.user_id ? { path: '/my-services', query: { redirect: 'create' } } : { path: '/signup', query: { suc_redirect: 'create' } }")
 								button(type="button") Get
 						.bottom
 							p Includes all Standard Plan features, but more data:
@@ -297,16 +299,17 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch, onUnmounted, onBeforeUnmount } from "vue";
+import { onMounted, ref, onUnmounted, onBeforeUnmount } from "vue";
 import { npmVersion } from "@/main.ts";
 import { user } from "@/code/user";
+
+import TabMenu from "@/components/tab.vue";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css"; // import Swiper styles
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import TabMenu from "@/components/tab.vue";
 
 const activeTabs = ref({
     contents: 0,
@@ -315,6 +318,7 @@ const articles = ref([]);
 const videos = ref([]);
 const videoSection = ref(null);
 const videoElement = ref(null);
+const player = ref(null);
 
 function setSwiperImageWidth() {
     let swiperImage = document.getElementById("reviewerImg");
@@ -357,7 +361,9 @@ function makeBullet(index, className) {
 // 스크롤에 따른 영상 효과
 function handleScroll() {
     const video = document.querySelector(".video .wrap");
+
     if (!video) return;
+    if (!player.value) return;
 
     const maxScroll = 300; // 효과 구간
     const scrollTop = Math.min(window.scrollY, maxScroll);
@@ -369,26 +375,64 @@ function handleScroll() {
 
     // 비디오 재생 제어
     if (progress >= 1) {
-        videoElement.value.play();
+        // videoElement.value.play();
+        if (player.value && typeof player.value.playVideo === 'function') {
+            player.value.playVideo();
+        }
     } else {
-        videoElement.value.pause();
+        // videoElement.value.pause();
+        if (player.value && typeof player.value.pauseVideo === 'function') {
+            player.value.pauseVideo();
+        }
     }
 }
 
-const resetVideo = () => {
-    if (videoElement.value) {
-        videoElement.value.pause();
-        videoElement.value.currentTime = 0;
+function onPlayerStateChange(event) {
+    if (event.data == window.YT.PlayerState.PLAYING) {
+        // 재생 중일 때
+    } else if (event.data == window.YT.PlayerState.PAUSED) {
+        // 일시 중지 중일 때
+    } else if (event.data == window.YT.PlayerState.ENDED) {
+        // 재생 완료 시 처음부터 다시 재생
+        event.target.seekTo(0);
+        event.target.playVideo();
     }
-};
+}
+
+// const resetVideo = () => {
+// 	if (videoElement.value) {
+// 		videoElement.value.pause();
+// 		videoElement.value.currentTime = 0;
+// 	}
+// };
 
 onMounted(async () => {
+    // youtube iframe API 로드
+    if (!document.getElementById('youtube-iframe-api')) {
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        tag.id = "youtube-iframe-api";
+        document.body.appendChild(tag);
+    }
+
+    // 반드시 window에 등록!
+    window.onYouTubeIframeAPIReady = () => {
+        player.value = new window.YT.Player('player', {
+            width: '100%',
+            height: '100%',
+            videoId: 'Mek4XOg6ViU',
+            events: {
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    };
+
     window.addEventListener("resize", setSwiperImageWidth);
     window.addEventListener("scroll", handleScroll);
     handleScroll();
 
     // 새로고침 시 비디오 초기화
-    resetVideo();
+    // resetVideo();
 
     const heroArea = document.querySelector(".hero");
     if (heroArea) {
@@ -469,10 +513,15 @@ onUnmounted(() => {
     if (heroArea) {
         heroArea.classList.remove("active");
     }
+
+    const tag = document.getElementById('youtube-iframe-api');
+    if (tag) {
+        tag.remove();
+    }
 });
 
 defineExpose({
-    resetVideo,
+    // resetVideo,
 });
 </script>
 
@@ -517,8 +566,7 @@ section {
 }
 
 .bg-colorful {
-    background: url("@/assets/img/landingpage/bg_price.png") lightgray 50% /
-        cover no-repeat;
+    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% / cover no-repeat;
 }
 
 .hero-bg {
@@ -554,20 +602,19 @@ section {
     }
 
     .desc {
-        max-width: 43.75rem;
+        // max-width: 43.75rem;
+        max-width: 44.6rem;
         margin: 0 auto;
         line-height: 1.5;
         margin-bottom: 1.875rem;
     }
 
     .linear-gradient {
-        background-image: linear-gradient(
-            92.16deg,
-            #0156ff 3.64%,
-            #079af2 37.09%,
-            #49c48d 61.65%,
-            #e0fa1c 100%
-        );
+        background-image: linear-gradient(92.16deg,
+                #0156ff 3.64%,
+                #079af2 37.09%,
+                #49c48d 61.65%,
+                #e0fa1c 100%);
         background-clip: text;
         -webkit-background-clip: text;
         color: transparent;
@@ -588,7 +635,8 @@ section {
         border-radius: 0.625rem;
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.1);
-        max-height: 46.875rem;
+        // max-height: 46.875rem;
+        height: 39.1vw;
 
         perspective: 1000px;
         transform-style: preserve-3d;
@@ -596,27 +644,27 @@ section {
         transition: transform 0.1s linear;
         will-change: transform;
 
-        .inner {
-            width: 100%;
-            height: 100%;
-            background-color: #1c1c1c;
-            object-fit: cover;
+        // .inner {
+        // 	width: 100%;
+        // 	height: 100%;
+        // 	background-color: #1c1c1c;
+        // 	object-fit: cover;
 
-            img {
-                display: block;
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
-        }
+        // 	iframe {
+        // 		display: block;
+        // 		width: 100%;
+        // 		height: 100%;
+        // 		object-fit: cover;
+        // 	}
+        // }
     }
 
-    .video-skapi {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }
+    // .video-skapi {
+    // 	width: 100%;
+    // 	height: 100%;
+    // 	object-fit: cover;
+    // 	display: block;
+    // }
 }
 
 .why {
@@ -972,50 +1020,43 @@ section {
 
                         &.user {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_user.svg")
-                                    no-repeat;
+                                background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
                             }
                         }
 
                         &.data {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_data.svg")
-                                    no-repeat;
+                                background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
                             }
                         }
 
                         &.file {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_file.svg")
-                                    no-repeat;
+                                background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
                             }
                         }
 
                         &.mail {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_mail.svg")
-                                    no-repeat;
+                                background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
                             }
                         }
 
                         &.forbiden {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_forbiden.svg")
-                                    no-repeat;
+                                background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
                             }
                         }
 
                         &.invitation {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_invitation.svg")
-                                    no-repeat;
+                                background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
                             }
                         }
 
                         &.global {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_global.svg")
-                                    no-repeat;
+                                background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
                             }
                         }
                     }
@@ -1219,16 +1260,15 @@ section {
         display: flex;
         flex-direction: column;
         border-radius: 1rem;
-        background: url("@/assets/img/landingpage/bg_contents1.png") lightgray
-            50% / cover no-repeat;
+        background: url("@/assets/img/landingpage/bg_contents1.svg") lightgray 50% / cover no-repeat;
         color: #000;
 
         &:nth-child(2) {
-            background-image: url("@/assets/img/landingpage/bg_contents2.png");
+            background-image: url("@/assets/img/landingpage/bg_contents2.svg");
         }
 
         &:nth-child(3) {
-            background-image: url("@/assets/img/landingpage/bg_contents3.png");
+            background-image: url("@/assets/img/landingpage/bg_contents3.svg");
         }
 
         .title {
@@ -1321,13 +1361,11 @@ section {
         margin: 0 auto 0;
 
         .title {
-            background-image: linear-gradient(
-                92.16deg,
-                #0156ff 3.64%,
-                #079af2 37.09%,
-                #49c48d 51.65%,
-                #e0fa1c 80%
-            );
+            background-image: linear-gradient(92.16deg,
+                    #0156ff 3.64%,
+                    #079af2 37.09%,
+                    #49c48d 51.65%,
+                    #e0fa1c 80%);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
@@ -1620,6 +1658,7 @@ section {
 @media (max-width: 480px) {
     .review {
         .review-swiper {
+
             .swiper-button-prev,
             .swiper-button-next {
                 display: none;
@@ -1671,6 +1710,14 @@ section {
         }
     }
 
+    .video {
+        padding: 0 1.875rem;
+
+        .wrap {
+            height: 55vw;
+        }
+    }
+
     .why {
         padding-top: 5rem;
         padding-bottom: 5rem;
@@ -1710,6 +1757,7 @@ section {
         }
 
         .review-swiper {
+
             .swiper-button-prev,
             .swiper-button-next {
                 width: 56px;

@@ -12,18 +12,16 @@
         router-view
     
     // upgrade service
-    Modal(:open="openOffer" @close="openOffer=false")
+    Modal(:open="serviceUpgradeOffer" @close="serviceUpgradeOffer=false")
         .modal-title Upgrade
 
         .modal-desc You can access more features like sending newsletters, #[br]inviting users and file hosting by upgrading your service. #[br]Would you like you check out our service plans?
 
         .modal-btns
-            button.gray(type="button" @click="openOffer=false;") No
-            router-link(:to='`/subscription/${currentService.id}`')
-                button(type="button") Yes, Upgrade Now
+            button.gray(type="button" @click="serviceUpgradeOffer=false;") No
+            button(type="button" @click="router.push(`/subscription/${currentService.id}`)") Upgrade
 div(v-else style='width:100%;text-align: center;margin-top: 100px;')
     .loader(style="--loader-color:white; --loader-size:12px")
-
 
 </template>
 
@@ -32,17 +30,15 @@ import { useRoute, useRouter } from "vue-router";
 import { ref, watch } from "vue";
 import { user } from '@/code/user';
 import { serviceList } from "@/views/service-list";
-import { currentService, setService, serviceMainLoaded } from "@/views/service/main";
+import { currentService, setService, serviceMainLoaded, serviceUpgradeOffer } from "@/views/service/main";
 
 import SideNav from "@/components/sideNav.vue";
 import Modal from "@/components/modal.vue";
-import MaterialIcon from "@/assets/img/material-icon.svg"
 
 const router = useRouter();
 const route = useRoute();
 
 let serviceId = route.path.split("/")[2];
-let openOffer = ref(false);
 let plan = ref("Trial");
 
 watch(serviceList, nv => {

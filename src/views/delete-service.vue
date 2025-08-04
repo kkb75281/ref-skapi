@@ -2,7 +2,7 @@
 main#confirmation 
     button.inline.icon-text.dark.btn-prev(type="button" @click="router.push('/my-services/' + serviceId + '/dashboard')")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-left")
+            use(xlink:href="/material-icon.svg#icon-arrow-left")
         span Back
 
     br
@@ -35,11 +35,11 @@ main#confirmation
         br
         
         .flex-wrap.end
-            button.inline.gray.btn-cancel(type="submit" :class="{disabled: !iUnderstand, red: iUnderstand}" @click='deleteService()') Delete Service
+            button.inline.gray.btn-cancel(type="submit" :disabled="!iUnderstand" :class="{red: iUnderstand}" @click='deleteService()') Delete Service
 
         //- .bottom
             div(v-if="promiseRunning" style="width:100%; text-align:center")
-                .loader(style="--loader-color:blue; --loader-size:12px")
+                .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else)
                 button.noLine.warning(type="button" @click="router.push('/my-services/' + serviceId + '/dashboard')") Cancel
                 | &nbsp;&nbsp;
@@ -48,11 +48,10 @@ main#confirmation
 </template>
 
 <script setup lang="ts">
-import { skapi } from "@/main";
 import { currentService } from "@/views/service/main";
 import { useRoute, useRouter } from "vue-router";
-import Checkbox from "@/components/checkbox.vue";
 import { ref } from "vue";
+import Checkbox from "@/components/checkbox.vue";
 
 const router = useRouter();
 const route = useRoute();

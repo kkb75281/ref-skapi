@@ -1,7 +1,7 @@
 <template lang="pug">
 #success
     router-link(to="/")
-        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px; margin-bottom: .625rem")
+        img(src="@/assets/img/logo/symbol-logo.png" alt="Skapi Logo" style="width: 40px; margin-bottom: .625rem")
 
     .page-title Thanks for joining!
 
@@ -17,7 +17,6 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
-import { onMounted } from 'vue';
 
 const router = useRouter();
 const route = useRoute();

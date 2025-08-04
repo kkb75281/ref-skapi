@@ -1,7 +1,7 @@
 <template lang="pug">
 #signup
     router-link(to="/")
-        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px; margin-bottom: .625rem")
+        img(src="@/assets/img/logo/symbol-logo.png" alt="Skapi Logo" style="width: 40px; margin-bottom: .625rem")
 
     .page-title Sign Up
 
@@ -28,13 +28,11 @@
             required)
             //- .passwordIcon(@click="showPassword = !showPassword")
             //-     template(v-if="showPassword")
-            //-         //- .material-symbols-outlined.notranslate.fill visibility
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+            //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
             //-     template(v-else)
-            //-         //- .material-symbols-outlined.notranslate.fill visibility_off
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+            //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
         label.passwordInput
             | Confirm password
@@ -46,13 +44,11 @@
             required)
             //- .passwordIcon(@click="showPassword = !showPassword")
             //-     template(v-if="showPassword")
-            //-         //- .material-symbols-outlined.notranslate.fill visibility
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+            //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
             //-     template(v-else)
-            //-         //- .material-symbols-outlined.notranslate.fill visibility_off
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+            //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
         .actions 
             Checkbox(v-model="form.subscribe" style='font-weight:unset;') I agree to receive newsletters from Skapi.
@@ -60,16 +56,15 @@
         br
 
         .error(v-if="error")
-            //- .material-symbols-outlined.notranslate.fill error
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-error")
+                use(xlink:href="/material-icon.svg#icon-error")
             span {{ error }}
         
         br
 
         .bottom
             div(v-if="promiseRunning" style="width:100%; text-align:center")
-                .loader(style="--loader-color:blue; --loader-size:12px")
+                .loader(style="--loader-color:white; --loader-size:12px")
 
             template(v-else)
                 button.inline Sign-up
@@ -84,6 +79,7 @@ import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { onMounted, ref } from "vue";
 import Checkbox from "@/components/checkbox.vue";
+
 const router = useRouter();
 const route = useRoute();
 

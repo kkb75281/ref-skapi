@@ -3,7 +3,7 @@ section.page-header
     .page-title Getting Started
     a.btn-docs(href='https://docs.skapi.com/introduction/getting-started.html' target="_blank")
         button.inline.icon-text.sm.gray
-            img(src="@/assets/img/landingpage/icon_docs.svg")
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
             | Go Docs
 
 hr
@@ -11,7 +11,7 @@ br
 
 section
     .middle-title For HTML Projects
-    p.desc Add the following code to your HTML website to get started:
+    p.page-desc Add the following code to your HTML website to get started:
 
     Code(style="margin: 36px 0 60px 0")
         pre.
@@ -21,7 +21,8 @@ section
             #[span(style="color:#999") &lt;/]#[span(style="color:#33adff") script]#[span(style="color:#999") &gt;]
 
     .middle-title For SPA Projects
-    p.desc If you are developing a Single Page Application (SPA), please refer to the following steps:
+    p.page-desc If you are developing a Single Page Application (SPA), please refer to the following steps:
+
     p(style='margin-bottom: 0') 1. Install the library
 
     Code(style="margin: 16px 0 40px")
@@ -51,19 +52,5 @@ import { currentService } from '@/views/service/main';
 .middle-title {
     font-size: 26px;
     margin-bottom: 16px;
-}
-
-hr {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-p {
-    margin: 0;
-    margin-bottom: 11px;
-}
-
-.desc {
-    color: #888888;
-    margin-bottom: 30px;
 }
 </style>

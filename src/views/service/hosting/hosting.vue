@@ -2,10 +2,9 @@
 section.page-header
     .page-title File Hosting
     .flex-wrap
-        //- button.inline.sm.red.caution.btn-delete(v-if="currentService.service.subdomain" type="button" @click="removeHosting = true") Remove Hosting
         a.btn-docs(href='https://docs.skapi.com/hosting/hosting.html' target="_blank")
             button.inline.icon-text.sm.gray
-                img(src="@/assets/img/landingpage/icon_docs.svg")
+                img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
                 | Go Docs
 
 hr
@@ -13,33 +12,31 @@ hr
 section
     .error(v-if='!user?.email_verified')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         router-link(to="/account-setting") Please verify your email address to modify settings.
         
     .error(v-else-if='currentService.service.active == 0')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently disabled.
 
     .error(v-else-if='currentService.service.active < 0')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently suspended.
 
 template(v-if='!currentService.service.subdomain' :class='{nonClickable: email_is_unverified_or_service_is_disabled}')
     section
-        p.desc(style="color: #888888; margin-bottom: 30px;").
+        p.page-desc.
             File hosting service let you host files and static websites.
-            #[br]
-            #[span.wordset To host your public files, please register a subdomain.]
-            #[br]
-            The subdomain can only be #[span.wordset alphanumeric and hyphen,] should be at least #[span.wordset 6 characters] minimum and #[span.wordset max 32 characters.]
+            To host your public files, please register a subdomain.
+            The subdomain can only be alphanumeric and hyphen, #[span.wordset should be at least 6 characters minimum and max 32 characters.]
 
         form#registerForm(@submit.prevent='registerSubdomain')
             .email-alias
                 input.block(v-model='subdomain' pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' minlength="6" maxlength="32" :disabled="registerSubdomainRunning" placeholder="your-subdomain" required)
 
-            button.inline(:disabled='registerSubdomainRunning' :class='{disabled: registerSubdomainRunning}')
+            button.inline(type="submit" :disabled='registerSubdomainRunning')
                 template(v-if="registerSubdomainRunning")
                     .loader(style="--loader-color:white; --loader-size:12px")
                 template(v-else)
@@ -47,70 +44,74 @@ template(v-if='!currentService.service.subdomain' :class='{nonClickable: email_i
 
 template(v-else)
     section
-        .flex-wrap.space-between(style="gap: 20px;")
-            .card-wrap(style="flex: 1; min-width: 300px;")
-                .card
-                    .flex-wrap.space-between
-                        .text
-                            span.title Storage in-use
-                            span.data {{ currentService.dirInfo?.size ? getFileSize(currentService.dirInfo?.size || 0) : '...' }}
-                        button.only-icon.gray.delete-btn(type="button" @click="removeHosting = true")
-                            .icon
-                                svg
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+        .info-value-set
+            .info-edit-wrap
+                .info
+                    .title Storage in-use
+                    .value {{ currentService.dirInfo?.size ? getFileSize(currentService.dirInfo?.size || 0) : '...' }}
+                button.only-icon.gray.delete-btn(type="button" @click="removeHosting = true")
+                    .icon
+                        svg
+                            use(xlink:href="/material-icon.svg#icon-delete")
 
-                .card
-                    .flex-wrap.space-between
-                        .text
-                            span.title URL
-                            span.data {{ hostUrl}}
-                        button.only-icon.gray.edit-btn(type="button" @click="editSubdomain")
-                            .icon
-                                svg
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+            .info-edit-wrap
+                .info
+                    .title URL
+                    .value {{ hostUrl}}
+                button.only-icon.gray.edit-btn(type="button" @click="editSubdomain")
+                    .icon
+                        svg
+                            use(xlink:href="/material-icon.svg#icon-edit")
 
-                .card
-                    .flex-wrap.space-between
-                        .text
-                            span.title 404 Page
-                            span.data {{ sdInfo?.['404'] || '-' }}
-                        .flex-wrap.end(style="gap: 10px;")
-                            button.only-icon.gray.edit-btn(:class='{disabled: email_is_unverified_or_service_is_disabled || isPending}' @click="open404FileInp")
-                                .icon
-                                    svg(v-if="sdInfo?.['404']")
-                                        use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
-                                    svg(v-else)
-                                        use(xlink:href="@/assets/img/material-icon.svg#icon-upload")
-                            button.only-icon.gray.edit-btn(v-if='!updatingValue.page404 && sdInfo?.["404"] && sdInfo?.["404"] !== "..."' @click="openRemove404=true")
-                                .icon
-                                    svg
-                                        use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+            .info-edit-wrap
+                .info
+                    .title 404 Page
+                    .value {{ sdInfo?.['404'] || '-' }}
+                .flex-wrap.end(style="gap: 10px;")
+                    button.only-icon.gray.edit-btn(:disabled='email_is_unverified_or_service_is_disabled || isPending' @click="open404FileInp")
+                        .icon
+                            svg(v-if="sdInfo?.['404']")
+                                use(xlink:href="/material-icon.svg#icon-edit")
+                            svg(v-else)
+                                use(xlink:href="/material-icon.svg#icon-upload")
+                    button.only-icon.gray.edit-btn(v-if='!updatingValue.page404 && sdInfo?.["404"] && sdInfo?.["404"] !== "..."' @click="openRemove404=true")
+                        .icon
+                            svg
+                                use(xlink:href="/material-icon.svg#icon-delete")
 
     section
         .table-menu-wrap
+            .table-functions
+                button.inline.only-icon.gray(aria-label="Refresh CDN" @click="openRefreshCdn=true" :disabled="email_is_unverified_or_service_is_disabled || isPending || fetching")
+                    Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                        template(v-slot:tool)
+                            .icon
+                                svg
+                                    use(xlink:href="/material-icon.svg#icon-refresh")
+                        template(v-slot:tip) Refresh CDN
             .table-actions
-                button.inline.only-icon.gray(@click='uploadFileInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
+                button.inline.only-icon.gray(aria-label="Upload Files" @click='uploadFileInp.click()' :disabled="email_is_unverified_or_service_is_disabled || isPending || fetching")
                     input(type="file" hidden multiple @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFileInp")
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-file-plus")
+                                    use(xlink:href="/material-icon.svg#icon-file-plus")
                         template(v-slot:tip) Upload Files
-                button.inline.only-icon.gray(@click='uploadFolderInp.click()' :class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching}")
+                button.inline.only-icon.gray(aria-label="Upload Folder" @click='uploadFolderInp.click()' :disabled="email_is_unverified_or_service_is_disabled || isPending || fetching")
                     input(type="file" hidden multiple directory webkitdirectory @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFolderInp")
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-folder-plus")
+                                    use(xlink:href="/material-icon.svg#icon-folder-plus")
                         template(v-slot:tip) Upload Folder
-                button.inline.only-icon.gray(:class="{'nonClickable' : email_is_unverified_or_service_is_disabled || isPending || fetching || !Object.keys(checked).length}" @click='deleteSelected=true')
+                button.inline.only-icon.gray(aria-label="Delete Selected" :disabled="email_is_unverified_or_service_is_disabled || isPending || fetching || !Object.keys(checked).length" @click='deleteSelected=true')
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                                    use(xlink:href="/material-icon.svg#icon-delete")
                         template(v-slot:tip) Delete Selected
 
         Table(
@@ -128,6 +129,11 @@ template(v-else)
                 .tableMsg.center
                     .loader(style="--loader-color:white; --loader-size:12px")
                     | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subdomain change in process ...
+            
+            template(v-else-if="!subdomainReady" v-slot:msg)
+                .tableMsg.center
+                    .loader(style="--loader-color:white; --loader-size:12px")
+                    | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subdomain change in process ...
 
             template(v-else-if="currentService.pending.cdn" v-slot:msg)
                 .tableMsg.center
@@ -137,14 +143,14 @@ template(v-else)
             template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
                 .tableMsg.center.empty 
                     svg.svgIcon
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-upload")
+                        use(xlink:href="/material-icon.svg#icon-upload")
                     | Drag and drop files here
             
             template(v-else-if='uploadProgress.name' v-slot:msg)
                 .progress(:style="{ width: uploadProgress.progress + '%', height: '3px', background: 'var(--main-color)', position: 'absolute', top: '58px', left: '0px', zIndex: 1}")
                 .tableMsg.left
                     svg.svgIcon.moving(style="margin-right: 13px;")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-upload")
+                        use(xlink:href="/material-icon.svg#icon-upload")
                     | Uploading: /{{ uploadProgress.name }}&nbsp;
                     b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
             
@@ -157,30 +163,30 @@ template(v-else)
                         span(@click='toggleSort("name")')
                             | Filename
                             svg.svgIcon(v-if='sortBy === "name" && ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                                use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
                             svg.svgIcon(v-if='sortBy === "name" && !ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                                use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
                         .resizer
 
                     th(style='width:160px;')
                         span(@click='toggleSort("size")')
                             | Size
                             svg.svgIcon(v-if='sortBy === "size" && ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                                use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
                             svg.svgIcon(v-if='sortBy === "size" && !ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                                use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
                         .resizer
                     th(style='width:220px;')
                         span(@click='toggleSort("upl")')
                             | Uploaded
                             svg.svgIcon(v-if='sortBy === "upl" && ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+                                use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
                             svg.svgIcon(v-if='sortBy === "upl" && !ascending')
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-up")
+                                use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
 
             template(v-slot:body)
                 template(v-if="fetching || isPending || !subdomainReady || currentService.pending.cdn || uploadProgress.name || !listDisplay || listDisplay.length === 0")
-                    tr.nohover
+                    tr.nohover(v-for="i in 10")
                         td(colspan="4")
 
                 //- template(v-else-if='uploadProgress.name')
@@ -188,7 +194,7 @@ template(v-else)
                     tr.uploadState(style="position:relative")
                         td
                             svg.svgIcon.moving()
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-upload")
+                                use(xlink:href="/material-icon.svg#icon-upload")
                         td.left(colspan="3")
                             | Uploading: /{{ uploadProgress.name }}&nbsp;
                             b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
@@ -197,46 +203,66 @@ template(v-else)
                     tr.nohover(:class='{hoverRow:currentDirectory}' @click='currentDirectory = currentDirectory.split("/").length === 1 ? "" : currentDirectory.split("/").slice(0, -1).join("/")')
                         td
                             svg.svgIcon
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-folder-open-fill")
+                                use(xlink:href="/material-icon.svg#icon-folder-open-fill")
 
                         td.left(colspan="3")
                             | {{hostUrl}}/{{ currentDirectory ? currentDirectory + '/' : '' }}
                 
-                tr.hoverRow(v-for="(ns, i) in listDisplay" @click='()=>{ns.name[0] != "#" ? openFile(ns) : currentDirectory = setNewDir(ns) }')
-                    td
-                        Checkbox(@click.stop :modelValue="!!checked?.[ns?.name]" @update:modelValue="(value) => { if (value) checked[ns?.name] = value; else delete checked[ns?.name]; }")
+                    tr.hoverRow(v-for="(ns, i) in listDisplay" @click='()=>{ns.name[0] != "#" ? openFile(ns) : currentDirectory = setNewDir(ns) }')
+                        td
+                            Checkbox(@click.stop :modelValue="!!checked?.[ns?.name]" @update:modelValue="(value) => { if (value) checked[ns?.name] = value; else delete checked[ns?.name]; }")
 
-                    td.overflow.left(v-if='ns.name[0] == "#"')
-                        svg.svgIcon(style='height: 22px; width: 22px; vertical-align: sub;')
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-folder-fill")
-                        | &nbsp;{{ ns.name.slice(1) }}
-                    td.overflow.left(v-else) {{ ns.name }}
-                    td.overflow {{ getFileSize(ns.size) }}
-                    td.overflow {{ new Date(ns.upl).toLocaleString() }}
+                        td.overflow.left(v-if='ns.name[0] == "#"')
+                            svg.svgIcon(style='height: 22px; width: 22px; vertical-align: sub;')
+                                use(xlink:href="/material-icon.svg#icon-folder-fill")
+                            | &nbsp;{{ ns.name.slice(1) }}
+                        td.overflow.left(v-else) {{ ns.name }}
+                        td.overflow {{ getFileSize(ns.size) }}
+                        td.overflow {{ new Date(ns.upl).toLocaleString() }}
 
-                tr(v-for="i in (10 - listDisplay.length)")
-                    td(colspan="4")
+                    tr(v-for="i in (10 - listDisplay.length)")
+                        td(colspan="4")
 
     .table-page-wrap
-        button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+        button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-        button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+                    use(xlink:href="/material-icon.svg#icon-chevron-left")
+        button.inline.only-icon.gray(aria-label="Next" @click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+                    use(xlink:href="/material-icon.svg#icon-chevron-right")
 
     .dragPopup(:class="{'show' : dragHere}")
         svg.svgIcon(style="width: 64px; height: 64px; fill: white")
-            use(xlink:href="@/assets/img/material-icon.svg#icon-upload-cloud")
+            use(xlink:href="/material-icon.svg#icon-upload-cloud")
         p Drop your files to upload
+
+//- modal :: refresh CDN
+Modal(:open="openRefreshCdn")
+    .modal-title Refresh CDN
+
+    .modal-desc.
+        If you have overwritten files, 
+        #[br]
+        you can refresh the CDN #[span.wordset to apply the changes.]
+        #[br]
+        While in process you will not be #[span.wordset able to upload or delete files.]
+        #[br]
+        This process will take a few minutes.
+
+    .modal-btns
+        .loader-wrap(v-if='isPending')
+                .loader(style="--loader-color:white; --loader-size:12px")
+        template(v-else)
+            button.gray.btn-cancel(@click="openRefreshCdn = false") Cancel
+            button.btn-delete(@click="refreshCdn") Refresh
 
 //- modal :: change subdomain
 Modal(:open="modifyMode.subdomain")
     .modal-close(@click="modifyMode.subdomain = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
+            use(xlink:href="/material-icon.svg#icon-x")
 
     .modal-title Change Subdomain
 
@@ -257,7 +283,7 @@ Modal(:open="modifyMode.subdomain")
 
 //- modal :: delete selected
 Modal.modal-deleteSel(:open="deleteSelected" @close="deleteSelected = false")
-    h4.modal-title Delete Files
+    .modal-title Delete Files
 
     .modal-desc Delete {{ Object.keys(checked).length }} file(s) from your hosting? #[br] This action cannot be undone.
 
@@ -270,7 +296,7 @@ Modal.modal-deleteSel(:open="deleteSelected" @close="deleteSelected = false")
 
 //- modal :: remove hosting
 Modal.modal-removeHosting(:open="removeHosting" @close="removeHosting=false")
-    h4.modal-title Remove Hosting
+    .modal-title Remove Hosting
 
     .modal-desc Are you sure you want to remove hosting? #[br] This will remove all the files and release your subdomain address. #[br] This action cannot be undone.
 
@@ -285,7 +311,7 @@ Modal.modal-removeHosting(:open="removeHosting" @close="removeHosting=false")
 Modal.modal-upload404(:open="modifyMode.page404" @close="modifyMode.page404 = false; selected404File = null;")
     .modal-close(@click="modifyMode.page404 = false; selected404File = null;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
+            use(xlink:href="/material-icon.svg#icon-x")
 
     .modal-title Upload 404 Page
 
@@ -294,15 +320,15 @@ Modal.modal-upload404(:open="modifyMode.page404" @close="modifyMode.page404 = fa
         br
         | (HTML file only)
 
-    form.form-wrap(@submit.prevent="change404")
+    form(@submit.prevent="change404")
         input(ref="focus_404" hidden type="file" name='file' required @change="handle404file" :disabled='updatingValue.page404' accept="text/html")
-        .input.editHandle(@click='focus_404.click()' :class='{nonClickable:updatingValue.page404}') {{ selected404File || 'Click here to select a file' }}
-        template(v-if="updatingValue.page404")
-            pre(v-if='progress404 < 100') {{ progress404 }}%
-            pre(v-else) Updating...
-        label.btn(v-else :class="{'nonClickable' : !selected404File}")
-            span.btn-save Save
-            input(type="submit" hidden)
+        input.block(:placeholder="selected404File || 'Click here to select a file'" readonly)
+        button.block.gray(type="button" @click='focus_404.click()' style="margin-top: 0.75rem;") Browse File
+        .modal-btns
+            .loader-wrap(v-if="updatingValue.page404")
+                .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else)
+                button.block.btn-save(type="submit" :disabled="!selected404File") Save
 
 //- modal :: remove 404
 Modal.modal-remove404(:open="openRemove404" @close="openRemove404=false")
@@ -320,16 +346,9 @@ Modal.modal-remove404(:open="openRemove404" @close="openRemove404=false")
 
 <script setup lang="ts">
 import { reactive, ref, computed, watch, nextTick } from "vue";
-import type { ComputedRef, Ref } from "vue";
-import { currentService } from "@/views/service/main";
-import Code from "@/components/code.vue";
-import Table from "@/components/table.vue";
-import Modal from "@/components/modal.vue";
-import Pager from "@/code/pager";
-import { getFileSize } from "@/code/admin";
-import { skapi } from "@/main";
 import { user } from "@/code/user";
-import Checkbox from "@/components/checkbox.vue";
+import { currentService } from "@/views/service/main";
+import { getFileSize } from "@/code/admin";
 import {
     serviceFolders,
     uploadFiles,
@@ -338,9 +357,14 @@ import {
     uploadCount,
     uploadProgress,
 } from "@/views/service/hosting/file";
+import Table from "@/components/table.vue";
+import Modal from "@/components/modal.vue";
+import Pager from "@/code/pager";
 import Tooltip from "@/components/tooltip.vue";
+import Checkbox from "@/components/checkbox.vue";
 
 let folders = {}; // cache folders
+let domain = import.meta.env.VITE_DOMAIN;
 
 let email_is_unverified_or_service_is_disabled = computed(
     () => !user?.email_verified || currentService.service.active <= 0
@@ -354,14 +378,23 @@ let isPending = computed(
 );
 let sdInfo = computed(() => currentService.subdInfo);
 
-let dragHere = ref(false);
 // fileinputs
-let uploadFileInp = ref();
-let uploadFolderInp = ref();
-let domain = import.meta.env.VITE_DOMAIN;
+let uploadFileInp = ref(null);
+let uploadFolderInp = ref(null);
 
+let dragHere = ref(false);
 let registerSubdomainRunning = ref(false);
 let modalPromise = ref(false);
+
+let refreshCdn = async () => {
+    openRefreshCdn.value = false;
+    await currentService.refreshCDN();
+    // currentService.refreshCDN({
+    //     checkStatus: res => {
+    //         cdnPending.value = false;
+    //     }
+    // });
+}
 
 let subdomain = ref(""); // register input value. not the actual subdomain
 let registerSubdomain = async () => {
@@ -824,9 +857,8 @@ function openFile(ns: any) {
     let path = ns.path;
     let url;
     if (path.split("/").length > 1) {
-        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${
-            ns.name
-        }`;
+        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${ns.name
+            }`;
     } else {
         url = `https://${hostUrl.value}/${ns.name}`;
     }
@@ -903,6 +935,12 @@ watch(ascending, () => {
 </script>
 
 <style lang="less" scoped>
+.page-desc {
+    max-width: 620px;
+    margin: 2rem auto;
+    text-align: center;
+}
+
 #registerForm {
     display: flex;
     flex-wrap: wrap;
@@ -910,6 +948,7 @@ watch(ascending, () => {
     justify-content: space-between;
     gap: 10px;
     max-width: 620px;
+    margin: 0 auto;
 
     .email-alias {
         position: relative;
@@ -946,96 +985,6 @@ watch(ascending, () => {
     }
 }
 
-// form.register {
-//     display: flex;
-//     flex-wrap: wrap;
-//     gap: 0.5rem;
-//     justify-content: flex-end;
-
-//     .subdomain {
-//         display: inline-block;
-//         position: relative;
-
-//         &::after {
-//             content: ".skapi.com";
-//             position: absolute;
-//             right: 20px;
-//             line-height: 44px;
-//             color: #999;
-//             font-size: 0.8rem;
-//             font-weight: 400;
-//             pointer-events: none;
-//             user-select: none;
-//             z-index: 1;
-//         }
-
-//         input {
-//             padding-right: 88px;
-//             width: 100%;
-//         }
-
-//         flex-grow: 1;
-//     }
-
-//     // svg:hover {
-//     //     border-radius: 50%;
-//     //     background-color: rgba(41, 63, 230, 0.1);
-//     // }
-
-//     button {
-//         flex-shrink: 0;
-//     }
-// }
-
-// table style below
-thead {
-    th {
-        & > span {
-            @media (pointer: fine) {
-                // only for mouse pointer devices
-                &:hover {
-                    cursor: pointer;
-                    text-decoration: underline;
-                }
-            }
-        }
-    }
-}
-
-.tableMenu {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-
-    & > * {
-        margin-bottom: 8px;
-    }
-}
-
-.hostingPart {
-    position: relative;
-    overflow: hidden;
-}
-
-#loading {
-    position: absolute;
-    top: 60px;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 60px;
-    z-index: 2;
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    font-size: 0.8rem;
-}
-
-.dragHere {
-    outline: 4px solid var(--main-color);
-    border-radius: 4px;
-    opacity: 0.3;
-}
-
 .dragPopup {
     position: fixed;
     left: 50%;
@@ -1063,10 +1012,6 @@ thead {
     animation: motion 0.3s linear 1s infinite alternate;
 }
 
-.table-actions {
-    margin-left: auto;
-}
-
 @keyframes motion {
     0% {
         margin-top: -10px;
@@ -1080,117 +1025,6 @@ thead {
 @media (pointer: coarse) {
     .hide {
         display: block !important;
-    }
-}
-
-tbody {
-    tr {
-        &.empty {
-            pointer-events: none;
-
-            &:hover {
-                background-color: transparent;
-            }
-
-            ~ tr {
-                pointer-events: none;
-
-                &:hover {
-                    background-color: transparent;
-                }
-            }
-        }
-    }
-}
-
-.infoBox {
-    .infoValue {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-
-        &:first-of-type {
-            margin-top: 2rem;
-        }
-    }
-
-    .smallValue {
-        height: 3rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        flex: 1;
-
-        > div {
-            width: 100%;
-            height: 100%;
-        }
-
-        .value {
-            display: inline-flex;
-            align-items: center;
-            height: 100%;
-            background: linear-gradient(
-                    0deg,
-                    rgba(255, 255, 255, 0.05) 0%,
-                    rgba(255, 255, 255, 0.05) 100%
-                ),
-                #16171a;
-            border-radius: 0.5rem;
-            padding: 0 1rem;
-            flex: 1;
-        }
-    }
-}
-
-.button {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 2.5rem;
-    height: 3rem;
-    background: linear-gradient(
-            0deg,
-            rgba(255, 255, 255, 0.05) 0%,
-            rgba(255, 255, 255, 0.05) 100%
-        ),
-        #16171a;
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-}
-
-.card-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-    margin-bottom: 1.25rem;
-
-    .card {
-        position: relative;
-        background-color: #121214;
-        padding: 1.25rem;
-        border-radius: 0.8125rem;
-        flex: 1;
-        min-width: 170px;
-        display: flex;
-        flex-direction: column;
-        box-sizing: border-box;
-
-        .title {
-            display: block;
-            margin-bottom: 0.625rem;
-            opacity: 0.6;
-        }
-
-        .data {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            max-width: 12.5rem;
-        }
     }
 }
 
@@ -1209,50 +1043,6 @@ tbody {
         pointer-events: none;
         user-select: none;
         z-index: 1;
-    }
-}
-
-.form-wrap {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-
-    .editHandle {
-        width: 100%;
-        height: 48px;
-        justify-content: flex-start;
-        padding: 0 1rem;
-        flex: 1;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        align-items: center;
-        line-height: 48px;
-        border: 1px solid #0a4df1;
-        text-align: left;
-    }
-
-    pre {
-        margin: 0;
-        font-size: 0.875rem;
-        text-align: center;
-        height: 2.75rem;
-        line-height: 2.75rem;
-    }
-
-    .btn-save {
-        display: block;
-        width: 100%;
-    }
-}
-
-@media (max-width: 430px) {
-    .card-wrap {
-        gap: 0.75rem;
     }
 }
 </style>

@@ -2,9 +2,8 @@
 .customSelect(@click.stop="showDropDown")
     button(type='button')
         span {{ showValue }}
-        //- span.material-symbols-outlined.notranslate arrow_drop_down
         svg.svgIcon.black()
-            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down")
+            use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
 
     .moreVert(style="--moreVert-left:0;display:none;--moreVert-width:100%")
         .inner
@@ -39,7 +38,7 @@ let showDropDown = (e) => {
         // padding: 0 1rem;
         // padding: 0 .5rem 0 1rem;
         padding: 0 0.2rem 0 0.77rem;
-        
+
         border-radius: 6px;
         outline: 1px solid; // input 과 크기 맞추기 위함
         display: flex;
@@ -51,6 +50,7 @@ let showDropDown = (e) => {
         // font-weight: 300;
         font-weight: 400;
     }
+
     .more:hover {
         @media (pointer: fine) {
             text-decoration: underline;

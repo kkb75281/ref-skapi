@@ -2,12 +2,12 @@
 #changePassword
     template(v-if="step < 3")
         router-link(to="/")
-            img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px; margin-bottom: .625rem")
+            img(src="@/assets/img/logo/symbol-logo.png" alt="Skapi Logo" style="width: 40px; margin-bottom: .625rem")
 
         .page-title Change Password
     template(v-else)
         svg.svgIcon(style="height: 50px; width: 50px; margin-bottom: .625rem")
-            use(xlink:href="@/assets/img/material-icon.svg#icon-check-circle")
+            use(xlink:href="/material-icon.svg#icon-check-circle")
 
         .page-title Success
 
@@ -33,17 +33,15 @@
                     name="password")
                 //- .passwordIcon(@click="showPassword = !showPassword")
                 //-     template(v-if="showPassword")
-                //-         //- .material-symbols-outlined.notranslate.fill visibility
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
                 //-     template(v-else)
-                //-         //- .material-symbols-outlined.notranslate.fill visibility_off
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
             .error(v-if="error")
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-error")
+                    use(xlink:href="/material-icon.svg#icon-error")
                 span {{ error }}
 
             br
@@ -70,14 +68,12 @@
                     required)
                 //- .passwordIcon(@click="showNewPassword = !showNewPassword")
                 //-     template(v-if="showNewPassword")
-                //-         //- .material-symbols-outlined.notranslate.fill visibility
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
                         
                 //-     template(v-else)
-                //-         //- .material-symbols-outlined.notranslate.fill visibility_off
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
             label.passwordInput
                 | Confirm new password
@@ -93,17 +89,15 @@
                     required)
                 //- .passwordIcon(@click="showConfirmPassword = !showConfirmPassword")
                 //-     template(v-if="showConfirmPassword")
-                //-         //- .material-symbols-outlined.notranslate.fill visibility
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
                 //-     template(v-else)
-                //-         //- .material-symbols-outlined.notranslate.fill visibility_off
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
             .error(v-if="error")
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-error")
+                    use(xlink:href="/material-icon.svg#icon-error")
                 span {{ error }}
 
             br
@@ -133,9 +127,10 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
-import { ref, nextTick } from 'vue';
+import { ref } from 'vue';
 import { skapi } from '@/main';
 import { user } from '@/code/user';
+
 const router = useRouter();
 const route = useRoute();
 

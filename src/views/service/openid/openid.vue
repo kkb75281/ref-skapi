@@ -3,7 +3,7 @@ section.page-header
     .page-title Open ID Loggers
     a.btn-docs(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
         button.inline.icon-text.sm.gray
-            img(src="@/assets/img/landingpage/icon_docs.svg")
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
             | Go Docs
 
 hr
@@ -11,28 +11,28 @@ hr
 section
     .error(v-if="!user?.email_verified")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         router-link(to="/account-setting") Please verify your email address to modify settings.
 
     .error(v-else-if="currentService.service.active == 0")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently disabled.
 
     .error(v-else-if="currentService.service.active < 0")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently suspended.
 
 section
     .table-menu-wrap
         .table-functions
-            button.inline.only-icon.gray(@click.stop="(e) => { showDropDown(e); }")
+            button.inline.only-icon.gray(aria-label="Show Columns" @click.stop="(e) => { showDropDown(e); }")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-columns")
+                                use(xlink:href="/material-icon.svg#icon-columns")
                     template(v-slot:tip) Show Columns
                 .moreVert(
                     @click.stop,
@@ -41,27 +41,27 @@ section
                     .inner
                         template(v-for="c in columnList")
                             Checkbox(v-model="c.value" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
-            button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray(aria-label="Refresh" @click="getPage(true)" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                                use(xlink:href="/material-icon.svg#icon-refresh")
                     template(v-slot:tip) Refresh
         .table-actions
-            button.inline.only-icon.gray(@click="()=>{ !user.email_verified ? false : selectedLogger = null; showDetail=true; }" :class="{ disabled : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
+            button.inline.only-icon.gray(aria-label="Add Logger" @click="()=>{ !user.email_verified ? false : selectedLogger = null; showDetail=true; }" :disabled="showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-plus")
+                                use(xlink:href="/material-icon.svg#icon-plus")
                     template(v-slot:tip) Add Logger
-            button.inline.only-icon.gray(@click="openDeleteRecords=true" :class="{ disabled : !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
+            button.inline.only-icon.gray(aria-label="Delete Selected" @click="openDeleteRecords=true" :disabled="!Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0" )
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                                use(xlink:href="/material-icon.svg#icon-delete")
                     template(v-slot:tip) Delete Selected
 
     Table(:key="tableKey" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}" resizable)
@@ -112,14 +112,14 @@ section
                     td(:colspan="colspan")
 
     .table-page-wrap
-        button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+        button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-        button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+                    use(xlink:href="/material-icon.svg#icon-chevron-left")
+        button.inline.only-icon.gray(aria-label="Next" @click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+                    use(xlink:href="/material-icon.svg#icon-chevron-right")
 
 //- modal :: delete records
 Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
@@ -142,7 +142,7 @@ Modal.modal-scroll.modal-logger(:open="showDetail" @close="showDetail=false; sel
             h4.title {{ selectedLogger?.id ? selectedLogger.id : 'Register Logger' }}
             button.btn-close(type="button" @click="showDetail=false; selectedLogger=null;")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-x")
+                    use(xlink:href="/material-icon.svg#icon-x")
         .modal-body
             RecDetails(v-if='showDetail' :data='selectedLogger')
         .modal-footer
@@ -162,10 +162,9 @@ import RecDetails from "./showDetail.vue";
 import Tooltip from "@/components/tooltip.vue";
 
 import type { Ref } from "vue";
-import { ref, computed, watch, nextTick, reactive } from "vue";
+import { ref, watch, nextTick, reactive } from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
-import { devLog } from "@/code/logger";
 import { currentService, serviceLoggers } from "@/views/service/main";
 import { showDropDown } from "@/assets/js/event.js";
 
@@ -422,209 +421,3 @@ const showTableColumns = () => {
     return columnList.filter((c) => c.value).length;
 };
 </script>
-
-<style scoped lang="less">
-textarea::placeholder {
-    opacity: 0.5;
-}
-
-.updown {
-    background-color: #fff;
-    background-color: var(--main-color);
-    border-radius: 50%;
-    margin-left: 8px;
-    cursor: pointer;
-    box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
-}
-
-#searchForm {
-    // max-width: 700px;
-    margin: 0 auto;
-
-    .inner {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 8px;
-    }
-
-    // .customSelect {
-    //     flex-grow: 1;
-    // }
-    .search {
-        position: relative;
-        flex-grow: 50;
-
-        .icon {
-            &:hover {
-                @media (pointer: fine) {
-                    color: var(--main-color) !important;
-                }
-            }
-
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            user-select: none;
-
-            &::before {
-                display: none;
-            }
-        }
-    }
-
-    .groupWrap {
-        flex-grow: 1;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-radius: 6px;
-        border-style: hidden;
-        cursor: pointer;
-        user-select: none;
-
-        .group {
-            position: relative;
-            height: 44px;
-            padding: 10px;
-            flex-grow: 1;
-            text-align: center;
-            background-color: #fff;
-            color: rgba(0, 0, 0, 0.4);
-            fill: rgba(0, 0, 0, 0.4);
-
-            svg {
-                width: 23px;
-                height: 23px;
-                vertical-align: unset !important;
-            }
-
-            &::after {
-                position: absolute;
-                content: "";
-                top: 0;
-                left: -1px;
-                bottom: 0;
-                right: 0;
-                border: 1px solid rgba(0, 0, 0, 0.5);
-            }
-
-            &:first-child {
-                border-radius: 6px 0 0 8px;
-
-                &::after {
-                    border-radius: 6px 0 0 8px;
-                }
-            }
-
-            &:nth-child(2) {
-                &::after {
-                    border-left: 0;
-                }
-            }
-
-            &:last-child {
-                border-radius: 0 8px 8px 0;
-
-                &::after {
-                    border-left: 0;
-                    border-radius: 0 8px 8px 0;
-                }
-            }
-
-            &.active {
-                background-color: rgba(41, 63, 230, 0.05);
-                color: var(--main-color);
-                fill: var(--main-color);
-
-                &::after {
-                    border: 1px solid var(--main-color);
-                }
-            }
-        }
-    }
-
-    .btn {
-        flex-grow: 1;
-        width: 140px;
-    }
-
-    .advanced {
-        font-size: 0.8rem;
-        user-select: none;
-
-        .infoBox {
-            input {
-                outline: 0;
-                background-color: rgba(0, 0, 0, 0.05);
-            }
-        }
-    }
-}
-
-.tableMenu {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-
-    & > * {
-        margin-bottom: 8px;
-    }
-}
-
-tbody {
-    td {
-        .click {
-            position: relative;
-            color: var(--main-color);
-            font-weight: 500;
-            height: 1.875rem;
-            line-height: 1.875rem;
-
-            &::after {
-                position: absolute;
-                content: "copied!";
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                border-radius: 4px;
-                text-align: center;
-                background-color: var(--main-color);
-                color: #fff;
-                display: none;
-            }
-
-            &:hover {
-                text-decoration: underline;
-                cursor: pointer;
-            }
-
-            &.clicked {
-                &::after {
-                    display: block;
-                }
-            }
-        }
-    }
-}
-
-.recordPart {
-    position: relative;
-    overflow: hidden;
-}
-
-#loading {
-    position: absolute;
-    top: 60px;
-    left: 20px;
-    height: 60px;
-    z-index: 2;
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    font-size: 0.8rem;
-}
-</style>

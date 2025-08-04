@@ -7,43 +7,40 @@
 
     hr
 
-    .card-wrap
-        .card
-            .flex-wrap.space-between
-                div
-                    .title Email
-                    .data {{ user.email }}
-                button.only-icon.gray.edit-btn(type="button" @click="modifyEmail = true")
-                    .icon
-                        svg
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
-        
-        .card
-            .flex-wrap.space-between
-                div
-                    .title Password
-                    .data *********
-                button.only-icon.gray.edit-btn(type="button" @click="router.push('/change-password')")
-                    .icon
-                        svg
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-edit")
+    .info-value-set
+        .info-edit-wrap
+            .info
+                .title Email
+                .value {{ user.email }}
+            button.only-icon.gray.edit-btn(type="button" @click="modifyEmail = true")
+                .icon
+                    svg
+                        use(xlink:href="/material-icon.svg#icon-edit")
 
-        .card
-            .flex-wrap.space-between
-                div
-                    .title Newsletters
-                    .data {{ emailSubscribed ? "Subscribed" : "Unsubscribed" }}
-                Toggle(
-                    style='display:inline-flex;align-items:center;'
-                    :disabled="!user.email_verified || subing_email || emailSubscribed === null"
-                    :active="emailSubscribed"
-                    @click="emailSubscribed = !emailSubscribed"
-                )
+        .info-edit-wrap
+            .info
+                .title Password
+                .value *********
+            button.only-icon.gray.edit-btn(type="button" @click="router.push('/change-password')")
+                .icon
+                    svg
+                        use(xlink:href="/material-icon.svg#icon-edit")
+
+        .info-edit-wrap
+            .info
+                .title Newsletters
+                .value {{ emailSubscribed ? "Subscribed" : "Unsubscribed" }}
+            Toggle(
+                style='display:inline-flex;align-items:center;'
+                :disabled="!user.email_verified || subing_email || emailSubscribed === null"
+                :active="emailSubscribed"
+                @click="emailSubscribed = !emailSubscribed"
+            )
 
 Modal(:open="modifyEmail" @close="modifyEmail = false")
     .modal-close(@click="modifyEmail = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-x")
+            use(xlink:href="/material-icon.svg#icon-x")
 
     .modal-title Change Email
     .modal-desc.
@@ -59,7 +56,7 @@ Modal(:open="modifyEmail" @close="modifyEmail = false")
             template(v-else-if="!user.email_verified")
                 button.block.red(v-if="user.email_verified" style="width:100%;" @click="proceedVerification = true;") Verify Email
             template(v-else)
-                button.block(type="submit" :class="{disabled: updatingValue || inputEmail === user.email}") Change
+                button.block(type="submit" :disabled="updatingValue || inputEmail === user.email") Change
 
 Modal(:open="proceedVerification" @close="proceedVerification=false")
     .modal-title Email Verification
@@ -82,7 +79,6 @@ import { ref, nextTick, watch } from "vue";
 
 import Modal from "@/components/modal.vue";
 import Toggle from "@/components/toggle.vue";
-import Tooltip from "@/components/tooltip.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -221,110 +217,4 @@ watch(emailSubscribed, async (n, o) => {
         }
     }
 }
-
-// .title {
-//     position: relative;
-//     font-size: 1.3rem;
-//     margin-bottom: 8px;
-//     color: #fff;
-
-//     .delete-icon {
-//         position: absolute;
-//         right: 0;
-//         bottom: -1.5rem;
-
-//         svg {
-//             width: 24px;
-//             height: 24px;
-//             cursor: pointer;
-//             fill: #ccc;
-//         }
-
-//         &:hover {
-//             svg {
-//                 fill: var(--caution-color);
-//             }
-//         }
-//     }
-// }
-
-// .desc {
-//     font-size: 0.9rem;
-//     color: #fff;
-// }
-
-// .bar-wrap {
-//     width: 100%;
-//     display: flex;
-//     align-items: center;
-//     background-color: #222326;
-//     padding: 4px;
-//     border-radius: 8px;
-//     gap: 4px;
-
-//     .bar {
-//         position: relative;
-//         padding: 8px 30px;
-//         border-radius: 8px;
-//         cursor: pointer;
-//         font-size: 0.9rem;
-//         user-select: none;
-
-//         &::after {
-//             position: absolute;
-//             content: '';
-//             top: 0;
-//             left: 0;
-//             width: 100%;
-//             height: 100%;
-//             background-color: rgba(255, 255, 255, 0.05);
-//             border-radius: 6px;
-//             display: none;
-//         }
-
-//         &.active {
-//             &::after {
-//                 display: block;
-//             }
-//         }
-
-//         // flex: 1;
-//         // padding: 8px;
-//         // text-align: center;
-//         // font-size: 0.9rem;
-//         // font-weight: 500;
-//         // color: var(--main-color);
-//         // cursor: pointer;
-
-//         // &:hover {
-//         //     background-color: rgba(41, 63, 230, 0.1);
-//         //     border-radius: 4px;
-//         // }
-//     }
-// }
-
-// .form-wrap {
-//     max-width: 530px;
-//     margin: 0 auto;
-//     padding: 3rem 0;
-
-//     .form-title {
-//         margin-bottom: 8px;
-//         color: #fff;
-//     }
-
-//     input {
-//         margin-bottom: 0.5rem;
-//     }
-// }
-
-// @media (max-width: 600px) {
-//     .title {
-//         .delete-icon {
-//             bottom: unset;
-//             top: 50%;
-//             transform: translateY(-50%);
-//         }
-//     }
-// }
 </style>

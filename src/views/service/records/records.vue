@@ -3,7 +3,7 @@ section.page-header
     .page-title Database
     a.btn-docs(href='https://docs.skapi.com/database/create.html' target="_blank")
         button.inline.icon-text.sm.gray
-            img(src="@/assets/img/landingpage/icon_docs.svg")
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
             | Go Docs
 
 hr
@@ -11,28 +11,28 @@ hr
 section
     .error(v-if='!user?.email_verified')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         router-link(to="/account-setting") Please verify your email address to modify settings.
         
     .error(v-else-if='currentService.service.active == 0')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently disabled.
 
     .error(v-else-if='currentService.service.active < 0')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently suspended.
 
 section
     .table-menu-wrap
         .table-functions
-            button.inline.only-icon.gray(@click.stop="(e)=>{showDropDown(e)}")
+            button.inline.only-icon.gray(aria-label="Show Columns" @click.stop="(e)=>{showDropDown(e)}")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-columns")
+                                use(xlink:href="/material-icon.svg#icon-columns")
                     template(v-slot:tip) Show Columns
                 .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
                     .inner
@@ -41,38 +41,38 @@ section
             .search-ing-btn(v-if="searchValue && searchValue.length > 0 && searchFor !== 'query'")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
                 svg.svgIcon.reset-btn(@click="() => { callParams = {}; resetSearchModal(); }")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-x-circle")
+                    use(xlink:href="/material-icon.svg#icon-x-circle")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-search")
-            button.inline.only-icon.gray.search-btn(v-else @click="searchModalOpen = true" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+                    use(xlink:href="/material-icon.svg#icon-search")
+            button.inline.only-icon.gray.search-btn(v-else aria-label="Search" @click="searchModalOpen = true" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+                                use(xlink:href="/material-icon.svg#icon-search")
                     template(v-slot:tip) Search
-            button.inline.only-icon.gray(@click="refresh" :class="{ disabled: fetching || !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray(aria-label="Refresh" @click="refresh" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                                use(xlink:href="/material-icon.svg#icon-refresh")
                     template(v-slot:tip) Refresh
 
         .table-actions
-            button.inline.only-icon.gray(@click="()=>{ !user.email_verified ? false : selectedRecord = null; showDetail=true; }" :class="{ disabled : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
+            button.inline.only-icon.gray(@click="()=>{ !user.email_verified ? false : selectedRecord = null; showDetail=true; }" :disabled="showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-plus")
+                                use(xlink:href="/material-icon.svg#icon-plus")
                     template(v-slot:tip) Add Record
-            button.inline.only-icon.gray(@click="openDeleteRecords=true" :class="{ disabled : !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
+            button.inline.only-icon.gray(@click="openDeleteRecords=true" :disabled="!Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0" )
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                                use(xlink:href="/material-icon.svg#icon-delete")
                     template(v-slot:tip) Delete Selected
 
     Table(:key="tableKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" resizable)
@@ -108,13 +108,13 @@ section
                             td.overflow.left(v-if="c.key === 'table'") 
                                 span
                                     svg.svgIcon(v-if="rc.table.access_group == 'private' || rc.table.access_group == 99 || rc.table.access_group === 'admin'" style="margin-bottom: 2px")
-                                        use(xlink:href="@/assets/img/material-icon.svg#icon-key")
+                                        use(xlink:href="/material-icon.svg#icon-key")
                                 span
                                     svg.svgIcon(v-if="rc.table.access_group == 'authorized' || typeof rc.table.access_group === 'number' && rc.table.access_group > 0" style="margin-bottom: 2px")
-                                        use(xlink:href="@/assets/img/material-icon.svg#icon-user")
+                                        use(xlink:href="/material-icon.svg#icon-user")
                                 span
                                     svg.svgIcon(v-if="rc.table.access_group == 'public' || rc.table.access_group === 0" style="margin-bottom: 2px")
-                                        use(xlink:href="@/assets/img/material-icon.svg#icon-globe")
+                                        use(xlink:href="/material-icon.svg#icon-globe")
                                 span(style="margin-left: 8px") {{ rc?.table?.name }}
 
                             td(v-if="c.key === 'record_id'")
@@ -146,25 +146,25 @@ section
                     td(:colspan="colspan")
 
     .table-page-wrap
-        button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+        button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-        button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+                    use(xlink:href="/material-icon.svg#icon-chevron-left")
+        button.inline.only-icon.gray(aria-label="Next" @click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+                    use(xlink:href="/material-icon.svg#icon-chevron-right")
 
 // modal :: search
 Modal.search-modal(:open="searchModalOpen")
     .modal-close
         button.btn-close(type="button" @click="resetSearchModal")
             svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-x")
+                use(xlink:href="/material-icon.svg#icon-x")
     .top
         #showSearchFor.search-for
             svg.svgIcon
-                use(xlink:href="@/assets/img/material-icon.svg#icon-search")
+                use(xlink:href="/material-icon.svg#icon-search")
             span {{ searchFor + ' /' }}
         input#searchInput.block(type="text" spellcheck="false" v-model="searchValue" @keydown="handleSearchKeydown" :placeholder="getSearchPlaceholder()")
     
@@ -195,7 +195,7 @@ Modal.modal-scroll.modal-detailRecord(:open="showDetail" @close="closeModal")
             h4.title {{ selectedRecord?.record_id ? selectedRecord?.record_id : 'Create Record' }}
             button.btn-close(type="button" @click="closeModal")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-x")
+                    use(xlink:href="/material-icon.svg#icon-x")
         .modal-body
             RecDetails(v-if='showDetail' :data='selectedRecord')
         .modal-footer
@@ -223,14 +223,13 @@ import Table from "@/components/table.vue";
 import Checkbox from "@/components/checkbox.vue";
 import Modal from "@/components/modal.vue";
 import Pager from "@/code/pager";
-import Guide from "./guide.vue";
 import SearchBox from "./searchbox.vue";
 import RecDetails from "./showDetail.vue";
+import Tooltip from "@/components/tooltip.vue";
 
 import type { Ref } from "vue";
 import {
     ref,
-    computed,
     watch,
     nextTick,
     onMounted,
@@ -239,10 +238,8 @@ import {
 } from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
-import { devLog } from "@/code/logger";
 import { currentService, serviceRecords } from "@/views/service/main";
 import { showDropDown } from "@/assets/js/event.js";
-import Tooltip from "@/components/tooltip.vue";
 
 // table columns
 let tableKey = ref(0);
@@ -599,11 +596,11 @@ let setUpNewPageList = async () => {
         sortBy: callParams?.index?.name || "record_id",
         order:
             callParams?.index?.name &&
-            (callParams?.index?.condition || "").includes("<")
+                (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                ? "asc"
-                : "desc",
+                    ? "asc"
+                    : "desc",
     });
 };
 
@@ -808,234 +805,7 @@ const showTableColumns = () => {
 </script>
 
 <style scoped lang="less">
-textarea::placeholder {
-    opacity: 0.5;
-}
-
-.updown {
-    background-color: #fff;
-    background-color: var(--main-color);
-    border-radius: 50%;
-    margin-left: 8px;
-    cursor: pointer;
-    box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
-}
-
-#searchForm {
-    // max-width: 700px;
-    margin: 0 auto;
-
-    .inner {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .search {
-        position: relative;
-        flex-grow: 50;
-
-        .icon {
-            &:hover {
-                @media (pointer: fine) {
-                    color: var(--main-color) !important;
-                }
-            }
-
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            user-select: none;
-
-            &::before {
-                display: none;
-            }
-        }
-    }
-
-    .groupWrap {
-        flex-grow: 1;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-radius: 6px;
-        border-style: hidden;
-        cursor: pointer;
-        user-select: none;
-
-        .group {
-            position: relative;
-            height: 44px;
-            padding: 10px;
-            flex-grow: 1;
-            text-align: center;
-            background-color: #fff;
-            color: rgba(0, 0, 0, 0.4);
-            fill: rgba(0, 0, 0, 0.4);
-
-            svg {
-                width: 23px;
-                height: 23px;
-                vertical-align: unset !important;
-            }
-
-            &::after {
-                position: absolute;
-                content: "";
-                top: 0;
-                left: -1px;
-                bottom: 0;
-                right: 0;
-                border: 1px solid rgba(0, 0, 0, 0.5);
-            }
-
-            &:first-child {
-                border-radius: 6px 0 0 8px;
-
-                &::after {
-                    border-radius: 6px 0 0 8px;
-                }
-            }
-
-            &:nth-child(2) {
-                &::after {
-                    border-left: 0;
-                }
-            }
-
-            &:last-child {
-                border-radius: 0 8px 8px 0;
-
-                &::after {
-                    border-left: 0;
-                    border-radius: 0 8px 8px 0;
-                }
-            }
-
-            &.active {
-                background-color: rgba(41, 63, 230, 0.05);
-                color: var(--main-color);
-                fill: var(--main-color);
-
-                &::after {
-                    border: 1px solid var(--main-color);
-                }
-            }
-        }
-    }
-
-    .btn {
-        flex-grow: 1;
-        width: 140px;
-    }
-
-    .advanced {
-        font-size: 0.8rem;
-        user-select: none;
-
-        .infoBox {
-            input {
-                outline: 0;
-                background-color: rgba(0, 0, 0, 0.05);
-            }
-        }
-    }
-}
-
-.tableMenu {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-
-    & > * {
-        margin-bottom: 8px;
-    }
-}
-
-tbody {
-    td {
-        .click {
-            position: relative;
-            color: var(--main-color);
-            font-weight: 500;
-            height: 1.875rem;
-            line-height: 1.875rem;
-
-            &::after {
-                position: absolute;
-                content: "copied!";
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                border-radius: 4px;
-                text-align: center;
-                background-color: var(--main-color);
-                color: #fff;
-                display: none;
-            }
-
-            &:hover {
-                text-decoration: underline;
-                cursor: pointer;
-            }
-
-            &.clicked {
-                &::after {
-                    display: block;
-                }
-            }
-        }
-    }
-}
-
 // new style (추후 삭제될 수도 있음)
-label._checkbox svg {
-    margin-right: 0;
-}
-
-.content {
-    .value {
-        margin: 0;
-    }
-
-    .add {
-        background: #0a4df1;
-        color: #fff;
-        font-size: 14px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 0.125rem;
-        padding: 0.5rem;
-        margin-bottom: 0.5rem;
-
-        svg {
-            width: 1.125rem;
-            height: 1.125rem;
-        }
-    }
-}
-
-.iconClick {
-    font-size: 1rem;
-    font-weight: 500;
-    color: #fff;
-
-    &.square {
-        padding: 0.375rem 0.625rem;
-    }
-
-    .svgIcon {
-        width: 1.125rem;
-        height: 1.125rem;
-        fill: #fff;
-    }
-}
-
 .search-modal {
     .search-wrap {
         margin-bottom: 0;

@@ -1,7 +1,7 @@
 <template lang="pug">
 #login
     router-link(to="/")
-        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px; margin-bottom: .625rem")
+        img(src="@/assets/img/logo/symbol-logo.png" alt="Skapi Logo" style="width: 40px; margin-bottom: .625rem")
 
     .page-title Login
 
@@ -20,13 +20,11 @@
             name="password" placeholder="Enter password" required)
             //- .passwordIcon(@click.stop="showPassword = !showPassword")
             //-     template(v-if="showPassword")
-            //-         //- .material-symbols-outlined.notranslate.fill visibility
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+            //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
             //-     template(v-else)
-            //-         //- .material-symbols-outlined.notranslate.fill visibility_off
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+            //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
         .actions
             Checkbox(style='font-weight:unset;' @change="(e)=>{setLocalStorage(e)}" :disabled='promiseRunning' v-model='remVal') Remember Me
@@ -35,9 +33,8 @@
         br
 
         .error(v-if="error")
-            //- .material-symbols-outlined.notranslate.fill error
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-error")
+                use(xlink:href="/material-icon.svg#icon-error")
             div(v-if="enableAccount")
                 | {{ error }}
                 br
@@ -66,8 +63,10 @@ import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { onMounted, ref } from "vue";
 import Checkbox from "@/components/checkbox.vue";
+
 const router = useRouter();
 const route = useRoute();
+
 skapi.logout().then(() => {
     for (let k in user) {
         delete user[k];
@@ -108,11 +107,13 @@ let login = (e) => {
             for (let k in u) {
                 user[k] = u[k];
             }
-            if (route.query?.suc_redirect) {
-                router.push(route.query?.suc_redirect);
-            } else {
-                router.push("/my-services");
-            }
+            // if (route.query?.suc_redirect) {
+            //     // router.push(route.query?.suc_redirect);
+            //     router.push({ path: "/my-services", query: { redirect: route.query?.suc_redirect } });
+            // } else {
+            //     router.push("/my-services");
+            // }
+            router.push("/my-services");
         })
         .catch((err) => {
             for (let k in user) {

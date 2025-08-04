@@ -5,7 +5,7 @@ main#subscription
             button.inline.icon-text.dark.btn-prev(type="button" @click="router.push('/my-services/' + serviceId + '/dashboard')")
                 .icon
                     svg
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-left")
+                        use(xlink:href="/material-icon.svg#icon-arrow-left")
                 span Back
 
             //- button.inline.gray.caution.btn-cancel(v-if="serviceList[serviceId]?.service.plan !== 'Canceled' && serviceList[serviceId]?.service.plan !== 'Trial'" type="button" @click="()=>openCancelplan=true") Cancel Subscription
@@ -21,7 +21,7 @@ main#subscription
         .plan-wrap
             //- .plan-item.blue
                 svg.mark
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+                    use(xlink:href="/material-icon.svg#icon-card-mark")
                 .top
                     .title Trial
                     .desc 
@@ -43,14 +43,14 @@ main#subscription
 
             .plan-item.green
                 svg.mark
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+                    use(xlink:href="/material-icon.svg#icon-card-mark")
                 .top
                     .title Standard
                     .desc Suit best for small businesses, MVP, small projects, etc.
                 .middle
                     .price $19
                         span /mon
-                    button.block.gray(type="button" :class="{'disabled': promiseRunning || availablePlans[0] === false || availablePlans[0] === null}" @click="selectedPlan('standard')")
+                    button.block.gray(type="button" :disabled="promiseRunning || availablePlans[0] === false || availablePlans[0] === null" @click="selectedPlan('standard')")
                         template(v-if="changeMode == 'standard' && promiseRunning")
                             .loader(style="--loader-color:white; --loader-size: 12px")
                         template(v-else-if="availablePlans[0]") {{ availablePlans[0] }}
@@ -68,14 +68,14 @@ main#subscription
 
             .plan-item.yellow
                 svg.mark
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+                    use(xlink:href="/material-icon.svg#icon-card-mark")
                 .top
                     .title Premium
                     .desc Suit best for huge projects, Saas, social media, AI application, etc.
                 .middle
                     .price $89
                         span /mon
-                    button.block.gray(type="button" :class="{'disabled': promiseRunning || availablePlans[1] === false || availablePlans[1] === null}" @click="selectedPlan('premium')")
+                    button.block.gray(type="button" :disabled="promiseRunning || availablePlans[1] === false || availablePlans[1] === null" @click="selectedPlan('premium')")
                         template(v-if="changeMode == 'premium' && promiseRunning")
                             .loader(style="--loader-color:white; --loader-size: 12px")
                         template(v-else-if="availablePlans[1]") {{ availablePlans[1] }}
@@ -144,11 +144,10 @@ import { useRoute, useRouter } from "vue-router";
 import { serviceList } from "@/views/service-list";
 import { user, customer } from "@/code/user";
 import { skapi } from "@/main";
-import { currentServiceId, currentService } from '@/views/service/main';
+import { currentService } from '@/views/service/main';
 import { planSpec, currentServiceSpec } from "@/views/service/service-spec";
 
 import Modal from "@/components/modal.vue";
-import TabMenu from '@/components/tab.vue';
 
 const router = useRouter();
 const route = useRoute();

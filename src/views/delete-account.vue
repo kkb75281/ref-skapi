@@ -2,7 +2,7 @@
 main#confirmation 
     button.inline.icon-text.dark.btn-prev(type="button" @click="router.push('/account-setting')")
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-left")
+            use(xlink:href="/material-icon.svg#icon-arrow-left")
         span Back
 
     br
@@ -35,7 +35,7 @@ main#confirmation
         br
 
         .flex-wrap.end
-            button.inline.gray.btn-cancel(type="submit" :class="{disabled: !iUnderstand, red: iUnderstand}" @click='processDelete' style="width: 148px") 
+            button.inline.gray.btn-cancel(type="submit" :disabled="!iUnderstand" :class="{red: iUnderstand}" @click='processDelete' style="width: 148px") 
                 template(v-if="promiseRunning")
                     .loader(style="--loader-color:white; --loader-size:12px")
                 template(v-else) Delete Account
@@ -45,9 +45,10 @@ main#confirmation
 <script setup lang="ts">
 import { skapi } from '@/main';
 import { useRoute, useRouter } from 'vue-router';
-import Checkbox from '@/components/checkbox.vue';
 import { serviceList } from './service-list';
 import { ref } from 'vue';
+
+import Checkbox from '@/components/checkbox.vue';
 
 const router = useRouter();
 const route = useRoute();

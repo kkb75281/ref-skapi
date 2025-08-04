@@ -3,7 +3,7 @@ section.page-header
     .page-title Client Secret Key
     a.btn-docs(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
         button.inline.icon-text.sm.gray
-            img(src="@/assets/img/landingpage/icon_docs.svg")
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
             | Go Docs
 
 hr
@@ -11,55 +11,55 @@ hr
 section
     .error(v-if='!user?.email_verified')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         router-link(to="/account-setting") Please verify your email address to modify settings.
 
     .error(v-else-if='currentService.service.active == 0')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently disabled.
 
     .error(v-else-if='currentService.service.active < 0')
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently suspended.
 
 section
     .table-menu-wrap
         .table-functions
-            button.inline.only-icon.gray(@click.stop="(e)=>{showDropDown(e)}")
+            button.inline.only-icon.gray(aria-label="Show Columns" @click.stop="(e)=>{showDropDown(e)}")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-columns")
+                                use(xlink:href="/material-icon.svg#icon-columns")
                     template(v-slot:tip) Show Columns
 
                 .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
                     .inner
                         template(v-for="c in columnList")
                             Checkbox(v-model="c.value" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
-            button.inline.only-icon.gray(@click="getPage(true)" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray(aria-label="Refresh" @click="getPage(true)" :disabled="!user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
+                                use(xlink:href="/material-icon.svg#icon-refresh")
                     template(v-slot:tip) Refresh
         .table-actions
-            button.inline.only-icon.gray(@click="openDetailModal(addClient, -1)" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }")
+            button.inline.only-icon.gray(aria-label="Add Key" @click="openDetailModal(addClient, -1)" :disabled="!user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-plus")
+                                use(xlink:href="/material-icon.svg#icon-plus")
                     template(v-slot:tip) Add Key
-            button.inline.only-icon.gray(@click="showDeleteMsg=true" :class="{ disabled : !Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0}" )
+            button.inline.only-icon.gray(aria-label="Delete Selected" @click="showDeleteMsg=true" :disabled="!Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete")
+                                use(xlink:href="/material-icon.svg#icon-delete")
                     template(v-slot:tip) Delete Selected
 
     Table(:key="tableKey" :class="{disabled : !user?.email_verified || currentService.service.active <= 0}" resizable)
@@ -93,20 +93,20 @@ section
                             td.overflow(v-if="c.key === 'client_secret'") {{ cs.client_secret ? cs.client_secret.slice(0,2) + '*'.repeat(cs.client_secret.length - 2) : '' }}
                             td.overflow(v-if="c.key === 'locked'")
                                 svg.svgIcon(v-if="cs?.locked" style="fill: white")
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-check")
+                                    use(xlink:href="/material-icon.svg#icon-check")
 
                 tr.nohover(v-for="i in 10 - Object.keys(listDisplay || {}).length")
                     td(:colspan="colspan")
 
     .table-page-wrap
-        button.inline.only-icon.gray(@click="currentPage--;" :class="{ disabled: fetching || currentPage <= 1 }")
+        button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-        button.inline.only-icon.gray(@click="currentPage++;" :class="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+                    use(xlink:href="/material-icon.svg#icon-chevron-left")
+        button.inline.only-icon.gray(aria-label="Next" @click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
+                    use(xlink:href="/material-icon.svg#icon-chevron-right")
 
 // modal :: client secret key detail (edit/add)
 Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModal")
@@ -115,7 +115,7 @@ Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModa
             h4.title Client Secret Key
             button.btn-close(type="button" @click="closeDetailModal")
                 svg.svgIcon
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-x")
+                    use(xlink:href="/material-icon.svg#icon-x")
         .modal-body
             .content(v-if="showDetail")
                 label.row
@@ -131,7 +131,7 @@ Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModa
                         Tooltip(tip-background-color="var(--main-color)" text-color="white")
                             template(v-slot:tool)
                                 svg.svgIcon
-                                    use(xlink:href="@/assets/img/material-icon.svg#icon-help-circle")
+                                    use(xlink:href="/material-icon.svg#icon-help-circle")
                             template(v-slot:tip)
                                 | When LOCKED only signed users can have access to the client secret key.
                     .value
@@ -452,104 +452,12 @@ const showTableColumns = () => {
     }
 }
 
-.table-form {
-    position: relative;
-
-    .table-tootlip {
-        position: absolute;
-        left: 18px;
-        top: 17px;
-        z-index: 999;
-    }
-}
-
-.updown {
-    background-color: #fff;
-    background-color: var(--main-color);
-    border-radius: 50%;
-    margin-left: 8px;
-    cursor: pointer;
-    box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
-}
-
-input {
-    width: 100%;
-}
-
-table {
-    form {
-        display: block;
-    }
-
-    tr {
-        &:hover {
-            .hide {
-                display: block;
-            }
-        }
-
-        .hide {
-            display: none;
-        }
-    }
-
-    td,
-    th {
-        padding: 0 4px 0 10px;
-    }
-}
-
-.buttonWrap {
-    display: flex;
-    height: 60px;
-    align-items: center;
-    gap: 8px;
-    padding: 0;
-}
-
-.save,
-.cancel {
-    position: relative;
-    font-size: 1.3rem;
-    font-weight: 500;
-    cursor: pointer;
-
-    &::after {
-        position: absolute;
-        content: "";
-        top: 50%;
-        left: 50%;
-        width: 100%;
-        height: 100%;
-        padding: 4px;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        background-color: #293fe61a;
-        display: none;
-    }
-
-    &:hover::after {
-        display: block;
-    }
-
-    &:hover {
-        border-radius: 50%;
-        background-color: #293fe61a;
-    }
-}
-
 .modal-scroll {
     .key {
         .svgIcon {
             width: 1.125rem;
             height: 1.125rem;
         }
-    }
-}
-
-@media (pointer: coarse) {
-    .hide {
-        display: block !important;
     }
 }
 
