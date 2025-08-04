@@ -54,7 +54,7 @@
                 button.inline.btn-login Login
                 .signup
                     span.text No account?
-                    router-link.btn-signup(to="/signup") Sign up
+                    router-link.btn-signup(:to="route.query.refer_name ? { name: 'signup', query: { suc_redirect: '/refer/' + route.query.refer_name } } : { name: 'signup' }") Sign up
 </template>
 
 <script setup lang="ts">

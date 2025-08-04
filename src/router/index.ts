@@ -85,6 +85,11 @@ const router = createRouter({
             component: () => import("@/views/bye.vue"),
         },
         {
+            path: "/refer/:name",
+            name: "refer",
+            component: () => import("@/views/refer.vue"),
+        },
+        {
             // path: '/create/:name',
             path: "/create",
             name: "create",
@@ -217,6 +222,18 @@ const router = createRouter({
             redirect: "/404page",
         },
     ],
+});
+
+// Declare gtag as a global variable
+declare const gtag: (...args: any[]) => void;
+
+// 라우트 변경 시 GA 이벤트 전송
+router.afterEach((to) => {
+    if (typeof gtag !== "undefined") {
+        gtag("config", "G-S41309C5CY", {
+            page_path: to.fullPath,
+        });
+    }
 });
 
 export default router;

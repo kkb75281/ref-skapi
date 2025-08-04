@@ -33,3 +33,4 @@ package-lock.json
 .env.development
 .env.production
 deploy.py
+deploy-test.py
