@@ -20,7 +20,7 @@
 
 		section.why
 			.title(data-aos="fade-up") Why Skapi?
-			.reason-wrap(data-aos="fade-up" data-aos-delay="300")
+			.reason-wrap(data-aos="fade-up" data-aos-delay="200")
 				.reason-item
 					.image
 						img(src="@/assets/img/landingpage/icon_reason1.svg", alt="Why Skapi Icon1")
@@ -43,8 +43,8 @@
 						.desc No more server config, maintenance, and email hacks. Skapi gives you everything out of the box — so you can launch faster and sleep better.
 	.bg-dark
 		section.review
-			.title(data-aos="fade-up" data-aos-delay="300") Real Reviews
-			.review-swiper(data-aos="fade-up" data-aos-delay="500")
+			.title(data-aos="fade-up" data-aos-delay="200") Real Reviews
+			.review-swiper(data-aos="fade-up" data-aos-delay="300")
 				swiper(
 					:slidesPerView="1"
 					:spaceBetween="30"
@@ -96,9 +96,9 @@
 					img(src="@/assets/img/landingpage/arrow_right.svg", alt="Arrow Right")
 	.bg-blue
 		section#section1.feature
-			.title(data-aos="fade-up" data-aos-delay="300") Features
-			.desc(data-aos="fade-up" data-aos-delay="300") All You Need for Modern Web Apps. #[br]Discover 6 Unique Advantages Only Skapi Delivers.
-			.feature-wrap(data-aos="fade-up" data-aos-delay="500")
+			.title(data-aos="fade-up" data-aos-delay="200") Features
+			.desc(data-aos="fade-up" data-aos-delay="200") All You Need for Modern Web Apps. #[br]Discover 6 Unique Advantages Only Skapi Delivers.
+			.feature-wrap(data-aos="fade-up" data-aos-delay="400")
 				.feature-item
 					.img
 						img(src="@/assets/img/landingpage/feature1.svg", alt="Feature Icon1")
@@ -136,9 +136,9 @@
 					.content Skapi uses JWT-based authentication, pre-configured to securely handle user data, file access, and third-party API connections via Skapi’s API Bridge. No complex setup — just secure, reliable access out of the box.
 	.bg-colorful
 		section#section2.plan
-			.title.black(data-aos="fade-up" data-aos-delay="300") Pricing Plans
-			.desc.black(data-aos="fade-up" data-aos-delay="300") Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
-			.plan-swiper(data-aos="fade-up" data-aos-delay="500")
+			.title.black(data-aos="fade-up" data-aos-delay="200") Pricing Plans
+			.desc.black(data-aos="fade-up" data-aos-delay="200") Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
+			.plan-swiper(data-aos="fade-up" data-aos-delay="400")
 				.plan-swiper-pagination
 				swiper(
 					:spaceBetween="30"
@@ -207,8 +207,8 @@
 
 	.bg-dark
 		section#section3.faq
-			.title(data-aos="fade-up" data-aos-delay="300") FAQ
-			ul.faq-list(data-aos="fade-up" data-aos-delay="500")
+			.title(data-aos="fade-up" data-aos-delay="200") FAQ
+			ul.faq-list(data-aos="fade-up" data-aos-delay="400")
 				li.faq-item
 					.item-title(:class="{ open: openStates[0]}" @click="faqToggle(0)") How does Skapi make your app more secure?
 					.item-cont(v-show="openStates[0]")
@@ -265,10 +265,10 @@
 
 	.bg-blue
 		section#section4.contents
-			.title(data-aos="fade-up" data-aos-delay="300") Contents
+			.title(data-aos="fade-up" data-aos-delay="200") Contents
 			.tab-cont-wrap
-				TabMenu(v-model="activeTabs.contents" :tabs="['Articles', 'Videos']" data-aos="fade-up" data-aos-delay="500")
-				.tab-cont(data-aos="fade-up" data-aos-delay="700")
+				TabMenu(v-model="activeTabs.contents" :tabs="['Articles', 'Videos']" data-aos="fade-up" data-aos-delay="400")
+				.tab-cont(data-aos="fade-up" data-aos-delay="600")
 					template(v-if="activeTabs.contents === 0")
 						.tab-item(v-for="article in articles" :key="article.id")
 							.title {{ article.title }}
@@ -290,12 +290,12 @@
 	.bg-dark
 		section.banner
 			.banner-inner
-				.title.black(data-aos="fade-up" data-aos-delay="700") Start Building Today!
-				.desc.black(data-aos="fade-up" data-aos-delay="700") Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
+				.title.black(data-aos="fade-up" data-aos-delay="600") Start Building Today!
+				.desc.black(data-aos="fade-up" data-aos-delay="600") Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
 				template(v-if="user?.user_id")
-					button(type="button" data-aos="fade-up" data-aos-delay="1000" @click="$router.push('/my-services')") Go to My Services
+					button(type="button" data-aos="fade-up" data-aos-delay="800" @click="$router.push('/my-services')") Go to My Services
 				router-link(v-else to="/signup")
-					button(type="button" data-aos="fade-up" data-aos-delay="1000") Get Started
+					button(type="button" data-aos="fade-up" data-aos-delay="800") Get Started
 </template>
 
 <script setup>
