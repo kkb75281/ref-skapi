@@ -25,8 +25,8 @@ section
             use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently suspended.
 
-template(v-if='!currentService.service.subdomain' :class='{nonClickable: email_is_unverified_or_service_is_disabled}')
-    section
+template(v-if='!currentService.service.subdomain')
+    section(:class="{disabled: email_is_unverified_or_service_is_disabled}")
         p.page-desc.
             File hosting service let you host files and static websites.
             To host your public files, please register a subdomain.

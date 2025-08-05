@@ -271,6 +271,7 @@ let setResize = async () => {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0.5rem;
     z-index: 2;
 
     &.left {
