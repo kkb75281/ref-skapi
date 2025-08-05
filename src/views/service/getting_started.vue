@@ -18,7 +18,7 @@ section
             button.only-icon.gray.edit-btn(type="button" @click="")
                 .icon
                     svg
-                        use(xlink:href="/material-icon.svg#icon-copy")
+                        use(xlink:href="/basic-icon.svg#icon-copy")
         .info-edit-wrap
             .info
                 .title Service Owner
@@ -26,7 +26,7 @@ section
             button.only-icon.gray.edit-btn(type="button" @click="")
                 .icon
                     svg
-                        use(xlink:href="/material-icon.svg#icon-copy")
+                        use(xlink:href="/basic-icon.svg#icon-copy")
 
 section
     .middle-title For AI-Driven Development

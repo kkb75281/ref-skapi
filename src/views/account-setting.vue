@@ -15,7 +15,7 @@
             button.only-icon.gray.edit-btn(type="button" @click="modifyEmail = true")
                 .icon
                     svg
-                        use(xlink:href="/material-icon.svg#icon-edit")
+                        use(xlink:href="/basic-icon.svg#icon-edit")
 
         .info-edit-wrap
             .info
@@ -24,7 +24,7 @@
             button.only-icon.gray.edit-btn(type="button" @click="router.push('/change-password')")
                 .icon
                     svg
-                        use(xlink:href="/material-icon.svg#icon-edit")
+                        use(xlink:href="/basic-icon.svg#icon-edit")
 
         .info-edit-wrap
             .info
@@ -40,7 +40,7 @@
 Modal(:open="modifyEmail" @close="modifyEmail = false")
     .modal-close(@click="modifyEmail = false;")
         svg.svgIcon
-            use(xlink:href="/material-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg#icon-x")
 
     .modal-title Change Email
     .modal-desc.

@@ -8,7 +8,7 @@
         button.inline.icon-text.gray.btn-copy(v-if='cpy_btn' @click="copy")
             .icon
                 svg
-                    use(xlink:href="/material-icon.svg#icon-copy")            
+                    use(xlink:href="/basic-icon.svg#icon-copy")            
             span.copyMsg Copy
     .code
         slot

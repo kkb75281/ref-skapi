@@ -44,7 +44,7 @@ section
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="/material-icon.svg#icon-refresh")
+                                use(xlink:href="/basic-icon.svg#icon-refresh")
                     template(v-slot:tip) Refresh
         .table-actions
             button.inline.only-icon.gray(aria-label="Add Key" @click="openDetailModal(addClient, -1)" :disabled="!user?.email_verified || currentService.service.active <= 0")
@@ -52,14 +52,14 @@ section
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="/material-icon.svg#icon-plus")
+                                use(xlink:href="/basic-icon.svg#icon-plus")
                     template(v-slot:tip) Add Key
             button.inline.only-icon.gray(aria-label="Delete Selected" @click="showDeleteMsg=true" :disabled="!Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="/material-icon.svg#icon-delete")
+                                use(xlink:href="/basic-icon.svg#icon-delete")
                     template(v-slot:tip) Delete Selected
 
     Table(:key="tableKey" :class="{disabled : !user?.email_verified || currentService.service.active <= 0}" resizable)
@@ -115,7 +115,7 @@ Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModa
             h4.title Client Secret Key
             button.btn-close(type="button" @click="closeDetailModal")
                 svg.svgIcon
-                    use(xlink:href="/material-icon.svg#icon-x")
+                    use(xlink:href="/basic-icon.svg#icon-x")
         .modal-body
             .content(v-if="showDetail")
                 label.row
@@ -131,7 +131,7 @@ Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModa
                         Tooltip(tip-background-color="var(--main-color)" text-color="white")
                             template(v-slot:tool)
                                 svg.svgIcon
-                                    use(xlink:href="/material-icon.svg#icon-help-circle")
+                                    use(xlink:href="/basic-icon.svg#icon-help-circle")
                             template(v-slot:tip)
                                 | When LOCKED only signed users can have access to the client secret key.
                     .value

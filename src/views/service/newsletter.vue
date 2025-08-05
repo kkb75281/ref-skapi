@@ -73,7 +73,7 @@ template(v-else)
             .flex-wrap.center.btn-wrap
                 button.inline.icon-text.gray.sm.btn-copy(@click="copyToClipboard(newsletterEndpoint)")
                     svg.svgIcon
-                        use(xlink:href="/material-icon.svg#icon-copy")
+                        use(xlink:href="/basic-icon.svg#icon-copy")
                     span Copy
                 a(:href="'mailto:' + newsletterEndpoint" target="_blank")
                     button.inline.icon-text.gray.sm.btn-send
@@ -89,7 +89,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="/material-icon.svg#icon-refresh")
+                                    use(xlink:href="/basic-icon.svg#icon-refresh")
                         template(v-slot:tip) Refresh
             .table-actions
                 //- a(:href="'mailto:' + newsletterEndpoint")
@@ -101,7 +101,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="/material-icon.svg#icon-delete")
+                                    use(xlink:href="/basic-icon.svg#icon-delete")
                         template(v-slot:tip) Delete Selected
 
         Table(:class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
@@ -178,7 +178,7 @@ template(v-else)
                         td.overflow {{ ns.bounced }}
                         td.center.buttonWrap(@click.stop)
                             svg.svgIcon.reactiveDanger.clickable.hide(@click.stop="emailToDelete = ns")
-                                use(xlink:href="/material-icon.svg#icon-delete")
+                                use(xlink:href="/basic-icon.svg#icon-delete")
 
                     tr(v-for="i in (10 - listDisplay.length)")
                         td(colspan="6")
