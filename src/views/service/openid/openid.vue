@@ -1,7 +1,7 @@
 <template lang="pug">
 section.page-header
     .page-title Open ID Loggers
-    a.btn-docs(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
+    a.btn-docs(href='https://docs.skapi.com/authentication/openid-login.html' target="_blank")
         button.inline.icon-text.sm.gray
             img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
             | Go Docs
@@ -157,7 +157,7 @@ import Table from "@/components/table.vue";
 import Checkbox from "@/components/checkbox.vue";
 import Modal from "@/components/modal.vue";
 import Pager from "@/code/pager";
-import Guide from "./guide.vue";
+// import Guide from "./guide.vue";
 import RecDetails from "./showDetail.vue";
 import Tooltip from "@/components/tooltip.vue";
 
