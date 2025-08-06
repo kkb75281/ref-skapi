@@ -11,7 +11,7 @@ form#searchForm(@submit.prevent="callSearch")
                 .value
                     select.fix(v-model='accessGroup')
                         option(selected value='public') Public
-                        option(value='auth') Access Group
+                        option(value='auth') Authorized
                         option(value='private') Private
 
                     input(v-if='accessGroup === "public"' value='public' name='table[access_group]' disabled)
@@ -168,13 +168,6 @@ watch(searchIndexCondition, (nv) => {
 
 <style scoped lang="less">
 #searchForm {
-    // .inner {
-    //     display: flex;
-    //     flex-wrap: wrap;
-    //     align-items: center;
-    //     gap: 8px;
-    // }
-
     .search {
         position: relative;
         flex-grow: 50;
