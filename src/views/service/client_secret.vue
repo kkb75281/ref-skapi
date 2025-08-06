@@ -273,8 +273,26 @@ let cancelKey = (key, index) => {
 }
 
 let saveKey = async (key) => {
+    if (!key.name || !key.key) {
+        let el = document.getElementById('keyName');
+        let nextel = el.parentElement.nextElementSibling.lastElementChild;
+
+        if (!key.name) {
+            el.focus();
+            el.setCustomValidity('Please fill in all fields.');
+            el.reportValidity();
+        } else if (!key.key) {
+            nextel.focus();
+            nextel.setCustomValidity('Please fill in all fields.');
+            nextel.reportValidity();
+        }
+
+        return;
+    }
+
     let authKeys = [];
     let secKeys = {};
+
     for (let i = 0; i < client_key.value.length; i++) {
         let ck = client_key.value[i];
 
@@ -398,8 +416,8 @@ table {
     }
 
     &:hover {
-      border-radius: 50%;
-      background-color: #293FE61A;
+        border-radius: 50%;
+        background-color: #293FE61A;
     }
 }
 
