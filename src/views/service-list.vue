@@ -35,7 +35,7 @@ template(v-else)
                 .title Create a new service
                 button.icon-text(@click="openCreateService")
                     svg
-                        use(xlink:href="/material-icon.svg#icon-plus") 
+                        use(xlink:href="/basic-icon.svg#icon-plus") 
                     span Create
                 modalCreateService(:visible="showCreateModal" @close="showCreateModal = false")
         section.section.my-services-list

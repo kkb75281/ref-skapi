@@ -44,7 +44,7 @@ section
             .search-ing-btn(v-if="searchValue && !searchModalOpen")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
                 svg.svgIcon.reset-btn(@click="resetSearchModal")
-                    use(xlink:href="/material-icon.svg#icon-x-circle")
+                    use(xlink:href="/basic-icon.svg#icon-x-circle")
                 svg.svgIcon
                     use(xlink:href="/material-icon.svg#icon-search")
             button.inline.only-icon.gray.sm.search-btn(v-else aria-label="Search" @click="searchModalOpen = true" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
@@ -59,7 +59,7 @@ section
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="/material-icon.svg#icon-refresh")
+                                use(xlink:href="/basic-icon.svg#icon-refresh")
                     template(v-slot:tip) Refresh
         .table-actions
             button.inline.only-icon.gray.sm(aria-label="Create User" @click="openCreateUser = true" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
@@ -67,7 +67,7 @@ section
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="/material-icon.svg#icon-plus")
+                                use(xlink:href="/basic-icon.svg#icon-plus")
                     template(v-slot:tip) Create User
             button.inline.only-icon.gray.sm(aria-label="Invite User" @click="currentService.plan == 'Trial' ? (serviceUpgradeOffer = true) : (openInviteUser = true)" :class="{'trial' : currentService.plan == 'Trial'}" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
@@ -99,7 +99,7 @@ section
                             span Block User
                         button.inline.icon-text.gray(@click="openDeleteUser=true" :disabled="!Object.keys(checked).length || fetching" style="width:100%; justify-content: flex-start;")
                             svg.svgIcon
-                                use(xlink:href="/material-icon.svg#icon-delete")
+                                use(xlink:href="/basic-icon.svg#icon-delete")
                             span Delete User
 
     Table(:key="tableKey" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }" resizable)
@@ -169,7 +169,7 @@ section
 //- Modal(:open="searchModalOpen" style="padding: 2.5rem 2rem;")
     .modal-close(@click="searchModalOpen = false;")
         svg.svgIcon
-            use(xlink:href="/material-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg#icon-x")
 
     .modal-title Search Users
 
@@ -194,10 +194,10 @@ section
 //- Modal(:open="searchModalOpen" style="max-width: 560px; width: 100%;")
     .modal-prev(v-if="searchModalStep > 1" @click="searchModalStep--")
         svg.svgIcon
-            use(xlink:href="/material-icon.svg#icon-arrow-left")
+            use(xlink:href="/basic-icon.svg#icon-arrow-left")
     .modal-close(@click="searchModalOpen = false; searchModalStep = 1; searchFor = 'user_id'; searchValue = '';")
         svg.svgIcon
-            use(xlink:href="/material-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg#icon-x")
 
     .modal-title
         template(v-if="searchModalStep === 1") What do you want to search for...
@@ -230,7 +230,7 @@ section
 Modal.search-modal(:open="searchModalOpen")
     .modal-close(@click="searchModalOpen = false; searchModalStep = 1; searchFor = 'user_id'; searchValue = '';")
         svg.svgIcon
-            use(xlink:href="/material-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg#icon-x")
 
     .top
         #showSearchFor.search-for
@@ -276,7 +276,7 @@ Modal.search-modal(:open="searchModalOpen")
 Modal.modal-scroll.modal-createUser(:open="openCreateUser")
     .modal-close(@click="openCreateUser = false;")
         svg.svgIcon
-            use(xlink:href="/material-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg#icon-x")
 
     .modal-title Create User
 
@@ -444,7 +444,7 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
 Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
     .modal-close(@click="openInviteUser = false")
         svg.svgIcon
-            use(xlink:href="/material-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg#icon-x")
 
     .modal-title Invite User
 
@@ -508,7 +508,7 @@ Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
 Modal.modal-grantAccess(:open="openGrantAccess" @close="closeGrantAccess")
     .modal-close(@click="closeGrantAccess")
         svg.svgIcon
-            use(xlink:href="/material-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg#icon-x")
 
     .modal-title Grant Access
 
@@ -585,7 +585,7 @@ Modal.modal-scroll.modal-detailUser(:open="showDetail" @close="closeModalUser")
             .title {{ selectedUser?.name || selectedUser?.email || selectedUser?.user_id }}
             button.btn-close(type="button" @click="closeModalUser")
                 svg.svgIcon
-                    use(xlink:href="/material-icon.svg#icon-x")
+                    use(xlink:href="/basic-icon.svg#icon-x")
         .modal-body
             UserDetails(v-if='showDetail' :data='selectedUser')
         .modal-footer

@@ -165,7 +165,7 @@
     min-width: 300px;
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: start;
     justify-content: space-between;
     gap: 20px;
     padding: 20px;
@@ -173,6 +173,9 @@
     background-color: #121214;
 
     .info {
+        flex-grow: 1;
+        min-width: 0;
+
         .title {
             margin-bottom: 10px;
             opacity: 0.6;
@@ -181,8 +184,20 @@
         .value {
             font-size: 14px;
             font-weight: 300;
-            max-width: 12.5rem;
+            // max-width: 12.5rem;
+            display: block;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+    }
+
+    .actions-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-left: auto;
     }
 
     @media (max-width: 430px) {

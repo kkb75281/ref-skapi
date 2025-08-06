@@ -6,10 +6,10 @@ template(v-if="visible")
                 #create
                     .btn-prev(v-if="step > 1")
                         svg.svgIcon(@click="step--")
-                            use(xlink:href="/material-icon.svg#icon-arrow-left")
+                            use(xlink:href="/basic-icon.svg#icon-arrow-left")
                     .btn-close(@click="handleClose" :style="isFirstService ? {display: 'none'} : {}")
                         svg.svgIcon
-                            use(xlink:href="/material-icon.svg#icon-x")
+                            use(xlink:href="/basic-icon.svg#icon-x")
 
                     .form(v-if="step === 1")
                         h3.title
@@ -31,7 +31,7 @@ template(v-if="visible")
                         input.block(placeholder="Service name (Max 40 chars)" maxlength="40" required v-model="newServiceName" style="margin-bottom: 0.75rem;")
                         button.block.icon-text(type="button" :disabled="!newServiceName" :style="!newServiceName ? { backgroundColor: 'rgba(34, 35, 37, 1)' } : {}" @click="step++")
                             svg
-                                use(xlink:href="/material-icon.svg#icon-plus") 
+                                use(xlink:href="/basic-icon.svg#icon-plus") 
                             span Create
 
                     .step-plan(v-else-if="step === 2")
@@ -70,15 +70,18 @@ template(v-if="visible")
                                     use(xlink:href="/material-icon.svg#icon-card-mark")
                                 .top
                                     .title Standard
+                                        span.ref(v-if="showReferPrice") (Referral Price)
                                     .desc Suit best for small businesses, MVP, small projects, etc.
                                     //- .option 
                                         TabMenu(v-model="activeTabs.standard" :tabs="['basic', 'perpetual']")
                                 .middle
-                                    .price
+                                    .price(:class="{'affiliate': showReferPrice}")
                                         template(v-if="activeTabs.standard === 0") 
+                                            .discount-num {{ '$' + Math.floor(planSpec['Standard'].price * 0.9) }}
                                             .num {{ '$' + planSpec['Standard'].price }}
                                             span /mon
                                         template(v-else)
+                                            .discount-num {{ '$' + Math.floor(planSpec['Standard'].price * 0.9) }}
                                             .num {{ '$' + planSpec['Standard (Perpetual License)'].price }}
                                             span /only-once
                                     button.block(type="button" :disabled="promiseRunning" @click="selectedPlan('standard')")
@@ -102,16 +105,19 @@ template(v-if="visible")
                                 svg.mark
                                     use(xlink:href="/material-icon.svg#icon-card-mark")
                                 .top
-                                    .title Premium 
+                                    .title Premium
+                                        span.ref(v-if="showReferPrice") (Referral Price)
                                     .desc Suit best for huge projects, Saas, social media, AI application, etc.
                                     //- .option 
                                         TabMenu(v-model="activeTabs.premium" :tabs="['basic', 'perpetual']")
                                 .middle
-                                    .price
+                                    .price(:class="{'affiliate': showReferPrice}")
                                         template(v-if="activeTabs.premium === 0") 
+                                            .discount-num {{ '$' + Math.floor(planSpec['Premium'].price * 0.9) }}
                                             .num {{ '$' + planSpec['Premium'].price }}
                                             span /mon
                                         template(v-else)
+                                            .discount-num {{ '$' + Math.floor(planSpec['Premium (Perpetual License)'].price * 0.9) }}
                                             .num {{ '$' + planSpec['Premium (Perpetual License)'].price }}
                                             span /only-once
                                     //- .desc Empower your business with formcarry, #[span.wordset for big businesses]
@@ -141,6 +147,7 @@ import {
     fetchingServiceList,
 } from "@/views/service-list";
 import { skapi } from "@/main";
+import { user } from "@/code/user";
 import { customer } from "@/code/user";
 import { planSpec } from "@/views/service/service-spec";
 
@@ -177,6 +184,7 @@ let service = {
     users: 10,
 };
 let promiseRunning = ref(false);
+let showReferPrice = ref(false);
 let serviceMode = ref("standard");
 let newServiceName = ref("");
 let activeTabs = ref({
@@ -275,6 +283,10 @@ let selectedPlan = (plan: string) => {
         if (activeTabs.value[plan] == 1) {
             plan = plan + "-perpetual";
         }
+
+        if (showReferPrice.value) {
+            plan = plan + "-affiliate";
+        }
     }
 
     serviceMode.value = plan;
@@ -314,6 +326,15 @@ const handleKey = (e: KeyboardEvent) => {
 
 onMounted(() => {
     document.addEventListener("keydown", handleKey);
+
+    let misc = JSON.parse(user.misc || '{}');
+    let miscRefer = misc.refer || [];
+
+    if (miscRefer.length > 0) {
+        showReferPrice.value = true;
+    } else {
+        showReferPrice.value = false;
+    }
 });
 
 onUnmounted(() => {
@@ -439,6 +460,21 @@ function resetSearchModal() {
                 font-size: 1.75rem;
                 font-weight: 500;
                 text-align: left;
+
+                .ref {
+                    font-size: 0.875rem;
+                    color: #fff;
+                    font-weight: 400;
+                    margin-left: 0.5rem;
+                    opacity: 0.7;
+
+                    // background-color: #52dfc7;
+                    // color: #16171a;
+                    // opacity: 1;
+                    // padding: 0.15rem 0.3rem;
+                    // border-radius: 0.25rem;
+                    // vertical-align: middle;
+                }
             }
 
             .desc {
@@ -465,12 +501,41 @@ function resetSearchModal() {
                 align-items: baseline;
                 min-height: 3.25rem;
 
+                .discount-num {
+                    margin-right: 8px;
+                    display: none;
+                }
+
                 span {
                     font-size: 16px;
                     font-weight: 400;
                     margin-left: 7px;
                     opacity: 0.7;
                     color: rgba(255, 255, 255, 0.7);
+                }
+
+                &.affiliate {
+                    .discount-num {
+                        display: block;
+                    }
+
+                    .num {
+                        position: relative;
+                        color: #666;
+                        font-size: 2.2rem;
+                        font-weight: 300;
+
+                        &::after {
+                            position: absolute;
+                            content: "";
+                            width: 108%;
+                            height: 2px;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            background-color: #666;
+                        }
+                    }
                 }
             }
 

@@ -15,7 +15,7 @@ section.page-header
             button.inline.icon-text.sm.gray.caution(type="button" )
                 .icon
                     svg
-                        use(xlink:href="/material-icon.svg#icon-delete")
+                        use(xlink:href="/basic-icon.svg#icon-delete")
                 | Delete Service
         a.btn-docs(href='https://docs.skapi.com/service-settings/service-settings.html' target="_blank")
             button.inline.icon-text.sm.gray
@@ -30,32 +30,35 @@ section
             .info
                 .title Service Name
                 .value {{ currentService.service.name }}
-            button.only-icon.gray.edit-btn(type="button" @click="editName")
-                //- Tooltip(tip-background-color="rgb(45 46 48)" text-color="white")
-                    template(v-slot:tool)
-                        svg.svgIcon
-                            use(xlink:href="/material-icon.svg#icon-edit")
-                    template(v-slot:tip) Edit
-                .icon
-                    svg
-                        use(xlink:href="/material-icon.svg#icon-edit")
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" @click="editName")
+                    //- Tooltip(tip-background-color="rgb(45 46 48)" text-color="white")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="/basic-icon.svg#icon-edit")
+                        template(v-slot:tip) Edit
+                    .icon
+                        svg
+                            use(xlink:href="/basic-icon.svg#icon-edit")
         .info-edit-wrap
             .info
                 .title CORS
                 .value {{ currentService.service.cors || '*' }}
-            button.only-icon.gray.edit-btn(type="button" @click="editCors")
-                .icon
-                    svg
-                        use(xlink:href="/material-icon.svg#icon-edit")
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" @click="editCors")
+                    .icon
+                        svg
+                            use(xlink:href="/basic-icon.svg#icon-edit")
 
         .info-edit-wrap
             .info
                 .title Secret Key
                 .value {{ currentService.service.api_key ? currentService.service.api_key.slice(0, 2) + '*'.repeat(currentService.service.api_key.length - 2) + '...' : '-' }}
-            button.only-icon.gray.edit-btn(type="button" :disabled="!user?.email_verified || currentService.service.active <= 0" @click="editApiKey")
-                .icon
-                    svg
-                        use(xlink:href="/material-icon.svg#icon-edit")
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" :disabled="!user?.email_verified || currentService.service.active <= 0" @click="editApiKey")
+                    .icon
+                        svg
+                            use(xlink:href="/basic-icon.svg#icon-edit")
 
     br
 
@@ -121,7 +124,7 @@ section
                     Tooltip(tip-background-color="var(--main-color)" text-color="white")
                         template(v-slot:tool)
                             svg.svgIcon
-                                use(xlink:href="/material-icon.svg#icon-help-circle")
+                                use(xlink:href="/basic-icon.svg#icon-help-circle")
                         template(v-slot:tip)
                             | When the service is disabled, users cannot access the service.
                 Toggle(
@@ -137,7 +140,7 @@ section
                     Tooltip(tip-background-color="var(--main-color)" text-color="white")
                         template(v-slot:tool)
                             svg.svgIcon
-                                use(xlink:href="/material-icon.svg#icon-help-circle")
+                                use(xlink:href="/basic-icon.svg#icon-help-circle")
                         template(v-slot:tip)
                             | When signup is disallowed, only the administrator can create accounts.
                 Toggle(
@@ -153,7 +156,7 @@ section
                     Tooltip(tip-background-color="var(--main-color)" text-color="white")
                         template(v-slot:tool)
                             svg.svgIcon
-                                use(xlink:href="/material-icon.svg#icon-help-circle")
+                                use(xlink:href="/basic-icon.svg#icon-help-circle")
                         template(v-slot:tip)
                             | When inquiry is prevented, users cannot send inquiries via sendInquiry() to the service.
                 Toggle(
@@ -169,7 +172,7 @@ section
                     Tooltip(tip-background-color="var(--main-color)" text-color="white")
                         template(v-slot:tool)
                             svg.svgIcon
-                                use(xlink:href="/material-icon.svg#icon-help-circle")
+                                use(xlink:href="/basic-icon.svg#icon-help-circle")
                         template(v-slot:tip)
                             | When the database is frozen, users cannot upload any data to the database.
                 Toggle(
@@ -182,7 +185,7 @@ section
 Modal(:open="modifyMode.name" @close="modifyMode.name = false")
     .modal-close(@click="modifyMode.name = false;")
         svg.svgIcon
-            use(xlink:href="/material-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg#icon-x")
 
     .modal-title Change Service Name
 
@@ -203,7 +206,7 @@ Modal(:open="modifyMode.name" @close="modifyMode.name = false")
 Modal(:open="modifyMode.cors" @close="modifyMode.cors = false")
     .modal-close(@click="modifyMode.cors = false;")
         svg.svgIcon
-            use(xlink:href="/material-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg#icon-x")
 
     .modal-title Change CORS
 
@@ -226,7 +229,7 @@ Modal(:open="modifyMode.cors" @close="modifyMode.cors = false")
 Modal(:open="modifyMode.api_key" @close="modifyMode.api_key = false")
     .modal-close(@click="modifyMode.api_key = false;")
         svg.svgIcon
-            use(xlink:href="/material-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg#icon-x")
 
     .modal-title Change API Key
 

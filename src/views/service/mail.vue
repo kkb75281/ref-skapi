@@ -98,7 +98,7 @@ template(v-else)
             .flex-wrap.center
                 button.inline.icon-text.gray.sm.btn-copy(@click="copy(email_templates[group])")
                     svg.svgIcon
-                        use(xlink:href="/material-icon.svg#icon-copy")
+                        use(xlink:href="/basic-icon.svg#icon-copy")
                     span Copy
                 button.inline.icon-text.gray.sm.btn-preview(@click="showPreview = true; previewModal.current = true; previewModal.subject = null; beforeTemp = null;")
                     svg.svgIcon
@@ -118,7 +118,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="/material-icon.svg#icon-refresh")
+                                    use(xlink:href="/basic-icon.svg#icon-refresh")
                         template(v-slot:tip) Refresh
             .table-actions
                 button.inline.only-icon.gray(aria-label="Delete Selected" @click="emailToDelete = true" :disabled="!Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0")
@@ -126,7 +126,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="/material-icon.svg#icon-delete")
+                                    use(xlink:href="/basic-icon.svg#icon-delete")
                         template(v-slot:tip) Delete Selected
 
         Table(:key="tableKey" :class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
@@ -201,7 +201,7 @@ Modal.modal-scroll.modal-previewMail(:open="showPreview" @close="closePreview")
             h4.title {{ previewModal.current ? "Current" : "Before" }} Template
             button.btn-close(type="button" @click="closePreview")
                 svg.svgIcon
-                    use(xlink:href="/material-icon.svg#icon-x")
+                    use(xlink:href="/basic-icon.svg#icon-x")
         .modal-body
             div(v-if='htmls[group] === null')
                 .loader(style="--loader-color:white; --loader-size:12px")
@@ -256,6 +256,7 @@ import { currentService, serviceAutoMails } from "./main";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { dateFormat } from "@/code/admin";
+import { copy } from '@/assets/js/common.js'
 
 import Table from "@/components/table.vue";
 import Modal from "@/components/modal.vue";
@@ -315,23 +316,6 @@ let emailAliasVal = ref("");
 let email_is_unverified_or_service_is_disabled = computed(
     () => !user?.email_verified || currentService.service.active <= 0
 );
-
-function copy(text: string) {
-    let doc = document.createElement("textarea");
-    doc.textContent = text;
-    document.body.append(doc);
-    doc.select();
-    document.execCommand("copy");
-    doc.remove();
-
-    let copyMsg = document.getElementById("copy-msg");
-    copyMsg.textContent = "The email copied!";
-    copyMsg.classList.add("show");
-
-    setTimeout(() => {
-        copyMsg.classList.remove("show");
-    }, 2000);
-}
 
 let registerAliasRunning = ref(false);
 function registerAlias() {

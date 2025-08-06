@@ -12,35 +12,38 @@
             .info
                 .title Email
                 .value {{ user.email }}
-            button.only-icon.gray.edit-btn(type="button" @click="modifyEmail = true")
-                .icon
-                    svg
-                        use(xlink:href="/material-icon.svg#icon-edit")
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" @click="modifyEmail = true")
+                    .icon
+                        svg
+                            use(xlink:href="/basic-icon.svg#icon-edit")
 
         .info-edit-wrap
             .info
                 .title Password
                 .value *********
-            button.only-icon.gray.edit-btn(type="button" @click="router.push('/change-password')")
-                .icon
-                    svg
-                        use(xlink:href="/material-icon.svg#icon-edit")
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" @click="router.push('/change-password')")
+                    .icon
+                        svg
+                            use(xlink:href="/basic-icon.svg#icon-edit")
 
         .info-edit-wrap
             .info
                 .title Newsletters
                 .value {{ emailSubscribed ? "Subscribed" : "Unsubscribed" }}
-            Toggle(
-                style='display:inline-flex;align-items:center;'
-                :disabled="!user.email_verified || subing_email || emailSubscribed === null"
-                :active="emailSubscribed"
-                @click="emailSubscribed = !emailSubscribed"
-            )
+            .actions-wrap(style="height: 46.5px")
+                Toggle(
+                    style='display:inline-flex;align-items:center;'
+                    :disabled="!user.email_verified || subing_email || emailSubscribed === null"
+                    :active="emailSubscribed"
+                    @click="emailSubscribed = !emailSubscribed"
+                )
 
 Modal(:open="modifyEmail" @close="modifyEmail = false")
     .modal-close(@click="modifyEmail = false;")
         svg.svgIcon
-            use(xlink:href="/material-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg#icon-x")
 
     .modal-title Change Email
     .modal-desc.

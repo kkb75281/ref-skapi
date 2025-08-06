@@ -41,7 +41,7 @@ section
             .search-ing-btn(v-if="searchValue && searchValue.length > 0 && searchFor !== 'query'")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
                 svg.svgIcon.reset-btn(@click="() => { callParams = {}; resetSearchModal(); }")
-                    use(xlink:href="/material-icon.svg#icon-x-circle")
+                    use(xlink:href="/basic-icon.svg#icon-x-circle")
                 svg.svgIcon
                     use(xlink:href="/material-icon.svg#icon-search")
             button.inline.only-icon.gray.search-btn(v-else aria-label="Search" @click="searchModalOpen = true" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
@@ -56,7 +56,7 @@ section
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="/material-icon.svg#icon-refresh")
+                                use(xlink:href="/basic-icon.svg#icon-refresh")
                     template(v-slot:tip) Refresh
 
         .table-actions
@@ -65,14 +65,14 @@ section
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="/material-icon.svg#icon-plus")
+                                use(xlink:href="/basic-icon.svg#icon-plus")
                     template(v-slot:tip) Add Record
             button.inline.only-icon.gray(@click="openDeleteRecords=true" :disabled="!Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0" )
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                     template(v-slot:tool)
                         .icon
                             svg
-                                use(xlink:href="/material-icon.svg#icon-delete")
+                                use(xlink:href="/basic-icon.svg#icon-delete")
                     template(v-slot:tip) Delete Selected
 
     Table(:key="tableKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" resizable)
@@ -160,7 +160,7 @@ Modal.search-modal(:open="searchModalOpen")
     .modal-close
         button.btn-close(type="button" @click="resetSearchModal")
             svg.svgIcon
-                use(xlink:href="/material-icon.svg#icon-x")
+                use(xlink:href="/basic-icon.svg#icon-x")
     .top
         #showSearchFor.search-for
             svg.svgIcon
@@ -195,7 +195,7 @@ Modal.modal-scroll.modal-detailRecord(:open="showDetail" @close="closeModal")
             h4.title {{ selectedRecord?.record_id ? selectedRecord?.record_id : 'Create Record' }}
             button.btn-close(type="button" @click="closeModal")
                 svg.svgIcon
-                    use(xlink:href="/material-icon.svg#icon-x")
+                    use(xlink:href="/basic-icon.svg#icon-x")
         .modal-body
             RecDetails(v-if='showDetail' :data='selectedRecord')
         .modal-footer
@@ -317,7 +317,6 @@ let maxPage = ref(0);
 let currentPage: Ref<number> = ref(1);
 let endOfList = ref(false);
 let showDetail = ref(false);
-let showGuide = ref(false);
 let hovering = ref(false);
 
 // search 관련 변수

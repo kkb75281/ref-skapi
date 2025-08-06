@@ -49,35 +49,37 @@ template(v-else)
                 .info
                     .title Storage in-use
                     .value {{ currentService.dirInfo?.size ? getFileSize(currentService.dirInfo?.size || 0) : '...' }}
-                button.only-icon.gray.delete-btn(type="button" @click="removeHosting = true")
-                    .icon
-                        svg
-                            use(xlink:href="/material-icon.svg#icon-delete")
+                .actions-wrap
+                    button.only-icon.gray.delete-btn(type="button" @click="removeHosting = true")
+                        .icon
+                            svg
+                                use(xlink:href="/basic-icon.svg#icon-delete")
 
             .info-edit-wrap
                 .info
                     .title URL
                     .value {{ hostUrl}}
-                button.only-icon.gray.edit-btn(type="button" @click="editSubdomain")
-                    .icon
-                        svg
-                            use(xlink:href="/material-icon.svg#icon-edit")
+                .actions-wrap
+                    button.only-icon.gray.edit-btn(type="button" @click="editSubdomain")
+                        .icon
+                            svg
+                                use(xlink:href="/basic-icon.svg#icon-edit")
 
             .info-edit-wrap
                 .info
                     .title 404 Page
                     .value {{ sdInfo?.['404'] || '-' }}
-                .flex-wrap.end(style="gap: 10px;")
+                .actions-wrap
                     button.only-icon.gray.edit-btn(:disabled='email_is_unverified_or_service_is_disabled || isPending' @click="open404FileInp")
                         .icon
                             svg(v-if="sdInfo?.['404']")
-                                use(xlink:href="/material-icon.svg#icon-edit")
+                                use(xlink:href="/basic-icon.svg#icon-edit")
                             svg(v-else)
                                 use(xlink:href="/material-icon.svg#icon-upload")
                     button.only-icon.gray.edit-btn(v-if='!updatingValue.page404 && sdInfo?.["404"] && sdInfo?.["404"] !== "..."' @click="openRemove404=true")
                         .icon
                             svg
-                                use(xlink:href="/material-icon.svg#icon-delete")
+                                use(xlink:href="/basic-icon.svg#icon-delete")
 
     section
         .table-menu-wrap
@@ -87,7 +89,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="/material-icon.svg#icon-refresh")
+                                    use(xlink:href="/basic-icon.svg#icon-refresh")
                         template(v-slot:tip) Refresh CDN
             .table-actions
                 button.inline.only-icon.gray(aria-label="Upload Files" @click='uploadFileInp.click()' :disabled="email_is_unverified_or_service_is_disabled || isPending || fetching")
@@ -111,7 +113,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="/material-icon.svg#icon-delete")
+                                    use(xlink:href="/basic-icon.svg#icon-delete")
                         template(v-slot:tip) Delete Selected
 
         Table(
@@ -262,7 +264,7 @@ Modal(:open="openRefreshCdn")
 Modal(:open="modifyMode.subdomain")
     .modal-close(@click="modifyMode.subdomain = false;")
         svg.svgIcon
-            use(xlink:href="/material-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg#icon-x")
 
     .modal-title Change Subdomain
 
@@ -311,7 +313,7 @@ Modal.modal-removeHosting(:open="removeHosting" @close="removeHosting=false")
 Modal.modal-upload404(:open="modifyMode.page404" @close="modifyMode.page404 = false; selected404File = null;")
     .modal-close(@click="modifyMode.page404 = false; selected404File = null;")
         svg.svgIcon
-            use(xlink:href="/material-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg#icon-x")
 
     .modal-title Upload 404 Page
 

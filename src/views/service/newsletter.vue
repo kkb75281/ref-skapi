@@ -71,9 +71,9 @@ template(v-else)
             .email {{ newsletterEndpoint || '...' }}
 
             .flex-wrap.center.btn-wrap
-                button.inline.icon-text.gray.sm.btn-copy(@click="copyToClipboard(newsletterEndpoint)")
+                button.inline.icon-text.gray.sm.btn-copy(@click="copy(newsletterEndpoint)")
                     svg.svgIcon
-                        use(xlink:href="/material-icon.svg#icon-copy")
+                        use(xlink:href="/basic-icon.svg#icon-copy")
                     span Copy
                 a(:href="'mailto:' + newsletterEndpoint" target="_blank")
                     button.inline.icon-text.gray.sm.btn-send
@@ -89,7 +89,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="/material-icon.svg#icon-refresh")
+                                    use(xlink:href="/basic-icon.svg#icon-refresh")
                         template(v-slot:tip) Refresh
             .table-actions
                 //- a(:href="'mailto:' + newsletterEndpoint")
@@ -101,7 +101,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="/material-icon.svg#icon-delete")
+                                    use(xlink:href="/basic-icon.svg#icon-delete")
                         template(v-slot:tip) Delete Selected
 
         Table(:class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
@@ -178,7 +178,7 @@ template(v-else)
                         td.overflow {{ ns.bounced }}
                         td.center.buttonWrap(@click.stop)
                             svg.svgIcon.reactiveDanger.clickable.hide(@click.stop="emailToDelete = ns")
-                                use(xlink:href="/material-icon.svg#icon-delete")
+                                use(xlink:href="/basic-icon.svg#icon-delete")
 
                     tr(v-for="i in (10 - listDisplay.length)")
                         td(colspan="6")
@@ -220,6 +220,7 @@ import { currentService, serviceBulkMails } from "./main";
 import { user } from "@/code/user";
 import { skapi } from "@/main";
 import { dateFormat } from "@/code/admin";
+import { copy } from '@/assets/js/common.js'
 
 import Pager from "@/code/pager";
 import Table from "@/components/table.vue";
@@ -564,29 +565,6 @@ let converter = (html: string, parsed: boolean, inv: boolean) => {
     );
     html = html.replaceAll("${password}", "abc123&&");
     return html;
-};
-
-// copy code
-const copyToClipboard = (text: string) => {
-    try {
-        // 복사 기능
-        let doc = document.createElement("textarea");
-        doc.textContent = text;
-        document.body.append(doc);
-        doc.select();
-        document.execCommand("copy");
-        doc.remove();
-
-        // 복사 완료 메시지 표시
-        let copyMsg = document.getElementById("copy-msg");
-        copyMsg.classList.add("show");
-
-        setTimeout(() => {
-            copyMsg.classList.remove("show");
-        }, 2000);
-    } catch (err) {
-        console.error("Failed to copy: ", err);
-    }
 };
 </script>
 
