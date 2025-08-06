@@ -7,13 +7,21 @@
 
     hr
 
-    .info-value-set
+    section
+        .error(v-if="!user?.email_verified")
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            span.clickable(@click="modifyEmail = true;") Please verify your email address to modify settings.
+
+    br
+
+    section.info-value-set
         .info-edit-wrap
             .info
                 .title Email
                 .value {{ user.email }}
             .actions-wrap
-                button.only-icon.gray.edit-btn(type="button" @click="modifyEmail = true")
+                button.only-icon.gray.edit-btn(type="button" @click="modifyEmail = true;")
                     .icon
                         svg
                             use(xlink:href="/basic-icon.svg#icon-edit")
@@ -57,7 +65,7 @@ Modal(:open="modifyEmail" @close="modifyEmail = false")
             .loader-wrap(v-if='updatingValue')
                 .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else-if="!user.email_verified")
-                button.block.red(v-if="user.email_verified" style="width:100%;" @click="proceedVerification = true;") Verify Email
+                button.block.red(type="button" @click="proceedVerification = true;") Verify Email
             template(v-else)
                 button.block(type="submit" :disabled="updatingValue || inputEmail === user.email") Change
 
@@ -147,6 +155,12 @@ watch(emailSubscribed, async (n, o) => {
     margin: 0 auto;
     padding: 3rem 10px 1rem;
     width: 100%;
+}
+
+.clickable {
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 .card-wrap {
