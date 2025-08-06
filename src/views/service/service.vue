@@ -30,32 +30,35 @@ section
             .info
                 .title Service Name
                 .value {{ currentService.service.name }}
-            button.only-icon.gray.edit-btn(type="button" @click="editName")
-                //- Tooltip(tip-background-color="rgb(45 46 48)" text-color="white")
-                    template(v-slot:tool)
-                        svg.svgIcon
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" @click="editName")
+                    //- Tooltip(tip-background-color="rgb(45 46 48)" text-color="white")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="/basic-icon.svg#icon-edit")
+                        template(v-slot:tip) Edit
+                    .icon
+                        svg
                             use(xlink:href="/basic-icon.svg#icon-edit")
-                    template(v-slot:tip) Edit
-                .icon
-                    svg
-                        use(xlink:href="/basic-icon.svg#icon-edit")
         .info-edit-wrap
             .info
                 .title CORS
                 .value {{ currentService.service.cors || '*' }}
-            button.only-icon.gray.edit-btn(type="button" @click="editCors")
-                .icon
-                    svg
-                        use(xlink:href="/basic-icon.svg#icon-edit")
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" @click="editCors")
+                    .icon
+                        svg
+                            use(xlink:href="/basic-icon.svg#icon-edit")
 
         .info-edit-wrap
             .info
                 .title Secret Key
                 .value {{ currentService.service.api_key ? currentService.service.api_key.slice(0, 2) + '*'.repeat(currentService.service.api_key.length - 2) + '...' : '-' }}
-            button.only-icon.gray.edit-btn(type="button" :disabled="!user?.email_verified || currentService.service.active <= 0" @click="editApiKey")
-                .icon
-                    svg
-                        use(xlink:href="/basic-icon.svg#icon-edit")
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" :disabled="!user?.email_verified || currentService.service.active <= 0" @click="editApiKey")
+                    .icon
+                        svg
+                            use(xlink:href="/basic-icon.svg#icon-edit")
 
     br
 

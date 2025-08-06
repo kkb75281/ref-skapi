@@ -256,6 +256,7 @@ import { currentService, serviceAutoMails } from "./main";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { dateFormat } from "@/code/admin";
+import { copy } from '@/assets/js/common.js'
 
 import Table from "@/components/table.vue";
 import Modal from "@/components/modal.vue";
@@ -315,23 +316,6 @@ let emailAliasVal = ref("");
 let email_is_unverified_or_service_is_disabled = computed(
     () => !user?.email_verified || currentService.service.active <= 0
 );
-
-function copy(text: string) {
-    let doc = document.createElement("textarea");
-    doc.textContent = text;
-    document.body.append(doc);
-    doc.select();
-    document.execCommand("copy");
-    doc.remove();
-
-    let copyMsg = document.getElementById("copy-msg");
-    copyMsg.textContent = "The email copied!";
-    copyMsg.classList.add("show");
-
-    setTimeout(() => {
-        copyMsg.classList.remove("show");
-    }, 2000);
-}
 
 let registerAliasRunning = ref(false);
 function registerAlias() {

@@ -49,25 +49,27 @@ template(v-else)
                 .info
                     .title Storage in-use
                     .value {{ currentService.dirInfo?.size ? getFileSize(currentService.dirInfo?.size || 0) : '...' }}
-                button.only-icon.gray.delete-btn(type="button" @click="removeHosting = true")
-                    .icon
-                        svg
-                            use(xlink:href="/basic-icon.svg#icon-delete")
+                .actions-wrap
+                    button.only-icon.gray.delete-btn(type="button" @click="removeHosting = true")
+                        .icon
+                            svg
+                                use(xlink:href="/basic-icon.svg#icon-delete")
 
             .info-edit-wrap
                 .info
                     .title URL
                     .value {{ hostUrl}}
-                button.only-icon.gray.edit-btn(type="button" @click="editSubdomain")
-                    .icon
-                        svg
-                            use(xlink:href="/basic-icon.svg#icon-edit")
+                .actions-wrap
+                    button.only-icon.gray.edit-btn(type="button" @click="editSubdomain")
+                        .icon
+                            svg
+                                use(xlink:href="/basic-icon.svg#icon-edit")
 
             .info-edit-wrap
                 .info
                     .title 404 Page
                     .value {{ sdInfo?.['404'] || '-' }}
-                .flex-wrap.end(style="gap: 10px;")
+                .actions-wrap
                     button.only-icon.gray.edit-btn(:disabled='email_is_unverified_or_service_is_disabled || isPending' @click="open404FileInp")
                         .icon
                             svg(v-if="sdInfo?.['404']")

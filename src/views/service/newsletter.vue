@@ -71,7 +71,7 @@ template(v-else)
             .email {{ newsletterEndpoint || '...' }}
 
             .flex-wrap.center.btn-wrap
-                button.inline.icon-text.gray.sm.btn-copy(@click="copyToClipboard(newsletterEndpoint)")
+                button.inline.icon-text.gray.sm.btn-copy(@click="copy(newsletterEndpoint)")
                     svg.svgIcon
                         use(xlink:href="/basic-icon.svg#icon-copy")
                     span Copy
@@ -220,6 +220,7 @@ import { currentService, serviceBulkMails } from "./main";
 import { user } from "@/code/user";
 import { skapi } from "@/main";
 import { dateFormat } from "@/code/admin";
+import { copy } from '@/assets/js/common.js'
 
 import Pager from "@/code/pager";
 import Table from "@/components/table.vue";
@@ -564,29 +565,6 @@ let converter = (html: string, parsed: boolean, inv: boolean) => {
     );
     html = html.replaceAll("${password}", "abc123&&");
     return html;
-};
-
-// copy code
-const copyToClipboard = (text: string) => {
-    try {
-        // 복사 기능
-        let doc = document.createElement("textarea");
-        doc.textContent = text;
-        document.body.append(doc);
-        doc.select();
-        document.execCommand("copy");
-        doc.remove();
-
-        // 복사 완료 메시지 표시
-        let copyMsg = document.getElementById("copy-msg");
-        copyMsg.classList.add("show");
-
-        setTimeout(() => {
-            copyMsg.classList.remove("show");
-        }, 2000);
-    } catch (err) {
-        console.error("Failed to copy: ", err);
-    }
 };
 </script>
 

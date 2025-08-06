@@ -14,19 +14,21 @@ section
         .info-edit-wrap
             .info
                 .title Service ID
-                .value(style="max-width: 32rem;") {{ currentService.id }}
-            button.only-icon.gray.edit-btn(type="button" @click="")
-                .icon
-                    svg
-                        use(xlink:href="/basic-icon.svg#icon-copy")
+                .value {{ currentService.id }}
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" @click="copy(currentService.id)")
+                    .icon
+                        svg
+                            use(xlink:href="/basic-icon.svg#icon-copy")
         .info-edit-wrap
             .info
                 .title Service Owner
-                .value(style="max-width: 32rem;") {{ currentService.owner }}
-            button.only-icon.gray.edit-btn(type="button" @click="")
-                .icon
-                    svg
-                        use(xlink:href="/basic-icon.svg#icon-copy")
+                .value.owner {{ currentService.owner }}
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" @click="copy(currentService.owner)")
+                    .icon
+                        svg
+                            use(xlink:href="/basic-icon.svg#icon-copy")
 
 section
     .middle-title For AI-Driven Development
@@ -81,6 +83,7 @@ section
 <script setup>
 import Code from '@/components/code.vue';
 import { currentService } from '@/views/service/main';
+import { copy } from '@/assets/js/common.js'
 </script>
 
 <style lang="less" scoped>
