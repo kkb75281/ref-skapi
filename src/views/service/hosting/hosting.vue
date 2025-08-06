@@ -25,8 +25,8 @@ section
             use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently suspended.
 
-template(v-if='!currentService.service.subdomain' :class='{nonClickable: email_is_unverified_or_service_is_disabled}')
-    section
+template(v-if='!currentService.service.subdomain')
+    section(:class="{disabled: email_is_unverified_or_service_is_disabled}")
         p.page-desc.
             File hosting service let you host files and static websites.
             To host your public files, please register a subdomain.
@@ -396,7 +396,7 @@ let refreshCdn = async () => {
     //         cdnPending.value = false;
     //     }
     // });
-}
+};
 
 let subdomain = ref(""); // register input value. not the actual subdomain
 let registerSubdomain = async () => {
@@ -859,8 +859,9 @@ function openFile(ns: any) {
     let path = ns.path;
     let url;
     if (path.split("/").length > 1) {
-        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${ns.name
-            }`;
+        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${
+            ns.name
+        }`;
     } else {
         url = `https://${hostUrl.value}/${ns.name}`;
     }
@@ -1012,6 +1013,10 @@ watch(ascending, () => {
     color: var(--main-color);
     font-size: 24px;
     animation: motion 0.3s linear 1s infinite alternate;
+}
+
+.error {
+    margin-bottom: 1rem;
 }
 
 @keyframes motion {

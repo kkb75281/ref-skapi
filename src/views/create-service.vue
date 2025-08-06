@@ -363,7 +363,6 @@ const handleClose = () => {
     emit("close");
 };
 
-
 function resetSearchModal() {
     throw new Error("Function not implemented.");
 }
@@ -484,7 +483,7 @@ function resetSearchModal() {
                 line-height: 1.3;
                 margin: 0;
                 color: rgba(255, 255, 255, 0.7);
-                min-height: 3.9375rem;
+                min-height: 2.625rem;
             }
         }
 
@@ -578,43 +577,50 @@ function resetSearchModal() {
 
                     &.user {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_user.svg")
+                                no-repeat;
                         }
                     }
 
                     &.data {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_data.svg")
+                                no-repeat;
                         }
                     }
 
                     &.file {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_file.svg")
+                                no-repeat;
                         }
                     }
 
                     &.mail {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_mail.svg")
+                                no-repeat;
                         }
                     }
 
                     &.forbiden {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_forbiden.svg")
+                                no-repeat;
                         }
                     }
 
                     &.invitation {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_invitation.svg")
+                                no-repeat;
                         }
                     }
 
                     &.global {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_global.svg")
+                                no-repeat;
                         }
                     }
                 }
@@ -713,7 +719,8 @@ function resetSearchModal() {
     z-index: 999999;
 
     &.first-service {
-        background: url("@/assets/img/landingpage/bg_colorful.svg") no-repeat center center;
+        background: url("@/assets/img/landingpage/bg_colorful.svg") no-repeat
+            center center;
         background-size: cover;
         top: 4rem;
     }

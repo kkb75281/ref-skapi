@@ -998,6 +998,10 @@ init();
     }
 }
 
+.error {
+    margin-bottom: 1rem;
+}
+
 @media (pointer: coarse) {
     .hide {
         display: block !important;

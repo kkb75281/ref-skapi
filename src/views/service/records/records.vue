@@ -228,14 +228,7 @@ import RecDetails from "./showDetail.vue";
 import Tooltip from "@/components/tooltip.vue";
 
 import type { Ref } from "vue";
-import {
-    ref,
-    watch,
-    nextTick,
-    onMounted,
-    onUnmounted,
-    reactive,
-} from "vue";
+import { ref, watch, nextTick, onMounted, onUnmounted, reactive } from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { currentService, serviceRecords } from "@/views/service/main";
@@ -595,11 +588,11 @@ let setUpNewPageList = async () => {
         sortBy: callParams?.index?.name || "record_id",
         order:
             callParams?.index?.name &&
-                (callParams?.index?.condition || "").includes("<")
+            (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                    ? "asc"
-                    : "desc",
+                ? "asc"
+                : "desc",
     });
 };
 
@@ -809,6 +802,10 @@ const showTableColumns = () => {
     .search-wrap {
         margin-bottom: 0;
     }
+}
+
+.error {
+    margin-bottom: 1rem;
 }
 
 @media (max-width: 768px) {

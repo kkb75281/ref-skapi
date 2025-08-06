@@ -1,7 +1,7 @@
 <template lang="pug">
 section.page-header
     .page-title Open ID Loggers
-    a.btn-docs(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
+    a.btn-docs(href='https://docs.skapi.com/authentication/openid-login.html' target="_blank")
         button.inline.icon-text.sm.gray
             img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
             | Go Docs
@@ -419,3 +419,9 @@ const showTableColumns = () => {
     return columnList.filter((c) => c.value).length;
 };
 </script>
+
+<style lang="less" scoped>
+.error {
+    margin-bottom: 1rem;
+}
+</style>

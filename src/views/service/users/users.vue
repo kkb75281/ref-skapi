@@ -617,7 +617,11 @@ import {
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { showDropDown } from "@/assets/js/event.js";
-import { currentService, serviceUsers, serviceUpgradeOffer } from "@/views/service/main";
+import {
+    currentService,
+    serviceUsers,
+    serviceUpgradeOffer,
+} from "@/views/service/main";
 
 onMounted(() => {
     document.addEventListener("keydown", handleSearchModal);
@@ -978,8 +982,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                    new Date(dates[1]).setHours(23, 59, 59, 999)
-                ).getTime()
+                      new Date(dates[1]).setHours(23, 59, 59, 999)
+                  ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1465,6 +1469,10 @@ input::-webkit-inner-spin-button {
 
 input[type="number"] {
     -moz-appearance: textfield;
+}
+
+.error {
+    margin-bottom: 1rem;
 }
 
 @media (max-width: 768px) {
