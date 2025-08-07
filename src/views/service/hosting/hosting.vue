@@ -348,7 +348,7 @@ Modal.modal-upload404(:open="modifyMode.page404" @close="modifyMode.page404 = fa
     form(@submit.prevent="change404")
         input(ref="focus_404" hidden type="file" name='file' required @change="handle404file" :disabled='updatingValue.page404' accept="text/html")
         input.block(:placeholder="selected404File || 'Click here to select a file'" readonly)
-        button.block.gray(type="button" @click='focus_404.click()' style="margin-top: 0.75rem;") Browse File
+        button.block.gray(type="button"  @click='focus_404.value = ""; focus_404.click()' style="margin-top: 0.75rem;") Browse File
         .modal-btns
             .loader-wrap(v-if="updatingValue.page404")
                 .loader(style="--loader-color:white; --loader-size:12px")
@@ -470,7 +470,7 @@ let open404FileInp = async () => {
 
 let handle404file = (e: any) => {
     let file = e.target?.files?.[0];
-    let fileName = file.name;
+    let fileName = file?.name;
 
     if (!file) {
         selected404File.value = null;
