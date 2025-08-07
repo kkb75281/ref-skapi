@@ -44,7 +44,7 @@ section
             .search-ing-btn(v-if="searchValue && !searchModalOpen")
                 span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
                 svg.svgIcon.reset-btn(@click="resetSearchModal")
-                    use(xlink:href="/basic-icon.svg#icon-x-circle")
+                    use(xlink:href="/material-icon.svg#icon-x-circle")
                 svg.svgIcon
                     use(xlink:href="/material-icon.svg#icon-search")
             button.inline.only-icon.gray.sm.search-btn(v-else aria-label="Search" @click="searchModalOpen = true" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
@@ -982,8 +982,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                      new Date(dates[1]).setHours(23, 59, 59, 999)
-                  ).getTime()
+                    new Date(dates[1]).setHours(23, 59, 59, 999)
+                ).getTime()
                 : "";
 
             if (startDate && endDate) {

@@ -62,13 +62,18 @@ let processDelete = async () => {
         let disables = [];
         let cancelSubs = [];
         for (let k in serviceList) {
+            console.log(serviceList[k]);
             disables.push(serviceList[k].disableService());
-            disables.push(serviceList[k].registerSubdomain())
+            if (serviceList[k].plan !== 'Trial') {
+                disables.push(serviceList[k].registerSubdomain());
+            }
         }
         await Promise.all(disables);
 
         for (let k in serviceList) {
-            cancelSubs.push(serviceList[k].cancelSubscription());
+            if (serviceList[k].plan !== 'Trial') {
+                cancelSubs.push(serviceList[k].cancelSubscription());
+            }
         }
         await Promise.all(cancelSubs);
         await skapi.disableAccount();

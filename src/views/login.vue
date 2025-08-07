@@ -55,6 +55,22 @@
                 .signup
                     span.text No account?
                     router-link.btn-signup(:to="route.query.refer_name ? { name: 'signup', query: { suc_redirect: '/refer/' + route.query.refer_name } } : { name: 'signup' }") Sign up
+
+Modal(:open="enableAccount")
+    .modal-close(@click="enableAccount = false;")
+        svg.svgIcon
+            use(xlink:href="/basic-icon.svg#icon-x")
+
+    .modal-title Enable Account
+    .modal-desc.
+        Your account is disabled.
+        #[br]
+        Please contact support to enable your account.
+        #[br]
+        You can also try resetting your password.
+
+    .modal-btns
+        button.block.btn-enable(@click="router.push('/enable-account/' + form.email)") Enable
 </template>
 
 <script setup lang="ts">
@@ -63,6 +79,7 @@ import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { onMounted, ref } from "vue";
 import Checkbox from "@/components/checkbox.vue";
+import Modal from "@/components/modal.vue";
 
 const router = useRouter();
 const route = useRoute();
