@@ -86,7 +86,7 @@ main#subscription
                     p Includes all Standard Plan features, but more data:
                     ul
                         li.user 100K User Accounts
-                        li.data 10GB Database Storage
+                        li.data 100GB Database Storage
                         li.file 1TB File Storage
                         li.mail 10GB Email Storage
 

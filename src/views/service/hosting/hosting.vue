@@ -882,9 +882,8 @@ function openFile(ns: any) {
     let path = ns.path;
     let url;
     if (path.split("/").length > 1) {
-        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${
-            ns.name
-        }`;
+        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${ns.name
+            }`;
     } else {
         url = `https://${hostUrl.value}/${ns.name}`;
     }
@@ -981,7 +980,7 @@ watch(ascending, () => {
         flex-grow: 1;
 
         &::after {
-            content: "@mail.skapi.com";
+            content: ".skapi.app";
             position: absolute;
             right: 20px;
             top: 50%;
@@ -995,7 +994,7 @@ watch(ascending, () => {
         }
 
         input {
-            padding-right: 132px;
+            padding-right: 81px;
         }
     }
 
