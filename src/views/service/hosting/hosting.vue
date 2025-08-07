@@ -9,7 +9,7 @@ section.page-header
 
 hr
 
-section
+//- section
     .error(v-if='!user?.email_verified')
         svg
             use(xlink:href="/material-icon.svg#icon-warning")
@@ -41,6 +41,29 @@ template(v-if='!currentService.service.subdomain')
                     .loader(style="--loader-color:white; --loader-size:12px")
                 template(v-else)
                     | Register
+
+template(v-else-if='!user?.email_verified || currentService.service.active == 0 || currentService.service.active < 0')
+    section.page-desc
+        .error(v-if='!user?.email_verified')
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            router-link(to="/account-setting") Please verify your email address to modify settings.
+
+        .error(v-if='currentService.service.active == 0')
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            span This service is currently disabled.
+
+        .error(v-else-if='currentService.service.active < 0')
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            span This service is currently suspended.
+
+        p.
+            File hosting service let you host files and static websites.
+
+        router-link(v-if='currentService.service.active == 0' :to="`/my-services/${currentService.id}/dashboard`") Click here to enable the service.
+        router-link(v-else-if='!user?.email_verified' to="/account-setting") Click here to verify your email address.
 
 template(v-else)
     section
@@ -1017,8 +1040,16 @@ watch(ascending, () => {
 
 .error {
     margin-bottom: 1rem;
-}
+    justify-content: center;
+    align-items: center;
+    font-size: 1.125rem;
 
+    svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-top: 0;
+    }
+}
 @keyframes motion {
     0% {
         margin-top: -10px;

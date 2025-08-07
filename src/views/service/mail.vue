@@ -30,8 +30,34 @@ template(v-if='needsEmailAlias')
                     .loader(style="--loader-color:white; --loader-size:12px; margin: 12px")
                 template(v-else)
                     | Register
+
+template(v-else-if='!user?.email_verified || currentService.service.active == 0 || currentService.service.active < 0')
+    section.page-desc
+        .error(v-if='!user?.email_verified')
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            router-link(to="/account-setting") Please verify your email address to modify settings.
+
+        .error(v-if='currentService.service.active == 0')
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            span This service is currently disabled.
+
+        .error(v-else-if='currentService.service.active < 0')
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            span This service is currently suspended.
+
+        p.
+            Automated email templates are used to send out #[span.wordset emails for various events in your service.]
+            #[span.wordset You can customize the email templates to suit your service needs.]
+            #[span.wordset The email templates can be set up for signup confirmation, welcome emails, verification emails, invitation emails, and newsletter confirmation.]
+
+        router-link(v-if='currentService.service.active == 0' :to="`/my-services/${currentService.id}/dashboard`") Click here to enable the service.
+        router-link(v-else-if='!user?.email_verified' to="/account-setting") Click here to verify your email address.
+
 template(v-else)
-    section
+    //- section
         .error(v-if='!user?.email_verified')
             svg
                 use(xlink:href="/material-icon.svg#icon-warning")
@@ -250,13 +276,13 @@ Modal.modal-setTemplate(:open="!!emailToUse" @close="emailToUse=false")
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed, watch } from "vue";
+import { reactive, ref, computed, watch, onMounted } from "vue";
 import type { ComputedRef, Ref } from "vue";
 import { currentService, serviceAutoMails } from "./main";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { dateFormat } from "@/code/admin";
-import { copy } from '@/assets/js/common.js'
+import { copy } from "@/assets/js/common.js";
 
 import Table from "@/components/table.vue";
 import Modal from "@/components/modal.vue";
@@ -835,6 +861,10 @@ let init = async () => {
 };
 
 init();
+
+onMounted(() => {
+    console.log("currentService : ", currentService);
+});
 </script>
 
 <style lang="less" scoped>
@@ -1000,6 +1030,15 @@ init();
 
 .error {
     margin-bottom: 1rem;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.125rem;
+
+    svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-top: 0;
+    }
 }
 
 @media (pointer: coarse) {
