@@ -145,7 +145,15 @@ template(v-else)
             @drop.stop.prevent="e => {dragHere = false; if(!isPending) onDrop(e, getFileList)}"
             :class="{disabled : fetching || isPending || email_is_unverified_or_service_is_disabled, 'dragHere' : dragHere}"
             resizable)
-            template(v-if="fetching" v-slot:msg)
+            template(v-if='uploadProgress.name' v-slot:msg)
+                .progress(:style="{ width: uploadProgress.progress + '%', height: '3px', background: 'var(--main-color)', position: 'absolute', top: '58px', left: '0px', zIndex: 1}")
+                .tableMsg.left
+                    svg.svgIcon.moving(style="margin-right: 13px;")
+                        use(xlink:href="/material-icon.svg#icon-upload")
+                    | Uploading: /{{ uploadProgress.name }}&nbsp;
+                    b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
+
+            template(v-else-if="fetching" v-slot:msg)
                 .tableMsg.center
                     .loader(style="--loader-color:white; --loader-size:12px")
                     | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetching ...
@@ -170,14 +178,6 @@ template(v-else)
                     svg.svgIcon
                         use(xlink:href="/material-icon.svg#icon-upload")
                     | Drag and drop files here
-            
-            template(v-else-if='uploadProgress.name' v-slot:msg)
-                .progress(:style="{ width: uploadProgress.progress + '%', height: '3px', background: 'var(--main-color)', position: 'absolute', top: '58px', left: '0px', zIndex: 1}")
-                .tableMsg.left
-                    svg.svgIcon.moving(style="margin-right: 13px;")
-                        use(xlink:href="/material-icon.svg#icon-upload")
-                    | Uploading: /{{ uploadProgress.name }}&nbsp;
-                    b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
             
             template(v-slot:head)
                 tr
