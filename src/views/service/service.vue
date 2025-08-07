@@ -9,8 +9,11 @@ section.page-header
                 .icon
                     svg
                         use(xlink:href="/material-icon.svg#icon-change")
-                | Change Plan
-        router-link(v-if="currentService.plan == 'Trial' || currentService.plan == 'Unlimited' || currentService.service.plan == 'Canceled'" :to='"/delete-service/" + currentService.id' :class="{'nonClickable': currentService.service.active <= 0 || currentService.service.suspended || updatingValue.enableDisable }")
+                template(v-if="new Date().getTime() < currentService?.service?.subscription?.canceled_at")
+                    | Resume Plan
+                template(v-else)
+                    | Change Plan
+        router-link(v-if="currentService.service.active < 0 || currentService.plan == 'Trial' || currentService.plan == 'Unlimited' || currentService.service.plan == 'Canceled'" :to='"/delete-service/" + currentService.id' :class="{'nonClickable': !user?.email_verified || currentService.service.active == 0 }")
             //- button.inline.sm.gray.caution Delete Service
             button.inline.icon-text.sm.gray.caution(type="button" )
                 .icon
@@ -31,7 +34,7 @@ section
                 .title Service Name
                 .value {{ currentService.service.name }}
             .actions-wrap
-                button.only-icon.gray.edit-btn(type="button" @click="editName")
+                button.only-icon.gray.edit-btn(type="button" :disabled="!user?.email_verified || currentService.service.active <= 0" @click="editName")
                     //- Tooltip(tip-background-color="rgb(45 46 48)" text-color="white")
                         template(v-slot:tool)
                             svg.svgIcon
@@ -45,7 +48,7 @@ section
                 .title CORS
                 .value {{ currentService.service.cors || '*' }}
             .actions-wrap
-                button.only-icon.gray.edit-btn(type="button" @click="editCors")
+                button.only-icon.gray.edit-btn(type="button" :disabled="!user?.email_verified" @click="editCors")
                     .icon
                         svg
                             use(xlink:href="/basic-icon.svg#icon-edit")
@@ -55,7 +58,7 @@ section
                 .title Secret Key
                 .value {{ currentService.service.api_key ? currentService.service.api_key.slice(0, 2) + '*'.repeat(currentService.service.api_key.length - 2) + '...' : '-' }}
             .actions-wrap
-                button.only-icon.gray.edit-btn(type="button" :disabled="!user?.email_verified || currentService.service.active <= 0" @click="editApiKey")
+                button.only-icon.gray.edit-btn(type="button" :disabled="!user?.email_verified" @click="editApiKey")
                     .icon
                         svg
                             use(xlink:href="/basic-icon.svg#icon-edit")
@@ -146,7 +149,7 @@ section
                 Toggle(
                     style='display:inline-flex;align-items:center;'
                     :active='!currentService.service.prevent_signup'
-                    :disabled='updatingValue.prevent_signup'
+                    :disabled='currentService.service.active < 1 || updatingValue.prevent_signup'
                     @click="changeCreateUserMode(!currentService.service.prevent_signup)"
                 )
 
@@ -162,7 +165,7 @@ section
                 Toggle(
                     style='display:inline-flex;align-items:center;'
                     :active='currentService.service.prevent_inquiry'
-                    :disabled='updatingValue.prevent_inquiry'
+                    :disabled='currentService.service.active < 1 || updatingValue.prevent_inquiry'
                     @click="changePreventInquiry(!currentService.service.prevent_inquiry)"
                 )
 
@@ -178,7 +181,7 @@ section
                 Toggle(
                     style='display:inline-flex;align-items:center;'
                     :active='currentService.service.freeze_database'
-                    :disabled='updatingValue.freeze_database'
+                    :disabled='currentService.service.active < 1 || updatingValue.freeze_database'
                     @click="changeFreezeDatabase(!currentService.service.freeze_database)"
                 )
 
