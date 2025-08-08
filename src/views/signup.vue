@@ -129,22 +129,18 @@ let signup = (e) => {
         password: form.value.password,
     }
     let options = {
-        signup_confirmation: "/success-default",
+        signup_confirmation: "/success",
         email_subscription: form.value.subscribe,
     };
 
     if (routeQuery?.suc_redirect) {
         if (routeQuery?.suc_redirect.includes("refer")) {
-            options.signup_confirmation = "/success/refer";
+            options.signup_confirmation = "/success/referral";
         } else {
-            options.signup_confirmation = "/success-default";
+            options.signup_confirmation = "/success";
         }
 
         options.signup_confirmation = options.signup_confirmation + "?suc_redirect=" + routeQuery.suc_redirect;
-    }
-
-    if (routeQuery?.suc_redirect) {
-        options.signup_confirmation = options.signup_confirmation + '?suc_redirect=' + routeQuery.suc_redirect
     }
 
     skapi.signup(params, options).then(res => {
