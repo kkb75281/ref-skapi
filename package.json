@@ -6,14 +6,14 @@
     "scripts": {
         "dev": "vite --host",
         "prod": "vite --host --mode production",
-        "build": "npm run build:ts; node script.cjs; vite build --mode production",
+        "build": "npm run build:ts; vite build --mode production",
         "build:ts": "tsc",
         "build-check": "node script.cjs; run-p type-check \"build-only {@}\" --",
         "preview": "vite preview --host",
         "build-only": "vite build",
         "type-check": "vue-tsc --build --force",
         "start": "serve dist",
-        "builddev": "npm run build:ts; node script.cjs; vite build --mode development"
+        "builddev": "npm run build:ts; vite build --mode development"
     },
     "dependencies": {
         "aos": "^3.0.0-beta.6",
