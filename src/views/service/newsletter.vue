@@ -31,8 +31,34 @@ template(v-if='needsEmailAlias')
                 template(v-else)
                     | Register
 
+template(v-else-if='!user?.email_verified || currentService.service.active == 0 || currentService.service.active < 0')
+    section.page-desc
+        .error(v-if='!user?.email_verified')
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            router-link(to="/account-setting") Please verify your email address to modify settings.
+
+        .error(v-if='currentService.service.active == 0')
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            span This service is currently disabled.
+
+        .error(v-else-if='currentService.service.active < 0')
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            span This service is currently suspended.
+
+        p.
+            You can send bulk emails to your newsletter subscribers.
+            #[span.wordset To proceed, please enable the service or verify your email address.]
+            #[br]
+            #[span.wordset If you have not verified your email address, please do so first.]
+
+        router-link(v-if='currentService.service.active == 0' :to="`/my-services/${currentService.id}/dashboard`") Click here to enable the service.
+        router-link(v-else-if='!user?.email_verified' to="/account-setting") Click here to verify your email address.
+
 template(v-else)
-    section
+    //- section
         .error(v-if='!user?.email_verified')
             svg
                 use(xlink:href="/material-icon.svg#icon-warning")
@@ -220,7 +246,7 @@ import { currentService, serviceBulkMails } from "./main";
 import { user } from "@/code/user";
 import { skapi } from "@/main";
 import { dateFormat } from "@/code/admin";
-import { copy } from '@/assets/js/common.js'
+import { copy } from "@/assets/js/common.js";
 
 import Pager from "@/code/pager";
 import Table from "@/components/table.vue";
@@ -731,6 +757,15 @@ let converter = (html: string, parsed: boolean, inv: boolean) => {
 
 .error {
     margin-bottom: 1rem;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.125rem;
+
+    svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-top: 0;
+    }
 }
 
 @media (max-width: 430px) {

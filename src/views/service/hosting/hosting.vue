@@ -9,7 +9,7 @@ section.page-header
 
 hr
 
-section
+//- section
     .error(v-if='!user?.email_verified')
         svg
             use(xlink:href="/material-icon.svg#icon-warning")
@@ -41,6 +41,29 @@ template(v-if='!currentService.service.subdomain')
                     .loader(style="--loader-color:white; --loader-size:12px")
                 template(v-else)
                     | Register
+
+template(v-else-if='!user?.email_verified || currentService.service.active == 0 || currentService.service.active < 0')
+    section.page-desc
+        .error(v-if='!user?.email_verified')
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            router-link(to="/account-setting") Please verify your email address to modify settings.
+
+        .error(v-if='currentService.service.active == 0')
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            span This service is currently disabled.
+
+        .error(v-else-if='currentService.service.active < 0')
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            span This service is currently suspended.
+
+        p.
+            File hosting service let you host files and static websites.
+
+        router-link(v-if='currentService.service.active == 0' :to="`/my-services/${currentService.id}/dashboard`") Click here to enable the service.
+        router-link(v-else-if='!user?.email_verified' to="/account-setting") Click here to verify your email address.
 
 template(v-else)
     section
@@ -122,7 +145,15 @@ template(v-else)
             @drop.stop.prevent="e => {dragHere = false; if(!isPending) onDrop(e, getFileList)}"
             :class="{disabled : fetching || isPending || email_is_unverified_or_service_is_disabled, 'dragHere' : dragHere}"
             resizable)
-            template(v-if="fetching" v-slot:msg)
+            template(v-if='uploadProgress.name' v-slot:msg)
+                .progress(:style="{ width: uploadProgress.progress + '%', height: '3px', background: 'var(--main-color)', position: 'absolute', top: '58px', left: '0px', zIndex: 1}")
+                .tableMsg.left
+                    svg.svgIcon.moving(style="margin-right: 13px;")
+                        use(xlink:href="/material-icon.svg#icon-upload")
+                    | Uploading: /{{ uploadProgress.name }}&nbsp;
+                    b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
+
+            template(v-else-if="fetching" v-slot:msg)
                 .tableMsg.center
                     .loader(style="--loader-color:white; --loader-size:12px")
                     | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetching ...
@@ -147,14 +178,6 @@ template(v-else)
                     svg.svgIcon
                         use(xlink:href="/material-icon.svg#icon-upload")
                     | Drag and drop files here
-            
-            template(v-else-if='uploadProgress.name' v-slot:msg)
-                .progress(:style="{ width: uploadProgress.progress + '%', height: '3px', background: 'var(--main-color)', position: 'absolute', top: '58px', left: '0px', zIndex: 1}")
-                .tableMsg.left
-                    svg.svgIcon.moving(style="margin-right: 13px;")
-                        use(xlink:href="/material-icon.svg#icon-upload")
-                    | Uploading: /{{ uploadProgress.name }}&nbsp;
-                    b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
             
             template(v-slot:head)
                 tr
@@ -325,7 +348,7 @@ Modal.modal-upload404(:open="modifyMode.page404" @close="modifyMode.page404 = fa
     form(@submit.prevent="change404")
         input(ref="focus_404" hidden type="file" name='file' required @change="handle404file" :disabled='updatingValue.page404' accept="text/html")
         input.block(:placeholder="selected404File || 'Click here to select a file'" readonly)
-        button.block.gray(type="button" @click='focus_404.click()' style="margin-top: 0.75rem;") Browse File
+        button.block.gray(type="button"  @click='focus_404.value = ""; focus_404.click()' style="margin-top: 0.75rem;") Browse File
         .modal-btns
             .loader-wrap(v-if="updatingValue.page404")
                 .loader(style="--loader-color:white; --loader-size:12px")
@@ -447,7 +470,7 @@ let open404FileInp = async () => {
 
 let handle404file = (e: any) => {
     let file = e.target?.files?.[0];
-    let fileName = file.name;
+    let fileName = file?.name;
 
     if (!file) {
         selected404File.value = null;
@@ -1016,8 +1039,16 @@ watch(ascending, () => {
 
 .error {
     margin-bottom: 1rem;
-}
+    justify-content: center;
+    align-items: center;
+    font-size: 1.125rem;
 
+    svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-top: 0;
+    }
+}
 @keyframes motion {
     0% {
         margin-top: -10px;

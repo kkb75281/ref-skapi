@@ -550,11 +550,11 @@ img.symbol.mobile {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 99999;
+    z-index: 99999999;
     width: 100%;
     height: 4rem;
     background-color: #000;
-    box-shadow: 0px 0.5px 0px 0px #1A1A1A;
+    box-shadow: 0px 0.5px 0px 0px #1a1a1a;
     font-size: 1.125rem;
     color: #fff;
     fill: #fff; // for svg
@@ -809,7 +809,7 @@ img.symbol.mobile {
         .dropdown-menu {
             display: block;
             text-align: left;
-            padding: 0.625rem 0 .8125rem;
+            padding: 0.625rem 0 0.8125rem;
 
             .dropdown-list {
                 display: flex;
