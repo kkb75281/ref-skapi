@@ -28,7 +28,7 @@ main#confirmation
         .page-desc Are you sure you want to delete your account?
 
         Checkbox(v-model="iUnderstand" :disabled="promiseRunning")
-            b I agree to delete my account.
+            b.text I agree to delete my account.
 
         br
         br
@@ -43,12 +43,12 @@ main#confirmation
 </template>
 
 <script setup lang="ts">
-import { skapi } from '@/main';
-import { useRoute, useRouter } from 'vue-router';
-import { serviceList } from './service-list';
-import { ref } from 'vue';
+import { skapi } from "@/main";
+import { useRoute, useRouter } from "vue-router";
+import { serviceList } from "./service-list";
+import { ref } from "vue";
 
-import Checkbox from '@/components/checkbox.vue';
+import Checkbox from "@/components/checkbox.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -64,26 +64,25 @@ let processDelete = async () => {
         for (let k in serviceList) {
             console.log(serviceList[k]);
             disables.push(serviceList[k].disableService());
-            if (serviceList[k].plan !== 'Trial') {
+            if (serviceList[k].plan !== "Trial") {
                 disables.push(serviceList[k].registerSubdomain());
             }
         }
         await Promise.all(disables);
 
         for (let k in serviceList) {
-            if (serviceList[k].plan !== 'Trial') {
+            if (serviceList[k].plan !== "Trial") {
                 cancelSubs.push(serviceList[k].cancelSubscription());
             }
         }
         await Promise.all(cancelSubs);
         await skapi.disableAccount();
-        router.push('/bye')
-    }
-    catch (err: any) {
+        router.push("/bye");
+    } catch (err: any) {
         promiseRunning.value = false;
         alert(err.message);
     }
-}
+};
 </script>
 
 <style scoped lang="less">
@@ -95,6 +94,10 @@ let processDelete = async () => {
     .inner {
         margin: 0 auto;
         text-align: center;
+    }
+
+    .text {
+        margin-left: 0.25rem;
     }
 }
 
