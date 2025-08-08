@@ -243,10 +243,11 @@ let upgrade = () => {
 let createSubscription = async (ticket_id, service_info, isPerpetual = false) => {
     promiseRunning.value = true;
 
-    if (changeMode.includes('perpetual')) {
-        isPerpetual = true;
-    }
+    // if (changeMode.includes('perpetual')) {
+    //     isPerpetual = true;
+    // }
 
+    console.log(ticket_id)
     console.log(isPerpetual)
 
     let resolvedCustomer = await customer;
