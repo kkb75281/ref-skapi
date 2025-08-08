@@ -109,9 +109,6 @@ let form = ref({
     subscribe: true,
 });
 let routeQuery = route.query;
-onMounted(() => {
-    console.log({ routeQuery })
-});
 
 let validatePassword = () => {
     if (form.value.password_confirm !== form.value.password) {
@@ -135,7 +132,7 @@ let signup = (e) => {
 
     if (routeQuery?.suc_redirect) {
         if (routeQuery?.suc_redirect.includes("refer")) {
-            options.signup_confirmation = "/success/referral";
+            options.signup_confirmation = "/success/" + routeQuery.suc_redirect.split('/')[2];
         } else {
             options.signup_confirmation = "/success";
         }
