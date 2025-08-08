@@ -38,10 +38,13 @@ section
                     .inner
                         template(v-for="c in columnList")
                             Checkbox(v-model="c.value", style="display: flex;" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
-            .search-ing-btn(v-if="searchValue && searchValue.length > 0 && searchFor !== 'query'")
-                span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
-                svg.svgIcon.reset-btn(@click="() => { callParams = {}; resetSearchModal(); }")
-                    use(xlink:href="/basic-icon.svg#icon-x-circle")
+            .search-ing-btn(v-if="(searchValue && !searchModalOpen) || (Object.keys(callParams).length > 0 && !searchModalOpen)")
+                span.search-for-value(@click="searchModalOpen = true") 
+                    template(v-if="searchValue") {{ searchFor }} / {{ searchValue }} ...
+                    template(v-else-if="callParams.unique_id") unique_id / {{ callParams.unique_id }} ...
+                    template(v-else-if="Object.keys(callParams).length > 0") query / searching ...
+                svg.svgIcon.reset-btn(@click="() => {callParams = {}; resetSearchModal();}")
+                    use(xlink:href="/material-icon.svg#icon-x-circle")
                 svg.svgIcon
                     use(xlink:href="/material-icon.svg#icon-search")
             button.inline.only-icon.gray.search-btn(v-else aria-label="Search" @click="searchModalOpen = true" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
@@ -321,7 +324,7 @@ let hovering = ref(false);
 
 // search 관련 변수
 const searchModalOpen = ref(false);
-const searchFor = ref("record_id");
+const searchFor = ref("record_id" || "unique_id" || "query");
 const searchValue = ref("");
 const searchOptions = [
     {
@@ -463,6 +466,7 @@ const handleSearchModal = (e: KeyboardEvent) => {
 
 // 검색 초기화
 const resetSearchModal = () => {
+    console.log("== resetSearchModal ==");
     searchModalOpen.value = false;
     searchFor.value = "record_id";
     currentPage.value = 1;
