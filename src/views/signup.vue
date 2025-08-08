@@ -96,7 +96,7 @@ let form = ref({
 });
 let routeQuery = route.query;
 onMounted(() => {
-    console.log({ routeQuery });
+    console.log({ routeQuery })
 });
 
 let validatePassword = () => {
@@ -120,35 +120,31 @@ let signup = (e) => {
     };
 
     if (routeQuery?.suc_redirect) {
-        options.signup_confirmation =
-            options.signup_confirmation +
-            "?suc_redirect=" +
-            routeQuery.suc_redirect;
+        if (routeQuery?.suc_redirect.includes("refer")) {
+            options.signup_confirmation = "/success/referral";
+        } else {
+            options.signup_confirmation = "/success";
+        }
+
+        options.signup_confirmation = options.signup_confirmation + "?suc_redirect=" + routeQuery.suc_redirect;
     }
 
-    skapi
-        .signup(params, options)
-        .then((res) => {
-            router.push({
-                path: "/confirmation",
-                query: { email: form.value.email },
-            });
-        })
-        .catch((err) => {
-            promiseRunning.value = false;
+    skapi.signup(params, options).then(res => {
+        router.push({ path: '/confirmation', query: { email: form.value.email } })
+    }).catch(err => {
+        promiseRunning.value = false;
 
-            switch (err.code) {
-                case "EXISTS":
-                case "UsernameExistsException":
-                    error.value = "This email is already in use";
-                    break;
-                default:
-                    error.value =
-                        "Something went wrong please contact an administrator.";
-                    throw e;
-            }
-        });
-};
+        switch (err.code) {
+            case 'EXISTS':
+            case 'UsernameExistsException':
+                error.value = "This email is already in use";
+                break;
+            default:
+                error.value = "Something went wrong please contact an administrator.";
+                throw e;
+        }
+    });
+}
 </script>
 
 <style scoped lang="less">

@@ -75,8 +75,13 @@ const router = createRouter({
             component: () => import("@/views/enable-account.vue"),
         },
         {
-            path: "/success",
+            path: "/success/:how",
             name: "success",
+            component: () => import("@/views/success.vue"),
+        },
+        {
+            path: "/success",
+            name: "success-default",
             component: () => import("@/views/success.vue"),
         },
         {

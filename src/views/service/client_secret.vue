@@ -478,7 +478,7 @@ const showTableColumns = () => {
             &.locked {
                 flex-direction: row;
 
-                .key {
+                <<<<<<< HEAD .key {
                     width: 6.25rem;
                 }
             }
@@ -487,6 +487,10 @@ const showTableColumns = () => {
                 width: 100%;
             }
         }
-    }
-}
-</style>
+
+        =======&:hover {
+            border-radius: 50%;
+            background-color: #293FE61A;
+            >>>>>>>main
+        }
+    }</style>
