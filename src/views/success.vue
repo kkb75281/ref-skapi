@@ -27,7 +27,10 @@ import { onMounted } from 'vue';
 const router = useRouter();
 const route = useRoute();
 
+let how = route.path.split("/")[2];
 let routeQuery = route.query?.suc_redirect;
+
+console.log(how)
 </script>
 
 <style scoped lang="less">

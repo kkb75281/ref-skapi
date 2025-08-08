@@ -110,7 +110,7 @@ let form = ref({
 });
 let routeQuery = route.query;
 onMounted(() => {
-	console.log({routeQuery})
+    console.log({ routeQuery })
 });
 
 let validatePassword = () => {
@@ -129,13 +129,23 @@ let signup = (e) => {
         password: form.value.password,
     }
     let options = {
-        signup_confirmation: '/success',
-        email_subscription: form.value.subscribe
+        signup_confirmation: "/success-default",
+        email_subscription: form.value.subscribe,
+    };
+
+    if (routeQuery?.suc_redirect) {
+        if (routeQuery?.suc_redirect.includes("refer")) {
+            options.signup_confirmation = "/success/refer";
+        } else {
+            options.signup_confirmation = "/success-default";
+        }
+
+        options.signup_confirmation = options.signup_confirmation + "?suc_redirect=" + routeQuery.suc_redirect;
     }
 
-	if(routeQuery?.suc_redirect) {
-		options.signup_confirmation = options.signup_confirmation + '?suc_redirect=' + routeQuery.suc_redirect
-	}
+    if (routeQuery?.suc_redirect) {
+        options.signup_confirmation = options.signup_confirmation + '?suc_redirect=' + routeQuery.suc_redirect
+    }
 
     skapi.signup(params, options).then(res => {
         router.push({ path: '/confirmation', query: { email: form.value.email } })
@@ -144,7 +154,7 @@ let signup = (e) => {
 
         switch (err.code) {
             case 'EXISTS':
-            case 'UsernameExistsException' :
+            case 'UsernameExistsException':
                 error.value = "This email is already in use";
                 break;
             default:
@@ -183,6 +193,7 @@ form {
         justify-content: space-between;
         flex-direction: row-reverse;
         min-height: 44px;
+
         .signup {
             font-size: 16px;
             margin: 16px 0;
