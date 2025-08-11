@@ -323,14 +323,15 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
 
         br
 
-        label Phone Number
-            input#phone.block(
-                @input="(e) => (createParams.phone_number = e.target.value)",
-                @keydown="(e) => moveFocus(e, 'gender')",
-                :disabled="promiseRunning",
-                placeholder="User's Phone Number (+821012345678)",
-                type="text"
-            )
+        .label
+            label Phone Number
+                input#phone.block(
+                    @input="(e) => (createParams.phone_number = e.target.value)",
+                    @keydown="(e) => moveFocus(e, 'gender')",
+                    :disabled="promiseRunning",
+                    placeholder="User's Phone Number (+821012345678)",
+                    type="text"
+                )
             Checkbox(v-model="phone_number_public") public
         
         br
@@ -983,8 +984,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                    new Date(dates[1]).setHours(23, 59, 59, 999)
-                ).getTime()
+                      new Date(dates[1]).setHours(23, 59, 59, 999)
+                  ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1190,7 +1191,12 @@ let createUser = () => {
     promiseRunning.value = true;
     error.value = "";
 
-    if (phone_number_public.value || gender_public.value || address_public.value || birthdate_public.value) {
+    if (
+        phone_number_public.value ||
+        gender_public.value ||
+        address_public.value ||
+        birthdate_public.value
+    ) {
         Object.assign(createParams, {
             phone_number_public: phone_number_public.value,
             gender_public: gender_public.value,
