@@ -15,7 +15,6 @@ https
         response.on("end", () => {
             fs.writeFile("public/pp.html", html, (err) => {
                 if (err) {
-                    console.error("파일을 쓰는 중 오류가 발생했습니다:", err);
                     return;
                 }
             });

@@ -19,7 +19,6 @@ export let setService = (id: string) => {
     currentServiceId.value = id;
     serviceMainLoaded.value = true;
     window.dispatchEvent(serviceChangedEvent);
-    console.log("setService");
 };
 
 export let serviceLoggers: any = {};

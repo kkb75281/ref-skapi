@@ -95,9 +95,6 @@ let form = ref({
     subscribe: true,
 });
 let routeQuery = route.query;
-onMounted(() => {
-    console.log({ routeQuery })
-});
 
 let validatePassword = () => {
     if (form.value.password_confirm !== form.value.password) {
@@ -126,25 +123,35 @@ let signup = (e) => {
             options.signup_confirmation = "/success";
         }
 
-        options.signup_confirmation = options.signup_confirmation + "?suc_redirect=" + routeQuery.suc_redirect;
+        options.signup_confirmation =
+            options.signup_confirmation +
+            "?suc_redirect=" +
+            routeQuery.suc_redirect;
     }
 
-    skapi.signup(params, options).then(res => {
-        router.push({ path: '/confirmation', query: { email: form.value.email } })
-    }).catch(err => {
-        promiseRunning.value = false;
+    skapi
+        .signup(params, options)
+        .then((res) => {
+            router.push({
+                path: "/confirmation",
+                query: { email: form.value.email },
+            });
+        })
+        .catch((err) => {
+            promiseRunning.value = false;
 
-        switch (err.code) {
-            case 'EXISTS':
-            case 'UsernameExistsException':
-                error.value = "This email is already in use";
-                break;
-            default:
-                error.value = "Something went wrong please contact an administrator.";
-                throw e;
-        }
-    });
-}
+            switch (err.code) {
+                case "EXISTS":
+                case "UsernameExistsException":
+                    error.value = "This email is already in use";
+                    break;
+                default:
+                    error.value =
+                        "Something went wrong please contact an administrator.";
+                    throw e;
+            }
+        });
+};
 </script>
 
 <style scoped lang="less">
@@ -158,7 +165,7 @@ let signup = (e) => {
 form {
     padding: 8px;
 
-    >label {
+    > label {
         margin-bottom: 16px;
     }
 

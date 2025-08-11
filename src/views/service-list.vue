@@ -132,7 +132,7 @@ const route = useRoute();
 let routeQuery = route.query;
 
 onMounted(() => {
-    if (routeQuery?.redirect === 'create' && !isFirstService.value) {
+    if (routeQuery?.redirect === "create" && !isFirstService.value) {
         openCreateService();
     }
 });
@@ -142,7 +142,6 @@ const loading = ref(false);
 
 // 첫 번째 서비스인지 계산
 const isFirstService = computed(() => {
-    console.log("isFirstService called");
     // 로딩 중이면 false 반환 (로딩 완료 후 판단)
     if (fetchingServiceList.value) {
         return false;
@@ -246,7 +245,7 @@ a {
     overflow: hidden;
     height: 13.125rem;
     position: relative;
-    background: #3C75FF;
+    background: #3c75ff;
     flex: 1;
     max-width: 27.125rem;
 
@@ -271,7 +270,8 @@ a {
         position: absolute;
         bottom: 0;
         right: 0;
-        background: url("@/assets/img/myservice/img_docs.png") no-repeat center right;
+        background: url("@/assets/img/myservice/img_docs.png") no-repeat center
+            right;
     }
 
     &:first-child {
@@ -282,7 +282,8 @@ a {
             top: 0;
             left: 0;
             position: absolute;
-            background: url("@/assets/img/myservice/bg_texture.svg") no-repeat center;
+            background: url("@/assets/img/myservice/bg_texture.svg") no-repeat
+                center;
             opacity: 0.2;
             z-index: 1;
         }
@@ -330,7 +331,8 @@ a {
         top: 0;
         left: 0;
         position: absolute;
-        background: url("@/assets/img/myservice/bg_texture.svg") no-repeat center;
+        background: url("@/assets/img/myservice/bg_texture.svg") no-repeat
+            center;
         opacity: 0.2;
         z-index: 1;
     }
@@ -355,26 +357,29 @@ a {
     }
 
     &.ann {
-        background: #60DE87;
+        background: #60de87;
 
         &::before {
-            background: url("@/assets/img/myservice/img_announce.png") no-repeat center right;
+            background: url("@/assets/img/myservice/img_announce.png") no-repeat
+                center right;
         }
     }
 
     &.use {
-        background: #FFD54A;
+        background: #ffd54a;
 
         &::before {
-            background: url("@/assets/img/myservice/img_useCase.png") no-repeat center right;
+            background: url("@/assets/img/myservice/img_useCase.png") no-repeat
+                center right;
         }
     }
 
     &.new {
-        background: #675DFF;
+        background: #675dff;
 
         &::before {
-            background: url("@/assets/img/myservice/img_newFeature.png") no-repeat center right;
+            background: url("@/assets/img/myservice/img_newFeature.png")
+                no-repeat center right;
         }
     }
 
@@ -387,7 +392,7 @@ a {
 
     .swiper-pagination-fraction,
     .swiper-pagination-custom,
-    .swiper-horizontal>.swiper-pagination-bullets,
+    .swiper-horizontal > .swiper-pagination-bullets,
     .swiper-pagination-bullets.swiper-pagination-horizontal {
         width: initial;
     }
@@ -502,9 +507,11 @@ a {
 
                 &:hover {
                     cursor: pointer;
-                    background: linear-gradient(0deg,
+                    background: linear-gradient(
+                            0deg,
                             rgba(255, 255, 255, 0.03) 0%,
-                            rgba(255, 255, 255, 0.03) 100%),
+                            rgba(255, 255, 255, 0.03) 100%
+                        ),
                         #141315;
 
                     td {
@@ -522,7 +529,7 @@ a {
                 }
 
                 &.hidden {
-                    >*:not(.name) {
+                    > *:not(.name) {
                         opacity: 0.5;
                     }
                 }
@@ -632,7 +639,8 @@ a {
                     display: block;
                     width: 1.25rem;
                     height: 1.25rem;
-                    background: url("@/assets/img/myservice/icon_lock.svg") no-repeat center;
+                    background: url("@/assets/img/myservice/icon_lock.svg")
+                        no-repeat center;
                 }
             }
         }

@@ -331,7 +331,6 @@ function setSwiperImageWidth() {
 }
 
 function onSwiperReady(swiper) {
-    console.log("Swiper is ready!");
     setTimeout(() => {
         setSwiperImageWidth();
     }, 100); // 약간의 딜레이로 DOM이 완전히 렌더링되도록 함
@@ -397,20 +396,13 @@ function onPlayerStateChange(event) {
     }
 }
 
-// const resetVideo = () => {
-// 	if (videoElement.value) {
-// 		videoElement.value.pause();
-// 		videoElement.value.currentTime = 0;
-// 	}
-// };
-
 // contents > videos (youtube api 호출 - Videos 탭 클릭 시에만 API 호출)
 watch(
     () => activeTabs.value.contents,
     async (newTab) => {
         if (newTab === 1 && videos.value.length === 0) {
-            const CHANNEL_ID = "UC0e4MITESMr3OaUiyWHpdYA";
-            const API_KEY = "AIzaSyC6PGYZWVYqPO7ItsTVBarYW_htT1kaXW0";
+            const CHANNEL_ID = "UC0e4MITESMr3OaUiyWHpdYA"; // Skapi 공식 유튜브 채널 ID
+            const API_KEY = import.meta.env.VITE_API_KEY;
 
             try {
                 // 최신 영상 검색
@@ -454,7 +446,7 @@ watch(
 
                 videos.value = filtered;
             } catch (error) {
-                console.error("영상 정보를 가져오는 중 오류:", error);
+                videos.value = []; // 에러 발생 시 빈 배열로 초기화
             }
         }
     }
@@ -493,9 +485,6 @@ onMounted(async () => {
     window.addEventListener("scroll", handleScroll);
     handleScroll();
 
-    // 새로고침 시 비디오 초기화
-    // resetVideo();
-
     const heroArea = document.querySelector(".hero");
     if (heroArea) {
         requestAnimationFrame(() => {
@@ -511,7 +500,7 @@ onMounted(async () => {
         if (!response.ok) throw new Error("Fetch failed");
         articles.value = await response.json();
     } catch (err) {
-        console.error(err);
+        articles.value = []; // 에러 발생 시 빈 배열로 초기화
     }
 });
 
@@ -532,10 +521,6 @@ onUnmounted(() => {
     if (tag) {
         tag.remove();
     }
-});
-
-defineExpose({
-    // resetVideo,
 });
 </script>
 

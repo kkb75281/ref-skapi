@@ -19,7 +19,6 @@ export const connected = ref(false);
 
 // build date
 console.log("deploy:" + import.meta.env.VITE_DATE);
-console.log("NODE_ENV:" + import.meta.env.NODE_ENV);
 
 const app = createApp(App);
 

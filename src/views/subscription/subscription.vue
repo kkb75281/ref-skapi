@@ -144,7 +144,7 @@ import { useRoute, useRouter } from "vue-router";
 import { serviceList } from "@/views/service-list";
 import { user, customer } from "@/code/user";
 import { skapi } from "@/main";
-import { currentService } from '@/views/service/main';
+import { currentService } from "@/views/service/main";
 import { planSpec, currentServiceSpec } from "@/views/service/service-spec";
 
 import Modal from "@/components/modal.vue";
@@ -164,13 +164,11 @@ let changeMode = "";
 let openCancelplan = ref(false);
 
 onMounted(() => {
-    console.log(currentServiceSpec.value)
-    console.log(availablePlans.value)
     // 구독 변경 페이지로 바로 들어오거나 그 안에서 새로고침할 경우
     if (currentService === null) {
-        router.push('/my-services/' + serviceId + '/dashboard');
+        router.push("/my-services/" + serviceId + "/dashboard");
     }
-})
+});
 
 let availablePlans = computed(() => {
     // true = createSubs
@@ -197,13 +195,21 @@ let availablePlans = computed(() => {
     }
     if (serviceList[serviceId]?.service.plan == "Premium") {
         let notAvail =
-            currentServiceSpec.value.service.service.users > Number(planSpec['Premium'].users) ||
-            currentServiceSpec.value.storage.database > Number(planSpec['Premium'].storage.database) ||
-            currentServiceSpec.value.storage.cloud > Number(planSpec['Premium'].storage.cloud) ||
-            currentServiceSpec.value.storage.host > Number(planSpec['Premium'].storage.host) ||
-            currentServiceSpec.value.storage.email > Number(planSpec['Premium'].storage.email)
+            currentServiceSpec.value.service.service.users >
+                Number(planSpec["Premium"].users) ||
+            currentServiceSpec.value.storage.database >
+                Number(planSpec["Premium"].storage.database) ||
+            currentServiceSpec.value.storage.cloud >
+                Number(planSpec["Premium"].storage.cloud) ||
+            currentServiceSpec.value.storage.host >
+                Number(planSpec["Premium"].storage.host) ||
+            currentServiceSpec.value.storage.email >
+                Number(planSpec["Premium"].storage.email);
 
-        return [notAvail ? null : "Downgrade", activeTabs.value.premium === 0 ? false : "Upgrade"];
+        return [
+            notAvail ? null : "Downgrade",
+            activeTabs.value.premium === 0 ? false : "Upgrade",
+        ];
     }
 
     return [null, null];
@@ -214,14 +220,14 @@ let selectedPlan = (plan) => {
     //     plan = plan + '-perpetual';
     // }
 
-    if (plan === 'standard') {
+    if (plan === "standard") {
         subscrOpt.value = availablePlans.value[0];
     } else {
         subscrOpt.value = availablePlans.value[1];
     }
 
     changeMode = plan;
-}
+};
 
 let cancelSubs = async () => {
     promiseRunning.value = true;
@@ -240,15 +246,12 @@ let upgrade = () => {
     updateSubscription(changeMode);
 };
 
-let createSubscription = async (ticket_id, service_info, isPerpetual = false) => {
+let createSubscription = async (
+    ticket_id,
+    service_info,
+    isPerpetual = false
+) => {
     promiseRunning.value = true;
-
-    // if (changeMode.includes('perpetual')) {
-    //     isPerpetual = true;
-    // }
-
-    console.log(ticket_id)
-    console.log(isPerpetual)
 
     let resolvedCustomer = await customer;
     let product = JSON.parse(import.meta.env.VITE_PRODUCT);
@@ -258,41 +261,42 @@ let createSubscription = async (ticket_id, service_info, isPerpetual = false) =>
     let data = {
         client_reference_id: service_info.owner,
         customer: customer_id,
-        'customer_update[name]': 'auto',
-        'customer_update[address]': 'auto',
+        "customer_update[name]": "auto",
+        "customer_update[address]": "auto",
 
-        cancel_url: currentUrl.origin + '/my-services',
+        cancel_url: currentUrl.origin + "/my-services",
         "line_items[0][quantity]": 1,
-        'line_items[0][price]': product[ticket_id],
-        "success_url": currentUrl.origin + '/my-services/' + service_info.id,
-        'tax_id_collection[enabled]': true,
-    }
+        "line_items[0][price]": product[ticket_id],
+        success_url: currentUrl.origin + "/my-services/" + service_info.id,
+        "tax_id_collection[enabled]": true,
+    };
 
     if (isPerpetual) {
         Object.assign(data, {
-            'metadata[service]': service_info.id,
-            'metadata[owner]': service_info.owner,
-            'metadata[price]': product[ticket_id],
-            'mode': 'payment',
-        })
+            "metadata[service]": service_info.id,
+            "metadata[owner]": service_info.owner,
+            "metadata[price]": product[ticket_id],
+            mode: "payment",
+        });
     } else {
         Object.assign(data, {
-            'subscription_data[metadata][service]': service_info.id,
-            'subscription_data[metadata][owner]': service_info.owner,
-            'mode': 'subscription',
-            'subscription_data[description]': 'Subscription plan for service ID: "' + service_info.id + '"',
-        })
+            "subscription_data[metadata][service]": service_info.id,
+            "subscription_data[metadata][owner]": service_info.owner,
+            mode: "subscription",
+            "subscription_data[description]":
+                'Subscription plan for service ID: "' + service_info.id + '"',
+        });
     }
 
     let response = await skapi.clientSecretRequest({
-        clientSecretName: 'stripe_test',
-        url: 'https://api.stripe.com/v1/checkout/sessions',
-        method: 'POST',
+        clientSecretName: "stripe_test",
+        url: "https://api.stripe.com/v1/checkout/sessions",
+        method: "POST",
         headers: {
-            Authorization: 'Bearer $CLIENT_SECRET',
-            'Content-Type': 'application/x-www-form-urlencoded'
+            Authorization: "Bearer $CLIENT_SECRET",
+            "Content-Type": "application/x-www-form-urlencoded",
         },
-        data
+        data,
     });
 
     if (response.error) {
@@ -331,7 +335,7 @@ let updateSubscription = async (ticket_id) => {
     };
 
     if (!serviceList[serviceId]?.subscription?.canceled_at) {
-        dataObj.proration_behavior = 'create_prorations';
+        dataObj.proration_behavior = "create_prorations";
     }
 
     let response = await skapi.clientSecretRequest({
@@ -471,43 +475,50 @@ let updateSubscription = async (ticket_id) => {
 
                     &.user {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_user.svg")
+                                no-repeat;
                         }
                     }
 
                     &.data {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_data.svg")
+                                no-repeat;
                         }
                     }
 
                     &.file {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_file.svg")
+                                no-repeat;
                         }
                     }
 
                     &.mail {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_mail.svg")
+                                no-repeat;
                         }
                     }
 
                     &.forbiden {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_forbiden.svg")
+                                no-repeat;
                         }
                     }
 
                     &.invitation {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_invitation.svg")
+                                no-repeat;
                         }
                     }
 
                     &.global {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_global.svg")
+                                no-repeat;
                         }
                     }
                 }

@@ -394,7 +394,6 @@ const hideProfileDropdown = () => {
 
 // 로고 클릭 시 resetVideo 호출하는 함수
 const handleLogoClick = () => {
-    console.log("Logo clicked, resetting video...");
     // 현재 홈페이지인 경우에만 비디오 리셋
     if (route.name === "home") {
         // landingPage 컴포넌트의 resetVideo 함수 호출
