@@ -6,7 +6,7 @@
         .key
             span.text.required Logger ID
         .value
-            input.line(v-model="selectedRecord.id" name='id' placeholder="Logger ID" required)
+            input.line(v-model="selectedRecord.id" name='id' placeholder="Logger ID" :disabled="isEdit" required)
     .row
         .key
             span.text.required Username Key
@@ -103,10 +103,12 @@ let cdtn = ref(def.cdtn);
 let selectedRecord_data = ref("");
 let selectedRecord_hder = ref("");
 let selectedRecord = ref(def);
+let isEdit = ref(false);
 
 function load(rec: any) {
     rec = rec || def;
     selectedRecord.value = rec;
+    isEdit.value = !!rec.id;
     selectedRecord_hder.value = rec.hder
         ? JSON.stringify(rec.hder || null, null, 2)
         : "";
