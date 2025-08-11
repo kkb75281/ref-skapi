@@ -39,7 +39,7 @@ section
                     .inner
                         template(v-for="c in columnList")
                             Checkbox(v-model="c.value" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
-            button.inline.only-icon.gray(aria-label="Refresh" @click="getPage(true)" :disabled="!user?.email_verified || currentService.service.active <= 0")
+            button.inline.only-icon.gray(aria-label="Refresh" @click="getClientSecret" :disabled="!user?.email_verified || currentService.service.active <= 0")
                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
                     template(v-slot:tool)
                         .icon
@@ -63,7 +63,10 @@ section
                     template(v-slot:tip) Delete Selected
 
     Table(:key="tableKey" :class="{disabled : !user?.email_verified || currentService.service.active <= 0}" resizable)
-        template(v-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+        template(v-if="fetching" v-slot:msg)
+            .tableMsg.center
+                .loader(style="--loader-color:white; --loader-size:12px")
+        template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
             .tableMsg.center No Records
 
         template(v-slot:head)
@@ -77,11 +80,11 @@ section
                         .resizer
 
         template(v-slot:body)
-            template(v-if="!listDisplay || listDisplay?.length === 0")
+            template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
                 tr.nohover(v-for="i in 10")
                     td(:colspan="colspan")
             template(v-else)
-                tr.hoverRow(v-for="(cs, index) in listDisplay" @click="openDetailModal(cs, i)")
+                tr.hoverRow(v-for="(cs, index) in listDisplay" @click="openDetailModal(cs, index)")
                     td
                         Checkbox(@click.stop
                             :modelValue="!!checked?.[cs?.name]"
@@ -94,11 +97,11 @@ section
                             td.overflow(v-if="c.key === 'locked'")
                                 svg.svgIcon(v-if="cs?.locked" style="fill: white")
                                     use(xlink:href="/material-icon.svg#icon-check")
+                template(v-if="Object.keys(listDisplay || {}).length < 10")
+                    tr.nohover(v-for="i in 10 - Object.keys(listDisplay || {}).length")
+                        td(:colspan="colspan")
 
-                tr.nohover(v-for="i in 10 - Object.keys(listDisplay || {}).length")
-                    td(:colspan="colspan")
-
-    .table-page-wrap
+    //- .table-page-wrap
         button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")
             .icon
                 svg
@@ -236,23 +239,38 @@ function checkall() {
 
 onMounted(() => {
     // Initialize the listDisplay with existing client secrets
-    if (currentService.service.client_secret) {
-        listDisplay.value = {};
-
-        Object.entries(currentService.service.client_secret).forEach(
-            ([key, value], i) => {
-                listDisplay.value[i] = {
-                    name: key,
-                    client_secret: value,
-                    locked:
-                        (
-                            currentService.service?.auth_client_secret || []
-                        ).indexOf(key) !== -1,
-                };
-            }
-        );
-    }
+    getClientSecret();
 });
+
+function getClientSecret(): void {
+    fetching.value = true;
+    listDisplay.value = null;
+    checked.value = {};
+
+    setTimeout(() => {
+        if (!currentService.service.client_secret) {
+            listDisplay.value = [];
+            fetching.value = false;
+        } else {
+            listDisplay.value = [];
+            Object.entries(currentService.service.client_secret).forEach(
+                ([key, value], i) => {
+                    listDisplay.value[i] = {
+                        name: key,
+                        client_secret: value,
+                        locked:
+                            (currentService.service?.auth_client_secret || []).indexOf(
+                                key
+                            ) !== -1,
+                    };
+                }
+            );
+        }
+
+        fetching.value = false;
+    }, 300);
+
+}
 
 let openDetailModal = (cs: object, i: number) => {
     selectedClientIndex = i;
@@ -338,6 +356,7 @@ let saveKey = async () => {
 
     // Check for duplicate names
     if (
+        listDisplay.value.length &&
         listDisplay.value[selectedClientIndex]?.name !==
         selectedClient.value.name
     ) {
@@ -359,7 +378,12 @@ let saveKey = async () => {
     // Update the selected client
     if (selectedClientIndex === -1) {
         // 새 클라이언트 키 추가: 마지막 인덱스에 추가
-        const lastIndex = Object.keys(listDisplay.value).length;
+        let lastIndex = 0;
+
+        if (listDisplay.value && listDisplay.value.length) {
+            lastIndex = Object.keys(listDisplay.value).length;
+        }
+
         listDisplay.value[lastIndex] = {
             name: selectedClient.value.name,
             client_secret: selectedClient.value.client_secret,
@@ -478,7 +502,7 @@ const showTableColumns = () => {
             &.locked {
                 flex-direction: row;
 
-                <<<<<<< HEAD .key {
+                .key {
                     width: 6.25rem;
                 }
             }
@@ -488,9 +512,10 @@ const showTableColumns = () => {
             }
         }
 
-        =======&:hover {
+        &:hover {
             border-radius: 50%;
             background-color: #293FE61A;
-            >>>>>>>main
         }
-    }</style>
+    }
+}
+</style>

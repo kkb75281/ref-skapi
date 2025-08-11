@@ -96,7 +96,7 @@ section
                 tr.nohover(v-for="i in 10")
                     td(:colspan="colspan")
             template(v-else)
-                tr.hoverRow(v-for="(rc, i) in listDisplay" @click="showDetail=true; selectedLogger=rc")
+                tr.hoverRow(v-for="(rc, i) in listDisplay" @click="showDetail=true; selectedLogger=JSON.parse(JSON.stringify(rc))")
                     td
                         Checkbox(@click.stop
                             :modelValue="!!checked?.[rc?.id]"
@@ -329,11 +329,16 @@ let selectedLogger = ref(null);
 let uploading = ref(false);
 
 let upload = async (e: SubmitEvent) => {
+    let isEdit = selectedLogger.value?.id ? true : false;
+
     uploading.value = true;
 
     let { data } = skapi.util.extractFormData(e, { ignoreEmpty: true });
 
     let jsonData = data;
+
+    console.log("jsonData", jsonData);
+    console.log("isEdit", isEdit);
 
     try {
         if (jsonData.data) {
@@ -367,7 +372,8 @@ let upload = async (e: SubmitEvent) => {
     try {
         await currentService.registerOpenIDLogger(jsonData);
 
-        if (pager.list[jsonData.is]) {
+        // if (pager.list[jsonData.is]) {
+        if (isEdit) {
             await pager.editItem(jsonData);
         } else {
             await pager.insertItems([jsonData]);
