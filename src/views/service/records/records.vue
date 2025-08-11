@@ -78,78 +78,79 @@ section
                                 use(xlink:href="/basic-icon.svg#icon-delete")
                     template(v-slot:tip) Delete Selected
 
-    Table(:key="tableKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" resizable)
-        template(v-if="fetching" v-slot:msg)
-            .tableMsg.center
-                .loader(style="--loader-color:white; --loader-size:12px")
-        template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
-            .tableMsg.center.empty No Records
+    .table-cont-wrap
+        Table(:key="tableKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0}" resizable)
+            template(v-if="fetching" v-slot:msg)
+                .tableMsg.center
+                    .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+                .tableMsg.center.empty No Records
 
-        template(v-slot:head)
-            tr
-                th.fixed(style='width:60px;')
-                    Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.record_id] = d)); else checked = {}; }" style="display:inline-block")
-                    .resizer.fixed
-                template(v-for="c in columnList")
-                    th.overflow(v-if="c.value", style="width: 200px")
-                        | {{ c.name }}
-                        .resizer
-
-        template(v-slot:body)
-            template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
-                tr.nohover(v-for="i in 10")
-                    td(:colspan="colspan")
-            template(v-else)
-                tr.hoverRow(v-for="(rc, i) in listDisplay" @click="showDetail=true; selectedRecord=rc")
-                    td
-                        Checkbox(@click.stop
-                            :modelValue="!!checked?.[rc?.record_id]"
-                            @update:modelValue="(value) => { if (value) checked[rc?.record_id] = value; else delete checked[rc?.record_id]; }")
-
+            template(v-slot:head)
+                tr
+                    th.fixed(style='width:60px;')
+                        Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.record_id] = d)); else checked = {}; }" style="display:inline-block")
+                        .resizer.fixed
                     template(v-for="c in columnList")
-                        template(v-if="c.value")
-                            td.overflow.left(v-if="c.key === 'table'") 
-                                span
-                                    svg.svgIcon(v-if="rc.table.access_group == 'private' || rc.table.access_group == 99 || rc.table.access_group === 'admin'" style="margin-bottom: 2px")
-                                        use(xlink:href="/material-icon.svg#icon-key")
-                                span
-                                    svg.svgIcon(v-if="rc.table.access_group == 'authorized' || typeof rc.table.access_group === 'number' && rc.table.access_group > 0" style="margin-bottom: 2px")
-                                        use(xlink:href="/material-icon.svg#icon-user")
-                                span
-                                    svg.svgIcon(v-if="rc.table.access_group == 'public' || rc.table.access_group === 0" style="margin-bottom: 2px")
-                                        use(xlink:href="/material-icon.svg#icon-globe")
-                                span(style="margin-left: 8px") {{ rc?.table?.name }}
+                        th.overflow(v-if="c.value", style="width: 200px")
+                            | {{ c.name }}
+                            .resizer
 
-                            td(v-if="c.key === 'record_id'")
-                                .click.overflow(@click.stop="copy(rc.record_id)") {{ rc.record_id }}
+            template(v-slot:body)
+                template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
+                    tr.nohover(v-for="i in 10")
+                        td(:colspan="colspan")
+                template(v-else)
+                    tr.hoverRow(v-for="(rc, i) in listDisplay" @click="showDetail=true; selectedRecord=rc")
+                        td
+                            Checkbox(@click.stop
+                                :modelValue="!!checked?.[rc?.record_id]"
+                                @update:modelValue="(value) => { if (value) checked[rc?.record_id] = value; else delete checked[rc?.record_id]; }")
 
-                            td(v-if="c.key === 'unique_id'")
-                                .overflow(:class="{'click' : rc.unique_id}" @click.stop="copy(rc.unique_id)" :style="{'pointer-events': rc.unique_id ? 'auto' : 'none'}") {{ rc.unique_id || '-' }}
+                        template(v-for="c in columnList")
+                            template(v-if="c.value")
+                                td.overflow.left(v-if="c.key === 'table'") 
+                                    span
+                                        svg.svgIcon(v-if="rc.table.access_group == 'private' || rc.table.access_group == 99 || rc.table.access_group === 'admin'" style="margin-bottom: 2px")
+                                            use(xlink:href="/material-icon.svg#icon-key")
+                                    span
+                                        svg.svgIcon(v-if="rc.table.access_group == 'authorized' || typeof rc.table.access_group === 'number' && rc.table.access_group > 0" style="margin-bottom: 2px")
+                                            use(xlink:href="/material-icon.svg#icon-user")
+                                    span
+                                        svg.svgIcon(v-if="rc.table.access_group == 'public' || rc.table.access_group === 0" style="margin-bottom: 2px")
+                                            use(xlink:href="/material-icon.svg#icon-globe")
+                                    span(style="margin-left: 8px") {{ rc?.table?.name }}
 
-                            td(v-if="c.key === 'user_id'") 
-                                .click.overflow(@click.stop="copy(rc.user_id)") {{ rc.user_id }}
+                                td(v-if="c.key === 'record_id'")
+                                    .click.overflow(@click.stop="copy(rc.record_id)") {{ rc.record_id }}
 
-                            td(v-if="c.key === 'reference'")
-                                .click.overflow(v-if="rc?.reference" @click.stop="copy(rc?.reference)") {{ rc?.reference }}
-                                template(v-else) -
-                            td.overflow(v-if="c.key === 'index'") 
-                                template(v-if="rc?.index") 
-                                    span(v-if="typeof(rc?.index?.value) == 'string'") {{ rc?.index?.name }} / "{{ rc?.index?.value }}"
-                                    span(v-else) {{ rc?.index?.name }} / {{ rc?.index?.value }}
-                                template(v-else) -
-                            td.overflow(v-if="c.key === 'tag'") 
-                                template(v-if="rc?.tags" v-for="(tag, index) in rc.tags")
-                                    span(v-if="rc.tags.length-1 == index") {{ tag }}
-                                    span(v-else) {{ tag }}
-                                template(v-else) -
+                                td(v-if="c.key === 'unique_id'")
+                                    .overflow(:class="{'click' : rc.unique_id}" @click.stop="copy(rc.unique_id)" :style="{'pointer-events': rc.unique_id ? 'auto' : 'none'}") {{ rc.unique_id || '-' }}
 
-                            td.overflow(v-if="c.key === 'files'") {{ countMyFiles(rc) }}
-                            td.overflow(v-if="c.key === 'data'") {{ rc.data }}
-                            td.overflow(v-if="c.key === 'updated'") {{ new Date(rc.updated).toLocaleString() }}
-                            td.overflow(v-if="c.key === 'referenced'") {{ rc.referenced_count }}
-                            td.overflow(v-if="c.key === 'ip'") {{ rc.ip }}
-                tr.nohover(v-for="i in (10 - listDisplay?.length)")
-                    td(:colspan="colspan")
+                                td(v-if="c.key === 'user_id'") 
+                                    .click.overflow(@click.stop="copy(rc.user_id)") {{ rc.user_id }}
+
+                                td(v-if="c.key === 'reference'")
+                                    .click.overflow(v-if="rc?.reference" @click.stop="copy(rc?.reference)") {{ rc?.reference }}
+                                    template(v-else) -
+                                td.overflow(v-if="c.key === 'index'") 
+                                    template(v-if="rc?.index") 
+                                        span(v-if="typeof(rc?.index?.value) == 'string'") {{ rc?.index?.name }} / "{{ rc?.index?.value }}"
+                                        span(v-else) {{ rc?.index?.name }} / {{ rc?.index?.value }}
+                                    template(v-else) -
+                                td.overflow(v-if="c.key === 'tag'") 
+                                    template(v-if="rc?.tags" v-for="(tag, index) in rc.tags")
+                                        span(v-if="rc.tags.length-1 == index") {{ tag }}
+                                        span(v-else) {{ tag }}
+                                    template(v-else) -
+
+                                td.overflow(v-if="c.key === 'files'") {{ countMyFiles(rc) }}
+                                td.overflow(v-if="c.key === 'data'") {{ rc.data }}
+                                td.overflow(v-if="c.key === 'updated'") {{ new Date(rc.updated).toLocaleString() }}
+                                td.overflow(v-if="c.key === 'referenced'") {{ rc.referenced_count }}
+                                td.overflow(v-if="c.key === 'ip'") {{ rc.ip }}
+                    tr.nohover(v-for="i in (10 - listDisplay?.length)")
+                        td(:colspan="colspan")
 
     .table-page-wrap
         button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")
@@ -239,7 +240,7 @@ import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { currentService, serviceRecords } from "@/views/service/main";
 import { showDropDown } from "@/assets/js/event.js";
-import { copy } from '@/assets/js/common.js'
+import { copy } from "@/assets/js/common.js";
 
 // table columns
 let tableKey = ref(0);
@@ -599,11 +600,11 @@ let setUpNewPageList = async () => {
         sortBy: callParams?.index?.name || "record_id",
         order:
             callParams?.index?.name &&
-                (callParams?.index?.condition || "").includes("<")
+            (callParams?.index?.condition || "").includes("<")
                 ? "desc"
                 : callParams?.table?.name
-                    ? "asc"
-                    : "desc",
+                ? "asc"
+                : "desc",
     });
 };
 

@@ -229,8 +229,12 @@ let setResize = async () => {
     cursor: col-resize;
 }
 
-.tableWrap {
+.table-cont-wrap {
     position: relative;
+}
+
+.tableWrap {
+    // position: relative;
     overflow-x: auto;
     overflow-y: hidden;
     box-sizing: border-box;

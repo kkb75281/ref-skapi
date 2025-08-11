@@ -102,58 +102,59 @@ section
                                 use(xlink:href="/basic-icon.svg#icon-delete")
                             span Delete User
 
-    Table(:key="tableKey" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }" resizable)
-        template(v-if="fetching" v-slot:msg)
-            .tableMsg.center
-                .loader(style="--loader-color:white; --loader-size:12px")
-        template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
-            .tableMsg.center.empty No Users
+    .table-cont-wrap
+        Table(:key="tableKey" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }" resizable)
+            template(v-if="fetching" v-slot:msg)
+                .tableMsg.center
+                    .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+                .tableMsg.center.empty No Users
 
-        template(v-slot:head)
-            tr
-                th.fixed(style="width: 60px")
-                    Checkbox(
-                        @click.stop
-                        :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length"
-                        @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.user_id] = d)); else checked = {}; }"
-                        :class="{ nonClickable: !listDisplay || !listDisplay?.length }"
-                        style="display: inline-block"
-                    )
-                    .resizer.fixed
-
-                template(v-for="c in columnList")
-                    th.overflow(v-if="c.value", style="width: 200px")
-                        | {{ c.name }}
-                        .resizer
-
-        template(v-slot:body)
-            template(v-if="fetching || !listDisplay || listDisplay.length === 0")
-                tr.nohover(v-for="i in 10")
-                    td(:colspan="colspan")
-            template(v-else)
-                tr.hoverRow(v-for="(user, index) in listDisplay" @click="showDetail=true; selectedUser=user")
-                    td
+            template(v-slot:head)
+                tr
+                    th.fixed(style="width: 60px")
                         Checkbox(
-                        @click.stop
-                        :modelValue="!!checked?.[user?.user_id]"
-                        @update:modelValue="(value) => { if (value) checked[user?.user_id] = value; else delete checked[user?.user_id]; }"
+                            @click.stop
+                            :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length"
+                            @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.user_id] = d)); else checked = {}; }"
+                            :class="{ nonClickable: !listDisplay || !listDisplay?.length }"
+                            style="display: inline-block"
                         )
+                        .resizer.fixed
 
                     template(v-for="c in columnList")
-                        template(v-if="c.value")
-                            // customize the column
-                            td.overflow(v-if="c.key === 'timestamp'") {{ new Date(user[c.key]).toLocaleString() }}
-                            td.overflow(v-else-if="c.key === 'approved'") {{ user[c.key].split(':')[1].charAt(0).toUpperCase() + user[c.key].split(':')[1].slice(1) }}
-                            td.overflow(v-else-if="c.key === 'locale'")
-                                img(
-                                :src="'https://flagcdn.com/' + user.locale.toLowerCase() + '.svg'",
-                                style="width: 16px; object-fit: contain"
-                                )
-                            td.overflow(v-else-if="c.key === 'access_group'" :style="{color: user[c.key] < 0 ? 'var(--caution-color)' : null }") {{ Math.abs(user[c.key]) }} {{user[c.key] < 0 ? "(Disabled)" : "" }}
-                            td.overflow(v-else-if="c.value") {{ user[c.key] || "-" }}
+                        th.overflow(v-if="c.value", style="width: 200px")
+                            | {{ c.name }}
+                            .resizer
 
-                tr.nohover(v-for="i in 10 - listDisplay.length")
-                    td(:colspan="colspan")
+            template(v-slot:body)
+                template(v-if="fetching || !listDisplay || listDisplay.length === 0")
+                    tr.nohover(v-for="i in 10")
+                        td(:colspan="colspan")
+                template(v-else)
+                    tr.hoverRow(v-for="(user, index) in listDisplay" @click="showDetail=true; selectedUser=user")
+                        td
+                            Checkbox(
+                            @click.stop
+                            :modelValue="!!checked?.[user?.user_id]"
+                            @update:modelValue="(value) => { if (value) checked[user?.user_id] = value; else delete checked[user?.user_id]; }"
+                            )
+
+                        template(v-for="c in columnList")
+                            template(v-if="c.value")
+                                // customize the column
+                                td.overflow(v-if="c.key === 'timestamp'") {{ new Date(user[c.key]).toLocaleString() }}
+                                td.overflow(v-else-if="c.key === 'approved'") {{ user[c.key].split(':')[1].charAt(0).toUpperCase() + user[c.key].split(':')[1].slice(1) }}
+                                td.overflow(v-else-if="c.key === 'locale'")
+                                    img(
+                                    :src="'https://flagcdn.com/' + user.locale.toLowerCase() + '.svg'",
+                                    style="width: 16px; object-fit: contain"
+                                    )
+                                td.overflow(v-else-if="c.key === 'access_group'" :style="{color: user[c.key] < 0 ? 'var(--caution-color)' : null }") {{ Math.abs(user[c.key]) }} {{user[c.key] < 0 ? "(Disabled)" : "" }}
+                                td.overflow(v-else-if="c.value") {{ user[c.key] || "-" }}
+
+                    tr.nohover(v-for="i in 10 - listDisplay.length")
+                        td(:colspan="colspan")
 
     .table-page-wrap
         button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")
@@ -323,14 +324,15 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
 
         br
 
-        label Phone Number
-            input#phone.block(
-                @input="(e) => (createParams.phone_number = e.target.value)",
-                @keydown="(e) => moveFocus(e, 'gender')",
-                :disabled="promiseRunning",
-                placeholder="User's Phone Number (+821012345678)",
-                type="text"
-            )
+        .label
+            label Phone Number
+                input#phone.block(
+                    @input="(e) => (createParams.phone_number = e.target.value)",
+                    @keydown="(e) => moveFocus(e, 'gender')",
+                    :disabled="promiseRunning",
+                    placeholder="User's Phone Number (+821012345678)",
+                    type="text"
+                )
             Checkbox(v-model="phone_number_public") public
         
         br
@@ -983,8 +985,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                    new Date(dates[1]).setHours(23, 59, 59, 999)
-                ).getTime()
+                      new Date(dates[1]).setHours(23, 59, 59, 999)
+                  ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1190,7 +1192,12 @@ let createUser = () => {
     promiseRunning.value = true;
     error.value = "";
 
-    if (phone_number_public.value || gender_public.value || address_public.value || birthdate_public.value) {
+    if (
+        phone_number_public.value ||
+        gender_public.value ||
+        address_public.value ||
+        birthdate_public.value
+    ) {
         Object.assign(createParams, {
             phone_number_public: phone_number_public.value,
             gender_public: gender_public.value,

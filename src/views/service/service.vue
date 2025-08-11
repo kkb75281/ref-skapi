@@ -84,7 +84,7 @@ section
                     .tit Users
                     .data {{ currentServiceSpec.dataSize?.users || 0 }} / {{ currentServiceSpec.servicePlan.users }}
                 .bar-wrap
-                    .bar(:style='{width: currentServiceSpec.dataPercent.users * 100 + "%"}')
+                    .bar(:style='{width: Math.max(currentServiceSpec.dataPercent.users, 1) + "%"}')
 
                 br
 
@@ -92,7 +92,7 @@ section
                     .tit Database
                     .data {{ currentServiceSpec.dataSize?.database || 0 }} / {{ currentServiceSpec.servicePlan.storage.database }}
                 .bar-wrap
-                    .bar(:style='{width: currentServiceSpec.dataPercent.database * 100 + "%"}')
+                    .bar(:style='{width: Math.max(currentServiceSpec.dataPercent.database, 1) + "%"}')
 
                 br
 
@@ -100,24 +100,7 @@ section
                     .tit File Storage
                     .data {{ currentServiceSpec.dataSize?.cloud || 0 }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
                 .bar-wrap
-                    .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
-
-            //- .card-wrap
-            //-     .card
-            //-         .title Users
-            //-         .data {{ currentServiceSpec.dataSize?.users || 0 }} / {{ currentServiceSpec.servicePlan.users }}
-            //-         .bar-wrap
-            //-             .bar(:style='{width: currentServiceSpec.dataPercent.users * 100 + "%"}')
-            //-     .card
-            //-         .title Database
-            //-         .data {{ currentServiceSpec.dataSize?.database || 0 }} / {{ currentServiceSpec.servicePlan.storage.database }}
-            //-         .bar-wrap
-            //-             .bar(:style='{width: currentServiceSpec.dataPercent.database * 100 + "%"}')
-            //-     .card
-            //-         .title File Storage
-            //-         .data {{ currentServiceSpec.dataSize?.cloud || 0 }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
-            //-         .bar-wrap
-            //-             .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
+                    .bar(:style='{width: Math.max(currentServiceSpec.dataPercent.cloud, 1) + "%"}')
 
         .toggle-wrap
             .title Service Settings

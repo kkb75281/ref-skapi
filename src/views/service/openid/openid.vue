@@ -64,52 +64,53 @@ section
                                 use(xlink:href="/basic-icon.svg#icon-delete")
                     template(v-slot:tip) Delete Selected
 
-    Table(:key="tableKey" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}" resizable)
-        template(v-if="fetching" v-slot:msg)
-            .tableMsg.center
-                .loader(style="--loader-color:white; --loader-size:12px")
-        template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
-            .tableMsg.center.empty No Open ID Logger
-        template(v-slot:head)
-            tr
-                th.fixed(style='width:60px;')
-                    Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.id] = d)); else checked = {}; }" style="display:inline-block")
-                    .resizer.fixed
-                template(v-for="c in columnList")
-                    th.overflow(v-if="c.value", style="width: 200px")
-                        | {{ c.name }}
-                        .resizer
-                //- th.overflow(style='width:160px;')
-                //-     | Logger ID
-                //-     .resizer
-                //- th.overflow(style='width:160px;')
-                //-     | Username Key
-                //-     .resizer
-                //- th.overflow(style='width:100px;')
-                //-     | Method
-                //-     .resizer
-                //- th.overflow(style='width:160px;')
-                //-     | Request URL
-                //-     .resizer
-        template(v-slot:body)
-            template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
-                tr.nohover(v-for="i in 10")
-                    td(:colspan="colspan")
-            template(v-else)
-                tr.hoverRow(v-for="(rc, i) in listDisplay" @click="showDetail=true; selectedLogger=JSON.parse(JSON.stringify(rc))")
-                    td
-                        Checkbox(@click.stop
-                            :modelValue="!!checked?.[rc?.id]"
-                            @update:modelValue="(value) => { if (value) checked[rc?.id] = value; else delete checked[rc?.id]; }")
+    .table-cont-wrap
+        Table(:key="tableKey" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}" resizable)
+            template(v-if="fetching" v-slot:msg)
+                .tableMsg.center
+                    .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+                .tableMsg.center.empty No Open ID Logger
+            template(v-slot:head)
+                tr
+                    th.fixed(style='width:60px;')
+                        Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.id] = d)); else checked = {}; }" style="display:inline-block")
+                        .resizer.fixed
                     template(v-for="c in columnList")
-                        template(v-if="c.value")
-                            td.overflow(v-if="c.key === 'logger_id'") {{ rc.id }}
-                            td.overflow(v-if="c.key === 'username_key'") {{ rc.usr }}
-                            td.overflow(v-if="c.key === 'method'") {{ rc.mthd }}
-                            td.overflow(v-if="c.key === 'url'") {{ rc.url }}
+                        th.overflow(v-if="c.value", style="width: 200px")
+                            | {{ c.name }}
+                            .resizer
+                    //- th.overflow(style='width:160px;')
+                    //-     | Logger ID
+                    //-     .resizer
+                    //- th.overflow(style='width:160px;')
+                    //-     | Username Key
+                    //-     .resizer
+                    //- th.overflow(style='width:100px;')
+                    //-     | Method
+                    //-     .resizer
+                    //- th.overflow(style='width:160px;')
+                    //-     | Request URL
+                    //-     .resizer
+            template(v-slot:body)
+                template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
+                    tr.nohover(v-for="i in 10")
+                        td(:colspan="colspan")
+                template(v-else)
+                    tr.hoverRow(v-for="(rc, i) in listDisplay" @click="showDetail=true; selectedLogger=JSON.parse(JSON.stringify(rc))")
+                        td
+                            Checkbox(@click.stop
+                                :modelValue="!!checked?.[rc?.id]"
+                                @update:modelValue="(value) => { if (value) checked[rc?.id] = value; else delete checked[rc?.id]; }")
+                        template(v-for="c in columnList")
+                            template(v-if="c.value")
+                                td.overflow(v-if="c.key === 'logger_id'") {{ rc.id }}
+                                td.overflow(v-if="c.key === 'username_key'") {{ rc.usr }}
+                                td.overflow(v-if="c.key === 'method'") {{ rc.mthd }}
+                                td.overflow(v-if="c.key === 'url'") {{ rc.url }}
 
-                tr.nohover(v-for="i in (10 - listDisplay?.length)")
-                    td(:colspan="colspan")
+                    tr.nohover(v-for="i in (10 - listDisplay?.length)")
+                        td(:colspan="colspan")
 
     .table-page-wrap
         button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")

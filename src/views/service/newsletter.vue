@@ -130,84 +130,85 @@ template(v-else)
                                     use(xlink:href="/basic-icon.svg#icon-delete")
                         template(v-slot:tip) Delete Selected
 
-        Table(:class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
-            template(v-slot:head)
-                tr(:class="{'nonClickable' : fetching}")
-                    th.fixed(style='width:60px;')
-                        Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.url] = d)); else checked = {}; }" style="display:inline-block")
-                        .resizer.fixed
-                    th(style='width: 250px;')
-                        span(@click='toggleSort("subject")')
-                            | Subject
-                            svg.svgIcon(v-if='searchFor === "subject" && ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='searchFor === "subject" && !ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
-                        .resizer
-                    th(style='width: 120px;')
-                        span(@click='toggleSort("timestamp")')
-                            | Sent
-                            svg.svgIcon(v-if='searchFor === "timestamp" && ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='searchFor === "timestamp" && !ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
-                        .resizer
-                    th(style='width: 120px;')
-                        span(@click='toggleSort("read")')
-                            | Reads
-                            svg.svgIcon(v-if='searchFor === "read" && ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='searchFor === "read" && !ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
-                        .resizer
-                    th(style='width: 120px;')
-                        span(@click='toggleSort("complaint")')
-                            | Complaint
-                            svg.svgIcon(v-if='searchFor === "complaint" && ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='searchFor === "complaint" && !ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
-                        .resizer
-                    th(style='width: 120px;')
-                        span(@click='toggleSort("bounced")')
-                            | Bounced
-                            svg.svgIcon(v-if='searchFor === "bounced" && ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='searchFor === "bounced" && !ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
-                    th.center(style="width:60px; padding:0")
+        .table-cont-wrap
+            Table(:class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
+                template(v-slot:head)
+                    tr(:class="{'nonClickable' : fetching}")
+                        th.fixed(style='width:60px;')
+                            Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.url] = d)); else checked = {}; }" style="display:inline-block")
+                            .resizer.fixed
+                        th(style='width: 250px;')
+                            span(@click='toggleSort("subject")')
+                                | Subject
+                                svg.svgIcon(v-if='searchFor === "subject" && ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
+                                svg.svgIcon(v-if='searchFor === "subject" && !ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
+                            .resizer
+                        th(style='width: 120px;')
+                            span(@click='toggleSort("timestamp")')
+                                | Sent
+                                svg.svgIcon(v-if='searchFor === "timestamp" && ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
+                                svg.svgIcon(v-if='searchFor === "timestamp" && !ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
+                            .resizer
+                        th(style='width: 120px;')
+                            span(@click='toggleSort("read")')
+                                | Reads
+                                svg.svgIcon(v-if='searchFor === "read" && ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
+                                svg.svgIcon(v-if='searchFor === "read" && !ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
+                            .resizer
+                        th(style='width: 120px;')
+                            span(@click='toggleSort("complaint")')
+                                | Complaint
+                                svg.svgIcon(v-if='searchFor === "complaint" && ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
+                                svg.svgIcon(v-if='searchFor === "complaint" && !ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
+                            .resizer
+                        th(style='width: 120px;')
+                            span(@click='toggleSort("bounced")')
+                                | Bounced
+                                svg.svgIcon(v-if='searchFor === "bounced" && ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
+                                svg.svgIcon(v-if='searchFor === "bounced" && !ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
+                        th.center(style="width:60px; padding:0")
 
-            template(v-slot:body)
-                template(v-if="fetching")
-                    tr.empty-value
-                        td#loading(colspan="6").
-                            Loading {{mailType}} ... &nbsp;
-                            #[.loader(style="--loader-color:white; --loader-size:12px")]
-                    tr(v-for="i in 9")
-                        td(colspan="6")
-                template(v-else-if="!listDisplay || listDisplay.length === 0")
-                    tr.empty-value
-                        td(colspan="6") No {{mailType}} Sent
-                    tr(v-for="i in 9")
-                        td(colspan="6")
-                template(v-else)
-                    tr.hoverRow(v-for="ns in listDisplay" @click='openNewsletter(ns.url)')
-                        td
-                            Checkbox(@click.stop
-                                :modelValue="!!checked?.[ns?.url]"
-                                @update:modelValue="(value) => { if (value) checked[cs?.url] = value; else delete checked[ns?.url]; }"
-                                )
-                        td.overflow {{ converter(ns.subject) }}
-                        td.overflow {{ dateFormat(ns.timestamp) }}
-                        td.overflow {{ ns.read }}
-                        td.overflow {{ ns.complaint }}
-                        td.overflow {{ ns.bounced }}
-                        td.center.buttonWrap(@click.stop)
-                            svg.svgIcon.reactiveDanger.clickable.hide(@click.stop="emailToDelete = ns")
-                                use(xlink:href="/basic-icon.svg#icon-delete")
+                template(v-slot:body)
+                    template(v-if="fetching")
+                        tr.empty-value
+                            td#loading(colspan="6").
+                                Loading {{mailType}} ... &nbsp;
+                                #[.loader(style="--loader-color:white; --loader-size:12px")]
+                        tr(v-for="i in 9")
+                            td(colspan="6")
+                    template(v-else-if="!listDisplay || listDisplay.length === 0")
+                        tr.empty-value
+                            td(colspan="6") No {{mailType}} Sent
+                        tr(v-for="i in 9")
+                            td(colspan="6")
+                    template(v-else)
+                        tr.hoverRow(v-for="ns in listDisplay" @click='openNewsletter(ns.url)')
+                            td
+                                Checkbox(@click.stop
+                                    :modelValue="!!checked?.[ns?.url]"
+                                    @update:modelValue="(value) => { if (value) checked[cs?.url] = value; else delete checked[ns?.url]; }"
+                                    )
+                            td.overflow {{ converter(ns.subject) }}
+                            td.overflow {{ dateFormat(ns.timestamp) }}
+                            td.overflow {{ ns.read }}
+                            td.overflow {{ ns.complaint }}
+                            td.overflow {{ ns.bounced }}
+                            td.center.buttonWrap(@click.stop)
+                                svg.svgIcon.reactiveDanger.clickable.hide(@click.stop="emailToDelete = ns")
+                                    use(xlink:href="/basic-icon.svg#icon-delete")
 
-                    tr(v-for="i in (10 - listDisplay.length)")
-                        td(colspan="6")
+                        tr(v-for="i in (10 - listDisplay.length)")
+                            td(colspan="6")
 
         .table-page-wrap
             button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")
