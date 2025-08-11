@@ -299,7 +299,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, onUnmounted, onBeforeUnmount } from "vue";
+import { onMounted, ref, onUnmounted, onBeforeUnmount, watch } from "vue";
 import { npmVersion } from "@/main.ts";
 import { user } from "@/code/user";
 
@@ -404,6 +404,62 @@ function onPlayerStateChange(event) {
 // 	}
 // };
 
+// contents > videos (youtube api 호출 - Videos 탭 클릭 시에만 API 호출)
+watch(
+    () => activeTabs.value.contents,
+    async (newTab) => {
+        if (newTab === 1 && videos.value.length === 0) {
+            const CHANNEL_ID = "UC0e4MITESMr3OaUiyWHpdYA";
+            const API_KEY = "AIzaSyC6PGYZWVYqPO7ItsTVBarYW_htT1kaXW0";
+
+            try {
+                // 최신 영상 검색
+                const searchRes = await fetch(
+                    `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&order=date&maxResults=10&type=video`
+                );
+                const searchData = await searchRes.json();
+                const videoIds = searchData.items
+                    .map((item) => item.id.videoId)
+                    .join(",");
+
+                // 영상 상세 조회 (duration 얻기)
+                const videosRes = await fetch(
+                    `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${videoIds}&part=snippet,contentDetails`
+                );
+                const videosData = await videosRes.json();
+
+                // shorts 제외 (60초 이하 제외) 후 3개만 선택
+                const filtered = videosData.items
+                    .filter((item) => {
+                        const duration = item.contentDetails.duration;
+                        const match = duration.match(/PT((\d+)M)?(\d+)S/);
+                        let totalSeconds = 0;
+                        if (match) {
+                            const minutes = match[2]
+                                ? parseInt(match[2], 10)
+                                : 0;
+                            const seconds = match[3]
+                                ? parseInt(match[3], 10)
+                                : 0;
+                            totalSeconds = minutes * 60 + seconds;
+                        }
+                        return totalSeconds > 60;
+                    })
+                    .slice(0, 3)
+                    .map((item) => ({
+                        id: item.id,
+                        title: item.snippet.title,
+                        description: item.snippet.description,
+                    }));
+
+                videos.value = filtered;
+            } catch (error) {
+                console.error("영상 정보를 가져오는 중 오류:", error);
+            }
+        }
+    }
+);
+
 onMounted(async () => {
     // youtube iframe API 로드
     if (!document.getElementById("youtube-iframe-api")) {
@@ -456,52 +512,6 @@ onMounted(async () => {
         articles.value = await response.json();
     } catch (err) {
         console.error(err);
-    }
-
-    // contents > videos (youtube api 호출)
-    const CHANNEL_ID = "UC0e4MITESMr3OaUiyWHpdYA"; // skapi's youtube channelId
-    const API_KEY = "AIzaSyC6PGYZWVYqPO7ItsTVBarYW_htT1kaXW0"; // mina's googleConsole api_key
-
-    try {
-        // 최신 영상 검색
-        const searchRes = await fetch(
-            `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&order=date&maxResults=10&type=video`
-        );
-        const searchData = await searchRes.json();
-        const videoIds = searchData.items
-            .map((item) => item.id.videoId)
-            .join(",");
-
-        // 영상 상세 조회 (duration 얻기)
-        const videosRes = await fetch(
-            `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${videoIds}&part=snippet,contentDetails`
-        );
-        const videosData = await videosRes.json();
-
-        // shorts 제외 (60초 이하 제외) 후 3개만 선택
-        const filtered = videosData.items
-            .filter((item) => {
-                const duration = item.contentDetails.duration;
-                // ISO 8601 duration에서 PT60S 이하인지 파싱
-                const match = duration.match(/PT((\d+)M)?(\d+)S/);
-                let totalSeconds = 0;
-                if (match) {
-                    const minutes = match[2] ? parseInt(match[2], 10) : 0;
-                    const seconds = match[3] ? parseInt(match[3], 10) : 0;
-                    totalSeconds = minutes * 60 + seconds;
-                }
-                return totalSeconds > 60; // shorts는 60초 이하이므로 초과만 포함
-            })
-            .slice(0, 3)
-            .map((item) => ({
-                id: item.id,
-                title: item.snippet.title,
-                description: item.snippet.description,
-            }));
-
-        videos.value = filtered;
-    } catch (error) {
-        console.error("영상 정보를 가져오는 중 오류:", error);
     }
 });
 
