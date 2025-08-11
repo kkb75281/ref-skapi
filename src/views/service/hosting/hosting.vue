@@ -81,7 +81,8 @@ template(v-else)
             .info-edit-wrap
                 .info
                     .title URL
-                    .value {{ hostUrl}}
+                    .value
+                        a.go-hosturl(:href="`https://${hostUrl}`" target="_blank") {{ hostUrl}}
                 .actions-wrap
                     button.only-icon.gray.edit-btn(type="button" @click="editSubdomain")
                         .icon
@@ -1049,6 +1050,12 @@ watch(ascending, () => {
         margin-top: 0;
     }
 }
+
+.go-hosturl {
+    color: inherit;
+    font-weight: 300;
+}
+
 @keyframes motion {
     0% {
         margin-top: -10px;
