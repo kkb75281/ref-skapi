@@ -248,7 +248,6 @@ function load(rec: any) {
     }
 
     indexValueType.value = typeof indexValue.value;
-    console.log(rec.data);
     selectedRecord_data.value = JSON.stringify(rec.data || null, null, 2);
     if (Array.isArray(selectedRecord?.value?.tags)) {
         selectedRecord.value.tags = selectedRecord.value.tags.join(", ");
@@ -506,9 +505,11 @@ let deleteFile = (key: string, index: number) => {
     }
 
     textarea {
-        background: linear-gradient(0deg,
+        background: linear-gradient(
+                0deg,
                 rgba(255, 255, 255, 0.05) 0%,
-                rgba(255, 255, 255, 0.05) 100%),
+                rgba(255, 255, 255, 0.05) 100%
+            ),
             #16171a;
         border: none;
         color: #fff;

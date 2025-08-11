@@ -375,7 +375,6 @@ let emailTypeSelect = [
 
 watch(activeTabs, (n) => {
     emailType.value = emailTypeSelect[n];
-    console.log(emailType.value);
 });
 
 ///////////////////////////////////////////////////////////////////////////////// template history[start]
@@ -527,8 +526,6 @@ let getPage = async (refresh?: boolean) => {
         currentService.getEmailTemplate(group.value).then((res) => {
             if (!res) return;
 
-            console.log("getPage", res);
-
             (currentService.service as any)["template_" + group.value].url =
                 res.url;
             (currentService.service as any)["template_" + group.value].subject =
@@ -589,8 +586,6 @@ let getPage = async (refresh?: boolean) => {
         // render data
         listDisplay.value = disp.list as Newsletter[];
         fetching.value = false;
-
-        console.log(listDisplay.value);
     }
 };
 
@@ -861,10 +856,6 @@ let init = async () => {
 };
 
 init();
-
-onMounted(() => {
-    console.log("currentService : ", currentService);
-});
 </script>
 
 <style lang="less" scoped>

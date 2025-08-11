@@ -822,7 +822,6 @@ let upload = async (e: SubmitEvent) => {
 
     try {
         let att = await currentService.updateUserAttribute(e);
-        console.log(att);
 
         for (let k in att.attributes) {
             selectedUser.value[k] = att.attributes[k];
@@ -982,8 +981,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                    new Date(dates[1]).setHours(23, 59, 59, 999)
-                ).getTime()
+                      new Date(dates[1]).setHours(23, 59, 59, 999)
+                  ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1329,7 +1328,6 @@ let deleteUser = () => {
     let userToDel = Object.keys(checked.value);
     let promises: Array<Promise<any>> = [];
     userToDel.forEach((u) => {
-        console.log({ u });
         promises.push(
             currentService.deleteAccount(u).then(async () => {
                 await pager.deleteItem(u);

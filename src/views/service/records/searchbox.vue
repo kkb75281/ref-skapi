@@ -154,7 +154,6 @@ watch(searchIndexCondition, (nv) => {
     if (!select) return;
 
     if (nv === "range") {
-        console.log(select);
         nextTick(() => {
             select.classList.add("fix");
         });

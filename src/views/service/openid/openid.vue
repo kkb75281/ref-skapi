@@ -337,9 +337,6 @@ let upload = async (e: SubmitEvent) => {
 
     let jsonData = data;
 
-    console.log("jsonData", jsonData);
-    console.log("isEdit", isEdit);
-
     try {
         if (jsonData.data) {
             jsonData.data = JSON.parse(jsonData.data);

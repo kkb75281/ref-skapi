@@ -62,7 +62,6 @@ let processDelete = async () => {
         let disables = [];
         let cancelSubs = [];
         for (let k in serviceList) {
-            console.log(serviceList[k]);
             disables.push(serviceList[k].disableService());
             if (serviceList[k].plan !== "Trial") {
                 disables.push(serviceList[k].registerSubdomain());

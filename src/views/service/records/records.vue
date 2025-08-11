@@ -372,7 +372,7 @@ const handleSearchBoxSubmit = async (formElement) => {
         await callSearch(formElement);
         resetSearchModal();
     } catch (error) {
-        console.error("Search error:", error);
+        alert("Search failed. Please try again.");
     }
 };
 
@@ -400,7 +400,6 @@ const performSearch = async () => {
         currentPage.value = 1;
         getPage(true);
     } catch (error) {
-        console.error("Search error:", error);
         alert("Search failed. Please try again.");
     }
 };
@@ -466,7 +465,6 @@ const handleSearchModal = (e: KeyboardEvent) => {
 
 // 검색 초기화
 const resetSearchModal = () => {
-    console.log("== resetSearchModal ==");
     searchModalOpen.value = false;
     searchFor.value = "record_id";
     currentPage.value = 1;

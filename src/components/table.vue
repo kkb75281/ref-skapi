@@ -48,9 +48,6 @@ if (resizable) {
                         if (type === "childList") {
                             setResize();
                         }
-                        // if (mutation.type === 'attributes') {
-                        //     console.log('The ' + mutation.attributeName + ' attribute was modified.');
-                        // }
                     }
                 });
 
@@ -89,13 +86,6 @@ const resizeObserver = new ResizeObserver((entries) => {
         } else {
             document.body.style.setProperty("--fakeWidth", "0px"); // fakeWidth 초기화
         }
-
-        // 디버깅 로그 출력
-        // console.log({
-        //     tableWrapWidth,
-        //     customTblWidth,
-        //     fakeWidth: parseFloat(document.body.style.getPropertyValue('--fakeWidth'))
-        // });
     }
 });
 
