@@ -98,6 +98,18 @@
     input(:value='owner' name='config[owner]' hidden)
 
     .row.line
+        .key 
+            span unique_id
+            Tooltip(tip-background-color="var(--main-color)" text-color="white" tip-max-width="12.875rem")
+                template(v-slot:tool)
+                    svg.svgIcon
+                        use(xlink:href="/basic-icon.svg#icon-help-circle")
+                template(v-slot:tip)
+                    | If null is given, it will remove the previous unique ID when updating.
+        .value
+            input.line(v-model="selectedRecord.unique_id" name='config[unique_id]' placeholder="Unique ID to set to the record." :disabled='restrictedAccess')
+
+    .row.line
         .key Tags 
         .value
             input.line(v-model="selectedRecord.tags" name='config[tags]' placeholder="Tag1, Tag2, ... Alphanumeric and space only. Separated with comma." :disabled='restrictedAccess')
@@ -148,7 +160,9 @@
 import { nextTick, ref, watch, type Ref } from "vue";
 import { user } from "@/code/user";
 import { currentService } from "@/views/service/main";
+
 import Checkbox from "@/components/checkbox.vue";
+import Tooltip from "@/components/tooltip.vue";
 
 let service = currentService.id;
 let owner = currentService.owner;
@@ -180,6 +194,7 @@ let def: any = {
         can_remove_referencing_records: false, // When true, owner of the record can remove any record that are referencing this record. Also when this record is deleted, all the record referencing this record will be deleted.
         referencing_index_restrictions: null as any,
     },
+    unique_id: "",
     reference: "",
     tags: [] as string[],
     readonly: false,
@@ -355,89 +370,8 @@ let deleteFile = (key: string, index: number) => {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        margin-bottom: 1rem;
-
-        // &.indent {
-        //     padding-left: 20px;
-
-        //     .key {
-        //         font-weight: normal;
-        //         width: 150px;
-        //     }
-        // }
-    }
-
-    .key {
-        font-weight: 500;
-        width: 170px;
-    }
-
-    .value {
-        // flex-grow: 1;
-        min-width: 270px;
-        margin: 6px 0 6px;
-
-        input {
-            width: 100%;
-        }
-    }
-
-    .file {
-        .removeFile {
-            cursor: pointer;
-        }
-
-        .filename {
-            display: inline-block;
-            vertical-align: middle;
-            max-width: 100%;
-            min-width: 270px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: var(--main-color);
-
-            @media (pointer: fine) {
-                &:hover {
-                    text-decoration: underline;
-                }
-            }
-
-            font-weight: 500;
-            cursor: pointer;
-            margin-bottom: 4px;
-        }
-
-        input.line.key {
-            // margin-bottom: 4px;
-        }
-    }
-
-    .add {
-        width: 100%;
-        text-align: center;
-        padding: 6px 0;
-        color: var(--main-color);
-        background-color: #293fe60d;
-        border-radius: 4px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-    }
-}
-
-// new styles (임시 - 추후 삭제될 수도 있음)
-.content {
-    .value {
-        min-width: fit-content;
-        width: fit-content;
-        margin: 0;
-        flex: 1;
-    }
-
-    .row {
-        margin-bottom: 1.5rem;
         margin-top: 0;
+        margin-bottom: 1.5rem;
         gap: 0.5rem;
 
         &:last-of-type {
@@ -449,43 +383,35 @@ let deleteFile = (key: string, index: number) => {
             padding-bottom: 2rem;
             margin-bottom: 2rem;
         }
+
     }
 
-    .add {
-        background: #0a4df1;
-        color: #fff;
-        font-size: 14px;
+    .key {
         display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 0.125rem;
-        padding: 0.5rem;
-        margin-bottom: 0.5rem;
+        gap: 10px;
+        font-weight: 500;
+        width: 170px;
 
-        svg {
-            width: 1.125rem;
-            height: 1.125rem;
+        ._tooltip {
+            svg {
+                width: 18px;
+                height: 18px;
+            }
+        }
+    }
+
+    .value {
+        min-width: fit-content;
+        width: fit-content;
+        margin: 0;
+        flex: 1;
+
+        input {
+            width: 100%;
         }
     }
 
     .file {
-        .filename {
-            color: #fff;
-            margin-bottom: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            width: fit-content;
-            min-width: fit-content;
-            white-space: initial;
-
-            &:hover {
-                text-decoration: none;
-            }
-        }
-
         div {
             align-items: center;
             margin-bottom: 0.5rem;
@@ -502,14 +428,62 @@ let deleteFile = (key: string, index: number) => {
             position: relative;
             top: 0.25rem;
         }
+
+        .removeFile {
+            cursor: pointer;
+        }
+
+        .filename {
+            width: fit-content;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            vertical-align: middle;
+            max-width: 100%;
+            min-width: fit-content;
+            overflow: hidden;
+            white-space: initial;
+            text-overflow: ellipsis;
+            color: #fff;
+            margin-bottom: 0;
+
+            @media (pointer: fine) {
+                &:hover {
+                    text-decoration: none;
+                }
+            }
+
+            font-weight: 500;
+            cursor: pointer;
+        }
+    }
+
+    .add {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0.5rem;
+        background: #0a4df1;
+        color: #fff;
+        margin-bottom: 0.5rem;
+        gap: 0.125rem;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+
+        svg {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
     }
 
     textarea {
-        background: linear-gradient(
-                0deg,
+        background: linear-gradient(0deg,
                 rgba(255, 255, 255, 0.05) 0%,
-                rgba(255, 255, 255, 0.05) 100%
-            ),
+                rgba(255, 255, 255, 0.05) 100%),
             #16171a;
         border: none;
         color: #fff;
