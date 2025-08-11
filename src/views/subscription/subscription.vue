@@ -210,9 +210,9 @@ let availablePlans = computed(() => {
 });
 
 let selectedPlan = (plan) => {
-    if (activeTabs.value[plan] == 1) {
-        plan = plan + '-perpetual';
-    }
+    // if (activeTabs.value[plan] == 1) {
+    //     plan = plan + '-perpetual';
+    // }
 
     if (plan === 'standard') {
         subscrOpt.value = availablePlans.value[0];
@@ -243,9 +243,12 @@ let upgrade = () => {
 let createSubscription = async (ticket_id, service_info, isPerpetual = false) => {
     promiseRunning.value = true;
 
-    if (changeMode.includes('perpetual')) {
-        isPerpetual = true;
-    }
+    // if (changeMode.includes('perpetual')) {
+    //     isPerpetual = true;
+    // }
+
+    console.log(ticket_id)
+    console.log(isPerpetual)
 
     let resolvedCustomer = await customer;
     let product = JSON.parse(import.meta.env.VITE_PRODUCT);
