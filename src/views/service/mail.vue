@@ -155,60 +155,61 @@ template(v-else)
                                     use(xlink:href="/basic-icon.svg#icon-delete")
                         template(v-slot:tip) Delete Selected
 
-        Table(:key="tableKey" :class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
-            template(v-if="fetching" v-slot:msg)
-                .tableMsg.center
-                    .loader(style="--loader-color:white; --loader-size:12px")
-            template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
-                .tableMsg.center No {{emailType}} Template
+        .table-cont-wrap
+            Table(:key="tableKey" :class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
+                template(v-if="fetching" v-slot:msg)
+                    .tableMsg.center
+                        .loader(style="--loader-color:white; --loader-size:12px")
+                template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+                    .tableMsg.center No {{emailType}} Template
 
-            template(v-slot:head)
-                tr(:class="{'nonClickable' : fetching}")
-                    th.fixed(style='width:60px;')
-                        Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.message_id] = d)); else checked = {}; }" style="display:inline-block")
-                        .resizer.fixed
-                    th(style="width:66px; padding:0;text-align:center;")
-                        span In-Use
-                        .resizer
-                    th(style="width:400px;")
-                        span(@click='toggleSort("subject")')
-                            | Subject
-                            svg.svgIcon(v-if='searchFor === "subject" && ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='searchFor === "subject" && !ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
-                        .resizer
-                    th(style="width:160px;")
-                        span(@click='toggleSort("timestamp")')
-                            | Date
-                            svg.svgIcon(v-if='searchFor === "timestamp" && ascending' )
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='searchFor === "timestamp" && !ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
-                        .resizer
+                template(v-slot:head)
+                    tr(:class="{'nonClickable' : fetching}")
+                        th.fixed(style='width:60px;')
+                            Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.message_id] = d)); else checked = {}; }" style="display:inline-block")
+                            .resizer.fixed
+                        th(style="width:66px; padding:0;text-align:center;")
+                            span In-Use
+                            .resizer
+                        th(style="width:400px;")
+                            span(@click='toggleSort("subject")')
+                                | Subject
+                                svg.svgIcon(v-if='searchFor === "subject" && ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
+                                svg.svgIcon(v-if='searchFor === "subject" && !ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
+                            .resizer
+                        th(style="width:160px;")
+                            span(@click='toggleSort("timestamp")')
+                                | Date
+                                svg.svgIcon(v-if='searchFor === "timestamp" && ascending' )
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
+                                svg.svgIcon(v-if='searchFor === "timestamp" && !ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
+                            .resizer
 
-            template(v-slot:body)
-                template(v-if="fetching || !listDisplay || listDisplay.length === 0")
-                    tr.nohover(v-for="i in 10")
-                        td(colspan="4")
-                template(v-else)
-                    tr.hoverRow(v-for="ns in listDisplay" @click='openMailPreview(ns, currentService.service?.["template_" + group]?.url === ns.url)')
-                        td
-                            Checkbox(@click.stop
-                                :modelValue="!!checked?.[ns?.message_id]"
-                                @update:modelValue="(value) => { if (value) checked[ns?.message_id] = value; else delete checked[ns?.message_id]; }"
-                                )
-                        td.overflow
-                            template(v-if='currentService.service?.["template_" + group]?.url === ns.url')
-                                svg.svgIcon
-                                    use(xlink:href="/material-icon.svg#icon-check-circle")
-                            template(v-else)
-                                svg.svgIcon.reactive.clickable.hide(@click.stop="emailToUse = ns")
-                                    use(xlink:href="/material-icon.svg#icon-circle")
-                        td.overflow {{ converter(ns.subject) }}
-                        td.overflow {{ dateFormat(ns.timestamp) }}
-                    tr.nohover(v-for="i in (10 - listDisplay.length)")
-                        td(colspan="4")
+                template(v-slot:body)
+                    template(v-if="fetching || !listDisplay || listDisplay.length === 0")
+                        tr.nohover(v-for="i in 10")
+                            td(colspan="4")
+                    template(v-else)
+                        tr.hoverRow(v-for="ns in listDisplay" @click='openMailPreview(ns, currentService.service?.["template_" + group]?.url === ns.url)')
+                            td
+                                Checkbox(@click.stop
+                                    :modelValue="!!checked?.[ns?.message_id]"
+                                    @update:modelValue="(value) => { if (value) checked[ns?.message_id] = value; else delete checked[ns?.message_id]; }"
+                                    )
+                            td.overflow
+                                template(v-if='currentService.service?.["template_" + group]?.url === ns.url')
+                                    svg.svgIcon
+                                        use(xlink:href="/material-icon.svg#icon-check-circle")
+                                template(v-else)
+                                    svg.svgIcon.reactive.clickable.hide(@click.stop="emailToUse = ns")
+                                        use(xlink:href="/material-icon.svg#icon-circle")
+                            td.overflow {{ converter(ns.subject) }}
+                            td.overflow {{ dateFormat(ns.timestamp) }}
+                        tr.nohover(v-for="i in (10 - listDisplay.length)")
+                            td(colspan="4")
 
         .table-page-wrap
             button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")

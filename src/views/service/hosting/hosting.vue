@@ -140,114 +140,115 @@ template(v-else)
                                     use(xlink:href="/basic-icon.svg#icon-delete")
                         template(v-slot:tip) Delete Selected
 
-        Table(
-            @dragover.stop.prevent="e=>{if(isPending) return; e.dataTransfer.dropEffect = 'copy'; dragHere = true;}"
-            @dragleave.stop.prevent="dragHere = false;"
-            @drop.stop.prevent="e => {dragHere = false; if(!isPending) onDrop(e, getFileList)}"
-            :class="{disabled : fetching || isPending || email_is_unverified_or_service_is_disabled, 'dragHere' : dragHere}"
-            resizable)
-            template(v-if='uploadProgress.name' v-slot:msg)
-                .progress(:style="{ width: uploadProgress.progress + '%', height: '3px', background: 'var(--main-color)', position: 'absolute', top: '58px', left: '0px', zIndex: 1}")
-                .tableMsg.left
-                    svg.svgIcon.moving(style="margin-right: 13px;")
-                        use(xlink:href="/material-icon.svg#icon-upload")
-                    | Uploading: /{{ uploadProgress.name }}&nbsp;
-                    b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
+        .table-cont-wrap
+            Table(
+                @dragover.stop.prevent="e=>{if(isPending) return; e.dataTransfer.dropEffect = 'copy'; dragHere = true;}"
+                @dragleave.stop.prevent="dragHere = false;"
+                @drop.stop.prevent="e => {dragHere = false; if(!isPending) onDrop(e, getFileList)}"
+                :class="{disabled : fetching || isPending || email_is_unverified_or_service_is_disabled, 'dragHere' : dragHere}"
+                resizable)
+                template(v-if='uploadProgress.name' v-slot:msg)
+                    .progress(:style="{ width: uploadProgress.progress + '%', height: '3px', background: 'var(--main-color)', position: 'absolute', top: '58px', left: '0px', zIndex: 1}")
+                    .tableMsg.left
+                        svg.svgIcon.moving(style="margin-right: 13px;")
+                            use(xlink:href="/material-icon.svg#icon-upload")
+                        | Uploading: /{{ uploadProgress.name }}&nbsp;
+                        b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
 
-            template(v-else-if="fetching" v-slot:msg)
-                .tableMsg.center
-                    .loader(style="--loader-color:white; --loader-size:12px")
-                    | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetching ...
-            
-            template(v-else-if="!subdomainReady" v-slot:msg)
-                .tableMsg.center
-                    .loader(style="--loader-color:white; --loader-size:12px")
-                    | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subdomain change in process ...
-            
-            template(v-else-if="!subdomainReady" v-slot:msg)
-                .tableMsg.center
-                    .loader(style="--loader-color:white; --loader-size:12px")
-                    | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subdomain change in process ...
-
-            template(v-else-if="currentService.pending.cdn" v-slot:msg)
-                .tableMsg.center
-                    .loader(style="--loader-color:white; --loader-size:12px")
-                    | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDN Refresh in process... 
-
-            template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
-                .tableMsg.center.empty 
-                    svg.svgIcon
-                        use(xlink:href="/material-icon.svg#icon-upload")
-                    | Drag and drop files here
-            
-            template(v-slot:head)
-                tr
-                    th.fixed(style="width:60px;")
-                        Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.name] = d)); else checked = {}; }" :class='{nonClickable: !listDisplay.length}')
-                        .resizer.fixed
-                    th.left(style='width:320px;')
-                        span(@click='toggleSort("name")')
-                            | Filename
-                            svg.svgIcon(v-if='sortBy === "name" && ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='sortBy === "name" && !ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
-                        .resizer
-
-                    th(style='width:160px;')
-                        span(@click='toggleSort("size")')
-                            | Size
-                            svg.svgIcon(v-if='sortBy === "size" && ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='sortBy === "size" && !ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
-                        .resizer
-                    th(style='width:220px;')
-                        span(@click='toggleSort("upl")')
-                            | Uploaded
-                            svg.svgIcon(v-if='sortBy === "upl" && ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
-                            svg.svgIcon(v-if='sortBy === "upl" && !ascending')
-                                use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
-
-            template(v-slot:body)
-                template(v-if="fetching || isPending || !subdomainReady || currentService.pending.cdn || uploadProgress.name || !listDisplay || listDisplay.length === 0")
-                    tr.nohover(v-for="i in 10")
-                        td(colspan="4")
-
-                //- template(v-else-if='uploadProgress.name')
-                    .progress( :style="{ width: uploadProgress.progress + '%', height: '3px', background: 'var(--main-color)', position: 'absolute'}")
-                    tr.uploadState(style="position:relative")
-                        td
-                            svg.svgIcon.moving()
-                                use(xlink:href="/material-icon.svg#icon-upload")
-                        td.left(colspan="3")
-                            | Uploading: /{{ uploadProgress.name }}&nbsp;
-                            b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
-
-                template(v-else)
-                    tr.nohover(:class='{hoverRow:currentDirectory}' @click='currentDirectory = currentDirectory.split("/").length === 1 ? "" : currentDirectory.split("/").slice(0, -1).join("/")')
-                        td
-                            svg.svgIcon
-                                use(xlink:href="/material-icon.svg#icon-folder-open-fill")
-
-                        td.left(colspan="3")
-                            | {{hostUrl}}/{{ currentDirectory ? currentDirectory + '/' : '' }}
+                template(v-else-if="fetching" v-slot:msg)
+                    .tableMsg.center
+                        .loader(style="--loader-color:white; --loader-size:12px")
+                        | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetching ...
                 
-                    tr.hoverRow(v-for="(ns, i) in listDisplay" @click='()=>{ns.name[0] != "#" ? openFile(ns) : currentDirectory = setNewDir(ns) }')
-                        td
-                            Checkbox(@click.stop :modelValue="!!checked?.[ns?.name]" @update:modelValue="(value) => { if (value) checked[ns?.name] = value; else delete checked[ns?.name]; }")
+                template(v-else-if="!subdomainReady" v-slot:msg)
+                    .tableMsg.center
+                        .loader(style="--loader-color:white; --loader-size:12px")
+                        | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subdomain change in process ...
+                
+                template(v-else-if="!subdomainReady" v-slot:msg)
+                    .tableMsg.center
+                        .loader(style="--loader-color:white; --loader-size:12px")
+                        | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subdomain change in process ...
 
-                        td.overflow.left(v-if='ns.name[0] == "#"')
-                            svg.svgIcon(style='height: 22px; width: 22px; vertical-align: sub;')
-                                use(xlink:href="/material-icon.svg#icon-folder-fill")
-                            | &nbsp;{{ ns.name.slice(1) }}
-                        td.overflow.left(v-else) {{ ns.name }}
-                        td.overflow {{ getFileSize(ns.size) }}
-                        td.overflow {{ new Date(ns.upl).toLocaleString() }}
+                template(v-else-if="currentService.pending.cdn" v-slot:msg)
+                    .tableMsg.center
+                        .loader(style="--loader-color:white; --loader-size:12px")
+                        | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDN Refresh in process... 
 
-                    tr(v-for="i in (10 - listDisplay.length)")
-                        td(colspan="4")
+                template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+                    .tableMsg.center.empty 
+                        svg.svgIcon
+                            use(xlink:href="/material-icon.svg#icon-upload")
+                        | Drag and drop files here
+                
+                template(v-slot:head)
+                    tr
+                        th.fixed(style="width:60px;")
+                            Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.name] = d)); else checked = {}; }" :class='{nonClickable: !listDisplay.length}')
+                            .resizer.fixed
+                        th.left(style='width:320px;')
+                            span(@click='toggleSort("name")')
+                                | Filename
+                                svg.svgIcon(v-if='sortBy === "name" && ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
+                                svg.svgIcon(v-if='sortBy === "name" && !ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
+                            .resizer
+
+                        th(style='width:160px;')
+                            span(@click='toggleSort("size")')
+                                | Size
+                                svg.svgIcon(v-if='sortBy === "size" && ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
+                                svg.svgIcon(v-if='sortBy === "size" && !ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
+                            .resizer
+                        th(style='width:220px;')
+                            span(@click='toggleSort("upl")')
+                                | Uploaded
+                                svg.svgIcon(v-if='sortBy === "upl" && ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
+                                svg.svgIcon(v-if='sortBy === "upl" && !ascending')
+                                    use(xlink:href="/material-icon.svg#icon-arrow-drop-up")
+
+                template(v-slot:body)
+                    template(v-if="fetching || isPending || !subdomainReady || currentService.pending.cdn || uploadProgress.name || !listDisplay || listDisplay.length === 0")
+                        tr.nohover(v-for="i in 10")
+                            td(colspan="4")
+
+                    //- template(v-else-if='uploadProgress.name')
+                        .progress( :style="{ width: uploadProgress.progress + '%', height: '3px', background: 'var(--main-color)', position: 'absolute'}")
+                        tr.uploadState(style="position:relative")
+                            td
+                                svg.svgIcon.moving()
+                                    use(xlink:href="/material-icon.svg#icon-upload")
+                            td.left(colspan="3")
+                                | Uploading: /{{ uploadProgress.name }}&nbsp;
+                                b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
+
+                    template(v-else)
+                        tr.nohover(:class='{hoverRow:currentDirectory}' @click='currentDirectory = currentDirectory.split("/").length === 1 ? "" : currentDirectory.split("/").slice(0, -1).join("/")')
+                            td
+                                svg.svgIcon
+                                    use(xlink:href="/material-icon.svg#icon-folder-open-fill")
+
+                            td.left(colspan="3")
+                                | {{hostUrl}}/{{ currentDirectory ? currentDirectory + '/' : '' }}
+                    
+                        tr.hoverRow(v-for="(ns, i) in listDisplay" @click='()=>{ns.name[0] != "#" ? openFile(ns) : currentDirectory = setNewDir(ns) }')
+                            td
+                                Checkbox(@click.stop :modelValue="!!checked?.[ns?.name]" @update:modelValue="(value) => { if (value) checked[ns?.name] = value; else delete checked[ns?.name]; }")
+
+                            td.overflow.left(v-if='ns.name[0] == "#"')
+                                svg.svgIcon(style='height: 22px; width: 22px; vertical-align: sub;')
+                                    use(xlink:href="/material-icon.svg#icon-folder-fill")
+                                | &nbsp;{{ ns.name.slice(1) }}
+                            td.overflow.left(v-else) {{ ns.name }}
+                            td.overflow {{ getFileSize(ns.size) }}
+                            td.overflow {{ new Date(ns.upl).toLocaleString() }}
+
+                        tr(v-for="i in (10 - listDisplay.length)")
+                            td(colspan="4")
 
     .table-page-wrap
         button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")

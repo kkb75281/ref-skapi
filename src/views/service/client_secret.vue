@@ -62,44 +62,45 @@ section
                                 use(xlink:href="/basic-icon.svg#icon-delete")
                     template(v-slot:tip) Delete Selected
 
-    Table(:key="tableKey" :class="{disabled : !user?.email_verified || currentService.service.active <= 0}" resizable)
-        template(v-if="fetching" v-slot:msg)
-            .tableMsg.center
-                .loader(style="--loader-color:white; --loader-size:12px")
-        template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
-            .tableMsg.center No Records
+    .table-cont-wrap
+        Table(:key="tableKey" :class="{disabled : !user?.email_verified || currentService.service.active <= 0}" resizable)
+            template(v-if="fetching" v-slot:msg)
+                .tableMsg.center
+                    .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+                .tableMsg.center No Records
 
-        template(v-slot:head)
-            tr
-                th.fixed(style='width:60px;')
-                    Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.name] = d)); else checked = {}; }" style="display:inline-block")
-                    .resizer.fixed
-                template(v-for="c in columnList")
-                    th.overflow(v-if="c.value", style="width: 200px")
-                        | {{ c.name }}
-                        .resizer
-
-        template(v-slot:body)
-            template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
-                tr.nohover(v-for="i in 10")
-                    td(:colspan="colspan")
-            template(v-else)
-                tr.hoverRow(v-for="(cs, index) in listDisplay" @click="openDetailModal(cs, index)")
-                    td
-                        Checkbox(@click.stop
-                            :modelValue="!!checked?.[cs?.name]"
-                            @update:modelValue="(value) => { if (value) checked[cs?.name] = value; else delete checked[cs?.name]; }")
-
+            template(v-slot:head)
+                tr
+                    th.fixed(style='width:60px;')
+                        Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.name] = d)); else checked = {}; }" style="display:inline-block")
+                        .resizer.fixed
                     template(v-for="c in columnList")
-                        template(v-if="c.value")
-                            td.overflow(v-if="c.key === 'name'") {{ cs?.name }}
-                            td.overflow(v-if="c.key === 'client_secret'") {{ cs.client_secret ? cs.client_secret.slice(0,2) + '*'.repeat(cs.client_secret.length - 2) : '' }}
-                            td.overflow(v-if="c.key === 'locked'")
-                                svg.svgIcon(v-if="cs?.locked" style="fill: white")
-                                    use(xlink:href="/material-icon.svg#icon-check")
-                template(v-if="Object.keys(listDisplay || {}).length < 10")
-                    tr.nohover(v-for="i in 10 - Object.keys(listDisplay || {}).length")
+                        th.overflow(v-if="c.value", style="width: 200px")
+                            | {{ c.name }}
+                            .resizer
+
+            template(v-slot:body)
+                template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
+                    tr.nohover(v-for="i in 10")
                         td(:colspan="colspan")
+                template(v-else)
+                    tr.hoverRow(v-for="(cs, index) in listDisplay" @click="openDetailModal(cs, index)")
+                        td
+                            Checkbox(@click.stop
+                                :modelValue="!!checked?.[cs?.name]"
+                                @update:modelValue="(value) => { if (value) checked[cs?.name] = value; else delete checked[cs?.name]; }")
+
+                        template(v-for="c in columnList")
+                            template(v-if="c.value")
+                                td.overflow(v-if="c.key === 'name'") {{ cs?.name }}
+                                td.overflow(v-if="c.key === 'client_secret'") {{ cs.client_secret ? cs.client_secret.slice(0,2) + '*'.repeat(cs.client_secret.length - 2) : '' }}
+                                td.overflow(v-if="c.key === 'locked'")
+                                    svg.svgIcon(v-if="cs?.locked" style="fill: white")
+                                        use(xlink:href="/material-icon.svg#icon-check")
+                    template(v-if="Object.keys(listDisplay || {}).length < 10")
+                        tr.nohover(v-for="i in 10 - Object.keys(listDisplay || {}).length")
+                            td(:colspan="colspan")
 
     //- .table-page-wrap
         button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")
@@ -259,9 +260,9 @@ function getClientSecret(): void {
                         name: key,
                         client_secret: value,
                         locked:
-                            (currentService.service?.auth_client_secret || []).indexOf(
-                                key
-                            ) !== -1,
+                            (
+                                currentService.service?.auth_client_secret || []
+                            ).indexOf(key) !== -1,
                     };
                 }
             );
@@ -269,7 +270,6 @@ function getClientSecret(): void {
 
         fetching.value = false;
     }, 300);
-
 }
 
 let openDetailModal = (cs: object, i: number) => {
@@ -358,7 +358,7 @@ let saveKey = async () => {
     if (
         listDisplay.value.length &&
         listDisplay.value[selectedClientIndex]?.name !==
-        selectedClient.value.name
+            selectedClient.value.name
     ) {
         for (let i = 0; i < listDisplay.value.length; i++) {
             let ck = listDisplay.value[i];
@@ -514,7 +514,7 @@ const showTableColumns = () => {
 
         &:hover {
             border-radius: 50%;
-            background-color: #293FE61A;
+            background-color: #293fe61a;
         }
     }
 }
