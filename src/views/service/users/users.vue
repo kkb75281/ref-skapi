@@ -331,6 +331,7 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
                 placeholder="User's Phone Number (+821012345678)",
                 type="text"
             )
+            Checkbox(v-model="phone_number_public") public
         
         br
 
@@ -896,6 +897,7 @@ let openUnblockUser = ref(false);
 let openDeleteUser = ref(false);
 let openGrantAccess = ref(false);
 let successGrantAccess = ref(false);
+let phone_number_public = ref(false);
 let gender_public = ref(false);
 let address_public = ref(false);
 let birthdate_public = ref(false);
@@ -981,8 +983,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                      new Date(dates[1]).setHours(23, 59, 59, 999)
-                  ).getTime()
+                    new Date(dates[1]).setHours(23, 59, 59, 999)
+                ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1188,8 +1190,9 @@ let createUser = () => {
     promiseRunning.value = true;
     error.value = "";
 
-    if (gender_public.value || address_public.value || birthdate_public.value) {
+    if (phone_number_public.value || gender_public.value || address_public.value || birthdate_public.value) {
         Object.assign(createParams, {
+            phone_number_public: phone_number_public.value,
             gender_public: gender_public.value,
             address_public: address_public.value,
             birthdate_public: birthdate_public.value,
@@ -1213,6 +1216,7 @@ let createUser = () => {
                 createParams[i] = "";
             }
             redirect = "";
+            phone_number_public.value = false;
             gender_public.value = false;
             address_public.value = false;
             birthdate_public.value = false;
@@ -1357,6 +1361,7 @@ let closeModal = () => {
         for (let i in createParams) {
             createParams[i] = "";
         }
+        phone_number_public.value = false;
         gender_public.value = false;
         address_public.value = false;
         birthdate_public.value = false;
