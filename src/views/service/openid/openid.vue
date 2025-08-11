@@ -369,11 +369,16 @@ let upload = async (e: SubmitEvent) => {
         delete jsonData.cdtn;
     }
 
+    if (isEdit) {
+        jsonData.req = "update";
+    } else {
+        jsonData.req = "create";
+    }
+
     try {
         await currentService.registerOpenIDLogger(jsonData);
 
-        // if (pager.list[jsonData.is]) {
-        if (isEdit) {
+        if (pager.list[jsonData.is]) {
             await pager.editItem(jsonData);
         } else {
             await pager.insertItems([jsonData]);
