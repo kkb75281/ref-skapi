@@ -122,13 +122,16 @@ section
                                     span(style="margin-left: 8px") {{ rc?.table?.name }}
 
                                 td(v-if="c.key === 'record_id'")
-                                    .click.overflow(@click.stop="copyID") {{ rc.record_id }}
+                                    .click.overflow(@click.stop="copy(rc.record_id)") {{ rc.record_id }}
+
+                                td(v-if="c.key === 'unique_id'")
+                                    .overflow(:class="{'click' : rc.unique_id}" @click.stop="copy(rc.unique_id)" :style="{'pointer-events': rc.unique_id ? 'auto' : 'none'}") {{ rc.unique_id || '-' }}
 
                                 td(v-if="c.key === 'user_id'") 
-                                    .click.overflow(@click.stop="copyID") {{ rc.user_id }}
+                                    .click.overflow(@click.stop="copy(rc.user_id)") {{ rc.user_id }}
 
                                 td(v-if="c.key === 'reference'")
-                                    .click.overflow(v-if="rc?.reference" @click.stop="copyID") {{ rc?.reference }}
+                                    .click.overflow(v-if="rc?.reference" @click.stop="copy(rc?.reference)") {{ rc?.reference }}
                                     template(v-else) -
                                 td.overflow(v-if="c.key === 'index'") 
                                     template(v-if="rc?.index") 
@@ -237,6 +240,7 @@ import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { currentService, serviceRecords } from "@/views/service/main";
 import { showDropDown } from "@/assets/js/event.js";
+import { copy } from "@/assets/js/common.js";
 
 // table columns
 let tableKey = ref(0);
@@ -270,6 +274,11 @@ let columnList = reactive([
     {
         name: "Record ID",
         key: "record_id",
+        value: true,
+    },
+    {
+        name: "Unique ID",
+        key: "unique_id",
         value: true,
     },
     {
@@ -711,6 +720,10 @@ let upload = async (e: SubmitEvent) => {
         delete configs.index;
     }
 
+    if (configs?.unique_id && configs.unique_id === "null") {
+        configs.unique_id = JSON.parse(configs.unique_id);
+    }
+
     try {
         let r = await skapi.postRecord(jsonData, configs, files);
 
@@ -766,24 +779,6 @@ let deleteRecords = () => {
         });
 };
 
-let copyID = (e) => {
-    let target = e.currentTarget;
-    let copy = target.textContent;
-    let doc = document.createElement("textarea");
-
-    doc.textContent = target.textContent;
-    document.body.append(doc);
-    doc.select();
-    document.execCommand("copy");
-    doc.remove();
-
-    target.classList.add("clicked");
-
-    setTimeout(() => {
-        target.classList.remove("clicked");
-    }, 1000);
-};
-
 // checks
 let checked: any = ref({});
 
@@ -809,6 +804,19 @@ const showTableColumns = () => {
 
 .error {
     margin-bottom: 1rem;
+}
+
+.tableWrap {
+    table {
+        td {
+            .click {
+                &:hover {
+                    text-decoration: underline;
+                    text-decoration-thickness: 1px;
+                }
+            }
+        }
+    }
 }
 
 @media (max-width: 768px) {

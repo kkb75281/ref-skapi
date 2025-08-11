@@ -3,7 +3,7 @@
     .tool
         .tool-icon
             slot(name="tool")
-        .tip(:style="{ '--tip-background-color': props.tipBackgroundColor, '--text-color': props.textColor}" ref="tipContainer" :class="class")
+        .tip(:style="{ '--tip-background-color': props.tipBackgroundColor, '--text-color': props.textColor, '--tip-max-width': props.tipMaxWidth }" ref="tipContainer" :class="class")
             slot(name="tip")
         .tip-arrow(:class="classNames" :style="{ '--tip-background-color': props.tipBackgroundColor }")
 </template>
@@ -19,6 +19,10 @@ const props = defineProps({
     textColor: {
         type: String,
         default: "#000",
+    },
+    tipMaxWidth: {
+        type: String,
+        default: "unset",
     },
     class: {
         type: String,
@@ -112,6 +116,7 @@ const handleMouseEnter = (e) => {
 
     .tip {
         width: max-content;
+        max-width: var(--tip-max-width); // 최대 너비 설정
         display: none;
         position: absolute;
         box-sizing: border-box;

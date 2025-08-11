@@ -6,7 +6,7 @@
         .key
             span.text.required Logger ID
         .value
-            input.line(v-model="selectedRecord.id" name='id' placeholder="Logger ID" :disabled="isEdit" required)
+            input.line(v-model="selectedRecord.id" name='id' placeholder="Logger ID" required)
     .row
         .key
             span.text.required Username Key

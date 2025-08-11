@@ -107,7 +107,7 @@ section
             .flex-wrap.space-between.toggle-div
                 .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;") 
                     span.label Disable/Enable
-                    Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                    Tooltip(tip-background-color="var(--main-color)" text-color="white" tip-max-width="9rem")
                         template(v-slot:tool)
                             svg.svgIcon
                                 use(xlink:href="/basic-icon.svg#icon-help-circle")
@@ -123,7 +123,7 @@ section
             .flex-wrap.space-between.toggle-div
                 .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
                     span.label Allow Signup
-                    Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                    Tooltip(tip-background-color="var(--main-color)" text-color="white" tip-max-width="9rem")
                         template(v-slot:tool)
                             svg.svgIcon
                                 use(xlink:href="/basic-icon.svg#icon-help-circle")
@@ -139,7 +139,7 @@ section
             .flex-wrap.space-between.toggle-div
                 .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
                     span.label Prevent Inquiry
-                    Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                    Tooltip(tip-background-color="var(--main-color)" text-color="white" tip-max-width="9rem")
                         template(v-slot:tool)
                             svg.svgIcon
                                 use(xlink:href="/basic-icon.svg#icon-help-circle")
@@ -155,7 +155,7 @@ section
             .flex-wrap.space-between.toggle-div
                 .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
                     span.label Freeze Database
-                    Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                    Tooltip(tip-background-color="var(--main-color)" text-color="white" tip-max-width="9rem")
                         template(v-slot:tool)
                             svg.svgIcon
                                 use(xlink:href="/basic-icon.svg#icon-help-circle")
@@ -495,12 +495,6 @@ a {
             height: 1.25rem;
             position: relative;
             top: -2px;
-        }
-
-        ._tooltip {
-            ::v-deep(.tip) {
-                max-width: 9rem;
-            }
         }
     }
 

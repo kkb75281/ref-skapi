@@ -132,7 +132,7 @@ Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModa
                         input.block(type="text" v-model="selectedClient.client_secret" placeholder="string1234..." required :disabled='uploading')
                 label.row.locked
                     .key Locked &nbsp;
-                        Tooltip(tip-background-color="var(--main-color)" text-color="white")
+                        Tooltip(tip-background-color="var(--main-color)" text-color="white" tip-max-width="10rem")
                             template(v-slot:tool)
                                 svg.svgIcon
                                     use(xlink:href="/basic-icon.svg#icon-help-circle")
@@ -467,12 +467,6 @@ const showTableColumns = () => {
         align-items: center;
         font-weight: 500;
         width: 170px;
-
-        ._tooltip {
-            ::v-deep(.tip) {
-                max-width: 10rem;
-            }
-        }
     }
 }
 
