@@ -284,9 +284,9 @@ let selectedPlan = (plan: string) => {
             plan = plan + "-perpetual";
         }
 
-        if (showReferPrice.value) {
-            plan = plan + "-affiliate";
-        }
+        // if (showReferPrice.value) {
+        //     plan = plan + "-affiliate";
+        // }
     }
 
     serviceMode.value = plan;
@@ -327,14 +327,15 @@ const handleKey = (e: KeyboardEvent) => {
 onMounted(() => {
     document.addEventListener("keydown", handleKey);
 
-    let misc = JSON.parse(user.misc || '{}');
-    let miscRefer = misc.refer || [];
+    // 추천인 코드 사용해서 플랜 가격할인 받을때 사용하면 됨
+    // let misc = JSON.parse(user.misc || '{}');
+    // let miscRefer = misc.refer || [];
 
-    if (miscRefer.length > 0) {
-        showReferPrice.value = true;
-    } else {
-        showReferPrice.value = false;
-    }
+    // if (miscRefer.length > 0) {
+    //     showReferPrice.value = true;
+    // } else {
+    //     showReferPrice.value = false;
+    // }
 });
 
 onUnmounted(() => {
