@@ -1,134 +1,141 @@
 <template lang="pug">
-Modal(:open="props.showCreateModal" @close="handleClose")
-    .modal-close(@click="handleClose")
-        svg.svgIcon
-            use(xlink:href="/basic-icon.svg#icon-x")
+template(v-if="visible")
+    .modal-overlay(:class="{ 'first-service': isFirstService }" @click="handleClose")
+        .modal-wrap
+            .modal-content(@click.stop)                    
+                #create
+                    .btn-prev(v-if="step > 1")
+                        svg.svgIcon(@click="step--")
+                            use(xlink:href="/basic-icon.svg#icon-arrow-left")
+                    .btn-close(@click="handleClose" :style="isFirstService ? {display: 'none'} : {}")
+                        svg.svgIcon
+                            use(xlink:href="/basic-icon.svg#icon-x")
 
-    .btn-prev(v-if="step > 1 && !props.firstServiceName")
-        svg.svgIcon(@click="step--")
-            use(xlink:href="/basic-icon.svg#icon-arrow-left")
-    
-    .service-name-part(v-if="step === 1")
-        .modal-title Create your service
-        .modal-desc.
-            Create a service to get started.
-            #[br]
-            You can create and manage multiple projects.
-        input.block(
-            placeholder="Service name (Max 40 chars)" 
-            maxlength="40" 
-            required 
-            :value="newServiceName" 
-            @input="newServiceName = $event.target.value"
-            style="margin-bottom: 0.75rem;"
-        )
-        button.create-button.block.icon-text(type="button" :disabled="!newServiceName" :style="!newServiceName ? { backgroundColor: 'rgba(34, 35, 37, 1)' } : {}" @click="step++")
-            svg
-                use(xlink:href="/basic-icon.svg#icon-plus") 
-            span Create
+                    .form(v-if="step === 1")
+                        h3.title
+                            template(v-if="isFirstService")
+                                | Welcome!
+                                br
+                                | Create your first service
+                            template(v-else)
+                                | Create your service
+                        span.desc
+                            template(v-if="isFirstService")
+                                | Create your first service to get started.
+                                br
+                                | You can create and manage multiple projects.
+                            template(v-else)
+                                | Create a service to get started.
+                                br
+                                | You can create and manage multiple projects.
+                        input.block(placeholder="Service name (Max 40 chars)" maxlength="40" required v-model="newServiceName" style="margin-bottom: 0.75rem;")
+                        button.block.icon-text(type="button" :disabled="!newServiceName" :style="!newServiceName ? { backgroundColor: 'rgba(34, 35, 37, 1)' } : {}" @click="step++")
+                            svg
+                                use(xlink:href="/basic-icon.svg#icon-plus") 
+                            span Create
 
-    .service-plan-part(v-else-if="step === 2")
-        .modal-title Choose a plan
-        .modal-desc.
-            Select a plan that fits your needs.
-        .plan-wrap
-            .plan-item.blue(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
-                svg.mark
-                    use(xlink:href="/material-icon.svg#icon-card-mark")
-                .top
-                    .title Trial
-                    .desc Best for testing and prototyping.
-                    //- .option 
-                        TabMenu(v-model="activeTabs.trial" :tabs="['basic']")
-                .middle
-                    .price Free
-                        //- .num {{ '$' + planSpec['Trial'].price }}
-                        //- span /mo
-                    button.block(type="button" :disabled="promiseRunning" @click="selectedPlan('trial')") 
-                        template(v-if="serviceMode == 'trial' && promiseRunning")
-                            .loader(style="--loader-color:white; --loader-size: 12px")
-                        template(v-else) Select
-                .bottom
-                    p Core includes:
-                    ul
-                        li.user 10K User Accounts
-                        li.data 8GB Database Storage
-                        li.file 100GB File Storage
-                        li.mail(style="margin-bottom: 2.5rem;") Automated Emails
-                        li.forbiden(style="font-size: .9375rem;") All user data is deleted every 14 days
-                    //- ul.provides
-                        li(v-for="(des) in planSpec['Trial'].description") {{ des }}
-                        li.warning(v-for="(des) in planSpec['Trial'].description_warning") {{ des }}
+                    .step-plan(v-else-if="step === 2")
+                        h3.title(style="margin: 4.5rem 0 2rem;") Choose a plan
+                        .plan-wrap
+                            .plan-item.blue(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
+                                svg.mark
+                                    use(xlink:href="/material-icon.svg#icon-card-mark")
+                                .top
+                                    .title Trial
+                                    .desc Best for testing and prototyping.
+                                    //- .option 
+                                        TabMenu(v-model="activeTabs.trial" :tabs="['basic']")
+                                .middle
+                                    .price Free
+                                        //- .num {{ '$' + planSpec['Trial'].price }}
+                                        //- span /mo
+                                    button.block(type="button" :disabled="promiseRunning" @click="selectedPlan('trial')") 
+                                        template(v-if="serviceMode == 'trial' && promiseRunning")
+                                            .loader(style="--loader-color:white; --loader-size: 12px")
+                                        template(v-else) Select
+                                .bottom
+                                    p Core includes:
+                                    ul
+                                        li.user 10K User Accounts
+                                        li.data 8GB Database Storage
+                                        li.file 100GB File Storage
+                                        li.mail(style="margin-bottom: 2.5rem;") Automated Emails
+                                        li.forbiden(style="font-size: .9375rem;") All user data is deleted every 14 days
+                                    //- ul.provides
+                                        li(v-for="(des) in planSpec['Trial'].description") {{ des }}
+                                        li.warning(v-for="(des) in planSpec['Trial'].description_warning") {{ des }}
 
-            .plan-item.green(:class="{'selected' : (serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'standard' && serviceMode !== 'standard-perpetual') && promiseRunning}")
-                svg.mark
-                    use(xlink:href="/material-icon.svg#icon-card-mark")
-                .top
-                    .title Standard
-                        span.ref(v-if="showReferPrice") (Referral Price)
-                    .desc Suit best for small businesses, MVP, small projects, etc.
-                    //- .option 
-                        TabMenu(v-model="activeTabs.standard" :tabs="['basic', 'perpetual']")
-                .middle
-                    .price(:class="{'affiliate': showReferPrice}")
-                        template(v-if="activeTabs.standard === 0") 
-                            .discount-num {{ '$' + Math.floor(planSpec['Standard'].price * 0.9) }}
-                            .num {{ '$' + planSpec['Standard'].price }}
-                            span /mon
-                        template(v-else)
-                            .discount-num {{ '$' + Math.floor(planSpec['Standard'].price * 0.9) }}
-                            .num {{ '$' + planSpec['Standard (Perpetual License)'].price }}
-                            span /only-once
-                    button.block(type="button" :disabled="promiseRunning" @click="selectedPlan('standard')")
-                        template(v-if="(serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning")
-                            .loader(style="--loader-color:white; --loader-size: 12px")
-                        template(v-else) Select
-                .bottom
-                    p Includes all Trial Plan features, but more functions:
-                    ul
-                        li.mail 1GB Email Storage
-                        li.invitation User invitation System
-                        li.global Website Hosting
-                        li.global Subdomain Hosting
-                        li.mail Sending Bulk Emails
-                    //- .desc 
-                        template(v-if="activeTabs.standard === 0") Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
-                        template(v-else) Get lifetime access to the Standard plan for just $300—upgrade anytime as your needs grow.
-                    //- ul.provides
-                        li(v-for="(des) in planSpec['Standard'].description") {{ des }}
-            .plan-item.yellow(:class="{'selected' : (serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'premium' && serviceMode !== 'premium-perpetual') && promiseRunning}")
-                svg.mark
-                    use(xlink:href="/material-icon.svg#icon-card-mark")
-                .top
-                    .title Premium
-                        span.ref(v-if="showReferPrice") (Referral Price)
-                    .desc Suit best for huge projects, Saas, social media, AI application, etc.
-                    //- .option 
-                        TabMenu(v-model="activeTabs.premium" :tabs="['basic', 'perpetual']")
-                .middle
-                    .price(:class="{'affiliate': showReferPrice}")
-                        template(v-if="activeTabs.premium === 0") 
-                            .discount-num {{ '$' + Math.floor(planSpec['Premium'].price * 0.9) }}
-                            .num {{ '$' + planSpec['Premium'].price }}
-                            span /mon
-                        template(v-else)
-                            .discount-num {{ '$' + Math.floor(planSpec['Premium (Perpetual License)'].price * 0.9) }}
-                            .num {{ '$' + planSpec['Premium (Perpetual License)'].price }}
-                            span /only-once
-                    //- .desc Empower your business with formcarry, #[span.wordset for big businesses]
-                    button.block(type="button" :disabled="promiseRunning" @click="selectedPlan('premium')")
-                        template(v-if="(serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning")
-                            .loader(style="--loader-color:white; --loader-size: 12px")
-                        template(v-else) Select
-                //- ul.provides
-                    li(v-for="(des) in planSpec['Premium'].description") {{ des }}
-                .bottom
-                    p Includes all Standard Plan features, but more data:
-                    ul
-                        li.user 100K User Accounts
-                        li.data 100GB Database Storage
-                        li.file 1TB File Storage
-                        li.mail 10GB Email Storage
+                            .plan-item.green(:class="{'selected' : (serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'standard' && serviceMode !== 'standard-perpetual') && promiseRunning}")
+                                svg.mark
+                                    use(xlink:href="/material-icon.svg#icon-card-mark")
+                                .top
+                                    .title Standard
+                                        span.ref(v-if="showReferPrice") (Referral Price)
+                                    .desc Suit best for small businesses, MVP, small projects, etc.
+                                    //- .option 
+                                        TabMenu(v-model="activeTabs.standard" :tabs="['basic', 'perpetual']")
+                                .middle
+                                    .price(:class="{'affiliate': showReferPrice}")
+                                        template(v-if="activeTabs.standard === 0") 
+                                            .discount-num {{ '$' + Math.floor(planSpec['Standard'].price * 0.9) }}
+                                            .num {{ '$' + planSpec['Standard'].price }}
+                                            span /mon
+                                        template(v-else)
+                                            .discount-num {{ '$' + Math.floor(planSpec['Standard'].price * 0.9) }}
+                                            .num {{ '$' + planSpec['Standard (Perpetual License)'].price }}
+                                            span /only-once
+                                    button.block(type="button" :disabled="promiseRunning" @click="selectedPlan('standard')")
+                                        template(v-if="(serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning")
+                                            .loader(style="--loader-color:white; --loader-size: 12px")
+                                        template(v-else) Select
+                                .bottom
+                                    p Includes all Trial Plan features, but more functions:
+                                    ul
+                                        li.mail 1GB Email Storage
+                                        li.invitation User invitation System
+                                        li.global Website Hosting
+                                        li.global Subdomain Hosting
+                                        li.mail Sending Bulk Emails
+                                    //- .desc 
+                                        template(v-if="activeTabs.standard === 0") Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
+                                        template(v-else) Get lifetime access to the Standard plan for just $300—upgrade anytime as your needs grow.
+                                    //- ul.provides
+                                        li(v-for="(des) in planSpec['Standard'].description") {{ des }}
+                            .plan-item.yellow(:class="{'selected' : (serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'premium' && serviceMode !== 'premium-perpetual') && promiseRunning}")
+                                svg.mark
+                                    use(xlink:href="/material-icon.svg#icon-card-mark")
+                                .top
+                                    .title Premium
+                                        span.ref(v-if="showReferPrice") (Referral Price)
+                                    .desc Suit best for huge projects, Saas, social media, AI application, etc.
+                                    //- .option 
+                                        TabMenu(v-model="activeTabs.premium" :tabs="['basic', 'perpetual']")
+                                .middle
+                                    .price(:class="{'affiliate': showReferPrice}")
+                                        template(v-if="activeTabs.premium === 0") 
+                                            .discount-num {{ '$' + Math.floor(planSpec['Premium'].price * 0.9) }}
+                                            .num {{ '$' + planSpec['Premium'].price }}
+                                            span /mon
+                                        template(v-else)
+                                            .discount-num {{ '$' + Math.floor(planSpec['Premium (Perpetual License)'].price * 0.9) }}
+                                            .num {{ '$' + planSpec['Premium (Perpetual License)'].price }}
+                                            span /only-once
+                                    //- .desc Empower your business with formcarry, #[span.wordset for big businesses]
+                                    button.block(type="button" :disabled="promiseRunning" @click="selectedPlan('premium')")
+                                        template(v-if="(serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning")
+                                            .loader(style="--loader-color:white; --loader-size: 12px")
+                                        template(v-else) Select
+                                //- ul.provides
+                                    li(v-for="(des) in planSpec['Premium'].description") {{ des }}
+                                .bottom
+                                    p Includes all Standard Plan features, but more data:
+                                    ul
+                                        li.user 100K User Accounts
+                                        li.data 100GB Database Storage
+                                        li.file 1TB File Storage
+                                        li.mail 10GB Email Storage
+
+            //- button.btn-close.inline(v-if="step === 2" type="button" @click="handleClose") Close
 </template>
 
 <script setup lang="ts">
@@ -146,15 +153,24 @@ import { planSpec } from "@/views/service/service-spec";
 
 import Service from "@/code/service";
 import TabMenu from "@/components/tab.vue";
-import Modal from "@/components/modal.vue";
 
 const router = useRouter();
 const route = useRoute();
 
-const props = defineProps<{
-    showCreateModal: boolean;
-    firstServiceName?: string;
-}>();
+const props = defineProps({
+    visible: Boolean,
+    // isFirstService: Boolean,
+});
+
+// 첫 번째 서비스인지 계산
+const isFirstService = computed(() => {
+    // 로딩 중이면 false 반환 (로딩 완료 후 판단)
+    if (fetchingServiceList.value) {
+        return false;
+    }
+    // 서비스가 없으면 첫 번째 서비스
+    return serviceIdList.length === 0;
+});
 
 const emit = defineEmits(["close"]);
 
@@ -281,18 +297,13 @@ let selectedPlan = (plan: string) => {
 const resetModalState = () => {
     promiseRunning.value = false;
     serviceMode.value = "standard";
-
-    // props.firstServiceName이 없을 때만 초기화
-    if (!props.firstServiceName || !props.firstServiceName.trim()) {
-        newServiceName.value = "";
-        step.value = 1;
-    }
-
+    newServiceName.value = "";
     activeTabs.value = {
         trial: 0,
         standard: 0,
         premium: 0,
     };
+    step.value = 1;
 };
 
 // body 스크롤 제어 함수들
@@ -305,7 +316,7 @@ const enableBodyScroll = () => {
 };
 
 const handleKey = (e: KeyboardEvent) => {
-    if (!props.showCreateModal) return;
+    if (!props.visible) return;
 
     if (e.key === "Enter" && step.value === 1 && newServiceName.value) {
         e.preventDefault();
@@ -333,19 +344,12 @@ onUnmounted(() => {
 
 // 모달이 열리고 닫힐 때 상태 관리
 watch(
-    () => props.showCreateModal,
+    () => props.visible,
     (newVisible) => {
         if (newVisible) {
             // 모달이 열릴 때
             resetModalState(); // 상태 초기화
             disableBodyScroll(); // body 스크롤 비활성화
-
-            if (props.firstServiceName && props.firstServiceName.trim()) { // 빈 문자열 체크
-                newServiceName.value = props.firstServiceName;
-                step.value = 2;
-            } else {
-                step.value = 1; // 빈 문자열이면 step 1부터 시작
-            }
         } else {
             // 모달이 닫힐 때
             enableBodyScroll(); // body 스크롤 활성화
@@ -366,11 +370,55 @@ function resetSearchModal() {
 </script>
 
 <style scoped lang="less">
+.smallTitle {
+    font-size: 0.8rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.step-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    // max-width: 80rem;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 12px;
+    box-shadow: rgba(66, 62, 121, 0.25) 0px 0px 90px -14px;
+    // margin: 0 var(--nav-top);
+    border-color: #f7f9fc;
+
+    a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #000;
+
+        img {
+            height: 30px;
+        }
+    }
+
+    .route {
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
 .plan-wrap {
     display: flex;
     justify-content: center;
     align-items: start;
     gap: 1.5rem;
+    padding: 0 5.25rem 5.25rem;
 
     .option {
         position: relative;
@@ -657,7 +705,70 @@ function resetSearchModal() {
     }
 }
 
-dialog {
+// 모달 스타일 추가 :: s
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999999;
+
+    &.first-service {
+        background: url("@/assets/img/landingpage/bg_colorful.svg") no-repeat center center;
+        background-size: cover;
+        top: 4rem;
+    }
+}
+
+.modal-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999999;
+}
+
+.modal-content {
+    width: calc(100% - 1rem);
+    max-width: 75rem;
+    max-height: calc(100% - 1rem);
+    overflow-y: auto;
+    z-index: 999999;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+
+    .title {
+        font-size: 1.875rem;
+        font-weight: 500;
+        color: #fff;
+        margin-bottom: 0.625rem;
+        margin-top: 0;
+        text-align: center;
+    }
+
+    .desc {
+        font-size: 0.9375rem;
+        font-weight: 400;
+        color: #666666;
+        line-height: 1.2;
+        margin-bottom: 3.125rem;
+        display: block;
+    }
+}
+
+#create {
+    background: #16171a;
+    position: relative;
+    max-height: calc(100% - 4rem);
+    overflow-y: auto;
+    border-radius: 0.75rem;
+
     &::-webkit-scrollbar {
         width: 0.25rem;
         height: 0.25rem;
@@ -673,9 +784,42 @@ dialog {
     }
 }
 
+.form {
+    padding: 5rem 5.25rem 6.25rem;
+
+    button {
+        border-radius: 0.5rem;
+        background-color: #0a4df1;
+
+        &:hover {
+            background-color: #1656f2;
+        }
+
+        &.disabled {
+            opacity: 1;
+            background-color: #222325;
+        }
+    }
+}
+
+.btn-close,
 .btn-prev {
     position: absolute;
     cursor: pointer;
+
+    .svgIcon {
+        width: 1.75rem;
+        height: 1.75rem;
+        fill: #fff;
+    }
+}
+
+.btn-close {
+    top: 1.5rem;
+    right: 1.5rem;
+}
+
+.btn-prev {
     top: 1.75rem;
     left: 1.8rem;
 
@@ -688,6 +832,8 @@ dialog {
 .provides {
     color: #666666;
 }
+
+// 모달 스타일 추가 :: e
 
 @media (max-width: 992px) {
     .plan-wrap {
@@ -702,12 +848,22 @@ dialog {
 }
 
 @media (max-width: 576px) {
+    .step-wrap {
+        .list {
+            display: none;
+        }
+    }
+
     .plan-wrap {
         padding: 0 2rem 2rem;
     }
 }
 
 @media (max-width: 430px) {
+    .modal-content {
+        width: calc(100% - 1rem);
+    }
+
     .form {
         max-width: 100%;
         min-width: 100%;

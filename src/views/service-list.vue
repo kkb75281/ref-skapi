@@ -2,8 +2,28 @@
 div.loading-wrap(v-if="fetchingServiceList")
     .loader(style="--loader-color:white; --loader-size:12px")
 template(v-else)
-    .first-service(v-if="isFirstService")
-        modalCreateService(:visible="true")
+    .create-wrap(v-if="isFirstService")
+        .create-inner
+            .title
+                | Welcome!
+                br
+                | Create your first service
+            .desc
+                | Create your first service #[span.wordset to get started.]
+                br
+                | You can create and manage multiple projects.
+            input.block(
+                placeholder="Service name (Max 40 chars)" 
+                maxlength="40" 
+                required 
+                :value="newServiceName" 
+                @input="newServiceName = $event.target.value"
+                style="margin-bottom: 0.75rem;")
+            button.block.icon-text(type="button" :disabled="!newServiceName" :style="!newServiceName ? { backgroundColor: 'rgba(34, 35, 37, 1)' } : {}" @click="openCreateService")
+                svg
+                    use(xlink:href="/basic-icon.svg#icon-plus") 
+                span Create
+
     .service-list(v-else)
         section.section.top-area
             a.top-item(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank")
@@ -37,7 +57,7 @@ template(v-else)
                     svg
                         use(xlink:href="/basic-icon.svg#icon-plus") 
                     span Create
-                modalCreateService(:visible="showCreateModal" @close="showCreateModal = false")
+                //- modalCreateService(:visible="showCreateModal" @close="showCreateModal = false")
         section.section.my-services-list
             .title My Services
 
@@ -106,11 +126,13 @@ template(v-else)
 #loading(v-if="loading")
     .loader
     //- span.text Creating service...
+
+CreateService(@close="showCreateModal = false" :showCreateModal="showCreateModal" :firstServiceName="newServiceName")
 </template>
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { user } from "@/code/user";
 import {
     fetchingServiceList,
@@ -119,7 +141,7 @@ import {
     serviceSpecList,
 } from "@/views/service-list";
 import Table from "@/components/table.vue";
-import modalCreateService from "@/views/create-service.vue";
+import CreateService from "@/views/create-service.vue";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination, Autoplay } from "swiper/modules";
@@ -132,8 +154,18 @@ const route = useRoute();
 let routeQuery = route.query;
 
 onMounted(() => {
+    document.addEventListener("keydown", handleKey);
+
     if (routeQuery?.redirect === "create" && !isFirstService.value) {
         openCreateService();
+    }
+});
+
+onUnmounted(() => {
+    document.removeEventListener("keydown", handleKey);
+
+    if (document.body.classList.contains("first-create-service")) {
+        document.body.classList.remove("first-create-service");
     }
 });
 
@@ -145,10 +177,25 @@ const isFirstService = computed(() => {
     // 로딩 중이면 false 반환 (로딩 완료 후 판단)
     if (fetchingServiceList.value) {
         return false;
+    } else if (serviceIdList.length > 0) {
+        return false;
+    } else {
+        // 서비스가 없으면 첫 번째 서비스
+        document.body.classList.add("first-create-service");
+        return true;
     }
     // 서비스가 없으면 첫 번째 서비스
-    return serviceIdList.length === 0;
+    // return serviceIdList.length === 0;
 });
+
+const handleKey = (e: KeyboardEvent) => {
+    if (!isFirstService.value) return;
+
+    if (e.key === "Enter" && newServiceName.value) {
+        e.preventDefault();
+        openCreateService();
+    }
+};
 
 function openCreateService() {
     showCreateModal.value = true;
@@ -212,12 +259,34 @@ a {
     }
 }
 
-.first-service {
-    // width: 100%;
-    // height: 100%;
-    // min-height: calc(100vh - var(--footer-height, 0) - 4rem);
-    // background: url("@/assets/img/myservice/bg_gradation.svg") no-repeat center center;
-    // background-size: cover;
+.create-wrap {
+    text-align: center;
+    padding: 5rem 1.25rem 3rem;
+
+    .create-inner {
+        border-radius: 16px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+        background-color: rgba(22, 23, 26, 1);
+        text-align: center;
+        padding: 4rem;
+        display: inline-block;
+    }
+
+    .title {
+        font-size: 1.75rem;
+        font-weight: 500;
+        margin: 0 0 1rem;
+    }
+
+    .desc {
+        margin: 0 auto;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.4;
+        color: rgba(102, 102, 102, 1);
+        margin-bottom: 2rem;
+    }
 }
 
 .service-list {
@@ -270,8 +339,7 @@ a {
         position: absolute;
         bottom: 0;
         right: 0;
-        background: url("@/assets/img/myservice/img_docs.png") no-repeat center
-            right;
+        background: url("@/assets/img/myservice/img_docs.png") no-repeat center right;
     }
 
     &:first-child {
@@ -282,8 +350,7 @@ a {
             top: 0;
             left: 0;
             position: absolute;
-            background: url("@/assets/img/myservice/bg_texture.svg") no-repeat
-                center;
+            background: url("@/assets/img/myservice/bg_texture.svg") no-repeat center;
             opacity: 0.2;
             z-index: 1;
         }
@@ -331,8 +398,7 @@ a {
         top: 0;
         left: 0;
         position: absolute;
-        background: url("@/assets/img/myservice/bg_texture.svg") no-repeat
-            center;
+        background: url("@/assets/img/myservice/bg_texture.svg") no-repeat center;
         opacity: 0.2;
         z-index: 1;
     }
@@ -360,8 +426,7 @@ a {
         background: #60de87;
 
         &::before {
-            background: url("@/assets/img/myservice/img_announce.png") no-repeat
-                center right;
+            background: url("@/assets/img/myservice/img_announce.png") no-repeat center right;
         }
     }
 
@@ -369,8 +434,7 @@ a {
         background: #ffd54a;
 
         &::before {
-            background: url("@/assets/img/myservice/img_useCase.png") no-repeat
-                center right;
+            background: url("@/assets/img/myservice/img_useCase.png") no-repeat center right;
         }
     }
 
@@ -378,8 +442,7 @@ a {
         background: #675dff;
 
         &::before {
-            background: url("@/assets/img/myservice/img_newFeature.png")
-                no-repeat center right;
+            background: url("@/assets/img/myservice/img_newFeature.png") no-repeat center right;
         }
     }
 
@@ -392,7 +455,7 @@ a {
 
     .swiper-pagination-fraction,
     .swiper-pagination-custom,
-    .swiper-horizontal > .swiper-pagination-bullets,
+    .swiper-horizontal>.swiper-pagination-bullets,
     .swiper-pagination-bullets.swiper-pagination-horizontal {
         width: initial;
     }
@@ -507,11 +570,9 @@ a {
 
                 &:hover {
                     cursor: pointer;
-                    background: linear-gradient(
-                            0deg,
+                    background: linear-gradient(0deg,
                             rgba(255, 255, 255, 0.03) 0%,
-                            rgba(255, 255, 255, 0.03) 100%
-                        ),
+                            rgba(255, 255, 255, 0.03) 100%),
                         #141315;
 
                     td {
@@ -529,7 +590,7 @@ a {
                 }
 
                 &.hidden {
-                    > *:not(.name) {
+                    >*:not(.name) {
                         opacity: 0.5;
                     }
                 }
@@ -639,8 +700,7 @@ a {
                     display: block;
                     width: 1.25rem;
                     height: 1.25rem;
-                    background: url("@/assets/img/myservice/icon_lock.svg")
-                        no-repeat center;
+                    background: url("@/assets/img/myservice/icon_lock.svg") no-repeat center;
                 }
             }
         }

@@ -37,6 +37,11 @@ const route = useRoute();
     }
 }
 
+.first-create-service {
+    background: url("@/assets/img/landingpage/bg_colorful.svg") no-repeat center center fixed;
+    background-size: cover;
+}
+
 .review-swiper {
     .swiper {
         padding-bottom: 8rem;
