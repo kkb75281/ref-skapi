@@ -84,7 +84,7 @@ section
                     .tit Users
                     .data {{ currentServiceSpec.dataSize?.users || 0 }} / {{ currentServiceSpec.servicePlan.users }}
                 .bar-wrap
-                    .bar(:style='{width: Math.max(currentServiceSpec.dataPercent.users, 1) + "%"}')
+                    .bar(:style='{width: Math.max(currentServiceSpec.dataPercent.users, 1) + "%"}' :class="getBarColorClass(currentServiceSpec.dataPercent.users)")
 
                 br
 
@@ -92,7 +92,7 @@ section
                     .tit Database
                     .data {{ currentServiceSpec.dataSize?.database || 0 }} / {{ currentServiceSpec.servicePlan.storage.database }}
                 .bar-wrap
-                    .bar(:style='{width: Math.max(currentServiceSpec.dataPercent.database, 1) + "%"}')
+                    .bar(:style='{width: Math.max(currentServiceSpec.dataPercent.database, 1) + "%"}' :class="getBarColorClass(currentServiceSpec.dataPercent.database)")
 
                 br
 
@@ -100,7 +100,7 @@ section
                     .tit File Storage
                     .data {{ currentServiceSpec.dataSize?.cloud || 0 }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
                 .bar-wrap
-                    .bar(:style='{width: Math.max(currentServiceSpec.dataPercent.cloud, 1) + "%"}')
+                    .bar(:style='{width: Math.max(currentServiceSpec.dataPercent.cloud, 1) + "%"}' :class="getBarColorClass(currentServiceSpec.dataPercent.cloud)")
 
         .toggle-wrap
             .title Service Settings
@@ -456,6 +456,16 @@ let changeFreezeDatabase = async (onlyAdmin: boolean) => {
             updatingValue.freeze_database = false;
         });
 };
+
+// 사용량에 따른 바 색상 변경 함수
+const getBarColorClass = (percent) => {
+    console.log("percent : ", percent);
+    if (percent === "Unlimited" || typeof percent !== "number")
+        return "bar-blue";
+    if (percent >= 80) return "bar-red";
+    if (percent >= 50) return "bar-yellow";
+    return "bar-blue";
+};
 </script>
 
 <style lang="less" scoped>
@@ -553,6 +563,18 @@ a {
                 display: flex;
                 align-items: center;
                 justify-content: center;
+
+                &.bar-blue {
+                    background-color: var(--main-color);
+                }
+
+                &.bar-yellow {
+                    background-color: #ffa500;
+                }
+
+                &.bar-red {
+                    background-color: #ff4444;
+                }
             }
 
             span {
