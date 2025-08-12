@@ -6,12 +6,12 @@
         .key
             span.text.required Logger ID
         .value
-            input.line(v-model="selectedRecord.id" name='id' placeholder="Logger ID" required)
+            input.line(v-model="selectedRecord.id" name='id' placeholder="Logger ID" :disabled="isEdit" required)
     .row
         .key
             span.text.required Username Key
         .value
-            input.line(v-model="selectedRecord.usr" name='usr' placeholder="unique_identifiers_key_name" required)
+            input.line(v-model="selectedRecord.usr" name='usr' placeholder="unique_identifiers_key_name" :disabled="isEdit" required)
     .row
         .key
             span.text.required Request URL
