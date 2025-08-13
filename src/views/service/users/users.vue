@@ -166,68 +166,7 @@ section
                 svg
                     use(xlink:href="/material-icon.svg#icon-chevron-right")
 
-// 1
-//- Modal(:open="searchModalOpen" style="padding: 2.5rem 2rem;")
-    .modal-close(@click="searchModalOpen = false;")
-        svg.svgIcon
-            use(xlink:href="/basic-icon.svg#icon-x")
-
-    .modal-title Search Users
-
-    br
-
-    .flex-wrap(style="gap:10px;")
-        select#searchFor(
-            v-model="searchFor",
-            @change="getPage(true)",
-            :disabled="fetching"
-        )
-            option(v-for="option in searchOptions" :value="option.value") {{ option.option }}
-        input.inline(style="width:500px;" type="text")
-
-    br
-
-    .flex-wrap.end(style="gap:10px;")
-        button.inline.gray Reset
-        button.inline Search
-
-// 2
-//- Modal(:open="searchModalOpen" style="max-width: 560px; width: 100%;")
-    .modal-prev(v-if="searchModalStep > 1" @click="searchModalStep--")
-        svg.svgIcon
-            use(xlink:href="/basic-icon.svg#icon-arrow-left")
-    .modal-close(@click="searchModalOpen = false; searchModalStep = 1; searchFor = 'user_id'; searchValue = '';")
-        svg.svgIcon
-            use(xlink:href="/basic-icon.svg#icon-x")
-
-    .modal-title
-        template(v-if="searchModalStep === 1") What do you want to search for...
-        template(v-else) Search for {{ searchFor }}
-
-    br
-
-    .flex-wrap.center(v-if="searchModalStep === 1" style="max-width: 430px; gap:10px;")
-        button.inline.gray(@click="searchFor = 'user_id'; searchModalStep++;") User ID
-        button.inline.gray(@click="searchFor = 'email'; searchModalStep++;") Email
-        button.inline.gray(@click="searchFor = 'name'; searchModalStep++;") Name
-        button.inline.gray(@click="searchFor = 'phone_number'; searchModalStep++;") Phone Number
-        button.inline.gray(@click="searchFor = 'address'; searchModalStep++;") Address
-        button.inline.gray(@click="searchFor = 'gender'; searchModalStep++;") Gender
-        button.inline.gray(@click="searchFor = 'birthdate'; searchModalStep++;") Birthdate
-        button.inline.gray(@click="searchFor = 'locale'; searchModalStep++;") Locale
-        button.inline.gray(@click="searchFor = 'timestamp'; searchModalStep++;") Date Created
-
-    template(v-if="searchModalStep === 2")
-        div(style="max-width: 430px; width: 100%; margin: 0 auto;")
-            input.block(type="text" v-model="searchValue" :placeholder="searchFor === 'timestamp' ? 'YYYY-MM-DD ~ YYYY-MM-DD' : 'Search for...'")
-        
-        br
-
-        .flex-wrap.end(style="gap:10px;")
-            button.inline.gray Reset
-            button.inline Search
-
-// 3
+// modal :: search user
 Modal.search-modal(:open="searchModalOpen")
     .modal-close(@click="searchModalOpen = false; searchModalStep = 1; searchFor = 'user_id'; searchValue = '';")
         svg.svgIcon
@@ -248,7 +187,7 @@ Modal.search-modal(:open="searchModalOpen")
                 svg.svgIcon
                     use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
             template(v-else-if="searchFor === 'user_id'")
-                input#searchInput.block(type="search" spellcheck="false" placeholder="xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" v-model="searchValue" name="user_id" @input="(e) => { e.target.setCustomValidity(''); }" pattern="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+                input#searchInput.block(type="text" spellcheck="false" placeholder="xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" v-model="searchValue" name="user_id" @input="(e) => { e.target.setCustomValidity(''); }" pattern="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
             template(v-else-if="searchFor === 'email'")
                 input#searchInput.block(type="email" spellcheck="false" placeholder="user@email.com" v-model="searchValue" name="email" minlength="5")
             template(v-else-if="searchFor === 'name'")
@@ -502,8 +441,6 @@ Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
             .loader-wrap(v-if="promiseRunning")
                 .loader(style="--loader-color: white; --loader-size: 12px")
             template(v-else)
-                //- button.gray(type="button" @click="closeModal") Cancel
-                //- button(type="submit") Invite
                 button.block.btn-invite(type="submit") Invite
 
 //- modal :: grant access
@@ -529,7 +466,6 @@ Modal.modal-grantAccess(:open="openGrantAccess" @close="closeGrantAccess")
         .loader-wrap(v-if="promiseRunning")
             .loader(style="--loader-color: white; --loader-size: 12px")
         template(v-else)
-            //- button.gray.btn-cancel(type="button", @click="closeGrantAccess" style="flex: 1;") Cancel
             button.block.btn-grant(type="button", @click="grantAccess" style="flex: 1;") Change Access
 
 // grant access > success
@@ -876,19 +812,6 @@ watch(
     { immediate: true }
 );
 
-// watch(showDetail, (nv) => {
-//     if (nv) {
-//         nextTick(() => {
-//             let scrollTarget = document.querySelector(".detailRecord .content");
-//             let detailRecord = document.querySelector(".detailRecord");
-//             let targetTop =
-//                 window.scrollY + detailRecord.getBoundingClientRect().top;
-//             scrollTarget.scrollTop = 0;
-//             window.scrollTo(0, targetTop);
-//         });
-//     }
-// });
-
 // modal related
 let promiseRunning = ref(false);
 let openInviteUser = ref(false);
@@ -984,8 +907,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                    new Date(dates[1]).setHours(23, 59, 59, 999)
-                ).getTime()
+                      new Date(dates[1]).setHours(23, 59, 59, 999)
+                  ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1060,10 +983,6 @@ let callParams = computed(() => {
 });
 
 let getPage = async (refresh?: boolean) => {
-    // if (!pager) {
-    //     return;
-    // }
-
     if (refresh) {
         endOfList.value = false;
         currentPage.value = 1;
@@ -1232,7 +1151,6 @@ let createUser = () => {
         })
         .catch((err) => {
             promiseRunning.value = false;
-            // error.value = err.message;
             alert(err.message);
         });
 };
@@ -1263,7 +1181,6 @@ let inviteUser = () => {
         })
         .catch((err) => {
             promiseRunning.value = false;
-            // error.value = err.message;
             alert(err.message);
         });
 };

@@ -30,7 +30,9 @@ Modal(:open="props.showCreateModal" @close="handleClose")
     .service-plan-part(v-else-if="step === 2")
         .modal-title Choose a plan
         .modal-desc.
-            Select a plan that fits your needs.
+            Choose the plan that’s right for you.
+            #[br]
+            You’re free to switch whenever you like.
         .plan-wrap
             .plan-item.blue(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
                 svg.mark
@@ -339,7 +341,8 @@ watch(
             resetModalState(); // 상태 초기화
             disableBodyScroll(); // body 스크롤 비활성화
 
-            if (props.firstServiceName && props.firstServiceName.trim()) { // 빈 문자열 체크
+            if (props.firstServiceName && props.firstServiceName.trim()) {
+                // 빈 문자열 체크
                 newServiceName.value = props.firstServiceName;
                 step.value = 2;
             } else {
@@ -525,43 +528,50 @@ const handleClose = () => {
 
                     &.user {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_user.svg")
+                                no-repeat;
                         }
                     }
 
                     &.data {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_data.svg")
+                                no-repeat;
                         }
                     }
 
                     &.file {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_file.svg")
+                                no-repeat;
                         }
                     }
 
                     &.mail {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_mail.svg")
+                                no-repeat;
                         }
                     }
 
                     &.forbiden {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_forbiden.svg")
+                                no-repeat;
                         }
                     }
 
                     &.invitation {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_invitation.svg")
+                                no-repeat;
                         }
                     }
 
                     &.global {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
+                            background: url("@/assets/img/landingpage/icon_global.svg")
+                                no-repeat;
                         }
                     }
                 }
@@ -688,17 +698,10 @@ dialog {
     .plan-wrap {
         flex-direction: column;
         align-items: center;
-        padding: 0 4rem 4rem;
 
         .plan-item {
-            width: 20.375rem;
+            width: 100%;
         }
-    }
-}
-
-@media (max-width: 576px) {
-    .plan-wrap {
-        padding: 0 2rem 2rem;
     }
 }
 

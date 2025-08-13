@@ -580,11 +580,11 @@ a {
                 }
 
                 &.bar-yellow {
-                    background-color: #ffa500;
+                    background-color: #ffed91;
                 }
 
                 &.bar-red {
-                    background-color: #ff4444;
+                    background-color: #f04e4e;
                 }
             }
 

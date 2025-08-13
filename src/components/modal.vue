@@ -361,6 +361,10 @@ dialog {
             }
         }
     }
+
+    input {
+        border: none;
+    }
 }
 
 @media (max-width: 430px) {
