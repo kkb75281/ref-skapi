@@ -157,7 +157,6 @@ const props = defineProps<{
     showCreateModal: boolean;
     firstServiceName?: string;
 }>();
-
 const emit = defineEmits(["close"]);
 
 let service = {
@@ -362,10 +361,6 @@ const handleClose = () => {
     enableBodyScroll(); // 모달 닫을 때 스크롤 복원
     emit("close");
 };
-
-function resetSearchModal() {
-    throw new Error("Function not implemented.");
-}
 </script>
 
 <style scoped lang="less">

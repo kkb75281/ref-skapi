@@ -140,6 +140,7 @@ import {
     serviceIdList,
     serviceSpecList,
 } from "@/views/service-list";
+import { ServiceSpec } from "@/views/service/service-spec";
 import Table from "@/components/table.vue";
 import CreateService from "@/views/create-service.vue";
 
@@ -151,6 +152,9 @@ import "swiper/css/pagination";
 const router = useRouter();
 const route = useRoute();
 
+const showCreateModal = ref(false);
+const loading = ref(false);
+let newServiceName = ref("");
 let routeQuery = route.query;
 
 onMounted(() => {
@@ -168,9 +172,6 @@ onUnmounted(() => {
         document.body.classList.remove("first-create-service");
     }
 });
-
-const showCreateModal = ref(false);
-const loading = ref(false);
 
 // 첫 번째 서비스인지 계산
 const isFirstService = computed(() => {
@@ -208,17 +209,6 @@ let goServiceDashboard = (service: { [key: string]: any }) => {
         router.push("/my-services/" + service.id);
         loading.value = false;
     }, 1000);
-};
-
-let newServiceName = ref("");
-let createService = () => {
-    let regex = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
-    if (newServiceName.value.match(regex)) {
-        alert("Special characters are not allowed");
-
-        return;
-    }
-    router.push("/create/" + newServiceName.value);
 };
 
 let getClass = (service: ServiceSpec, what: string) => {

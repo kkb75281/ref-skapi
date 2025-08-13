@@ -99,7 +99,7 @@
 
     .row.line
         .key 
-            span unique_id
+            span Unique_ID
             Tooltip(tip-background-color="var(--main-color)" text-color="white" tip-max-width="12.875rem")
                 template(v-slot:tool)
                     svg.svgIcon

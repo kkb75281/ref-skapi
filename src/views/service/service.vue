@@ -73,7 +73,14 @@ section
                 .flex-wrap.space-between
                     div
                         .data Renewal Date 
-                        .date {{ currentService.subscription?.current_period_end ? dateFormat(currentService.subscription?.current_period_end * 1000) : '-' }}
+                        template(v-if="currentService.plan === 'Trial'")
+                            .date.red {{ 'All Data will reset on ' + resetTime(currentService.service.timestamp) }}
+                        template(v-else-if='currentService.service.plan == "Canceled" && !currentService.service.suspended')
+                            .date.red {{ 'Suspends on ' + dateFormat(currentService.subscription?.current_period_end * 1000) }}
+                        template(v-else-if='currentService.service.suspended') 
+                            .date.red {{ 'Terminates on ' + dateFormat(2592000000 + currentService.subscription.cancel_at * 1000) }}
+                        template(v-else)
+                            .date {{ currentService.subscription?.current_period_end ? dateFormat(currentService.subscription?.current_period_end * 1000) : '-' }}
                     div
                         .data Date Created 
                         .date {{ dateFormat(currentService.dateCreated) }}
@@ -459,7 +466,6 @@ let changeFreezeDatabase = async (onlyAdmin: boolean) => {
 
 // 사용량에 따른 바 색상 변경 함수
 const getBarColorClass = (percent) => {
-    console.log("percent : ", percent);
     if (percent === "Unlimited" || typeof percent !== "number")
         return "bar-blue";
     if (percent >= 80) return "bar-red";
@@ -543,6 +549,11 @@ a {
             font-size: 14px;
             margin-top: 5px;
             opacity: 0.6;
+
+            &.red {
+                color: var(--caution-color);
+                opacity: 1;
+            }
 
             @media (max-width: 600px) {
                 // font-size: 12px;
