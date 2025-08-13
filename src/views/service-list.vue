@@ -250,8 +250,12 @@ a {
 }
 
 .create-wrap {
-    text-align: center;
+    height: 100%;
+    min-height: calc(100vh - var(--footer-height, 0) - 4rem);
     padding: 5rem 1.25rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .create-inner {
         border-radius: 16px;
