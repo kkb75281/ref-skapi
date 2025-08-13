@@ -333,7 +333,7 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
                     placeholder="User's Phone Number (+821012345678)",
                     type="text"
                 )
-            Checkbox(v-model="phone_number_public") public
+            Checkbox(v-model="phone_number_public") open to all
         
         br
 
@@ -346,7 +346,7 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
                     placeholder="User's Gender",
                     type="text"
                 )
-            Checkbox(v-model="gender_public") public
+            Checkbox(v-model="gender_public") open to all
         
         br
 
@@ -359,7 +359,7 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
                     placeholder="User's Address",
                     type="text"
                 ) 
-            Checkbox(v-model="address_public") public
+            Checkbox(v-model="address_public") open to all
 
         br
 
@@ -372,8 +372,7 @@ Modal.modal-scroll.modal-createUser(:open="openCreateUser")
                     placeholder="User's Birthdate (YYYY-MM-DD)",
                     type="text"
                 )
-            Checkbox(v-model="birthdate_public") public
-
+            Checkbox(v-model="birthdate_public") open to all
         br
 
         label Picture
@@ -985,8 +984,8 @@ let callParams = computed(() => {
                 : 0;
             let endDate = dates?.[1]
                 ? new Date(
-                      new Date(dates[1]).setHours(23, 59, 59, 999)
-                  ).getTime()
+                    new Date(dates[1]).setHours(23, 59, 59, 999)
+                ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1467,6 +1466,11 @@ button {
             position: absolute;
             top: 0;
             right: 0;
+
+            svg {
+                width: 16px;
+                height: 16px;
+            }
         }
     }
 }
