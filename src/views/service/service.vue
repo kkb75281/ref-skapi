@@ -274,8 +274,6 @@ let focus_name = ref();
 let focus_cors = ref();
 let focus_key = ref();
 
-console.log("currentService", currentService);
-
 let resetTime = (timestamp: number) => {
     // Convert the timestamp to a Date object
     let startDate = new Date(timestamp); // assuming the timestamp is in seconds
@@ -468,7 +466,6 @@ let changeFreezeDatabase = async (onlyAdmin: boolean) => {
 
 // 사용량에 따른 바 색상 변경 함수
 const getBarColorClass = (percent) => {
-    console.log("percent : ", percent);
     if (percent === "Unlimited" || typeof percent !== "number")
         return "bar-blue";
     if (percent >= 80) return "bar-red";
