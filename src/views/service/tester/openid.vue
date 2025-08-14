@@ -143,52 +143,48 @@ let getLoggerId = ref("");
 let loggerList = ref([]);
 
 function addLogger(e) {
-  let params = skapi.util.extractFormData(e.target).data;
-  console.log(params);
+    let params = skapi.util.extractFormData(e.target).data;
+    let hasToBeJson = ["data", "hder", "prms"];
 
-  let hasToBeJson = ["data", "hder", "prms"];
-
-  for (let key of hasToBeJson) {
-    if (params[key]) {
-      try {
-        params[key] = JSON.parse(params[key]);
-      } catch (e) {
-        alert(`${key} is invalid JSON string.`);
-        return;
-      }
+    for (let key of hasToBeJson) {
+        if (params[key]) {
+            try {
+                params[key] = JSON.parse(params[key]);
+            } catch (e) {
+                alert(`${key} is invalid JSON string.`);
+                return;
+            }
+        }
     }
-  }
 
-  params.req = "create";
+    params.req = "create";
 
-  for (let key in params) {
-    if (!params[key]) delete params[key];
-  }
+    for (let key in params) {
+        if (!params[key]) delete params[key];
+    }
 
-  return currentService.registerOpenIDLogger(params).then((res) => {
-    console.log(res);
-    alert("Open ID Logger added.");
-  });
+    return currentService.registerOpenIDLogger(params).then((res) => {
+        alert("Open ID Logger added.");
+    });
 }
-
 
 function getOpenIDLoggers() {
-  let params = {
-    req: "list",
-  };
-  if (getLoggerId.value) {
-    params.id = getLoggerId.value;
-  }
-  return currentService.registerOpenIDLogger(params).then((res) => {
-    console.log(res);
-    loggerList.value = res.list;
-  });
+    let params = {
+        req: "list",
+    };
+    if (getLoggerId.value) {
+        params.id = getLoggerId.value;
+    }
+    return currentService.registerOpenIDLogger(params).then((res) => {
+        loggerList.value = res.list;
+    });
 }
 
-function deleteLogger(id){
-    return currentService.registerOpenIDLogger({req: "delete", id}).then((res) => {
-        console.log(res);
-        alert("Open ID Logger deleted.");
-    });
+function deleteLogger(id) {
+    return currentService
+        .registerOpenIDLogger({ req: "delete", id })
+        .then((res) => {
+            alert("Open ID Logger deleted.");
+        });
 }
 </script>

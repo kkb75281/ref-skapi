@@ -1,167 +1,156 @@
 <template lang="pug">
-section.infoBox
-    .titleHead
-        h2 Open ID Loggers
+section.page-header
+    .page-title Open ID Loggers
+    a.btn-docs(href='https://docs.skapi.com/authentication/openid-login.html' target="_blank")
+        button.inline.icon-text.sm.gray
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
+            | Go Docs
 
-        span.moreInfo(
-            @click="showGuide = !showGuide",
-            @mouseover="hovering = true",
-            @mouseleave="hovering = false"
-        )
-            span More Info&nbsp;
-            template(v-if="showGuide")
-                //- .material-symbols-outlined.notranslate.fill expand_circle_up 
-                //- .material-symbols-outlined.notranslate.noFill expand_circle_up
-                svg(v-if="hovering", style="width: 25px; height: 25px; fill: black")
-                    use(
-                    xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up-fill"
-                    )
-                svg(v-else, style="width: 25px; height: 25px; fill: black")
-                    use(
-                    xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up"
-                    )
-            template(v-else)
-                //- .material-symbols-outlined.notranslate.fill expand_circle_down
-                //- .material-symbols-outlined.notranslate.noFill expand_circle_down
-                svg(v-if="hovering", style="width: 25px; height: 25px; fill: black")
-                    use(
-                    xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down-fill"
-                    )
-                svg(v-else, style="width: 25px; height: 25px; fill: black")
-                    use(
-                    xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down"
-                    )
+hr
 
-    template(v-if="showGuide")
-        Guide
-
-    hr
-
+section
     .error(v-if="!user?.email_verified")
-        //- .material-symbols-outlined.notranslate.fill warning
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="/material-icon.svg#icon-warning")
         router-link(to="/account-setting") Please verify your email address to modify settings.
 
     .error(v-else-if="currentService.service.active == 0")
-        //- .material-symbols-outlined.notranslate.fill warning
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently disabled.
 
     .error(v-else-if="currentService.service.active < 0")
-        //- .material-symbols-outlined.notranslate.fill warning
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently suspended.
 
+section
+    .table-menu-wrap
+        .table-functions
+            button.inline.only-icon.gray(aria-label="Show Columns" @click.stop="(e) => { showDropDown(e); }")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        .icon
+                            svg
+                                use(xlink:href="/material-icon.svg#icon-columns")
+                    template(v-slot:tip) Show Columns
+                .moreVert(
+                    @click.stop,
+                    style="--moreVert-left: 0; display: none; font-weight: normal;"
+                    )
+                    .inner
+                        template(v-for="c in columnList")
+                            Checkbox(v-model="c.value" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
+            button.inline.only-icon.gray(aria-label="Refresh" @click="getPage(true)" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        .icon
+                            svg
+                                use(xlink:href="/basic-icon.svg#icon-refresh")
+                    template(v-slot:tip) Refresh
+        .table-actions
+            button.inline.only-icon.gray(aria-label="Add Logger" @click="()=>{ !user.email_verified ? false : selectedLogger = null; showDetail=true; }" :disabled="showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        .icon
+                            svg
+                                use(xlink:href="/basic-icon.svg#icon-plus")
+                    template(v-slot:tip) Add Logger
+            button.inline.only-icon.gray(aria-label="Delete Selected" @click="openDeleteRecords=true" :disabled="!Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0" )
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        .icon
+                            svg
+                                use(xlink:href="/basic-icon.svg#icon-delete")
+                    template(v-slot:tip) Delete Selected
 
-.tableMenu
-    .iconClick.square(@click="()=>{ !user.email_verified ? false : selectedLogger = null; showDetail=true; }" :class="{'nonClickable' : showDetail || uploading || fetching || !user?.email_verified || currentService.service.active <= 0}")
-        svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-add-circle-fill")
-        span &nbsp;&nbsp;Register Logger
-
-    .iconClick.square(@click="openDeleteRecords=true" :class="{'nonClickable': !Object.keys(checked).length || fetching || !user?.email_verified || currentService.service.active <= 0}" )
-        svg.svgIcon
-            use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
-        span &nbsp;&nbsp;Delete Selected
-
-.recordPart 
-    template(v-if="fetching")
-        #loading.
-            Loading ... &nbsp;
-            #[.loader(style="--loader-color:black; --loader-size:12px")]
-            
-    Table(:key="tableKey" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}" resizable)
-        template(v-slot:head)
-            tr
-                th.fixed(style='width:60px;')
-                    Checkbox(@click.stop :modelValue="!!Object.keys(checked).length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.id] = d)); else checked = {}; }" style="display:inline-block")
-                    .resizer.fixed
-                th.overflow(style='width:160px;')
-                    | Logger ID
-                    .resizer
-                th.overflow(style='width:160px;')
-                    | Username Key
-                    .resizer
-                th.overflow(style='width:100px;')
-                    | Method
-                    .resizer
-                th.overflow(style='width:160px;')
-                    | Request URL
-                    .resizer
-        template(v-slot:body)
-            template(v-if="fetching")
-                tr(v-for="i in 10")
-                    td(:colspan="colspan")
-            template(v-else-if="!listDisplay || listDisplay?.length === 0")
+    .table-cont-wrap
+        Table(:key="tableKey" :class="{'nonClickable' : fetching || !user?.email_verified || currentService.service.active <= 0}" resizable)
+            template(v-if="fetching" v-slot:msg)
+                .tableMsg.center
+                    .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+                .tableMsg.center.empty No Open ID Logger
+            template(v-slot:head)
                 tr
-                    td#noUsers(:colspan="colspan") No Open ID Logger
-                tr(v-for="i in 9")
-                    td(:colspan="colspan")
-            template(v-else)
-                tr.hoverRow(v-for="(rc, i) in listDisplay" @click="showDetail=true; selectedLogger=rc")
-                    td
-                        Checkbox(@click.stop
-                            :modelValue="!!checked?.[rc?.id]"
-                            @update:modelValue="(value) => { if (value) checked[rc?.id] = value; else delete checked[rc?.id]; }")
-                    td.overflow(v-if="rc.id") {{ rc.id }}
-                    td.overflow(v-if="rc.usr") {{ rc.usr }}
-                    td.overflow(v-if="rc.mthd") {{ rc.mthd }}
-                    td.overflow(v-if="rc.url") {{ rc.url }}
+                    th.fixed(style='width:60px;')
+                        Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.id] = d)); else checked = {}; }" style="display:inline-block")
+                        .resizer.fixed
+                    template(v-for="c in columnList")
+                        th.overflow(v-if="c.value", style="width: 200px")
+                            | {{ c.name }}
+                            .resizer
+                    //- th.overflow(style='width:160px;')
+                    //-     | Logger ID
+                    //-     .resizer
+                    //- th.overflow(style='width:160px;')
+                    //-     | Username Key
+                    //-     .resizer
+                    //- th.overflow(style='width:100px;')
+                    //-     | Method
+                    //-     .resizer
+                    //- th.overflow(style='width:160px;')
+                    //-     | Request URL
+                    //-     .resizer
+            template(v-slot:body)
+                template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
+                    tr.nohover(v-for="i in 10")
+                        td(:colspan="colspan")
+                template(v-else)
+                    tr.hoverRow(v-for="(rc, i) in listDisplay" @click="showDetail=true; selectedLogger=JSON.parse(JSON.stringify(rc))")
+                        td
+                            Checkbox(@click.stop
+                                :modelValue="!!checked?.[rc?.id]"
+                                @update:modelValue="(value) => { if (value) checked[rc?.id] = value; else delete checked[rc?.id]; }")
+                        template(v-for="c in columnList")
+                            template(v-if="c.value")
+                                td.overflow(v-if="c.key === 'logger_id'") {{ rc.id }}
+                                td.overflow(v-if="c.key === 'username_key'") {{ rc.usr }}
+                                td.overflow(v-if="c.key === 'method'") {{ rc.mthd }}
+                                td.overflow(v-if="c.key === 'url'") {{ rc.url }}
 
-                tr(v-for="i in (10 - listDisplay?.length)")
-                    td(:colspan="colspan")
+                    tr.nohover(v-for="i in (10 - listDisplay?.length)")
+                        td(:colspan="colspan")
 
-    form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
-        .header(style='padding-right:10px;')
-            svg.svgIcon.black.clickable(@click="showDetail=false; selectedLogger=null;" :class="{nonClickable: fetching}")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back")
-            .name {{ selectedLogger?.id ? selectedLogger.id : 'Register Logger' }}
-            template(v-if="uploading")
-                .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
-            template(v-else)
-                button.noLine.iconClick.square(type="submit" style='padding:0 14px') SAVE
+    .table-page-wrap
+        button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")
+            .icon
+                svg
+                    use(xlink:href="/material-icon.svg#icon-chevron-left")
+        button.inline.only-icon.gray(aria-label="Next" @click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
+            .icon
+                svg
+                    use(xlink:href="/material-icon.svg#icon-chevron-right")
 
-        RecDetails(v-if='showDetail' :data='selectedLogger')
-
-br
-
-.tableMenu(v-if="!showDetail" style='display:block;text-align:center;')
-    .iconClick.square.arrow(@click="currentPage--;" :class="{'nonClickable': fetching || currentPage === 1 }")
-        svg.svgIcon(style="width: 26px; height: 26px")
-            use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-        span Previous&nbsp;&nbsp;
-    | &nbsp;&nbsp;
-    .iconClick.square.arrow(@click="currentPage++;" :class="{'nonClickable': fetching || endOfList && currentPage >= maxPage }")
-        span &nbsp;&nbsp;Next
-        svg.svgIcon(style="width: 26px; height: 26px")
-            use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
-
-// delete records
+//- modal :: delete records
 Modal(:open="openDeleteRecords" @close="openDeleteRecords=false")
-    h4(style='margin:.5em 0 0; color: var(--caution-color)') Delete Records
+    .modal-title Delete Records
 
-    hr
+    .modal-desc This action will delete {{ Object.keys(checked).length }} open ID logger(s) from the service. #[br] Your users will loose access to the service if they are using this logger. #[br] This action cannot be undone.
 
-    div(style='font-size:.8rem;')
-        p.
-            This action will delete {{ Object.keys(checked).length }} open ID logger(s) from the service.
-            #[br]
-            Your users will loose access to the service if they are using this logger.
-            #[br]
-            This action cannot be undone.
-
-    br
-
-    div(style="display: flex; align-items: center; justify-content: space-between;")
-        div(v-if="promiseRunning" style="width:100%; height:44px; text-align:center;")
-            .loader(style="--loader-color:blue; --loader-size:12px")
+    .modal-btns
+        .loader-wrap(v-if="promiseRunning")
+            .loader(style="--loader-color:white; --loader-size:12px")
 
         template(v-else)
-            button.noLine.warning(type="button" @click="openDeleteRecords=false;") Cancel 
-            button.final.warning(type="button" @click="deleteRecords") Delete
+            button.gray(type="button" @click="openDeleteRecords=false;") Cancel 
+            button.red(type="button" @click="deleteRecords") Delete
+
+//- modal :: logger
+Modal.modal-scroll.modal-logger(:open="showDetail" @close="showDetail=false; selectedLogger=null;")
+    form.modal-container(@submit.prevent='upload')
+        .modal-header
+            h4.title {{ selectedLogger?.id ? selectedLogger.id : 'Register Logger' }}
+            button.btn-close(type="button" @click="showDetail=false; selectedLogger=null;")
+                svg.svgIcon
+                    use(xlink:href="/basic-icon.svg#icon-x")
+        .modal-body
+            RecDetails(v-if='showDetail' :data='selectedLogger')
+        .modal-footer
+            template(v-if="uploading")
+                .loader(style="--loader-color:white; --loader-size:12px; margin: 12px;")
+            template(v-else)
+                button.btn-save(type="submit") SAVE
 
 </template>
 <script setup lang="ts">
@@ -169,14 +158,13 @@ import Table from "@/components/table.vue";
 import Checkbox from "@/components/checkbox.vue";
 import Modal from "@/components/modal.vue";
 import Pager from "@/code/pager";
-import Guide from "./guide.vue";
-import RecDetails from './showDetail.vue'
+import RecDetails from "./showDetail.vue";
+import Tooltip from "@/components/tooltip.vue";
 
 import type { Ref } from "vue";
-import { ref, computed, watch, nextTick } from "vue";
+import { ref, watch, nextTick, reactive } from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
-import { devLog } from "@/code/logger"
 import { currentService, serviceLoggers } from "@/views/service/main";
 import { showDropDown } from "@/assets/js/event.js";
 
@@ -189,9 +177,46 @@ let maxPage = ref(0);
 let currentPage: Ref<number> = ref(1);
 let endOfList = ref(false);
 let showDetail = ref(false);
-let showGuide = ref(false);
 let hovering = ref(false);
-let colspan = 4;
+let colspan = 0;
+
+let columnList = reactive([
+    {
+        name: "Logger ID",
+        key: "logger_id",
+        value: true,
+    },
+    {
+        name: "Username Key",
+        key: "username_key",
+        value: true,
+    },
+    {
+        name: "Method",
+        key: "method",
+        value: true,
+    },
+    {
+        name: "Request URL",
+        key: "url",
+        value: true,
+    },
+]);
+
+watch(
+    columnList,
+    (nv) => {
+        colspan = 1;
+        nv.forEach((c) => {
+            if (c.value) {
+                colspan++;
+            }
+        });
+
+        tableKey.value++;
+    },
+    { immediate: true }
+);
 
 watch(currentPage, (n, o) => {
     if (
@@ -205,17 +230,18 @@ watch(currentPage, (n, o) => {
     }
 });
 
-watch(showDetail, (nv) => {
-    if (nv) {
-        nextTick(() => {
-            let scrollTarget = document.querySelector(".detailRecord .content");
-            let detailRecord = document.querySelector(".detailRecord");
-            let targetTop = window.scrollY + detailRecord.getBoundingClientRect().top;
-            scrollTarget.scrollTop = 0;
-            window.scrollTo(0, targetTop);
-        });
-    }
-});
+// watch(showDetail, (nv) => {
+//     if (nv) {
+//         nextTick(() => {
+//             let scrollTarget = document.querySelector(".detailRecord .content");
+//             let detailRecord = document.querySelector(".detailRecord");
+//             let targetTop =
+//                 window.scrollY + detailRecord.getBoundingClientRect().top;
+//             scrollTarget.scrollTop = 0;
+//             window.scrollTo(0, targetTop);
+//         });
+//     }
+// });
 
 let pager: Pager = null;
 let listDisplay = ref(null);
@@ -231,18 +257,21 @@ let setUpNewPageList = async () => {
         sortBy: "id",
         order: "asc",
     });
-}
+};
 
 let getPage = async (refresh?: boolean) => {
-
     pager = serviceLoggers[currentService.id];
     if (!refresh) {
-        if ((maxPage.value >= currentPage.value) || endOfList.value) {
+        if (maxPage.value >= currentPage.value || endOfList.value) {
             let disp = pager.getPage(currentPage.value);
             maxPage.value = disp.maxPage;
             listDisplay.value = disp.list;
 
-            while (disp.maxPage > 0 && disp.maxPage < currentPage.value && !disp.list.length) {
+            while (
+                disp.maxPage > 0 &&
+                disp.maxPage < currentPage.value &&
+                !disp.list.length
+            ) {
                 currentPage.value--;
             }
 
@@ -251,7 +280,9 @@ let getPage = async (refresh?: boolean) => {
     }
 
     fetching.value = true;
-    let fetchedData = await currentService.registerOpenIDLogger({ req: 'list' })
+    let fetchedData = await currentService.registerOpenIDLogger({
+        req: "list",
+    });
 
     pager.endOfList = fetchedData.endOfList;
     endOfList.value = pager.endOfList;
@@ -266,7 +297,11 @@ let getPage = async (refresh?: boolean) => {
     maxPage.value = disp.maxPage;
     listDisplay.value = disp.list;
 
-    while (disp.maxPage > 0 && disp.maxPage < currentPage.value && !disp.list.length) {
+    while (
+        disp.maxPage > 0 &&
+        disp.maxPage < currentPage.value &&
+        !disp.list.length
+    ) {
         currentPage.value--;
     }
 
@@ -277,10 +312,12 @@ let init = async () => {
     currentPage.value = 1;
 
     // setup pagers
-    if (serviceLoggers[currentService.id] && Object.keys(serviceLoggers[currentService.id]).length) {
+    if (
+        serviceLoggers[currentService.id] &&
+        Object.keys(serviceLoggers[currentService.id]).length
+    ) {
         endOfList.value = serviceLoggers[currentService.id].endOfList;
         getPage();
-
     } else {
         await setUpNewPageList();
         getPage(true);
@@ -293,6 +330,8 @@ let selectedLogger = ref(null);
 let uploading = ref(false);
 
 let upload = async (e: SubmitEvent) => {
+    let isEdit = selectedLogger.value?.id ? true : false;
+
     uploading.value = true;
 
     let { data } = skapi.util.extractFormData(e, { ignoreEmpty: true });
@@ -319,13 +358,19 @@ let upload = async (e: SubmitEvent) => {
             }
         }
     } catch (err) {
-        alert('Invalid JSON data');
+        alert("Invalid JSON data");
         uploading.value = false;
         return;
     }
 
     if (!jsonData.cdtn?.key) {
         delete jsonData.cdtn;
+    }
+
+    if (isEdit) {
+        jsonData.req = "update";
+    } else {
+        jsonData.req = "create";
     }
 
     try {
@@ -351,248 +396,41 @@ let upload = async (e: SubmitEvent) => {
 let deleteRecords = () => {
     promiseRunning.value = true;
 
-    let deleteIds = Object.keys(checked.value)
+    let deleteIds = Object.keys(checked.value);
 
-    let promise = deleteIds.map(id => {
+    let promise = deleteIds.map((id) => {
         currentService.registerOpenIDLogger({ req: "delete", id });
-    })
+    });
 
-    Promise.all(promise)
-        .then(async (r) => {
-            for (let id of deleteIds) {
-                for (let i = 0; i < listDisplay.value.length; i++) {
-                    if (listDisplay.value[i].record_id == id) {
-                        listDisplay.value.splice(i, 1);
-                    }
+    Promise.all(promise).then(async (r) => {
+        for (let id of deleteIds) {
+            for (let i = 0; i < listDisplay.value.length; i++) {
+                if (listDisplay.value[i].record_id == id) {
+                    listDisplay.value.splice(i, 1);
                 }
-                await pager.deleteItem(id);
             }
+            await pager.deleteItem(id);
+        }
 
-            getPage();
+        getPage();
 
-            checked.value = {};
-            promiseRunning.value = false;
-            openDeleteRecords.value = false;
-        });
+        checked.value = {};
+        promiseRunning.value = false;
+        openDeleteRecords.value = false;
+    });
 };
 
 // checks
 let checked: any = ref({});
 
+// table > show columns
+const showTableColumns = () => {
+    return columnList.filter((c) => c.value).length;
+};
 </script>
 
-<style scoped lang="less">
-textarea::placeholder {
-    opacity: 0.5;
-}
-
-.updown {
-    background-color: #fff;
-    background-color: var(--main-color);
-    border-radius: 50%;
-    margin-left: 8px;
-    cursor: pointer;
-    box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
-}
-
-.moreVert {
-    .inner {
-        padding-top: 0.25rem;
-
-        &>* {
-            padding: 0.25rem 0.5rem;
-        }
-
-        padding-bottom: 0.25rem;
-    }
-}
-
-#searchForm {
-    // max-width: 700px;
-    margin: 0 auto;
-
-    .inner {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 8px;
-    }
-
-    // .customSelect {
-    //     flex-grow: 1;
-    // }
-    .search {
-        position: relative;
-        flex-grow: 50;
-
-        .icon {
-            &:hover {
-                @media (pointer: fine) {
-                    color: var(--main-color) !important;
-                }
-            }
-
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            user-select: none;
-
-            &::before {
-                display: none;
-            }
-        }
-    }
-
-    .groupWrap {
-        flex-grow: 1;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-radius: 6px;
-        border-style: hidden;
-        cursor: pointer;
-        user-select: none;
-
-        .group {
-            position: relative;
-            height: 44px;
-            padding: 10px;
-            flex-grow: 1;
-            text-align: center;
-            background-color: #fff;
-            color: rgba(0, 0, 0, 0.4);
-            fill: rgba(0, 0, 0, 0.4);
-
-            svg {
-                width: 23px;
-                height: 23px;
-                vertical-align: unset !important;
-            }
-
-            &::after {
-                position: absolute;
-                content: "";
-                top: 0;
-                left: -1px;
-                bottom: 0;
-                right: 0;
-                border: 1px solid rgba(0, 0, 0, 0.5);
-            }
-
-            &:first-child {
-                border-radius: 6px 0 0 8px;
-
-                &::after {
-                    border-radius: 6px 0 0 8px;
-                }
-            }
-
-            &:nth-child(2) {
-                &::after {
-                    border-left: 0;
-                }
-            }
-
-            &:last-child {
-                border-radius: 0 8px 8px 0;
-
-                &::after {
-                    border-left: 0;
-                    border-radius: 0 8px 8px 0;
-                }
-            }
-
-            &.active {
-                background-color: rgba(41, 63, 230, 0.05);
-                color: var(--main-color);
-                fill: var(--main-color);
-
-                &::after {
-                    border: 1px solid var(--main-color);
-                }
-            }
-        }
-    }
-
-    .btn {
-        flex-grow: 1;
-        width: 140px;
-    }
-
-    .advanced {
-        font-size: 0.8rem;
-        user-select: none;
-
-        .infoBox {
-            input {
-                outline: 0;
-                background-color: rgba(0, 0, 0, 0.05);
-            }
-        }
-    }
-}
-
-.tableMenu {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-
-    &>* {
-        margin-bottom: 8px;
-    }
-}
-
-tbody {
-    td {
-        .click {
-            position: relative;
-            color: var(--main-color);
-            font-weight: 500;
-
-            &::after {
-                position: absolute;
-                content: "copied!";
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                border-radius: 4px;
-                text-align: center;
-                background-color: var(--main-color);
-                color: #fff;
-                display: none;
-            }
-
-            &:hover {
-                text-decoration: underline;
-                cursor: pointer;
-            }
-
-            &.clicked {
-                &::after {
-                    display: block;
-                }
-            }
-        }
-    }
-}
-
-.recordPart {
-    position: relative;
-    overflow: hidden;
-}
-
-#loading {
-    position: absolute;
-    top: 60px;
-    left: 20px;
-    height: 60px;
-    z-index: 2;
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    font-size: 0.8rem;
+<style lang="less" scoped>
+.error {
+    margin-bottom: 1rem;
 }
 </style>

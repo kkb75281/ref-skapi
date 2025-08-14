@@ -1,22 +1,16 @@
 <template lang="pug">
-br
-br
-br
-
 #signup
     router-link(to="/")
-        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px;")
+        img(src="@/assets/img/logo/symbol-logo.png" alt="Skapi Logo" style="width: 40px; margin-bottom: .625rem")
 
-    .bottomLineTitle Sign Up
+    .page-title Sign Up
 
-    form(@submit.prevent="signup")
-        p Enter your Email and create a password.
+    hr
 
-        br
-        
+    form(@submit.prevent="signup")        
         label
             | Email
-            input.big(type="email" 
+            input.block(type="email" 
             :value='form.email' 
             @input="e=> { form.email = e.target.value; }"
             placeholder="your@email.com" 
@@ -25,7 +19,7 @@ br
 
         label.passwordInput
             | Create Password
-            input.big(:type='showPassword ? "text" : "password"'
+            input.block(:type='showPassword ? "text" : "password"'
             ref="passwordField" 
             @input="e=> { form.password = e.target.value; e.target.setCustomValidity(''); error = '' }"
             minlength="6"
@@ -34,17 +28,15 @@ br
             required)
             //- .passwordIcon(@click="showPassword = !showPassword")
             //-     template(v-if="showPassword")
-            //-         //- .material-symbols-outlined.notranslate.fill visibility
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+            //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
             //-     template(v-else)
-            //-         //- .material-symbols-outlined.notranslate.fill visibility_off
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+            //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
         label.passwordInput
             | Confirm password
-            input.big(:type='showPassword ? "text" : "password"'
+            input.block(:type='showPassword ? "text" : "password"'
             ref="confirmPasswordField" 
             @input="e=> { form.password_confirm = e.target.value; e.target.setCustomValidity(''); error = '' }"
             @change="validatePassword"
@@ -52,13 +44,11 @@ br
             required)
             //- .passwordIcon(@click="showPassword = !showPassword")
             //-     template(v-if="showPassword")
-            //-         //- .material-symbols-outlined.notranslate.fill visibility
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+            //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
             //-     template(v-else)
-            //-         //- .material-symbols-outlined.notranslate.fill visibility_off
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+            //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
         .actions 
             Checkbox(v-model="form.subscribe" style='font-weight:unset;') I agree to receive newsletters from Skapi.
@@ -66,34 +56,30 @@ br
         br
 
         .error(v-if="error")
-            //- .material-symbols-outlined.notranslate.fill error
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-error-fill")
+                use(xlink:href="/material-icon.svg#icon-error")
             span {{ error }}
         
         br
 
         .bottom
             div(v-if="promiseRunning" style="width:100%; text-align:center")
-                .loader(style="--loader-color:blue; --loader-size:12px")
+                .loader(style="--loader-color:white; --loader-size:12px")
 
             template(v-else)
-                button.final Sign-up
+                button.inline Sign-up
                 .signup 
                     | Have an account?&nbsp;
                     RouterLink(:to="{name: 'login'}") Login
-        
-br
-br
-br
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
-import { skapi } from '@/main'
-import { user } from '@/code/user'
-import { onMounted, ref } from 'vue';
-import Checkbox from '@/components/checkbox.vue';
+import { useRoute, useRouter } from "vue-router";
+import { skapi } from "@/main";
+import { user } from "@/code/user";
+import { onMounted, ref } from "vue";
+import Checkbox from "@/components/checkbox.vue";
+
 const router = useRouter();
 const route = useRoute();
 
@@ -103,28 +89,28 @@ let passwordField = ref(null);
 let confirmPasswordField = ref(null);
 let error = ref(null);
 let form = ref({
-    email: '',
-    password: '',
-    password_confirm: '',
+    email: "",
+    password: "",
+    password_confirm: "",
     subscribe: true,
 });
 let routeQuery = route.query;
 
 let validatePassword = () => {
     if (form.value.password_confirm !== form.value.password) {
-        confirmPasswordField.value.setCustomValidity('Password does not match');
+        confirmPasswordField.value.setCustomValidity("Password does not match");
         confirmPasswordField.value.reportValidity();
     }
-}
+};
 
 let signup = (e) => {
-    error.value = '';
+    error.value = "";
     promiseRunning.value = true;
 
     let params = {
         email: form.value.email,
         password: form.value.password,
-    }
+    };
     let options = {
         signup_confirmation: "/success",
         email_subscription: form.value.subscribe,
@@ -137,38 +123,49 @@ let signup = (e) => {
             options.signup_confirmation = "/success";
         }
 
-        options.signup_confirmation = options.signup_confirmation + "?suc_redirect=" + routeQuery.suc_redirect;
+        options.signup_confirmation =
+            options.signup_confirmation +
+            "?suc_redirect=" +
+            routeQuery.suc_redirect;
     }
 
-    skapi.signup(params, options).then(res => {
-        router.push({ path: '/confirmation', query: { email: form.value.email } })
-    }).catch(err => {
-        promiseRunning.value = false;
+    skapi
+        .signup(params, options)
+        .then((res) => {
+            router.push({
+                path: "/confirmation",
+                query: { email: form.value.email },
+            });
+        })
+        .catch((err) => {
+            promiseRunning.value = false;
 
-        switch (err.code) {
-            case 'EXISTS':
-            case 'UsernameExistsException':
-                error.value = "This email is already in use";
-                break;
-            default:
-                error.value = "Something went wrong please contact an administrator.";
-                throw e;
-        }
-    });
-}
+            switch (err.code) {
+                case "EXISTS":
+                case "UsernameExistsException":
+                    error.value = "This email is already in use";
+                    break;
+                default:
+                    error.value =
+                        "Something went wrong please contact an administrator.";
+                    throw e;
+            }
+        });
+};
 </script>
 
 <style scoped lang="less">
 #signup {
     max-width: 480px;
-    padding: 0 20px;
+    padding: 5rem 20px;
     margin: 0 auto;
+    width: 100%;
 }
 
 form {
     padding: 8px;
 
-    >label {
+    > label {
         margin-bottom: 16px;
     }
 
@@ -176,7 +173,7 @@ form {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        align-items: center
+        align-items: center;
     }
 
     .bottom {

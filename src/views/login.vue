@@ -1,39 +1,30 @@
 <template lang="pug">
-br
-br
-br
-br
-br
-br
-
 #login
     router-link(to="/")
-        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px;")
+        img(src="@/assets/img/logo/symbol-logo.png" alt="Skapi Logo" style="width: 40px; margin-bottom: .625rem")
 
-    .bottomLineTitle Login
+    .page-title Login
 
-    br
+    hr
 
     form(@submit.prevent="login")
         label
             | Email
-            input.big(type="email" @input="e=> { form.email = e.target.value; error='';}" :disabled="promiseRunning" placeholder="your@email.com" required)
+            input.block(type="email" @input="e=> { form.email = e.target.value; error='';}" :disabled="promiseRunning" placeholder="your@email.com" required)
 
         label.passwordInput
             | Password
-            input.big(:type='showPassword ? "text" : "password"'
+            input.block(:type='showPassword ? "text" : "password"'
             @input="(e)=>{form.password = e.target.value; error='';}" 
             :disabled="promiseRunning"
             name="password" placeholder="Enter password" required)
             //- .passwordIcon(@click.stop="showPassword = !showPassword")
             //-     template(v-if="showPassword")
-            //-         //- .material-symbols-outlined.notranslate.fill visibility
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+            //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
             //-     template(v-else)
-            //-         //- .material-symbols-outlined.notranslate.fill visibility_off
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+            //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
         .actions
             Checkbox(style='font-weight:unset;' @change="(e)=>{setLocalStorage(e)}" :disabled='promiseRunning' v-model='remVal') Remember Me
@@ -42,9 +33,8 @@ br
         br
 
         .error(v-if="error")
-            //- .material-symbols-outlined.notranslate.fill error
             svg
-                use(xlink:href="@/assets/img/material-icon.svg#icon-error-fill")
+                use(xlink:href="/material-icon.svg#icon-error")
             div(v-if="enableAccount")
                 | {{ error }}
                 br
@@ -59,20 +49,28 @@ br
 
         .bottom
             div(v-if="promiseRunning" style="width:100%; text-align:center")
-                .loader(style="--loader-color:blue; --loader-size:12px")
+                .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else)
-                button.final Login
+                button.inline.btn-login Login
                 .signup
-                    span No account?&nbsp;
-                    router-link(:to="route.query.refer_name ? { name: 'signup', query: { suc_redirect: '/refer/' + route.query.refer_name } } : { name: 'signup' }") Sign up
-    
-br
-br
-br
-br
-br
-br
-    
+                    span.text No account?
+                    router-link.btn-signup(:to="route.query.refer_name ? { name: 'signup', query: { suc_redirect: '/refer/' + route.query.refer_name } } : { name: 'signup' }") Sign up
+
+Modal(:open="enableAccount")
+    .modal-close(@click="enableAccount = false;")
+        svg.svgIcon
+            use(xlink:href="/basic-icon.svg#icon-x")
+
+    .modal-title Enable Account
+    .modal-desc.
+        Your account is disabled.
+        #[br]
+        Please contact support to enable your account.
+        #[br]
+        You can also try resetting your password.
+
+    .modal-btns
+        button.block.btn-enable(@click="router.push('/enable-account/' + form.email)") Enable
 </template>
 
 <script setup lang="ts">
@@ -81,8 +79,11 @@ import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { onMounted, ref } from "vue";
 import Checkbox from "@/components/checkbox.vue";
+import Modal from "@/components/modal.vue";
+
 const router = useRouter();
 const route = useRoute();
+
 skapi.logout().then(() => {
     for (let k in user) {
         delete user[k];
@@ -123,13 +124,13 @@ let login = (e) => {
             for (let k in u) {
                 user[k] = u[k];
             }
-            if (route.query?.suc_redirect) {
-                router.push(route.query?.suc_redirect);
-            } else if (route.query?.refer_name) {
-                router.push({ name: 'refer', params: { name: route.query.refer_name } });
-            } else {
-                router.push("/my-services");
-            }
+            // if (route.query?.suc_redirect) {
+            //     // router.push(route.query?.suc_redirect);
+            //     router.push({ path: "/my-services", query: { redirect: route.query?.suc_redirect } });
+            // } else {
+            //     router.push("/my-services");
+            // }
+            router.push("/my-services");
         })
         .catch((err) => {
             for (let k in user) {
@@ -160,8 +161,9 @@ let login = (e) => {
 <style scoped lang="less">
 #login {
     max-width: 480px;
-    padding: 0 20px;
+    padding: 5rem 20px;
     margin: 0 auto;
+    width: 100%;
 }
 
 form {
@@ -193,26 +195,26 @@ form {
     }
 }
 
-// .passwordInput {
-//     position: relative;
+.btn-signup {
+    display: inline-block;
+    margin-left: 0.5rem;
+}
 
-//     .passwordIcon {
-//         position: absolute;
-//         right: 15px;
-//         bottom: 10px;
-//         opacity: 0.5;
-//         cursor: pointer;
-//     }
-// }
+.btn-login {
+    padding: 0.875rem 1.5rem;
+}
 
 @media (max-width: 480px) {
     form {
+        padding-bottom: 1rem;
+
         .bottom {
             display: block;
             text-align: center;
 
             button {
                 width: 100%;
+                max-width: 100%;
             }
 
             .forgot {

@@ -1,27 +1,21 @@
 <template lang="pug">
-br
-br
-br
-
 #changePassword
     template(v-if="step < 3")
         router-link(to="/")
-            img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px;")
+            img(src="@/assets/img/logo/symbol-logo.png" alt="Skapi Logo" style="width: 40px; margin-bottom: .625rem")
 
-        .bottomLineTitle Change Password
+        .page-title Change Password
     template(v-else)
-        //- .material-symbols-outlined.notranslate.fill(style="font-size:50px;color:rgba(90, 216, 88, 1);") check_circle
-        svg.svgIcon(style="fill: rgba(90, 216, 88, 1); height: 50px; width: 50px")
-            use(xlink:href="@/assets/img/material-icon.svg#icon-check-circle-fill")
+        svg.svgIcon(style="height: 50px; width: 50px; margin-bottom: .625rem")
+            use(xlink:href="/material-icon.svg#icon-check-circle")
 
+        .page-title Success
 
-        .bottomLineTitle Success
+    hr
 
     template(v-if="step === 1")
         form(@submit.prevent="login")
-            p Please enter your current password.
-
-            br
+            .page-desc Please enter your current password.
 
             input(
                 :value="user.email"
@@ -31,7 +25,7 @@ br
 
             label.passwordInput
                 | Current Password
-                input.big(
+                input.block(
                     :type='showPassword ? "text" : "password"'
                     @input="e=>currPassword = e.target.value"
                     placeholder="Enter your current password"
@@ -39,40 +33,33 @@ br
                     name="password")
                 //- .passwordIcon(@click="showPassword = !showPassword")
                 //-     template(v-if="showPassword")
-                //-         //- .material-symbols-outlined.notranslate.fill visibility
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
                 //-     template(v-else)
-                //-         //- .material-symbols-outlined.notranslate.fill visibility_off
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
-
-            br
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
             .error(v-if="error")
-                //- .material-symbols-outlined.notranslate.fill error
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-error-fill")
+                    use(xlink:href="/material-icon.svg#icon-error")
                 span {{ error }}
 
             br
 
             .bottom
                 template(v-if="promiseRunning")
-                    .loader(style="--loader-color:blue; --loader-size: 12px; margin:0 auto")
+                    .loader(style="--loader-color:white; --loader-size: 12px; margin:0 auto")
                 template(v-else)
                     router-link(to='/account-setting') Back
-                    button.unFinished(type="submit") Continue
+                    button.inline(type="submit") Continue
 
     template(v-else-if="step === 2")
         form(@submit.prevent="changePassword" action="")
-            p Create a new password.
-
-            br
+            .page-desc Create a new password.
 
             label.passwordInput(style="margin-bottom:16px")
                 | New password
-                input.big(
+                input.block(
                     :type='showNewPassword ? "text" : "password"'
                     minlength="6"
                     maxlength='60'
@@ -81,18 +68,16 @@ br
                     required)
                 //- .passwordIcon(@click="showNewPassword = !showNewPassword")
                 //-     template(v-if="showNewPassword")
-                //-         //- .material-symbols-outlined.notranslate.fill visibility
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
                         
                 //-     template(v-else)
-                //-         //- .material-symbols-outlined.notranslate.fill visibility_off
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
             label.passwordInput
                 | Confirm new password
-                input.big(
+                input.block(
                     :type='showConfirmPassword ? "text" : "password"'
                     ref="confirmNewPasswordField"
                     minlength="6"
@@ -104,52 +89,48 @@ br
                     required)
                 //- .passwordIcon(@click="showConfirmPassword = !showConfirmPassword")
                 //-     template(v-if="showConfirmPassword")
-                //-         //- .material-symbols-outlined.notranslate.fill visibility
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-fill")
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
                 //-     template(v-else)
-                //-         //- .material-symbols-outlined.notranslate.fill visibility_off
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="@/assets/img/material-icon.svg#icon-visibility-off-fill")
-
-            br
+                //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
 
             .error(v-if="error")
-                //- .material-symbols-outlined.notranslate.fill error
                 svg
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-error-fill")
+                    use(xlink:href="/material-icon.svg#icon-error")
                 span {{ error }}
 
             br
 
             .bottom
                 template(v-if="promiseRunning")
-                    .loader(style="--loader-color:blue; --loader-size: 12px; margin:0 auto")
+                    .loader(style="--loader-color:white; --loader-size: 12px; margin:0 auto")
                 template(v-else)
                     router-link(to='/account-setting') Back
-                    button.final(type="submit") Submit
+                    button.inline(type="submit") Submit
 
     template(v-else-if="step === 3")
-        p Your password has been successfully changed. Please login with the new password.
+        .page-desc Your password has been successfully changed. Please login with the new password.
+
+        br
+        br
 
         div(style="text-align:right")
-            button.final(@click="router.replace('/login')") Login
+            button.inline(@click="router.replace('/login')") Login
 
     br
     br
 
     .navigator(v-if="step <= 2")
         .ball(v-for="num in 2" :class="{'active': step === num}")
-br
-br
-br
 </template>
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
-import { ref, nextTick } from 'vue';
+import { ref } from 'vue';
 import { skapi } from '@/main';
 import { user } from '@/code/user';
+
 const router = useRouter();
 const route = useRoute();
 
@@ -213,7 +194,7 @@ let changePassword = async () => {
 <style scoped lang="less">
 #changePassword {
     max-width: 480px;
-    padding: 0 20px;
+    padding: 5rem 20px;
     margin: 0 auto;
 }
 

@@ -1,49 +1,51 @@
 <template lang="pug">
-footer#footer
-    //- template(v-if="route.name === 'home'")
-    .top
-        .top-inner
-            .left(:class="{ 'has-sections': route.name === 'home' }")
-                .logo
-                    img(src="@/assets/img/logo/logo-white.svg", alt="Skapi Logo")
-                ul.sections(v-if="route.name === 'home'")
-                    li(@click="scrollSec('section1')") Features
-                    li(@click="scrollSec('section2')") Price
-                    li(@click="scrollSec('section3')") FAQ
-                    li(@click="scrollSec('section4')") Contents
-                ul.nav
-                    li
-                        a(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
-                            img(src="@/assets/img/landingpage/icon_docs.svg", alt="GitHub")
-                            span Docs
-                    li
-                        a(href="https://github.com/broadwayinc/skapi-js" target="_blank") 
-                            img(src="@/assets/img/landingpage/icon_github.svg", alt="GitHub")
-                            span Github
-                    li
-                        router-link(to="/my-services")
-                            img(src="@/assets/img/logo/symbol-logo-white.svg", alt="Skapi Symbol Logo")
-                            span My services
-            .right
-                p support@broadwayinc.com
-                a.terms(href="https://www.skapi.com/pp.html" target="_blank") Terms of service / Privacy policy
-    .bottom
-        .bottom-inner
-            span BROADWAYINC PTE. LTD. Singapore.
-            .icon-wrap
-                a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                    img(src="@/assets/img/landingpage/icon_tiktok.svg")
-                a.link(href="https://www.instagram.com/skapi_api" target="_blank")
-                    img(src="@/assets/img/landingpage/icon_instagram.svg")
-                a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
-                    img(src="@/assets/img/landingpage/icon_youtube.svg")
-                a.link(href="https://x.com/skapi_api" target="_blank")
-                    img(src="@/assets/img/landingpage/icon_x.svg")
-                a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
-                    img(src="@/assets/img/landingpage/icon_linkedin.svg")
-                a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
-                    img(src="@/assets/img/landingpage/icon_facebook.svg")
-    //- template(v-else)
+footer#footer(:class="{ 'service-main-footer': currentRoutePath === 'my-services' && serviceMainLoaded }")
+    template(v-if="route.name === 'home'")
+        .top
+            .top-inner
+                .left(:class="{ 'has-sections': route.name === 'home' }")
+                    .logo
+                        img(src="@/assets/img/logo/logo-white.svg", alt="Skapi Logo")
+                    ul.sections(v-if="route.name === 'home'")
+                        li(@click="scrollSec('section1')") Features
+                        li(@click="scrollSec('section2')") Price
+                        li(@click="scrollSec('section3')") FAQ
+                        li(@click="scrollSec('section4')") Contents
+                    ul.nav
+                        li
+                            a(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
+                                img(src="@/assets/img/landingpage/icon_docs.svg", alt="Docs icon")
+                                span Docs
+                        li
+                            a(href="https://github.com/broadwayinc/skapi-js" target="_blank") 
+                                img(src="@/assets/img/landingpage/icon_github.svg", alt="GitHub icon")
+                                span Github
+                        li
+                            router-link(to="/my-services")
+                                img(src="@/assets/img/logo/symbol-logo-white.svg", alt="Skapi Symbol Logo")
+                                span My services
+                .right
+                    p support@broadwayinc.com
+                    a.terms(href="https://www.skapi.com/pp.html" target="_blank") Terms of service / Privacy policy
+        .bottom
+            .bottom-inner
+                span BROADWAYINC PTE. LTD. Singapore.
+                .icon-wrap
+                    a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_tiktok.svg" alt="TikTok icon")
+                    a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_instagram.svg" alt="Instagram icon")
+                    a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_youtube.svg" alt="YouTube icon")
+                    a.link(href="https://x.com/skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_x.svg" alt="X (formerly Twitter) icon")
+                    a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_linkedin.svg" alt="LinkedIn icon")
+                    a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_facebook.svg" alt="Facebook icon")
+                    a.link(href="https://dev.to/skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_devto.svg" alt="Dev.to icon")
+    template(v-else)
         .footer-wrap
             .left
                 .logo
@@ -55,26 +57,30 @@ footer#footer
                 span.email support@broadwayinc.com
                 .icon-wrap
                     a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                        img(src="@/assets/img/landingpage/icon_tiktok.svg" alt="TikTok icon")
                     a.link(href="https://www.instagram.com/skapi_api" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_instagram.svg")
+                        img(src="@/assets/img/landingpage/icon_instagram.svg" alt="Instagram icon")
                     a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_youtube.svg")
+                        img(src="@/assets/img/landingpage/icon_youtube.svg" alt="YouTube icon")
                     a.link(href="https://x.com/skapi_api" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_x.svg")
+                        img(src="@/assets/img/landingpage/icon_x.svg" alt="X (formerly Twitter) icon")
                     a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                        img(src="@/assets/img/landingpage/icon_linkedin.svg" alt="LinkedIn icon")
                     a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
-                        img(src="@/assets/img/landingpage/icon_facebook.svg")
-            
+                        img(src="@/assets/img/landingpage/icon_facebook.svg" alt="Facebook icon")
+                    a.link(href="https://dev.to/skapi_api" target="_blank")
+                        img(src="@/assets/img/landingpage/icon_devto.svg" alt="Dev.to icon")
+
 </template>
 <script setup>
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { serviceMainLoaded } from "@/views/service/main";
 
 const router = useRouter();
 const route = useRoute();
 const hoveredMenu = ref("");
+let currentRoutePath = ref(route.path);
 
 const scrollSec = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -133,17 +139,27 @@ const mouseout = (event) => {
     }
 };
 
+watch(
+    () => route.path,
+    (nv) => {
+        let splitPath = nv.split("/");
+
+        currentRoutePath.value = splitPath.length > 2 ? splitPath[1] : "";
+    },
+    { immediate: true }
+);
+
 onMounted(() => {
     setFooterHeight();
-    window.addEventListener("resize", setFooterHeight);
+    // window.addEventListener("resize", setFooterHeight);
     window.addEventListener("mouseover", mousehover);
     window.addEventListener("mouseout", mouseout);
 });
 
 onUnmounted(() => {
-    window.removeEventListener("resize", setFooterHeight);
-    window.addEventListener("mouseover", mousehover);
-    window.addEventListener("mouseout", mouseout);
+    // window.removeEventListener("resize", setFooterHeight);
+    window.removeEventListener("mouseover", mousehover);
+    window.removeEventListener("mouseout", mouseout);
 });
 </script>
 <style lang="less" scoped>
@@ -153,6 +169,20 @@ onUnmounted(() => {
     background-color: #000;
     color: #fff;
     z-index: 999;
+
+    &.service-main-footer {
+        margin-left: 260px;
+        background-color: #16171a;
+        box-shadow: 0px -1px 0px 0px #1F1F1F;
+
+        .footer-wrap {
+            padding: 1.875rem 2.5rem;
+
+            .right {
+                flex-grow: 1;
+            }
+        }
+    }
 
     .top-inner,
     .bottom-inner {
@@ -254,7 +284,7 @@ onUnmounted(() => {
         .right {
             p {
                 margin: 0;
-                margin-bottom: 12px;
+                margin-bottom: 4px;
                 font-size: 17px;
                 font-weight: 300;
                 opacity: 0.7;
@@ -290,6 +320,14 @@ onUnmounted(() => {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
+
+            .link {
+                img {
+                    width: 2.25rem;
+                    height: 2.25rem;
+                }
+            }
+
         }
     }
 
@@ -332,9 +370,15 @@ onUnmounted(() => {
             width: 7.5rem;
             height: 2.25rem;
             margin-bottom: 1.25rem;
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
         }
 
         .company-info {
+
             a,
             span {
                 display: block;
@@ -354,18 +398,27 @@ onUnmounted(() => {
             color: rgba(255, 255, 255, 0.5);
             display: block;
             text-align: right;
-            margin-bottom: 0.625rem;
         }
 
         .icon-wrap {
             position: relative;
             right: -7px;
+            bottom: -8px;
+            text-align: end;
+
+            .link {
+                img {
+                    width: 2.25rem;
+                    height: 2.25rem;
+                }
+            }
         }
     }
 }
 
 @media (max-width: 1560px) {
     #footer {
+
         .top-inner,
         .bottom-inner {
             margin: 0 80px;
@@ -375,6 +428,14 @@ onUnmounted(() => {
 
 @media (max-width: 800px) {
     #footer {
+        &.service-main-footer {
+            margin-left: 0;
+
+            .footer-wrap {
+                padding: 1.875rem 1.25rem;
+            }
+        }
+
         .top-inner,
         .bottom-inner {
             margin: 0 60px;
@@ -399,8 +460,8 @@ onUnmounted(() => {
         }
 
         .footer-wrap {
-            padding-left: 2.5rem;
-            padding-right: 2.5rem;
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
             flex-direction: column;
             align-items: flex-start;
             gap: 2rem;
@@ -411,6 +472,7 @@ onUnmounted(() => {
             }
 
             .company-info {
+
                 a,
                 span {
                     font-size: 0.75rem;
@@ -420,7 +482,6 @@ onUnmounted(() => {
             .email {
                 text-align: left;
                 font-size: 0.8125rem;
-                margin-bottom: 1rem;
             }
 
             .icon-wrap {
@@ -475,6 +536,7 @@ onUnmounted(() => {
 
 @media (max-width: 430px) {
     #footer {
+
         .top-inner,
         .bottom-inner {
             margin: 0 40px;

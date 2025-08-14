@@ -1,772 +1,611 @@
 <template lang="pug">
-section.infoBox
-  .titleHead
-    h2 Users
+section.page-header
+    .page-title Users
+    a.btn-docs(href='https://docs.skapi.com/authentication/create-account.html' target="_blank")
+        button.inline.icon-text.sm.gray
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
+            | Go Docs
 
-    span.moreInfo(
-      @click="showGuide = !showGuide",
-      @mouseover="hovering = true",
-      @mouseleave="hovering = false"
-    )
-      span More Info&nbsp;
-      template(v-if="showGuide")
-        //- .material-symbols-outlined.notranslate.fill expand_circle_up 
-        //- .material-symbols-outlined.notranslate.noFill expand_circle_up
-        svg(v-if="hovering", style="width: 25px; height: 25px; fill: black")
-          use(
-            xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up-fill"
-          )
-        svg(v-else, style="width: 25px; height: 25px; fill: black")
-          use(
-            xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up"
-          )
-      template(v-else)
-        //- .material-symbols-outlined.notranslate.fill expand_circle_down
-        //- .material-symbols-outlined.notranslate.noFill expand_circle_down
-        svg(v-if="hovering", style="width: 25px; height: 25px; fill: black")
-          use(
-            xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down-fill"
-          )
-        svg(v-else, style="width: 25px; height: 25px; fill: black")
-          use(
-            xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down"
-          )
+hr
 
-  template(v-if="showGuide")
-    Guide
+section
+    .error(v-if="!user?.email_verified")
+        svg
+            use(xlink:href="/material-icon.svg#icon-warning")
+        router-link(to="/account-setting") Please verify your email address to modify settings.
 
-  hr
+    .error(v-else-if="currentService.service.active == 0")
+        svg
+            use(xlink:href="/material-icon.svg#icon-warning")
+        span This service is currently disabled.
 
-  .error(v-if="!user?.email_verified")
-    //- .material-symbols-outlined.notranslate.fill warning
-    svg
-      use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-    router-link(to="/account-setting") Please verify your email address to modify settings.
+    .error(v-else-if="currentService.service.active < 0")
+        svg
+            use(xlink:href="/material-icon.svg#icon-warning")
+        span This service is currently suspended.
 
-  .error(v-else-if="currentService.service.active == 0")
-    //- .material-symbols-outlined.notranslate.fill warning
-    svg
-      use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-    span This service is currently disabled.
+section
+    .table-menu-wrap
+        .table-functions
+            button.inline.only-icon.gray(aria-label="Show Columns" @click.stop="(e) => { showDropDown(e); }")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        .icon
+                            svg
+                                use(xlink:href="/material-icon.svg#icon-columns")
+                    template(v-slot:tip) Show Columns
+                .moreVert(
+                    @click.stop,
+                    style="--moreVert-left: 0; display: none; font-weight: normal;"
+                    )
+                    .inner
+                        template(v-for="c in columnList")
+                            Checkbox(v-model="c.value" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
+            .search-ing-btn(v-if="searchValue && !searchModalOpen")
+                span.search-for-value(@click="searchModalOpen = true") {{ searchFor }} / {{ searchValue }} ...
+                svg.svgIcon.reset-btn(@click="resetSearchModal")
+                    use(xlink:href="/material-icon.svg#icon-x-circle")
+                svg.svgIcon
+                    use(xlink:href="/material-icon.svg#icon-search")
+            button.inline.only-icon.gray.sm.search-btn(v-else aria-label="Search" @click="searchModalOpen = true" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        .icon
+                            svg
+                                use(xlink:href="/material-icon.svg#icon-search")
+                    template(v-slot:tip) Search
+            button.inline.only-icon.gray.sm(aria-label="Refresh" @click="getPage(true)" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        .icon
+                            svg
+                                use(xlink:href="/basic-icon.svg#icon-refresh")
+                    template(v-slot:tip) Refresh
+        .table-actions
+            button.inline.only-icon.gray.sm(aria-label="Create User" @click="openCreateUser = true" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        .icon
+                            svg
+                                use(xlink:href="/basic-icon.svg#icon-plus")
+                    template(v-slot:tip) Create User
+            button.inline.only-icon.gray.sm(aria-label="Invite User" @click="currentService.plan == 'Trial' ? (serviceUpgradeOffer = true) : (openInviteUser = true)" :class="{'trial' : currentService.plan == 'Trial'}" :disabled="fetching || !user?.email_verified || currentService.service.active <= 0")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        .icon
+                            svg
+                                use(xlink:href="/material-icon.svg#icon-mail")
+                    template(v-slot:tip) Invite User
+            button.inline.only-icon.gray.sm(aria-label="More Actions" @click.stop="(e) => { showDropDown(e); }" :disabled="!Object.keys(checked).length || fetching")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        .icon
+                            svg
+                                use(xlink:href="/material-icon.svg#icon-more-vertical")
+                    template(v-slot:tip) More Actions
+                .moreVert(@click.stop style="--moreVert-right: 0; display: none; font-weight: normal;")
+                    .inner
+                        button.inline.icon-text.gray(@click="openGrantAccess = true" :disabled="!Object.keys(checked).length || fetching")
+                            svg.svgIcon
+                                use(xlink:href="/material-icon.svg#icon-users")
+                            span Grant Access
+                        button.inline.icon-text.gray(@click="openUnblockUser=true" :disabled="!Object.keys(checked).length || fetching")
+                            svg.svgIcon
+                                use(xlink:href="/material-icon.svg#icon-user")
+                            span Unblock User
+                        button.inline.icon-text.gray(@click="openBlockUser=true" :disabled="!Object.keys(checked).length || fetching" style="width:100%; justify-content: flex-start;")
+                            svg.svgIcon
+                                use(xlink:href="/material-icon.svg#icon-user-x")
+                            span Block User
+                        button.inline.icon-text.gray(@click="openDeleteUser=true" :disabled="!Object.keys(checked).length || fetching" style="width:100%; justify-content: flex-start;")
+                            svg.svgIcon
+                                use(xlink:href="/basic-icon.svg#icon-delete")
+                            span Delete User
 
-  .error(v-else-if="currentService.service.active < 0")
-    //- .material-symbols-outlined.notranslate.fill warning
-    svg
-      use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-    span This service is currently suspended.
+    .table-cont-wrap
+        Table(:key="tableKey" :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }" resizable)
+            template(v-if="fetching" v-slot:msg)
+                .tableMsg.center
+                    .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+                .tableMsg.center.empty No Users
 
-form#searchForm(@submit.prevent="getPage(true)", style="padding: 1.2em")
-  Select(
-    v-model="searchFor",
-    :selectOptions="searchOptions",
-    :class="{ nonClickable: fetching }",
-    style="min-width: 162px; flex-grow: 1"
-  )
-  .search(:class="{ nonClickable: fetching }")
-    .clickInput(
-      v-if="searchFor === 'timestamp' || searchFor === 'birthdate'",
-      @click="showCalendar = !showCalendar"
-    )
-      input#searchInput.big(
-        type="text",
-        placeholder="YYYY-MM-DD ~ YYYY-MM-DD",
-        v-model="searchValue",
-        name="date",
-        readonly
-      )
-      //- .material-symbols-outlined.notranslate.fill.icon(v-if="(searchFor === 'timestamp' || searchFor === 'birthdate')") calendar_today
-      svg.svgIcon.reactive(
-        v-if="searchFor === 'timestamp' || searchFor === 'birthdate'"
-      )
-        use(
-          xlink:href="@/assets/img/material-icon.svg#icon-calendar-today-fill"
-        ) 
-      Calendar(
-        v-model="searchValue",
-        :showCalendar="showCalendar",
-        @close="showCalendar = false",
-        alwaysEmit="true"
-      )
-    input#searchInput.big(
-      v-else-if="searchFor === 'phone_number'",
-      type="text",
-      placeholder="+821234567890",
-      v-model="searchValue",
-      :disabled="fetching"
-    )
-    input#searchInput.big(
-      v-else-if="searchFor === 'address'",
-      type="text",
-      placeholder="User's address",
-      v-model="searchValue",
-      name="address"
-    )
-    input#searchInput.big(
-      v-else-if="searchFor === 'gender'",
-      type="text",
-      placeholder="Gender",
-      v-model="searchValue",
-      name="gender"
-    )
-    input#searchInput.big(
-      v-else-if="searchFor === 'name'",
-      type="text",
-      placeholder="User's name",
-      v-model="searchValue",
-      name="name"
-    )
-    .clickInput(
-      v-else-if="searchFor === 'locale'",
-      @click="showLocale = !showLocale"
-    )
-      input#searchInput.big(
-        type="text",
-        placeholder="2 digit country code e.g. KR",
-        v-model="searchValue",
-        name="locale",
-        readonly
-      )
-      //- .material-symbols-outlined.notranslate.fill.icon(v-if="searchFor === 'locale'") arrow_drop_down
-      svg.svgIcon.reactive(v-if="searchFor === 'locale'")
-        use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-drop-down") 
-      Locale(
-        v-model="searchValue",
-        :showLocale="showLocale",
-        @close="showLocale = false"
-      )
-    input#searchInput.big(
-      v-else-if="searchFor === 'user_id'",
-      type="search",
-      placeholder="xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-      v-model="searchValue",
-      name="user_id",
-      @input="(e) => { e.target.setCustomValidity(''); }",
-      pattern="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-    )
-    input#searchInput.big(
-      v-else-if="searchFor === 'email'",
-      placeholder="user@email.com",
-      v-model="searchValue",
-      name="email",
-      type="email",
-      minlength="5"
-    )
-  button.final(type="submit", style="flex-shrink: 0") Search
+            template(v-slot:head)
+                tr
+                    th.fixed(style="width: 60px")
+                        Checkbox(
+                            @click.stop
+                            :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length"
+                            @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.user_id] = d)); else checked = {}; }"
+                            :class="{ nonClickable: !listDisplay || !listDisplay?.length }"
+                            style="display: inline-block"
+                        )
+                        .resizer.fixed
 
-br
+                    template(v-for="c in columnList")
+                        th.overflow(v-if="c.value", style="width: 200px")
+                            | {{ c.name }}
+                            .resizer
 
-.tableMenu
-  .iconClick.square(@click.stop="(e) => { showDropDown(e); }")
-    svg.svgIcon
-      use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl") 
-    span &nbsp;&nbsp;Show Columns
-    .moreVert(
-      @click.stop,
-      style="--moreVert-left: 0; display: none; font-weight: normal; color: black"
-    )
-      .inner
-        template(v-for="c in columnList")
-          Checkbox(v-model="c.value", style="display: flex") {{ c.name }}
+            template(v-slot:body)
+                template(v-if="fetching || !listDisplay || listDisplay.length === 0")
+                    tr.nohover(v-for="i in 10")
+                        td(:colspan="colspan")
+                template(v-else)
+                    tr.hoverRow(v-for="(user, index) in listDisplay" @click="showDetail=true; selectedUser=user")
+                        td
+                            Checkbox(
+                            @click.stop
+                            :modelValue="!!checked?.[user?.user_id]"
+                            @update:modelValue="(value) => { if (value) checked[user?.user_id] = value; else delete checked[user?.user_id]; }"
+                            )
 
-  .iconClick.square(
-    @click="openCreateUser = true",
-    :class="{ nonClickable: fetching || !user?.email_verified || currentService.service.active <= 0 }"
-  )
-    svg.svgIcon
-      use(xlink:href="@/assets/img/material-icon.svg#icon-person-add-fill") 
-    span &nbsp;&nbsp;Create User
+                        template(v-for="c in columnList")
+                            template(v-if="c.value")
+                                // customize the column
+                                td.overflow(v-if="c.key === 'timestamp'") {{ new Date(user[c.key]).toLocaleString() }}
+                                td.overflow(v-else-if="c.key === 'approved'") {{ user[c.key].split(':')[1].charAt(0).toUpperCase() + user[c.key].split(':')[1].slice(1) }}
+                                td.overflow(v-else-if="c.key === 'locale'")
+                                    img(
+                                    :src="'https://flagcdn.com/' + user.locale.toLowerCase() + '.svg'",
+                                    style="width: 16px; object-fit: contain"
+                                    )
+                                td.overflow(v-else-if="c.key === 'access_group'" :style="{color: user[c.key] < 0 ? 'var(--caution-color)' : null }") {{ Math.abs(user[c.key]) }} {{user[c.key] < 0 ? "(Disabled)" : "" }}
+                                td.overflow(v-else-if="c.value") {{ user[c.key] || "-" }}
 
-  .iconClick.square(
-    @click="currentService.plan == 'Trial' ? (openUpgrade = true) : (openInviteUser = true)",
-    :class="{ nonClickable: fetching || !user?.email_verified || currentService.service.active <= 0, deact: currentService.plan == 'Trial' }"
-  )
-    svg.svgIcon
-      use(
-        xlink:href="@/assets/img/material-icon.svg#icon-mark-email-unread-fill"
-      )
+                    tr.nohover(v-for="i in 10 - listDisplay.length")
+                        td(:colspan="colspan")
 
-    span &nbsp;&nbsp;Invite User
+    .table-page-wrap
+        button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")
+            .icon
+                svg
+                    use(xlink:href="/material-icon.svg#icon-chevron-left")
+        button.inline.only-icon.gray(aria-label="Next" @click="currentPage++;" :disabled="{ disabled: fetching || endOfList && currentPage >= maxPage }")
+            .icon
+                svg
+                    use(xlink:href="/material-icon.svg#icon-chevron-right")
 
-  .iconClick.square(:class="{'nonClickable': !Object.keys(checked).length || fetching}" @click.stop="(e) => { showDropDown(e); }")
-    svg.svgIcon
-      use(xlink:href="@/assets/img/material-icon.svg#icon-checklist-rtl") 
-    span &nbsp;&nbsp;Actions
-    .moreVert(
-      @click.stop,
-      style="--moreVert-right: 0; display: none; font-weight: normal; color: black"
-    )
-      .inner
-        .iconClick.square(@click="openGrantAccess=true" style='width: 100%;padding: .5rem;' :class="{'nonClickable': !Object.keys(checked).length || fetching}" )
-          span(style='white-space: nowrap')
+// modal :: search user
+Modal.search-modal(:open="searchModalOpen")
+    .modal-close(@click="searchModalOpen = false; searchModalStep = 1; searchFor = 'user_id'; searchValue = '';")
+        svg.svgIcon
+            use(xlink:href="/basic-icon.svg#icon-x")
+
+    .top
+        #showSearchFor.search-for
             svg.svgIcon
-              use(xlink:href="@/assets/img/material-icon.svg#icon-supervisor-account-fill")
-            span &nbsp;&nbsp;Grant Access
-          
-        .iconClick.square(@click="openUnblockUser=true" style='width: 100%;padding: .5rem;' :class="{'nonClickable': !Object.keys(checked).length || fetching}" )
-          span(style='white-space: nowrap')
-            svg.svgIcon
-              use(xlink:href="@/assets/img/material-icon.svg#icon-account-circle-fill")
-            span &nbsp;&nbsp;Unblock User
+                use(xlink:href="/material-icon.svg#icon-search")
+            span {{ searchFor + ' /' }}
+        .search-input(:class="{'readonly': searchFor === 'timestamp' || searchFor === 'birthdate' || searchFor === 'locale'}")
+            template(v-if="searchFor === 'timestamp' || searchFor === 'birthdate'")
+                input#searchInput.block(type="text" spellcheck="false" placeholder="YYYY-MM-DD ~ YYYY-MM-DD" v-model="searchValue" name="date" readonly)
+                svg.svgIcon
+                    use(xlink:href="/material-icon.svg#icon-calendar")
+            template(v-if="searchFor === 'locale'")
+                input#searchInput.block(type="text" spellcheck="false" placeholder="2 digit country code e.g. KR" v-model="searchValue" name="locale" readonly)
+                svg.svgIcon
+                    use(xlink:href="/material-icon.svg#icon-arrow-drop-down")
+            template(v-else-if="searchFor === 'user_id'")
+                input#searchInput.block(type="text" spellcheck="false" placeholder="xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" v-model="searchValue" name="user_id" @input="(e) => { e.target.setCustomValidity(''); }" pattern="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+            template(v-else-if="searchFor === 'email'")
+                input#searchInput.block(type="email" spellcheck="false" placeholder="user@email.com" v-model="searchValue" name="email" minlength="5")
+            template(v-else-if="searchFor === 'name'")
+                input#searchInput.block(type="text" spellcheck="false" placeholder="User's Name" v-model="searchValue" name="name")
+            template(v-else-if="searchFor === 'phone_number'")
+                input#searchInput.block(type="text" spellcheck="false" placeholder="+821012345678" v-model="searchValue")
+            template(v-else-if="searchFor === 'address'")
+                input#searchInput.block(type="text" spellcheck="false" placeholder="Seoul, South Korea" v-model="searchValue" name="address")
+            template(v-else-if="searchFor === 'gender'")
+                input#searchInput.block(type="text" spellcheck="false" placeholder="Gender" v-model="searchValue" name="gender")
+    .bottom
+        .tit Search for
+        .flex-wrap.center(style="margin-bottom: 1.5rem")
+            button.inline.gray(v-for="option in searchOptions" :key="option.value" :class="{'selected': searchFor === option.value }" @click="searchFor = option.value;") {{ option.option }}
+        .key-desc.flex-wrap.center
+            .key
+                span.name enter
+                span.action search
+            .key
+                span.name esc
+                span.action to close
+    Calendar(v-if="searchFor === 'timestamp' || searchFor === 'birthdate'" v-model="searchValue" :showCalendar="true" alwaysEmit="true")
+    Locale(v-if="searchFor === 'locale'" v-model="searchValue" :showLocale="true")
+
+// modal :: create user
+Modal.modal-scroll.modal-createUser(:open="openCreateUser")
+    .modal-close(@click="openCreateUser = false;")
+        svg.svgIcon
+            use(xlink:href="/basic-icon.svg#icon-x")
+
+    .modal-title Create User
+
+    form#createForm.modal-body(@submit.prevent="createUser")
+        input(hidden, name="service", :value="currentService.id")
+
+        span.txt-required * required
+
+        label 
+            span.label.required Email
+            input#email.block(
+                type="email",
+                @input="(e) => (createParams.email = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'password')",
+                :disabled="promiseRunning",
+                title="Please enter a valid email address.",
+                placeholder="User's Email (user@email.com)",
+                required
+            )
         
-        .iconClick.square(@click="openBlockUser=true" style='width: 100%;padding: .5rem;' :class="{'nonClickable': !Object.keys(checked).length || fetching}" )
-          span(style='white-space: nowrap')
-            svg.svgIcon
-              use(xlink:href="@/assets/img/material-icon.svg#icon-no-accounts-fill")
-            span &nbsp;&nbsp;Block User
+        br
 
-        .iconClick.square(@click="openDeleteUser=true" style='width: 100%;padding: .5rem;' :class="{'nonClickable': !Object.keys(checked).length || fetching}")
-          span(style='white-space: nowrap')
-              svg.svgIcon
-                  use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+        label 
+            span.label.required Password
+            input#password.block(
+                @input="(e) => (createParams.password = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'name')",
+                :disabled="promiseRunning",
+                placeholder="User's Password",
+                type="Password",
+                minlength="6",
+                required
+            )
+        
+        br
 
-              span &nbsp;&nbsp;Delete User
-
-  //- .iconClick.square(
-  //-   @click="getPage(true)",
-  //-   :class="{ nonClickable: fetching || !user?.email_verified || currentService.service.active <= 0 }"
-  //- )
-  //-   svg.svgIcon(:class="{ loading: fetching }")
-  //-     use(xlink:href="@/assets/img/material-icon.svg#icon-refresh")
-  //-   span &nbsp;&nbsp;Refresh
-
-.userPart
-  template(v-if="fetching")
-    #loading.
-      Loading ... &nbsp;
-      #[.loader(style="--loader-color: black; --loader-size: 12px")]
-
-  Table(
-    :key="tableKey"
-    :class="{ disabled: !user?.email_verified || currentService.service.active <= 0 }"
-    resizable
-    )
-    template(v-slot:head)
-      tr
-        th.fixed(style="width: 60px")
-          Checkbox(
-            @click.stop
-            :modelValue="!!Object.keys(checked).length"
-            @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.user_id] = d)); else checked = {}; }"
-            :class="{ nonClickable: !listDisplay || !listDisplay?.length }"
-            style="display: inline-block"
-          )
-          .resizer.fixed
-
-        template(v-for="c in columnList")
-          th.overflow(v-if="c.value", style="width: 200px")
-            | {{ c.name }}
-            .resizer
-
-    template(v-slot:body)
-      template(v-if="fetching")
-        tr(v-for="i in 10")
-          td(:colspan="colspan")
-      template(v-else-if="!listDisplay || listDisplay.length === 0")
-        tr
-          td#noUsers(:colspan="colspan") No Users
-        tr(v-for="i in 9")
-          td(:colspan="colspan")
-      template(v-else)
-        tr.hoverRow(v-for="(user, index) in listDisplay" @click="showDetail=true; selectedUser=user")
-          td
-            Checkbox(
-              @click.stop
-              :modelValue="!!checked?.[user?.user_id]"
-              @update:modelValue="(value) => { if (value) checked[user?.user_id] = value; else delete checked[user?.user_id]; }"
+        label Name
+            input#name.block(
+                @input="(e) => (createParams.name = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'phone')",
+                :disabled="promiseRunning",
+                placeholder="User's Name"
             )
 
-          template(v-for="c in columnList")
-            template(v-if="c.value")
-              // customize the column
-              td.overflow(v-if="c.key === 'timestamp'") {{ new Date(user[c.key]).toLocaleString() }}
-              td.overflow(v-else-if="c.key === 'approved'") {{ user[c.key].split(':')[1].charAt(0).toUpperCase() + user[c.key].split(':')[1].slice(1) }}
-              td.overflow(v-else-if="c.key === 'locale'")
-                img(
-                  :src="'https://flagcdn.com/' + user.locale.toLowerCase() + '.svg'",
-                  style="width: 16px; object-fit: contain"
+        br
+
+        .label
+            label Phone Number
+                input#phone.block(
+                    @input="(e) => (createParams.phone_number = e.target.value)",
+                    @keydown="(e) => moveFocus(e, 'gender')",
+                    :disabled="promiseRunning",
+                    placeholder="User's Phone Number (+821012345678)",
+                    type="text"
                 )
-              td.overflow(v-else-if="c.key === 'access_group'" :style="{color: user[c.key] < 0 ? 'var(--caution-color)' : null }") {{ Math.abs(user[c.key]) }} {{user[c.key] < 0 ? "(Disabled)" : "" }}
-              td.overflow(v-else-if="c.value") {{ user[c.key] || "-" }}
-
-        tr(v-for="i in 10 - listDisplay.length")
-          td(:colspan="colspan")
-
-  form.detailRecord(:class="{show: showDetail}" @submit.prevent='upload')
-    .header(style='padding-right:10px;')
-        svg.svgIcon.black.clickable(@click="showDetail=false; selectedUser=null;" :class="{nonClickable: fetching}")
-          use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back")
-        .name {{ selectedUser?.name || selectedUser?.email || selectedUser?.user_id }}
-        template(v-if="uploading")
-          .loader(style="--loader-color:blue; --loader-size:12px; margin: 12px;")
-        template(v-else)
-          button.noLine.iconClick.square(type="submit" style='padding:0 14px') SAVE
-
-    UserDetails(v-if='showDetail' :data='selectedUser')
-
-.tableMenu(v-if="!showDetail" style="display: block; text-align: center")
-  .iconClick.square.arrow(
-    @click="currentPage--",
-    :class="{ nonClickable: fetching || currentPage === 1 }"
-  )
-    //- .material-symbols-outlined.notranslate.bold chevron_left
-    svg.svgIcon(style="width: 26px; height: 26px")
-      use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-left")
-    span Previous&nbsp;&nbsp;
-  | &nbsp;&nbsp;
-  .iconClick.square.arrow(
-    @click="currentPage++",
-    :class="{ nonClickable: fetching || (endOfList && currentPage >= maxPage) }"
-  )
-    span &nbsp;&nbsp;Next
-    //- .material-symbols-outlined.notranslate.bold chevron_right
-    svg.svgIcon(style="width: 26px; height: 26px")
-      use(xlink:href="@/assets/img/material-icon.svg#icon-chevron-right")
-
-// create user
-Modal(
-  :open="openCreateUser",
-  @close="openCreateUser = false",
-  style="width: 478px"
-)
-  h4(style="margin: 0.5em 0 0") Create User
-
-  hr
-
-  form#createForm(@submit.prevent="createUser")
-    input(hidden, name="service", :value="currentService.id")
-
-    label User's Email
-      |
-      em(style="color: red; font-size: 0.6rem") * Required
-      input#email.big(
-        type="email",
-        @input="(e) => (createParams.email = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'password')",
-        :disabled="promiseRunning",
-        title="Please enter a valid email address.",
-        placeholder="anonymous@anonymous.com",
-        required
-      )
-    br
-
-    label Password
-      |
-      em(style="color: red; font-size: 0.6rem") * Required
-      input#password.big(
-        @input="(e) => (createParams.password = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'name')",
-        :disabled="promiseRunning",
-        placeholder="User's Password",
-        type="Password",
-        minlength="6",
-        required
-      )
-
-    br
-
-    label Name
-      |
-      input#name.big(
-        @input="(e) => (createParams.name = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'phone')",
-        :disabled="promiseRunning",
-        placeholder="User's Name"
-      )
-
-    br
-
-    label Phone Number
-      |
-      input#phone.big(
-        @input="(e) => (createParams.phone_number = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'gender')",
-        :disabled="promiseRunning",
-        placeholder="User's Phone Number",
-        type="text"
-      )
-
-    br
-
-    .label
-      label Gender
-        |
-        input#gender.big(
-          @input="(e) => (createParams.gender = e.target.value)",
-          @keydown="(e) => moveFocus(e, 'address')",
-          :disabled="promiseRunning",
-          placeholder="User's Gender",
-          type="text"
-        )
-      Checkbox(v-model="gender_public") public
-
-    br
-
-    .label
-      label Address
-        |
-        input#address.big(
-          @input="(e) => (createParams.address = e.target.value)",
-          @keydown="(e) => moveFocus(e, 'birthdate')",
-          :disabled="promiseRunning",
-          placeholder="User's Address",
-          type="text"
-        ) 
-      Checkbox(v-model="address_public") public
-
-    br
-
-    .label
-      label Birthdate
-        |
-        input#birthdate.big(
-          @input="(e) => (createParams.birthdate = e.target.value)",
-          @keydown="(e) => moveFocus(e, 'picture')",
-          :disabled="promiseRunning",
-          placeholder="User's Birthdate (YYYY-MM-DD)",
-          type="text"
-        )
-      Checkbox(v-model="birthdate_public") public
-
-    br
-
-    label Picture
-      |
-      input#picture.big(
-        @input="(e) => (createParams.picture = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'profile')",
-        :disabled="promiseRunning",
-        placeholder="URL of the profile picture.",
-        type="url"
-      )
-
-    br
-
-    label Profile
-      |
-      input#profile.big(
-        @input="(e) => (createParams.profile = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'website')",
-        :disabled="promiseRunning",
-        placeholder="URL of the profile page",
-        type="url"
-      )
-
-    br
-
-    label Website
-      |
-      input#website.big(
-        @input="(e) => (createParams.website = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'nickname')",
-        :disabled="promiseRunning",
-        placeholder="URL of the website",
-        type="url"
-      )
-
-    br
-
-    label Nickname
-      |
-      input#nickname.big(
-        @input="(e) => (createParams.nickname = e.target.value)",
-        @keydown="(e) => moveFocus(e, 'misc')",
-        :disabled="promiseRunning",
-        placeholder="Nickname of the user",
-        type="text"
-      )
-
-    br
-
-    label misc
-      |
-      input#misc.big(
-        @input="(e) => (createParams.misc = e.target.value)",
-        :disabled="promiseRunning",
-        placeholder="Additional string value that can be used freely",
-        type="text"
-      )
-
-    br
-
-    .error(v-if="error")
-      svg
-        use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-      span {{ error }}
-
-    br
-
-    div(
-      style="display: flex; align-items: center; justify-content: space-between"
-    )
-      div(
-        v-if="promiseRunning",
-        style="width: 100%; height: 44px; text-align: center"
-      )
-        .loader(style="--loader-color: blue; --loader-size: 12px")
-      template(v-else)
-        button.noLine(type="button", @click="closeModal") Cancel
-        button.final(type="submit") Create User
-
-// invite user
-Modal(:open="openInviteUser", @close="openInviteUser = false")
-  h4(style="margin: 0.5em 0 0") Invite User
-
-  hr
-
-  div(style="font-size: 0.8rem")
-    p.
-      Invitation Email includes a temporary password and the acception link. 
-      #[br]
-      User must accept the invitation within 7 days.
-      #[br]
-      For more information, refer:&nbsp;
-      #[a(href="https://docs.skapi.com/email/email-templates.html", target="_blank", style="white-space: nowrap") E-Mail Templates]
-
-  br
-
-  form#inviteForm(@submit.prevent="inviteUser")
-    input(hidden, name="service", :value="currentService.id")
-
-    label User's Email
-      |
-      em(style="color: red; font-size: 0.6rem") * Required
-      input#inviteUserEmail.big(
-        type="email"
-        @input="(e) => (inviteParams.email = e.target.value)"
-        @keydown="(e) => moveFocus(e, 'inviteUserName')"
-        title="Please enter a valid email address."
-        placeholder="anonymous@anonymous.com"
-        required
-      )
-    br
-
-    label Name
-      |
-      em(style="color: red; font-size: 0.6rem") * Required
-      input#inviteUserName.big(
-        @input="(e) => (inviteParams.name = e.target.value)"
-        @keydown="(e) => moveFocus(e, 'inviteUserURL')"
-        placeholder="User's Name"
-        required
-      )
-
-    br
-
-    label Redirect URL
-      |
-      input#inviteUserURL.big(
-        @input="(e) => (redirect = e.target.value)"
-        placeholder="URL to redirect when accepted. (optional)"
-        type="url"
-      )
-
-    br
-
-    .error(v-if="error")
-      svg
-        use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
-      span {{ error }}
-
-    br
-
-    div(
-      style="display: flex; align-items: center; justify-content: space-between"
-    )
-      div(
-        v-if="promiseRunning",
-        style="width: 100%; height: 44px; text-align: center"
-      )
-        .loader(style="--loader-color: blue; --loader-size: 12px")
-      template(v-else)
-        button.noLine(type="button", @click="closeModal") Cancel
-        button.final(type="submit") Invite
-
-// block user
-Modal(:open="openBlockUser", @close="openBlockUser = false")
-  h4(style="margin: 0.5em 0 0") Block User
-
-  hr
-
-  div(style="font-size: 0.8rem")
-    p.
-      This action will block {{Object.keys(checked).length}} user(s) from your service.
-      #[br]
-      The user will not be able to access your service anymore.
-
-  br
-
-  div(
-    style="display: flex; align-items: center; justify-content: space-between"
-  )
-    div(
-      v-if="promiseRunning",
-      style="width: 100%; height: 44px; text-align: center"
-    )
-      .loader(style="--loader-color: blue; --loader-size: 12px")
-    template(v-else)
-      button.noLine(
-        type="button"
-        @click="openBlockUser = false;"
-      ) Cancel
-      button.final(type="button", @click="changeUserApprovalState('block')") Block
-
-// unblock user
-Modal(:open="openUnblockUser", @close="openUnblockUser = false")
-  h4(style="margin: 0.5em 0 0") Unblock User
-
-  hr
-
-  div(style="font-size: 0.8rem")
-    p.
-      This action will unblock {{Object.keys(checked).length}} user(s) from your service. 
-      #[br]
-      The user will have access to your service.
-
-  br
-
-  div(
-    style="display: flex; align-items: center; justify-content: space-between"
-  )
-    div(
-      v-if="promiseRunning"
-      style="width: 100%; height: 44px; text-align: center"
-    )
-      .loader(style="--loader-color: blue; --loader-size: 12px")
-    template(v-else)
-      button.noLine(
-        type="button"
-        @click="openUnblockUser = false;"
-      ) Cancel
-      button.final(type="button", @click="changeUserApprovalState('unblock')") Unblock
-
-// delete user
-Modal(:open="openDeleteUser", @close="openDeleteUser = false")
-  h4(style="margin: 0.5em 0 0; color: var(--caution-color)") Delete User
-
-  hr
-
-  div(style="font-size: 0.8rem")
-    p.
-      This action will delete {{Object.keys(checked).length}} user(s) from your service.
-      #[br]
-      All the user's data will be deleted.
-      #[br]
-      This action cannot be undone.
-
-  br
-
-  div(
-    style="display: flex; align-items: center; justify-content: space-between"
-  )
-    div(
-      v-if="promiseRunning",
-      style="width: 100%; height: 44px; text-align: center"
-    )
-      .loader(style="--loader-color: blue; --loader-size: 12px")
-    template(v-else)
-      button.noLine.warning(
-        type="button"
-        @click="openDeleteUser = false;"
-      ) Cancel
-      button.final.warning(type="button", @click="deleteUser") Delete
-
-// upgrade service
-Modal(:open="openUpgrade", @close="openUpgrade = false")
-  h4(style="margin: 0.5em 0 0") Upgrade
-
-  hr
-
-  div(style="font-size: 0.8rem")
-    p.
-      You can access more features like sending newsletters,
-      #[br]
-      inviting users and file hosting by upgrading your service.
-
-    p Would you like you check out our service plans?
-
-  br
-
-  div(
-    style="display: flex; align-items: center; justify-content: space-between"
-  )
-    button.noLine(type="button", @click="openUpgrade = false") No
-    router-link(:to="`/subscription/${currentService.id}`")
-      button.final(type="button") Yes
-
-// grant access
-Modal(:open="openGrantAccess", @close="openGrantAccess = false")
-  h4(style="margin: 0.5em 0 0") Grant Access
-
-  hr
-
-  div(style="font-size: 0.8rem")
-    p.
-      This will grant {{Object.keys(checked).length}} user(s) to a new access group.
-      #[br]
-      Access group can be granted from 1 to 99.
+            Checkbox(v-model="phone_number_public") open to all
+        
+        br
+
+        .label
+            label Gender
+                input#gender.block(
+                    @input="(e) => (createParams.gender = e.target.value)",
+                    @keydown="(e) => moveFocus(e, 'address')",
+                    :disabled="promiseRunning",
+                    placeholder="User's Gender",
+                    type="text"
+                )
+            Checkbox(v-model="gender_public") open to all
+        
+        br
+
+        .label
+            label Address
+                input#address.block(
+                    @input="(e) => (createParams.address = e.target.value)",
+                    @keydown="(e) => moveFocus(e, 'birthdate')",
+                    :disabled="promiseRunning",
+                    placeholder="User's Address",
+                    type="text"
+                ) 
+            Checkbox(v-model="address_public") open to all
+
+        br
+
+        .label
+            label Birthdate
+                input#birthdate.block(
+                    @input="(e) => (createParams.birthdate = e.target.value)",
+                    @keydown="(e) => moveFocus(e, 'picture')",
+                    :disabled="promiseRunning",
+                    placeholder="User's Birthdate (YYYY-MM-DD)",
+                    type="text"
+                )
+            Checkbox(v-model="birthdate_public") open to all
+        br
+
+        label Picture
+            input#picture.block(
+                @input="(e) => (createParams.picture = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'profile')",
+                :disabled="promiseRunning",
+                placeholder="URL of the profile picture.",
+                type="url"
+            )
+
+        br
+
+        label Profile
+            input#profile.block(
+                @input="(e) => (createParams.profile = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'website')",
+                :disabled="promiseRunning",
+                placeholder="URL of the profile page",
+                type="url"
+            )
+
+        br
+
+        label Website
+            input#website.block(
+                @input="(e) => (createParams.website = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'nickname')",
+                :disabled="promiseRunning",
+                placeholder="URL of the website",
+                type="url"
+            )
+
+        br
+
+        label Nickname
+            input#nickname.block(
+                @input="(e) => (createParams.nickname = e.target.value)",
+                @keydown="(e) => moveFocus(e, 'misc')",
+                :disabled="promiseRunning",
+                placeholder="Nickname of the user",
+                type="text"
+            )
+
+        br
+
+        label Misc
+            input#misc.block(
+                @input="(e) => (createParams.misc = e.target.value)",
+                :disabled="promiseRunning",
+                placeholder="Additional string value that can be used freely",
+                type="text"
+            )
+
+        br
+
+        .error(v-if="error")
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            span {{ error }}
+
+        br
+
+        .modal-footer(style="padding-bottom: 0;")
+            template(v-if="promiseRunning")
+                .loader(style="--loader-color: white; --loader-size: 12px; margin: 12px;")
+            template(v-else)
+                button.btn-create(type="submit") Create
+
+// modal :: invite user
+Modal.modal-inviteUser(:open="openInviteUser", @close="openInviteUser = false")
+    .modal-close(@click="openInviteUser = false")
+        svg.svgIcon
+            use(xlink:href="/basic-icon.svg#icon-x")
+
+    .modal-title Invite User
+
+    .modal-desc
+        | Invitation Email includes a temporary password and the acception link. 
+        br
+        | User must accept the invitation within 7 days.
+        br
+        | For more information, refer:&nbsp;#[a(href="https://docs.skapi.com/email/email-templates.html", target="_blank", style="white-space: nowrap") E-Mail Templates]
+
+    form#inviteForm(@submit.prevent="inviteUser")
+        input(hidden, name="service", :value="currentService.id")
+
+        label.flex
+            span.label.required User's Email
+            input#inviteUserEmail.big(
+            type="email"
+            @input="(e) => (inviteParams.email = e.target.value)"
+            @keydown="(e) => moveFocus(e, 'inviteUserName')"
+            title="Please enter a valid email address."
+            placeholder="anonymous@anonymous.com"
+            required
+            )
+        br
+
+        label.flex
+            span.label.required Name
+            input#inviteUserName.big(
+            @input="(e) => (inviteParams.name = e.target.value)"
+            @keydown="(e) => moveFocus(e, 'inviteUserURL')"
+            placeholder="User's Name"
+            required
+            )
+
+        br
+
+        label.flex
+            span.label Redirect URL
+            input#inviteUserURL.big(
+                @input="(e) => (redirect = e.target.value)"
+                placeholder="URL to redirect when accepted. (optional)"
+                type="url"
+                )
+
+        br
+
+        .error(v-if="error")
+            svg
+                use(xlink:href="/material-icon.svg#icon-warning")
+            span {{ error }}
+
+        .modal-btns
+            .loader-wrap(v-if="promiseRunning")
+                .loader(style="--loader-color: white; --loader-size: 12px")
+            template(v-else)
+                button.block.btn-invite(type="submit") Invite
+
+//- modal :: grant access
+Modal.modal-grantAccess(:open="openGrantAccess" @close="closeGrantAccess")
+    .modal-close(@click="closeGrantAccess")
+        svg.svgIcon
+            use(xlink:href="/basic-icon.svg#icon-x")
+
+    .modal-title Grant Access
+
+    .modal-desc This will grant {{Object.keys(checked).length}} user(s) to a new access group. #[br] Access group can be granted from 1 to 99.
 
     input.change-access(
-      type="number"
-      placeholder="1~99"
-      min=1
-      max=99
-      @keyup.stop="(e) => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); }"
-      style="background-color: white; outline: 1px solid rgba(0, 0, 0, 0.5); border-radius: 6px; width: 100%; padding: 8px"
+        type="number"
+        placeholder="1~99"
+        min=1
+        max=99
+        @keyup.stop="(e) => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); }"
+        style="width: 100%;"
     )
 
-  br
-
-  div(
-    style="display: flex; align-items: center; justify-content: space-between"
-  )
-    div(
-      v-if="promiseRunning"
-      style="width: 100%; height: 44px; text-align: center"
-    )
-      .loader(style="--loader-color: blue; --loader-size: 12px")
-    template(v-else)
-      button.noLine(type="button", @click="closeGrantAccess") Cancel
-      button.final(type="button", @click="grantAccess") Change
+    .modal-btns
+        .loader-wrap(v-if="promiseRunning")
+            .loader(style="--loader-color: white; --loader-size: 12px")
+        template(v-else)
+            button.block.btn-grant(type="button", @click="grantAccess" style="flex: 1;") Change Access
 
 // grant access > success
-Modal(:open="successGrantAccess", @close="successGrantAccess = false")
-  h4(style="margin: 0.5em 0 0") Grant Access
+Modal.modal-grantSuccess(:open="successGrantAccess", @close="successGrantAccess = false")
+  .modal-title Grant Access
 
-  hr
+  .modal-desc New access group has been granted to {{Object.keys(checked).length}} user(s).
 
-  div(style="font-size: 0.8rem")
-    p.
-      New access group has been granted to {{Object.keys(checked).length}} user(s).
+  .modal-btns
+    button.block.btn-cancel(type="button", @click="()=>{checked.value = {};successGrantAccess = false;}") close
 
-  br
+//- modal :: unblock user
+Modal(:open="openUnblockUser", @close="openUnblockUser = false")
+  .modal-title Unblock User
 
-  div(style="display: flex; align-items: center; justify-content: flex-end")
-    button.final(type="button", @click="()=>{checked.value = {};successGrantAccess = false;}") close
+  .modal-desc This action will unblock {{Object.keys(checked).length}} user(s) from your service.  #[br] The user will have access to your service.
+
+  .modal-btns
+    .loader-wrap(v-if="promiseRunning")
+      .loader(style="--loader-color: white; --loader-size: 12px")
+    template(v-else)
+      button.gray.btn-cancel(type="button" @click="openUnblockUser = false;") Cancel
+      button.btn-unblock(type="button" @click="changeUserApprovalState('unblock')") Unblock
+
+//- modal :: block user
+Modal(:open="openBlockUser", @close="openBlockUser = false")
+  .modal-title Block User
+
+  .modal-desc This action will block {{Object.keys(checked).length}} user(s) from your service. #[br] The user will not be able to access your service anymore.
+
+  .modal-btns
+    .loader-wrap(v-if="promiseRunning")
+      .loader(style="--loader-color: white; --loader-size: 12px")
+    template(v-else)
+      button.gray.btn-cancel(type="button" @click="openBlockUser = false;") Cancel
+      button.btn-block(type="button", @click="changeUserApprovalState('block')") Block
+
+//- modal :: delete user
+Modal(:open="openDeleteUser", @close="openDeleteUser = false")
+  .modal-title(style="color: var(--caution-color)") Delete User
+
+  .modal-desc This action will delete {{Object.keys(checked).length}} user(s) from your service. #[br] All the user's data will be deleted. #[br] This action cannot be undone.
+
+  .modal-btns
+    .loader-wrap(v-if="promiseRunning")
+      .loader(style="--loader-color: white; --loader-size: 12px")
+    template(v-else)
+      button.gray.btn-cancel(type="button" @click="openDeleteUser = false;") Cancel
+      button.red.btn-delete(type="button", @click="deleteUser") Delete
+
+//- modal :: show user detail
+Modal.modal-scroll.modal-detailUser(:open="showDetail" @close="closeModalUser")
+    form.modal-container(@submit.prevent='upload')
+        .modal-header
+            .title {{ selectedUser?.name || selectedUser?.email || selectedUser?.user_id }}
+            button.btn-close(type="button" @click="closeModalUser")
+                svg.svgIcon
+                    use(xlink:href="/basic-icon.svg#icon-x")
+        .modal-body
+            UserDetails(v-if='showDetail' :data='selectedUser')
+        .modal-footer
+            template(v-if="uploading")
+                .loader(style="--loader-color:white; --loader-size:12px; margin: 12px;")
+            template(v-else)
+                button.btn-save(type="submit") SAVE
 </template>
 <script setup lang="ts">
 import Table from "@/components/table.vue";
-import Guide from "./guide.vue";
-import Select from "@/components/select.vue";
 import Checkbox from "@/components/checkbox.vue";
 import Modal from "@/components/modal.vue";
 import Calendar from "@/components/calendar.vue";
 import Locale from "@/components/locale.vue";
 import Pager from "@/code/pager";
+import UserDetails from "./showDetail.vue";
+import Tooltip from "@/components/tooltip.vue";
 
-import { nextTick, reactive, ref, computed, watch, type Ref } from "vue";
+import {
+    nextTick,
+    reactive,
+    ref,
+    computed,
+    watch,
+    type Ref,
+    onMounted,
+    onUnmounted,
+} from "vue";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { showDropDown } from "@/assets/js/event.js";
-import { currentService, serviceUsers } from "@/views/service/main";
-import { Countries } from "@/code/countries";
-import { devLog } from "@/code/logger";
-import UserDetails from './showDetail.vue'
+import {
+    currentService,
+    serviceUsers,
+    serviceUpgradeOffer,
+} from "@/views/service/main";
+
+onMounted(() => {
+    document.addEventListener("keydown", handleSearchModal);
+});
+
+onUnmounted(() => {
+    document.removeEventListener("keydown", handleSearchModal);
+});
+
+function handleSearchModal(e: KeyboardEvent) {
+    if (!searchModalOpen.value) return;
+
+    if (e.key === "Escape") {
+        resetSearchModal();
+    }
+
+    if (e.key === "Enter") {
+        e.preventDefault();
+
+        // input 유효성 검사
+        const inputEl = document.querySelector(
+            "#searchInput"
+        ) as HTMLInputElement;
+        if (inputEl && !inputEl.checkValidity()) {
+            inputEl.reportValidity(); // 브라우저 기본 alert
+            return; // 검색 실행하지 않음
+        }
+
+        searchModalOpen.value = false;
+        getPage(true);
+    }
+}
+
+function resetSearchModal() {
+    searchModalOpen.value = false;
+    searchFor.value = "user_id";
+    searchValue.value = "";
+    currentPage.value = 1;
+    getPage(true);
+}
 
 let pager: Pager = null;
 let selectedUser = ref(null);
 
 let searchFor: Ref<
-    "timestamp"
+    | "timestamp"
     | "user_id"
     | "email"
     | "phone_number"
@@ -786,9 +625,12 @@ let currentPage: Ref<number> = ref(1);
 let endOfList = ref(false);
 let showCalendar = ref(false);
 let showLocale = ref(false);
-let showGuide = ref(false);
 let hovering = ref(false);
 let showDetail = ref(false);
+let searchModalOpen = ref(false);
+let searchModalStep = ref(1);
+
+// document.addEventListener("")
 
 let columnList = reactive([
     {
@@ -918,7 +760,6 @@ let upload = async (e: SubmitEvent) => {
 
     try {
         let att = await currentService.updateUserAttribute(e);
-        console.log(att);
 
         for (let k in att.attributes) {
             selectedUser.value[k] = att.attributes[k];
@@ -971,18 +812,6 @@ watch(
     { immediate: true }
 );
 
-watch(showDetail, (nv) => {
-    if (nv) {
-        nextTick(() => {
-            let scrollTarget = document.querySelector(".detailRecord .content");
-            let detailRecord = document.querySelector(".detailRecord");
-            let targetTop = window.scrollY + detailRecord.getBoundingClientRect().top;
-            scrollTarget.scrollTop = 0;
-            window.scrollTo(0, targetTop);
-        });
-    }
-});
-
 // modal related
 let promiseRunning = ref(false);
 let openInviteUser = ref(false);
@@ -990,9 +819,9 @@ let openCreateUser = ref(false);
 let openBlockUser = ref(false);
 let openUnblockUser = ref(false);
 let openDeleteUser = ref(false);
-let openUpgrade = ref(false);
 let openGrantAccess = ref(false);
 let successGrantAccess = ref(false);
+let phone_number_public = ref(false);
 let gender_public = ref(false);
 let address_public = ref(false);
 let birthdate_public = ref(false);
@@ -1039,11 +868,32 @@ watch(fetching, (n) => {
     }
 });
 
-watch(searchFor, (n, o) => {
-    if (n !== o) {
-        searchValue.value = "";
+watch(
+    searchFor,
+    (n, o) => {
+        if (n) {
+            nextTick(() => {
+                let inputElement = document.querySelector("#searchInput");
+                let showSearchFor = document.querySelector("#showSearchFor");
+
+                if (!inputElement || !showSearchFor) {
+                    return;
+                }
+
+                let gcr = showSearchFor.getBoundingClientRect().width || 98;
+
+                inputElement.style.paddingLeft = `${gcr + 7}px`;
+                inputElement.focus();
+            });
+        }
+        if (n !== o) {
+            searchValue.value = "";
+        }
+    },
+    {
+        immediate: true,
     }
-});
+);
 
 // computed fetch params
 let callParams = computed(() => {
@@ -1056,7 +906,9 @@ let callParams = computed(() => {
                 ? new Date(new Date(dates[0]).setHours(0, 0, 0, 0)).getTime()
                 : 0;
             let endDate = dates?.[1]
-                ? new Date(new Date(dates[1]).setHours(23, 59, 59, 999)).getTime()
+                ? new Date(
+                      new Date(dates[1]).setHours(23, 59, 59, 999)
+                  ).getTime()
                 : "";
 
             if (startDate && endDate) {
@@ -1131,20 +983,18 @@ let callParams = computed(() => {
 });
 
 let getPage = async (refresh?: boolean) => {
-    // if (!pager) {
-    //     return;
-    // }
-
     if (refresh) {
         endOfList.value = false;
         currentPage.value = 1;
     }
 
-    if (!serviceUsers[currentService.id] || searchValue.value) {
+    if (!serviceUsers[currentService.id] || searchValue.value || refresh) {
         serviceUsers[currentService.id] = await Pager.init({
             id: "user_id",
             resultsPerPage: 10,
-            sortBy: !searchValue.value ? "timestamp" : callParams.value.searchFor,
+            sortBy: !searchValue.value
+                ? "timestamp"
+                : callParams.value.searchFor,
             order: !searchValue.value ? "desc" : "asc",
         });
     }
@@ -1163,8 +1013,6 @@ let getPage = async (refresh?: boolean) => {
             callParams.value.condition = "<=";
         }
 
-        // devLog({callParams.value})
-
         let fetchedData = await skapi
             .getUsers(callParams.value, {
                 fetchMore: !refresh,
@@ -1174,8 +1022,6 @@ let getPage = async (refresh?: boolean) => {
                 fetching.value = false;
                 alert(err);
             });
-
-        // devLog({fetchedData})
 
         // save endOfList status
         serviceUsers[currentService.id].endOfList = fetchedData.endOfList;
@@ -1223,7 +1069,8 @@ let moveFocus = (e: any, next: string) => {
                 alert("email is required");
                 return false;
             } else {
-                let email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+                let email_regex =
+                    /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
                 if (!email_regex.test(e.target.value)) {
                     alert("Please enter it in e-mail format");
                     return false;
@@ -1249,7 +1096,8 @@ let moveFocus = (e: any, next: string) => {
         let scrollTarget = e.target.parentElement.parentElement.parentElement;
 
         if (
-            scrollTarget.getBoundingClientRect().height < scrollTarget.scrollHeight
+            scrollTarget.getBoundingClientRect().height <
+            scrollTarget.scrollHeight
         ) {
             scrollTarget.scrollTop += 70;
         }
@@ -1262,15 +1110,18 @@ let createUser = () => {
     promiseRunning.value = true;
     error.value = "";
 
-    if (gender_public.value || address_public.value || birthdate_public.value) {
-        Object.assign(
-            createParams,
-            {
-                gender_public: gender_public.value,
-                address_public: address_public.value,
-                birthdate_public: birthdate_public.value,
-            }
-        );
+    if (
+        phone_number_public.value ||
+        gender_public.value ||
+        address_public.value ||
+        birthdate_public.value
+    ) {
+        Object.assign(createParams, {
+            phone_number_public: phone_number_public.value,
+            gender_public: gender_public.value,
+            address_public: address_public.value,
+            birthdate_public: birthdate_public.value,
+        });
     }
 
     currentService
@@ -1290,6 +1141,7 @@ let createUser = () => {
                 createParams[i] = "";
             }
             redirect = "";
+            phone_number_public.value = false;
             gender_public.value = false;
             address_public.value = false;
             birthdate_public.value = false;
@@ -1299,7 +1151,6 @@ let createUser = () => {
         })
         .catch((err) => {
             promiseRunning.value = false;
-            // error.value = err.message;
             alert(err.message);
         });
 };
@@ -1330,7 +1181,6 @@ let inviteUser = () => {
         })
         .catch((err) => {
             promiseRunning.value = false;
-            // error.value = err.message;
             alert(err.message);
         });
 };
@@ -1340,7 +1190,7 @@ let changeUserApprovalState = async (state: string) => {
 
     let user_ids = Object.keys(checked.value);
 
-    let promise = user_ids.map(user_id => {
+    let promise = user_ids.map((user_id) => {
         let selectedUser = pager.list[user_id];
         let original_approved_info = selectedUser.approved.split(":");
         let original_approver = original_approved_info[0];
@@ -1353,40 +1203,43 @@ let changeUserApprovalState = async (state: string) => {
             }
 
             return currentService.blockAccount(user_id).then(() => {
-                selectedUser.approved = `${original_approver}:suspended:` + new Date().getTime();
+                selectedUser.approved =
+                    `${original_approver}:suspended:` + new Date().getTime();
                 return pager.editItem(selectedUser);
-            })
-        }
-
-        else if (state == "unblock") {
+            });
+        } else if (state == "unblock") {
             if (original_approved_status != "suspended") {
                 // This user is not blocked.
                 return;
             }
 
             return currentService.unblockAccount(user_id).then(() => {
-                selectedUser.approved = `${original_approver}:approved:` + new Date().getTime();
+                selectedUser.approved =
+                    `${original_approver}:approved:` + new Date().getTime();
                 return pager.editItem(selectedUser);
-            })
+            });
         }
     });
 
-    await Promise.all(promise).then(() => {
-        checked.value = {};
-        updateListDisplay();
-        promiseRunning.value = false;
-        openBlockUser.value = false;
-        openUnblockUser.value = false;
-    }).catch((e) => {
-        promiseRunning.value = false;
-        alert(e.message);
-    });
+    await Promise.all(promise)
+        .then(() => {
+            checked.value = {};
+            updateListDisplay();
+            promiseRunning.value = false;
+            openBlockUser.value = false;
+            openUnblockUser.value = false;
+        })
+        .catch((e) => {
+            promiseRunning.value = false;
+            alert(e.message);
+        });
 };
 
 let updateListDisplay = () => {
     let disp = pager.getPage(currentPage.value);
     maxPage.value = disp.maxPage;
     listDisplay.value = disp.list;
+
     while (
         disp.maxPage > 0 &&
         disp.maxPage < currentPage.value &&
@@ -1394,7 +1247,7 @@ let updateListDisplay = () => {
     ) {
         currentPage.value--;
     }
-}
+};
 
 let deleteUser = () => {
     promiseRunning.value = true;
@@ -1402,22 +1255,24 @@ let deleteUser = () => {
     let userToDel = Object.keys(checked.value);
     let promises: Array<Promise<any>> = [];
     userToDel.forEach((u) => {
-        console.log({ u })
-        promises.push(currentService.deleteAccount(u).then(async () => {
-            await pager.deleteItem(u);
-        }));
+        promises.push(
+            currentService.deleteAccount(u).then(async () => {
+                await pager.deleteItem(u);
+            })
+        );
     });
 
-    Promise.all(promises).then(() => {
-        checked.value = {};
-        updateListDisplay();
-        promiseRunning.value = false;
-        openDeleteUser.value = false;
-    }).catch((e) => {
-        promiseRunning.value = false;
-        alert(e.message);
-    });
-
+    Promise.all(promises)
+        .then(() => {
+            checked.value = {};
+            updateListDisplay();
+            promiseRunning.value = false;
+            openDeleteUser.value = false;
+        })
+        .catch((e) => {
+            promiseRunning.value = false;
+            alert(e.message);
+        });
 };
 
 let closeModal = () => {
@@ -1429,6 +1284,7 @@ let closeModal = () => {
         for (let i in createParams) {
             createParams[i] = "";
         }
+        phone_number_public.value = false;
         gender_public.value = false;
         address_public.value = false;
         birthdate_public.value = false;
@@ -1439,7 +1295,8 @@ let closeModal = () => {
 let grantAccess = async () => {
     promiseRunning.value = true;
 
-    let inputAccess: HTMLInputElement = document.querySelector(".change-access");
+    let inputAccess: HTMLInputElement =
+        document.querySelector(".change-access");
     let resultAccess = Number(inputAccess.value);
 
     if (resultAccess < 1 || resultAccess > 99) {
@@ -1454,27 +1311,33 @@ let grantAccess = async () => {
 
     user_ids.forEach((u) => {
         promises.push(
-            currentService.grantAccess({ user_id: u, access_group: resultAccess }).then(() => {
-                pager.list[u].access_group = resultAccess;
-                pager.editItem(pager.list[u]);
-            })
+            currentService
+                .grantAccess({ user_id: u, access_group: resultAccess })
+                .then(() => {
+                    pager.list[u].access_group = resultAccess;
+                    pager.editItem(pager.list[u]);
+                })
         );
     });
 
-    await Promise.all(promises).then(() => {
-        inputAccess.value = "";
-        updateListDisplay();
-        openGrantAccess.value = false;
-        successGrantAccess.value = true;
-    }).catch((e) => {
-        alert(e.message);
-    }).finally(() => {
-        promiseRunning.value = false;
-    });
+    await Promise.all(promises)
+        .then(() => {
+            inputAccess.value = "";
+            updateListDisplay();
+            openGrantAccess.value = false;
+            successGrantAccess.value = true;
+        })
+        .catch((e) => {
+            alert(e.message);
+        })
+        .finally(() => {
+            promiseRunning.value = false;
+        });
 };
 
 let closeGrantAccess = () => {
-    let inputAccess: HTMLInputElement = document.querySelector(".change-access");
+    let inputAccess: HTMLInputElement =
+        document.querySelector(".change-access");
 
     openGrantAccess.value = false;
 
@@ -1482,99 +1345,34 @@ let closeGrantAccess = () => {
         inputAccess.value = "";
     }
 };
+
+const closeModalUser = () => {
+    showDetail.value = false;
+    selectedUser.value = null;
+};
+
+// table > show columns
+const showTableColumns = () => {
+    return columnList.filter((c) => c.value).length;
+};
 </script>
 <style scoped lang="less">
 body {
     font-family: "Twemoji Country Flags", "Radio Canada", sans-serif;
 }
 
-// .updown {
-//     background-color: #fff;
-//     background-color: var(--main-color);
-//     border-radius: 50%;
-//     margin-left: 8px;
-//     cursor: pointer;
-//     box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
-// }
-.moreVert {
-    .inner {
-        padding-top: 0.25rem;
+.label {
+    position: relative;
+}
 
-        &>* {
-            padding: 0.25rem 0.5rem;
+button {
+    &.trial {
+        background-color: rgba(34, 35, 37, 0.6);
+
+        .icon {
+            opacity: 0.6;
         }
-
-        padding-bottom: 0.25rem;
     }
-}
-
-// svg {
-//     fill: black;
-//     width: 22px;
-//     height: 22px;
-// }
-// svg:hover {
-//       fill: var(--main-color);
-// }
-#searchForm {
-    margin: 0 auto;
-
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    width: 700px;
-    max-width: 100%;
-
-    // .customSelect {
-    //     flex-grow: 1;
-    // }
-    .search {
-        position: relative;
-        display: flex;
-        flex-grow: 50;
-        gap: 8px;
-        flex-shrink: 0;
-        min-width: 290px;
-    }
-
-    .clickInput {
-        position: relative;
-    }
-
-    .big {
-        padding-right: 40px;
-    }
-
-    svg,
-    .icon {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        transform: translateY(-50%);
-        cursor: pointer;
-        user-select: none;
-        fill: black;
-    }
-
-    svg:hover {
-        fill: var(--main-color);
-    }
-
-    .final {
-        flex-grow: 1;
-        width: 140px;
-    }
-}
-
-#calendar,
-#localeSelector {
-    position: absolute;
-    right: 0;
-    top: 100%;
-    max-width: 100%;
-    margin-top: 8px;
-    z-index: 1;
 }
 
 #createForm {
@@ -1585,58 +1383,12 @@ body {
             position: absolute;
             top: 0;
             right: 0;
+
+            svg {
+                width: 16px;
+                height: 16px;
+            }
         }
-    }
-}
-
-.tableMenu {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    // flex-direction: row-reverse;
-
-    &>* {
-        margin: 8px 0;
-    }
-}
-
-.userPart {
-    position: relative;
-    overflow: hidden;
-}
-
-#loading {
-    position: absolute;
-    top: 60px;
-    left: 20px;
-    height: 60px;
-    z-index: 2;
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    font-size: 0.8rem;
-}
-
-.optionCol {
-    &>*:not(:last-child) {
-        margin-right: 8px;
-    }
-}
-
-.iconClick.arrow {
-    padding: 0;
-    font-size: 0.8rem;
-}
-
-.iconClick.deact {
-    color: rgba(0, 0, 0, 0.5);
-
-    &::before {
-        box-shadow: unset !important;
-    }
-
-    svg {
-        fill: rgba(0, 0, 0, 0.5);
     }
 }
 
@@ -1650,38 +1402,30 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
-tbody {
-    td {
-        .click {
+.error {
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .modal-close {
+        .btn-close {
+            padding: 0;
+            background: transparent;
+            height: 100%;
+            min-height: 100%;
+        }
+    }
+
+    .search-modal {
+        .modal-close {
+            z-index: 9999;
             position: relative;
-            color: var(--main-color);
-            font-weight: 500;
-
-            &::after {
-                position: absolute;
-                content: "copied!";
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                border-radius: 4px;
-                text-align: center;
-                background-color: var(--main-color);
-                color: #fff;
-                display: none;
-            }
-
-            &:hover {
-                text-decoration: underline;
-                cursor: pointer;
-            }
-
-            &.clicked {
-                &::after {
-                    display: block;
-                }
-            }
+            left: initial;
+            bottom: initial;
+            top: 0;
+            right: 0;
+            margin-bottom: 0.5rem;
+            margin-left: auto;
         }
     }
 }

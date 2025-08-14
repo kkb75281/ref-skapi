@@ -1,429 +1,515 @@
 <template lang="pug">
-section.infoBox
-    .titleHead
-        h2 Client Secret Key
-            
-        span.moreInfo(@click="showDes = !showDes" @mouseover="hovering = true" @mouseleave="hovering = false")
-            span More Info&nbsp;
-            template(v-if="showDes")
-                //- .material-symbols-outlined.notranslate.fill expand_circle_up 
-                //- .material-symbols-outlined.notranslate.noFill expand_circle_up
-                svg(v-if="hovering" style="width: 25px; height: 25px; fill: black;")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up-fill")
-                svg(v-else style="width: 25px; height: 25px; fill: black;")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-up")
-            template(v-else) 
-                //- .material-symbols-outlined.notranslate.fill expand_circle_down
-                //- .material-symbols-outlined.notranslate.noFill expand_circle_down
-                svg(v-if="hovering" style="width: 25px; height: 25px; fill: black;")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down-fill")
-                svg(v-else style="width: 25px; height: 25px; fill: black;")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-expand-circle-down")
+section.page-header
+    .page-title Client Secret Key
+    a.btn-docs(href='https://docs.skapi.com/api-bridge/client-secret-request.html' target="_blank")
+        button.inline.icon-text.sm.gray
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
+            | Go Docs
 
-    template(v-if="showDes")
-        p(style='margin-bottom: 0').
-            When using a 3rd party API that requires a client secret key in your website,
-            register them in Skapi and make secure requests to your APIs #[span.wordset without exposing] your #[span.wordset client secret key.]
+hr
 
-        Code
-            pre.
-                skapi.#[span(style="color:#44E9FF") clientSecretRequest]({
-                    clientSecretName: #[span(style="color:#FFED91") "myapi"],
-                    url: #[span(style="color:#FFED91") "https://api.openai.com/v1/images/generations"],
-                    method: #[span(style="color:#FFED91") "POST"],
-                    headers: {
-                        #[span(style="color:#FFED91") "Content-Type"]: #[span(style="color:#FFED91") "application/json"],
-                        Authorization: #[span(style="color:#FFED91") "Bearer $CLIENT_SECRET"]
-                    },
-                    data: {
-                        model: #[span(style="color:#FFED91") "dall-e-3"],
-                        "prompt": #[span(style="color:#FFED91") "A cute baby sea otter"],
-                        n: #[span(style="color:#FFED91") 1],
-                        size: #[span(style="color:#FFED91") "1024x1024"]
-                    }
-                }).#[span(style="color:#44E9FF") then]( result => console.#[span(style="color:#44E9FF") log](result) );
-
-        p.
-            The example above shows how you can request #[b OpenAI]'s #[b DALL·E 3] in your project.
-        p.
-            It is using the client secret key stored under the name: "#[b myapi]".
-            #[br]
-            The placeholder: "#[b $CLIENT_SECRET]" will be replaced to the actual client secret key from the backend.
-        
-        
-        p For more details, please refer to the #[a(href="https://docs.skapi.com/api-bridge/client-secret-request.html" target="_blank") Documentation]
-
-    hr
-
+section
     .error(v-if='!user?.email_verified')
-        //- .material-symbols-outlined.notranslate.fill warning
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="/material-icon.svg#icon-warning")
         router-link(to="/account-setting") Please verify your email address to modify settings.
 
     .error(v-else-if='currentService.service.active == 0')
-        //- .material-symbols-outlined.notranslate.fill warning
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently disabled.
 
     .error(v-else-if='currentService.service.active < 0')
-        //- .material-symbols-outlined.notranslate.fill warning
         svg
-            use(xlink:href="@/assets/img/material-icon.svg#icon-warning-fill")
+            use(xlink:href="/material-icon.svg#icon-warning")
         span This service is currently suspended.
 
-    p(style='margin-bottom:0') Register your client secret keys by clicking '#[b Register Client Secret Key]' below.
+section
+    .table-menu-wrap
+        .table-functions
+            button.inline.only-icon.gray(aria-label="Show Columns" @click.stop="(e)=>{showDropDown(e)}")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        .icon
+                            svg
+                                use(xlink:href="/material-icon.svg#icon-columns")
+                    template(v-slot:tip) Show Columns
 
-br
+                .moreVert(@click.stop style="--moreVert-left:0;display:none;font-weight:normal;")
+                    .inner
+                        template(v-for="c in columnList")
+                            Checkbox(v-model="c.value" :disabled="c.value && showTableColumns() === 1") {{ c.name }}
+            button.inline.only-icon.gray(aria-label="Refresh" @click="getClientSecret" :disabled="!user?.email_verified || currentService.service.active <= 0")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="left")
+                    template(v-slot:tool)
+                        .icon
+                            svg
+                                use(xlink:href="/basic-icon.svg#icon-refresh")
+                    template(v-slot:tip) Refresh
+        .table-actions
+            button.inline.only-icon.gray(aria-label="Add Key" @click="openDetailModal(addClient, -1)" :disabled="!user?.email_verified || currentService.service.active <= 0")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        .icon
+                            svg
+                                use(xlink:href="/basic-icon.svg#icon-plus")
+                    template(v-slot:tip) Add Key
+            button.inline.only-icon.gray(aria-label="Delete Selected" @click="showDeleteMsg=true" :disabled="!Object.keys(checked).length || !user?.email_verified || currentService.service.active <= 0")
+                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                    template(v-slot:tool)
+                        .icon
+                            svg
+                                use(xlink:href="/basic-icon.svg#icon-delete")
+                    template(v-slot:tip) Delete Selected
 
-.iconClick.square(@click="addKey" :class="{'nonClickable' : !user?.email_verified || currentService.service.active <= 0 || editMode || addMode}" style='margin-bottom:8px;')
-    //- .material-symbols-outlined.notranslate.fill add_circle
-    svg.svgIcon
-        use(xlink:href="@/assets/img/material-icon.svg#icon-add-circle-fill")
-    span(style="font-size: 0.8rem;font-weight:bold") &nbsp;&nbsp;Register Client Secret Key
+    .table-cont-wrap
+        Table(:key="tableKey" :class="{disabled : !user?.email_verified || currentService.service.active <= 0}" resizable)
+            template(v-if="fetching" v-slot:msg)
+                .tableMsg.center
+                    .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
+                .tableMsg.center No Records
 
+            template(v-slot:head)
+                tr
+                    th.fixed(style='width:60px;')
+                        Checkbox(@click.stop :modelValue="listDisplay && listDisplay.length > 0 && Object.keys(checked).length === listDisplay.length" @update:modelValue="(value) => { if (value) listDisplay.forEach((d) => (checked[d.name] = d)); else checked = {}; }" style="display:inline-block")
+                        .resizer.fixed
+                    template(v-for="c in columnList")
+                        th.overflow(v-if="c.value", style="width: 200px")
+                            | {{ c.name }}
+                            .resizer
 
-form.table-form(@submit.prevent :class='{disabled: !user?.email_verified || currentService.service.active <= 0}')
-    .table-tootlip
-        Tooltip(tip-background-color="var(--main-color)" text-color="white")
-            template(v-slot:tip)
-                | When LOCKED only signed users can have access to the client secret key.
-    Table
-        template(v-slot:head)
-            tr
-                th.center.fixed(style="width:48px")
-                    //- .material-symbols-outlined.notranslate lock
-                    //- svg.svgIcon(style="fill: black;")
-                        use(xlink:href="@/assets/img/material-icon.svg#icon-lock")
-                    .resizer
-                th(style="width:200px")
-                    | Name
-                    .resizer
-                th(style="width:400px")
-                    | $CLIENT_SECRET
-                    .resizer
-                th.center(style="width:66px")
-                    .resizer
-
-        template(v-slot:body)
-            tr(v-if="!client_key.length") 
-                td(colspan=4 style="padding-left:20px") No Client Secret Key
-            tr(v-for="(key, index) in client_key")
-                template(v-if="editMode && key.edit || addMode && key.edit")
-                    td.center 
-                        //- Checkbox(v-model="key.secure" :disabled='updating')
-                        svg.svgIcon.black(@click="key.secure = !key.secure" :class="{ 'reactive' : !updating }" :style="{ opacity : updating ? 0.3 : 1, pointerEvents : updating ? 'none' : 'default' }" style="cursor:pointer")
-                            template(v-if="key.secure")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-lock-fill")
-                            template(v-else)
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-lock-open")
-                    td  
-                        input#keyName.line(type="text" v-model="key.name" placeholder="myapi" required maxlength="16" @input="e=>e.target.setCustomValidity('')" :disabled='updating')
-                    td
-                        input.line(type="text" v-model="key.key" placeholder="string1234..." required :disabled='updating')
-                    td.center.buttonWrap
-                        div(v-if="updating" style="width:100%; text-align:center")
-                            .loader(style="--loader-color:blue; --loader-size:12px")
-                        template(v-else)
-                            //- label.material-symbols-outlined.notranslate.clickable.save(@click="saveKey(key)" style="color:var(--main-color)") done
-                            label
-                              svg.svgIcon.clickable.save(style="fill: var(--main-color);" @click="saveKey(key)")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-check")
-                                input(type="submit" hidden)
-                            //- .material-symbols-outlined.notranslate.clickable.cancel(@click="cancelKey(key, index)") close
-                            svg.svgIcon.clickable.cancel(style="fill: black;" @click="cancelKey(key, index)")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-close")
+            template(v-slot:body)
+                template(v-if="fetching || !listDisplay || listDisplay?.length === 0")
+                    tr.nohover(v-for="i in 10")
+                        td(:colspan="colspan")
                 template(v-else)
-                    td.center 
-                        //- .material-symbols-outlined.notranslate.bold(v-if="key.secure") check
-                        svg.svgIcon(v-if="key.secure" style="fill: black")
-                            use(xlink:href="@/assets/img/material-icon.svg#icon-check")
-                    td.overflow {{ key.name }}
-                    td.overflow {{ key.key ? key.key.slice(0,2) + '*'.repeat(key.key.length - 2) : '' }}
-                    td.center.buttonWrap
-                        template(v-if="!editMode && !addMode")
-                            //- .material-symbols-outlined.notranslate.fill.clickable.icon.hide(@click="editKey(key)") edit
-                            svg.svgIcon.reactive.clickable.hide(@click="editKey(key)")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-edit-fill")
-                            //- .material-symbols-outlined.notranslate.fill.clickable.icon.hide(@click="deleteClientKey = key.name;deleteIndex = index;") delete
-                            svg.svgIcon.reactive.clickable.hide(@click="deleteClientKey = !!key.name;deleteIndex = index;")
-                                use(xlink:href="@/assets/img/material-icon.svg#icon-delete-fill")
+                    tr.hoverRow(v-for="(cs, index) in listDisplay" @click="openDetailModal(cs, index)")
+                        td
+                            Checkbox(@click.stop
+                                :modelValue="!!checked?.[cs?.name]"
+                                @update:modelValue="(value) => { if (value) checked[cs?.name] = value; else delete checked[cs?.name]; }")
 
-Modal(:open="deleteClientKey" @close="deleteClientKey=false")
-    h4(style='margin:.5em 0 0;') Delete Client Secret
-    hr
+                        template(v-for="c in columnList")
+                            template(v-if="c.value")
+                                td.overflow(v-if="c.key === 'name'") {{ cs?.name }}
+                                td.overflow(v-if="c.key === 'client_secret'") {{ cs.client_secret ? cs.client_secret.slice(0,2) + '*'.repeat(cs.client_secret.length - 2) : '' }}
+                                td.overflow(v-if="c.key === 'locked'")
+                                    svg.svgIcon(v-if="cs?.locked" style="fill: white")
+                                        use(xlink:href="/material-icon.svg#icon-check")
+                    template(v-if="Object.keys(listDisplay || {}).length < 10")
+                        tr.nohover(v-for="i in 10 - Object.keys(listDisplay || {}).length")
+                            td(:colspan="colspan")
 
-    div(style='font-size:.8rem;')
-        p.
-            Are you sure you want to delete #[b "{{deleteClientKey}}"]?
-            #[br]
-            This action cannot be undone.
-    br
-    div(style='justify-content:space-between;display:flex;align-items:center;min-height:44px;')
-        div(v-if="deleteKeyLoad" style="width:100%; text-align:center")
-            .loader(style="--loader-color:blue; --loader-size:12px")
+    //- .table-page-wrap
+        button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")
+            .icon
+                svg
+                    use(xlink:href="/material-icon.svg#icon-chevron-left")
+        button.inline.only-icon.gray(aria-label="Next" @click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
+            .icon
+                svg
+                    use(xlink:href="/material-icon.svg#icon-chevron-right")
+
+// modal :: client secret key detail (edit/add)
+Modal.modal-scroll.modal-detailClient(:open="showDetail" @close="closeDetailModal")
+    form.modal-container(@submit.prevent='saveKey')
+        .modal-header
+            h4.title Client Secret Key
+            button.btn-close(type="button" @click="closeDetailModal")
+                svg.svgIcon
+                    use(xlink:href="/basic-icon.svg#icon-x")
+        .modal-body
+            .content(v-if="showDetail")
+                label.row
+                    .key Name
+                    .value
+                        input#keyName.block(type="text" v-model="selectedClient.name" placeholder="myapi" required maxlength="16" @input="e=>e.target.setCustomValidity('')" :disabled='uploading')
+                label.row
+                    .key Client Secret
+                    .value
+                        input.block(type="text" v-model="selectedClient.client_secret" placeholder="string1234..." required :disabled='uploading')
+                label.row.locked
+                    .key Locked &nbsp;
+                        Tooltip(tip-background-color="var(--main-color)" text-color="white" tip-max-width="10rem")
+                            template(v-slot:tool)
+                                svg.svgIcon
+                                    use(xlink:href="/basic-icon.svg#icon-help-circle")
+                            template(v-slot:tip)
+                                | When LOCKED only signed users can have access to the client secret key.
+                    .value
+                        Toggle(@click="selectedClient.locked = !selectedClient.locked" :active="selectedClient.locked" :disabled='uploading')
+        .modal-footer
+            template(v-if="uploading")
+                .loader(style="--loader-color:white; --loader-size:12px; margin: 12px;")
+            template(v-else)
+                button.btn-save(type="submit") SAVE
+
+// modal :: delete client secret key
+Modal(:open="showDeleteMsg" @close="showDeleteMsg=false")
+    .modal-title Delete Key
+
+    .modal-desc
+        | Are you sure you want to delete the selected #[b {{Object.keys(checked).length}} key(s)]?
+        br
+        | This action cannot be undone.
+
+    .modal-btns
+        .loader-wrap(v-if="uploading")
+            .loader(style="--loader-color:white; --loader-size:12px")
         template(v-else)
-            button.noLine.warning(@click="deleteClientKey = false") Cancel
-            button.final.warning(@click="delCliKey") Delete
+            button.gray(@click="showDeleteMsg = false;") Cancel
+            button.red(@click="deleteKey") Delete
 
 </template>
-<script setup>
-import Table from '@/components/table.vue';
-import Code from '@/components/code.vue';
-import Checkbox from '@/components/checkbox.vue';
-import Modal from '@/components/modal.vue';
-import Tooltip from '@/components/tooltip.vue';
+<script lang="ts" setup>
+import Table from "@/components/table.vue";
+import Checkbox from "@/components/checkbox.vue";
+import Modal from "@/components/modal.vue";
+import Tooltip from "@/components/tooltip.vue";
+import Toggle from "@/components/toggle.vue";
 
-import { ref, nextTick } from 'vue';
-import { user } from '@/code/user';
-import { currentService } from '@/views/service/main';
+import { type Ref, ref, nextTick, onMounted, reactive, watch } from "vue";
+import { user } from "@/code/user";
+import { currentService } from "@/views/service/main";
+import { showDropDown } from "@/assets/js/event.js";
 
-let updating = ref(false);
-let showDes = ref(false);
-let addMode = ref(false);
-let editMode = ref(false);
-let deleteKeyLoad = ref(false);
-let deleteClientKey = ref(false);
-let hovering = ref(false);
-let deleteIndex = '';
-let client_key = ref([
-    // {
-    //     edit: false,
-    //     secure: true,
-    //     name: 'test1',
-    //     key: 'dssdlfkjsdakdsjfaiw'
-    // },
+// table
+let listDisplay = ref(null);
+let checked: Ref<{ [key: string]: any }> = ref({});
+let fetching = ref(false);
+let maxPage = ref(0);
+let currentPage = ref(1);
+let endOfList = ref(false);
+let tableKey = ref(0);
+let colspan = 0;
+let columnList = reactive([
+    {
+        name: "Name",
+        key: "name",
+        value: true,
+    },
+    {
+        name: "Client Secret",
+        key: "client_secret",
+        value: true,
+    },
+    {
+        name: "Locked",
+        key: "locked",
+        value: true,
+    },
 ]);
-let delCliKey = async () => {
-    deleteKeyLoad.value = true;
+watch(
+    columnList,
+    (nv) => {
+        colspan = 1;
+        nv.forEach((c) => {
+            if (c.value) {
+                colspan++;
+            }
+        });
 
-    client_key.value.splice(deleteIndex, 1);
+        tableKey.value++;
+    },
+    { immediate: true }
+);
 
-    let authKeys = [];
-    let secKeys = {};
-    for (let i = 0; i < client_key.value.length; i++) {
-        let ck = client_key.value[i];
+// modal
+let showDetail = ref(false);
+let showDeleteMsg = ref(false);
+let uploading = ref(false);
+let selectedClientIndex: null | number = null; // -1이면 새로 추가, 0 이상이면 수정
+let selectedClient = ref(null);
+let addClient = ref({
+    name: "",
+    client_secret: "",
+    locked: false,
+});
 
-        if (secKeys[ck.name] && secKeys[ck.name] !== ck.key) {
-            continue;
-        }
-
-        if (ck.secure && authKeys.indexOf(ck.name) === -1) {
-            authKeys.push(ck.name);
-        }
-
-        Object.assign(secKeys, {
-            [ck.name]: ck.key
+function checkall() {
+    if (Object.keys(checked.value).length) {
+        checked.value = {};
+    } else {
+        listDisplay.value.forEach((client) => {
+            checked.value[client.name] = client;
         });
     }
-
-    await currentService.setServiceOption({
-        client_secret: secKeys,
-        auth_client_secret: authKeys,
-    }).catch(err => {
-        window.alert(err.message || err);
-    });
-
-    deleteClientKey.value = false;
-    deleteKeyLoad.value = false;
 }
 
-if (currentService.service.client_secret) {
-    for (let key in currentService.service.client_secret) {
-        client_key.value.push({
-            edit: false,
-            secure: (currentService.service?.auth_client_secret || []).indexOf(key) !== -1,
-            name: key,
-            key: currentService.service.client_secret[key]
-        })
-    }
-}
+onMounted(() => {
+    // Initialize the listDisplay with existing client secrets
+    getClientSecret();
+});
 
-let edit_key_origin = {};
+function getClientSecret(): void {
+    fetching.value = true;
+    listDisplay.value = null;
+    checked.value = {};
 
-let addKey = () => {
-    client_key.value.unshift({ edit: true, secure: false, name: '', key: '' });
-    addMode.value = true;
-    nextTick(() => {
-        document.getElementById('keyName').focus();
-    })
-}
-
-let editKey = (key) => {
-    key.edit = true;
-    editMode.value = true;
-    edit_key_origin.name = key.name;
-    edit_key_origin.key = key.key;
-}
-
-let cancelKey = (key, index) => {
-    if (addMode.value) {
-        client_key.value.splice(index, 1);
-        addMode.value = false;
-    } else {
-        if (edit_key_origin.name !== key.name || edit_key_origin.key !== key.key) {
-            key.name = edit_key_origin.name;
-            key.key = edit_key_origin.key;
+    setTimeout(() => {
+        if (!currentService.service.client_secret) {
+            listDisplay.value = [];
+            fetching.value = false;
+        } else {
+            listDisplay.value = [];
+            Object.entries(currentService.service.client_secret).forEach(
+                ([key, value], i) => {
+                    listDisplay.value[i] = {
+                        name: key,
+                        client_secret: value,
+                        locked:
+                            (
+                                currentService.service?.auth_client_secret || []
+                            ).indexOf(key) !== -1,
+                    };
+                }
+            );
         }
 
-        key.edit = false;
-        editMode.value = false;
-    }
+        fetching.value = false;
+    }, 300);
 }
 
-let saveKey = async (key) => {
-    if (!key.name || !key.key) {
-        let el = document.getElementById('keyName');
-        let nextel = el.parentElement.nextElementSibling.lastElementChild;
+let openDetailModal = (cs: object, i: number) => {
+    selectedClientIndex = i;
+    selectedClient.value = JSON.parse(JSON.stringify(cs));
+    showDetail.value = true;
+};
 
-        if (!key.name) {
-            el.focus();
-            el.setCustomValidity('Please fill in all fields.');
-            el.reportValidity();
-        } else if (!key.key) {
-            nextel.focus();
-            nextel.setCustomValidity('Please fill in all fields.');
-            nextel.reportValidity();
-        }
+let closeDetailModal = () => {
+    selectedClientIndex = null;
+    selectedClient.value = null;
+    addClient.value = {
+        name: "",
+        client_secret: "",
+        locked: false,
+    };
+    showDetail.value = false;
+};
 
+let deleteKey = async () => {
+    if (!Object.keys(checked.value).length) {
         return;
     }
 
     let authKeys = [];
     let secKeys = {};
 
-    for (let i = 0; i < client_key.value.length; i++) {
-        let ck = client_key.value[i];
+    let deleteKeys = Object.keys(checked.value);
 
-        if (secKeys[ck.name] && secKeys[ck.name] !== ck.key) {
-            let el = document.getElementById('keyName');
-            el.focus();
-            el.setCustomValidity('The name is already in use.');
-            el.reportValidity();
-            return;
+    for (const [i, ck] of Object.entries(listDisplay.value)) {
+        if (deleteKeys.indexOf(ck.name) !== -1) {
+            continue;
         }
 
-        if (ck.secure && authKeys.indexOf(ck.name) === -1) {
+        if (ck.locked && authKeys.indexOf(ck.name) === -1) {
             authKeys.push(ck.name);
         }
 
         Object.assign(secKeys, {
-            [ck.name]: ck.key
+            [ck.name]: ck.client_secret,
         });
     }
 
-    // loading...
-    updating.value = true;
-    await currentService.setServiceOption({
-        client_secret: secKeys,
-        auth_client_secret: authKeys,
-    }).catch(err => {
-        window.alert(err.message || err);
-    });
+    uploading.value = true;
 
-    // loading end
-    updating.value = false;
+    await currentService
+        .setServiceOption({
+            client_secret: secKeys,
+            auth_client_secret: authKeys,
+        })
+        .then(() => {
+            showDeleteMsg.value = false;
+            checked.value = {};
+            nextTick(() => {
+                listDisplay.value = Object.values(listDisplay.value).filter(
+                    (ck) => !deleteKeys.includes(ck.name)
+                );
+            });
+        })
+        .catch((err) => {
+            window.alert(err.message || err);
+        })
+        .finally(() => {
+            uploading.value = false;
+        });
+};
 
-    if (addMode.value) {
-        key.edit = false;
-        addMode.value = false;
-    } else {
-        key.edit = false;
-        editMode.value = false;
+let saveKey = async () => {
+    let authKeys = [];
+    let secKeys = {};
+
+    // Validate selectedClient
+    if (
+        !selectedClient.value ||
+        !selectedClient.value.name ||
+        !selectedClient.value.client_secret
+    ) {
+        let el = document.getElementById("keyName");
+        el.focus();
+        el.setCustomValidity("Please fill in all required fields.");
+        el.reportValidity();
+        return;
     }
-}
+
+    // Check for duplicate names
+    if (
+        listDisplay.value.length &&
+        listDisplay.value[selectedClientIndex]?.name !==
+            selectedClient.value.name
+    ) {
+        for (let i = 0; i < listDisplay.value.length; i++) {
+            let ck = listDisplay.value[i];
+            if (
+                ck.name === selectedClient.value.name &&
+                i !== selectedClientIndex
+            ) {
+                let el = document.getElementById("keyName");
+                el.focus();
+                el.setCustomValidity("The name is already in use.");
+                el.reportValidity();
+                return;
+            }
+        }
+    }
+
+    // Update the selected client
+    if (selectedClientIndex === -1) {
+        // 새 클라이언트 키 추가: 마지막 인덱스에 추가
+        let lastIndex = 0;
+
+        if (listDisplay.value && listDisplay.value.length) {
+            lastIndex = Object.keys(listDisplay.value).length;
+        }
+
+        listDisplay.value[lastIndex] = {
+            name: selectedClient.value.name,
+            client_secret: selectedClient.value.client_secret,
+            locked: selectedClient.value.locked,
+        };
+    } else {
+        // 기존 클라이언트 키 수정
+        listDisplay.value[selectedClientIndex] = {
+            name: selectedClient.value.name,
+            client_secret: selectedClient.value.client_secret,
+            locked: selectedClient.value.locked,
+        };
+    }
+
+    // Prepare the keys for update
+    for (const [i, ck] of Object.entries(listDisplay.value)) {
+        if (ck.locked) {
+            authKeys.push(ck.name);
+        }
+        Object.assign(secKeys, {
+            [ck.name]: ck.client_secret,
+        });
+    }
+
+    uploading.value = true;
+
+    await currentService
+        .setServiceOption({
+            client_secret: secKeys,
+            auth_client_secret: authKeys,
+        })
+        .then(() => {
+            closeDetailModal();
+        })
+        .catch((err) => {
+            window.alert(err.message || err);
+        })
+        .finally(() => {
+            uploading.value = false;
+        });
+};
+
+// table > show columns
+const showTableColumns = () => {
+    return columnList.filter((c) => c.value).length;
+};
 </script>
 <style scoped lang="less">
-.table-form {
-    position: relative;
+.content {
+    flex-grow: 1;
+    overflow-y: auto;
+    font-size: 0.8rem;
 
-    .table-tootlip {
-        position: absolute;
-        left: 18px;
-        top: 17px;
-        z-index: 999;
+    .value {
+        min-width: fit-content;
+        width: fit-content;
+        margin: 0;
+        flex: 1;
+    }
+
+    .row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        margin-top: 0;
+        gap: 0.5rem;
+
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+
+        &.line {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
+    }
+
+    .key {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        width: 170px;
     }
 }
 
-.updown {
-    background-color: #fff;
-    background-color: var(--main-color);
-    border-radius: 50%;
-    margin-left: 8px;
-    cursor: pointer;
-    box-shadow: rgba(41, 63, 230, 0.24) 0px 1px 8px;
-}
-
-input {
-    width: 100%;
-}
-
-table {
-    form {
-        display: block;
+.modal-scroll {
+    .key {
+        .svgIcon {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
     }
+}
 
-    tr {
-        &:hover {
-            .hide {
-                display: block;
+.error {
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 430px) {
+    .modal-detailClient {
+        .row {
+            flex-direction: column;
+            align-items: flex-start;
+
+            .key {
+                width: 100%;
+            }
+
+            &.locked {
+                flex-direction: row;
+
+                .key {
+                    width: 6.25rem;
+                }
+            }
+
+            .value {
+                width: 100%;
             }
         }
 
-        .hide {
-            display: none;
+        &:hover {
+            border-radius: 50%;
+            background-color: #293fe61a;
         }
-    }
-
-    td,
-    th {
-        padding: 0 4px 0 10px;
-    }
-}
-
-.buttonWrap {
-    display: flex;
-    height: 60px;
-    align-items: center;
-    gap: 8px;
-    padding: 0;
-}
-
-.save,
-.cancel {
-    position: relative;
-    font-size: 1.3rem;
-    font-weight: 500;
-    cursor: pointer;
-
-    &::after {
-        position: absolute;
-        content: '';
-        top: 50%;
-        left: 50%;
-        width: 100%;
-        height: 100%;
-        padding: 4px;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        background-color: #293FE61A;
-        display: none;
-    }
-
-    &:hover::after {
-        display: block;
-    }
-
-    &:hover {
-        border-radius: 50%;
-        background-color: #293FE61A;
-    }
-}
-
-@media (pointer: coarse) {
-    .hide {
-        display: block !important;
     }
 }
 </style>

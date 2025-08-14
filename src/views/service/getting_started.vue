@@ -1,11 +1,55 @@
 <template lang="pug">
-section.infoBox
-    h2 Getting Started
+section.page-header
+    .page-title Getting Started
+    a.btn-docs(href='https://docs.skapi.com/introduction/getting-started.html' target="_blank")
+        button.inline.icon-text.sm.gray
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
+            | Go Docs
 
-    hr
+hr
 
-    p Service Name: #[b {{ currentService.service.name }}]
-    p(style='margin-bottom: 0') Add the following code to your HTML website to get started:
+section
+    .middle-title Credentials
+    .info-value-set
+        .info-edit-wrap
+            .info
+                .title Service ID
+                .value {{ currentService.id }}
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" @click="copy(currentService.id)")
+                    .icon
+                        svg
+                            use(xlink:href="/basic-icon.svg#icon-copy")
+        .info-edit-wrap
+            .info
+                .title Service Owner
+                .value.owner {{ currentService.owner }}
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" @click="copy(currentService.owner)")
+                    .icon
+                        svg
+                            use(xlink:href="/basic-icon.svg#icon-copy")
+
+section
+    .middle-title For AI-Driven Development
+    p.page-desc Skapi works seamlessly with AI-driven development environments like OpenAI's Codex and Anthropic's Claude. #[br]Simply download the necessary markdown files below to your project folder:
+
+    b Download:&nbsp;&nbsp;&nbsp;&nbsp;
+    a.downlink(href="https://docs.skapi.com/skapi.md" download="skapi.md") skapi.md
+    span &nbsp;&nbsp;|&nbsp;&nbsp;
+    a.downlink(href="https://docs.skapi.com/skapi-types.md" download="skapi-types.md") skapi-types.md
+    span &nbsp;&nbsp;|&nbsp;&nbsp;
+    a.downlink(href="https://docs.skapi.com/SYSTEM.md" download="SYSTEM.md") SYSTEM.md
+
+    br
+    br
+
+    b Important: 
+    p.page-desc Rename the `SYSTEM.md` file to an appropriate filename that your coding assistant recognizes. #[br](e.g., `AGENT.md` for OpenAI Codex, `CLAUDE.md` for Anthropic Claude)
+
+section
+    .middle-title For HTML Projects
+    p.page-desc Add the following code to your HTML website to get started:
 
     Code
         pre.
@@ -14,18 +58,18 @@ section.infoBox
                 #[span(style="color:#33adff") const] skapi = #[span(style="color:#33adff") new] Skapi(#[span(style="color:#FFED91") "{{ currentService.id }}"], #[span(style="color:#FFED91") "{{ currentService.owner }}"]);
             #[span(style="color:#999") &lt;/]#[span(style="color:#33adff") script]#[span(style="color:#999") &gt;]
 
-    br
+section
+    .middle-title For SPA Projects
+    p.page-desc If you are developing a Single Page Application (SPA), please refer to the following steps:
 
-    h4 For SPA Projects
-    p If you are developing a Single Page Application (SPA), please refer to the following steps:
-    p(style='margin-bottom: 0') 1. Install the library
+    p 1. Install the library
 
     Code
         pre npm install skapi-js
 
     br
 
-    p(style='margin-bottom: 0') 2. Initialize Skapi from your main.js
+    p 2. Initialize Skapi from your main.js
 
     Code
         pre.
@@ -34,21 +78,42 @@ section.infoBox
             #[span(style="color:#33adff") const] skapi = #[span(style="color:#33adff") new] Skapi(#[span(style="color:#FFED91") "{{ currentService.id }}"], #[span(style="color:#FFED91") "{{ currentService.owner }}"]);
             #[span(style="color:#44E9FF") export] { skapi } #[span(style="color:#999") // Import the instance in your components]
 
-    br
-
-    p For more details, please refer to the #[a(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") Documentation]
-
-    br
-
-    //- .routerWrap
-        .routerButton
-        .routerButton
-            router-link(:to="`/my-services/${currentService.id}/dashboard`")
-                .desc Next Page
-                .title Dashboard & Settings
 </template>
 
 <script setup>
 import Code from '@/components/code.vue';
 import { currentService } from '@/views/service/main';
+import { copy } from '@/assets/js/common.js'
 </script>
+
+<style lang="less" scoped>
+.middle-title {
+    font-size: 26px;
+    margin-bottom: 16px;
+}
+
+section:not(.page-header) {
+    margin-bottom: 3rem;
+}
+
+// .downlink {
+//     position: relative;
+//     margin-right: 1.5rem;
+
+//     &::after {
+//         content: '';
+//         position: absolute;
+//         top: 50%;
+//         right: -0.8rem;
+//         width: 1px;
+//         height: 13px;
+//         background-color: #888;
+//         transform: translateY(-50%);
+//     }
+
+//     &:last-of-type {
+//         &::after {
+//             display: none;
+//         }
+//     }
+// }</style>

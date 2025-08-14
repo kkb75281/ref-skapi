@@ -1,17 +1,17 @@
 <template lang="pug">
-nav#navBar(ref="navBar")
+nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
     .wrap
         .left
             template(v-if="route.name != 'home'")
                 .logo-wrap
-                    router-link.logo(to="/")
-                        img.symbol(src="@/assets/img/logo/icon_logo_symbol.svg")
+                    router-link.logo(to="/" @click="handleLogoClick")
+                        img.symbol(src="@/assets/img/logo/icon_logo_symbol.svg" alt="Skapi logo")
                     router-link.myservice(to="/my-services")
-                        img.symbol(src="@/assets/img/logo/icon_logo_text_myservices.svg")
+                        img.symbol(src="@/assets/img/logo/icon_logo_text_myservices.svg" alt="My Services")
             template(v-else)
                 router-link.logo(to="/")
-                    img.symbol(src="@/assets/img/logo/icon_logo.svg")
-                ul.section-list(v-if="route.name === 'home'")
+                    img.symbol(src="@/assets/img/logo/icon_logo.svg" alt="Skapi logo")
+                ul.section-list(v-if="route.name === 'home'" ref="navSecEl")
                     li.section-item(@click="scrollSec('section1')") Features
                     li.section-item(@click="scrollSec('section2')") Price
                     li.section-item(@click="scrollSec('section3')") FAQ
@@ -22,174 +22,189 @@ nav#navBar(ref="navBar")
                 template(v-if="isDesktop")
                     template(v-if="user?.user_id")
                         li.list.go-community(ref="communityEl")
-                            .ser.dropdown(@click.stop="(e)=>{showDropDown(e)}") Community
-                                img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
-                                .moreVert.community(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
+                            .dropdown-container(@mouseenter="showCommunityDropdown" @mouseleave="hideCommunityDropdown")
+                                .ser.dropdown Community
+                                    img(src="@/assets/img/landingpage/icon_dropdown.svg" alt="Dropdown icon" style="width: .6875rem; height: 1.5rem;")
+                                .moreVert.community(ref="moreVert" :style="{ '--moreVert-right': 0, display: communityDropdownVisible ? 'block' : 'none' }")
                                     ul.list-wrap
                                         li.item
                                             a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                                                img(src="@/assets/img/landingpage/icon_tiktok.svg" alt="TikTok icon")
                                         li.item
                                             a.link(href="https://www.instagram.com/skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                                img(src="@/assets/img/landingpage/icon_instagram.svg" alt="Instagram icon")
                                         li.item
                                             a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                                img(src="@/assets/img/landingpage/icon_youtube.svg" alt="YouTube icon")
                                         li.item
                                             a.link(href="https://x.com/skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_x.svg")
+                                                img(src="@/assets/img/landingpage/icon_x.svg" alt="X (formerly Twitter) icon")
                                         li.item
                                             a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                                img(src="@/assets/img/landingpage/icon_linkedin.svg" alt="LinkedIn icon")
                                         li.item
                                             a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_facebook.svg")
+                                                img(src="@/assets/img/landingpage/icon_facebook.svg" alt="Facebook icon")
+                                        li.item
+                                            a.link(href="https://dev.to/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_devto.svg" alt="Dev.to icon")
                         li.list.go-docs
                             a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
-                                img(src="@/assets/img/landingpage/icon_docs.svg")
+                                img(src="@/assets/img/landingpage/icon_docs.svg" alt="Docs icon")
                                 | Docs
                         li.list.go-github
                             a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank")
-                                img(src="@/assets/img/landingpage/icon_github.svg")
+                                img(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
                                 | Github
                         li.list.go-service(v-if="route.name === 'home'")
                             router-link.ser(to="/my-services") 
-                                img(src="@/assets/img/logo/symbol-logo-white.svg")
+                                img(src="@/assets/img/logo/symbol-logo-white.svg" alt="My Services icon")
                                 | My Services
-                        li.list.user-profile(@click.stop="(e)=>{showDropDown(e)}")
-                            .img-profile-wrap
-                                img(src="@/assets/img/landingpage/icon_profile.svg")
-                            .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
-                                .account 
-                                    span.user-id {{ userEmail.split("@")[0] }}
-                                    | @{{ userEmail.split("@")[1] }}
-                                ul.dropdown-menu
-                                    li.dropdown-list(@click="openBillingPage")
-                                        img(src="@/assets/img/landingpage/icon_billing.svg")
-                                        span Billing
-                                    li.dropdown-list(@click="navigateToPage")
-                                        img(src="@/assets/img/landingpage/icon_setting.svg")
-                                        span Account Settings
-                                    li.dropdown-list(@click="logout")
-                                        img(src="@/assets/img/landingpage/icon_logout.svg")
-                                        span Logout
+                        li.list.user-profile
+                            .dropdown-container(@mouseenter="showProfileDropdown" @mouseleave="hideProfileDropdown")
+                                .img-profile-wrap
+                                    img(src="@/assets/img/landingpage/icon_profile.svg" alt="User Profile icon")
+                                .moreVert.profile(ref="moreVert" @click.stop :style="{ '--moreVert-right': 0, display: profileDropdownVisible ? 'block' : 'none' }")
+                                    .account 
+                                        span.user-id {{ userEmail.split("@")[0] }}
+                                        | @{{ userEmail.split("@")[1] }}
+                                    ul.dropdown-menu
+                                        li.dropdown-list(@click="openBillingPage")
+                                            img(src="@/assets/img/landingpage/icon_billing.svg" alt="Billing icon")
+                                            span Billing
+                                        li.dropdown-list(@click="navigateToPage")
+                                            img(src="@/assets/img/landingpage/icon_setting.svg" alt="Account Settings icon")
+                                            span Account Settings
+                                        li.dropdown-list(@click="logout")
+                                            img(src="@/assets/img/landingpage/icon_logout.svg" alt="Logout icon")
+                                            span Logout
                     template(v-else)
                         li.list.go-community(ref="communityEl")
-                            .ser.dropdown(@click.stop="(e)=>{showDropDown(e)}") Community
-                                img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
-                                .moreVert.community(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
-                                    ul.list-wrap
-                                        li.item
-                                            a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_tiktok.svg")
-                                        li.item
-                                            a.link(href="https://www.instagram.com/skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_instagram.svg")
-                                        li.item
-                                            a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_youtube.svg")
-                                        li.item
-                                            a.link(href="https://x.com/skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_x.svg")
-                                        li.item
-                                            a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_linkedin.svg")
-                                        li.item
-                                            a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_facebook.svg")
+                            .dropdown-container(@mouseenter="showCommunityDropdown" @mouseleave="hideCommunityDropdown")
+                                .ser.dropdown Community
+                                    img(src="@/assets/img/landingpage/icon_dropdown.svg" alt="Dropdown icon" style="width: .6875rem; height: 1.5rem;")
+                                    .moreVert.community(ref="moreVert" :style="{ '--moreVert-right': 0, display: communityDropdownVisible ? 'block' : 'none' }")
+                                        ul.list-wrap
+                                            li.item
+                                                a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_tiktok.svg" alt="TikTok icon")
+                                            li.item
+                                                a.link(href="https://www.instagram.com/skapi_api" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_instagram.svg" alt="Instagram icon")
+                                            li.item
+                                                a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_youtube.svg" alt="YouTube icon")
+                                            li.item
+                                                a.link(href="https://x.com/skapi_api" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_x.svg" alt="X (formerly Twitter) icon")
+                                            li.item
+                                                a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_linkedin.svg" alt="LinkedIn icon")
+                                            li.item
+                                                a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_facebook.svg" alt="Facebook icon")
+                                            li.item
+                                                a.link(href="https://dev.to/skapi_api" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_devto.svg" alt="Dev.to icon")
                         li.list.go-docs
                             a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
-                                img(src="@/assets/img/landingpage/icon_docs.svg")
+                                img(src="@/assets/img/landingpage/icon_docs.svg" alt="Docs icon")
                                 | Docs
                         li.list.go-github
                             a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank") 
-                                img(src="@/assets/img/landingpage/icon_github.svg")
+                                img(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
                                 | Github
                         li.list.go-login
                             router-link(to="/login") 
-                                img(src="@/assets/img/landingpage/icon_login.svg")
+                                img(src="@/assets/img/landingpage/icon_login.svg" alt="Login icon")
                                 | Login
 
                 template(v-else :class="{ 'mo' : true }")
-                    button.btn-open-menu(@click="openMoMenu")
-                        img(src="@/assets/img/landingpage/icon_menubar.svg")
+                    button.btn-open-menu.nohover(@click="openMoMenu")
+                        img(src="@/assets/img/landingpage/icon_menubar.svg" alt="Menu icon")
                     .mo-menu-wrap
                         .top-area
                             .logo
-                                img.symbol.mobile(src="@/assets/img/logo/icon_logo.svg" @click="router.push('/')")
+                                img.symbol.mobile(src="@/assets/img/logo/icon_logo.svg" alt="Logo" @click="router.push('/')")
                             .right-area
                                 .prof
                                     template(v-if="user?.user_id" )
                                         .img-profile(@click.stop="(e)=>{showDropDown(e)}")
                                             .img-wrap
-                                                img(src="@/assets/img/landingpage/icon_profile.svg" style="width: 2.5rem; height: 2.5rem;")
+                                                img(src="@/assets/img/landingpage/icon_profile.svg" alt="Profile icon" style="width: 2.5rem; height: 2.5rem;")
                                             .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                                 .account 
                                                     span.user-id {{ userEmail.split("@")[0] }}
                                                     | @{{ userEmail.split("@")[1] }}
                                                 ul.dropdown-menu
                                                     li.dropdown-list(@click="openBillingPage")
-                                                        img(src="@/assets/img/landingpage/icon_billing.svg")
+                                                        img(src="@/assets/img/landingpage/icon_billing.svg" alt="Billing icon")
                                                         span Billing
                                                     li.dropdown-list(@click="navigateToPage")
-                                                        img(src="@/assets/img/landingpage/icon_setting.svg")
+                                                        img(src="@/assets/img/landingpage/icon_setting.svg" alt="Settings icon")
                                                         span Account Settings
                                                     li.dropdown-list(@click="logout")
-                                                        img(src="@/assets/img/landingpage/icon_logout.svg")
+                                                        img(src="@/assets/img/landingpage/icon_logout.svg" alt="Logout icon")
                                                         span Logout
                                     template(v-else)
-                                        router-link.go-login(to="/login") 
-                                            img(src="@/assets/img/landingpage/icon_login.svg")
+                                        router-link.go-login(to="/login" @click="closeMobileMenu") 
+                                            img(src="@/assets/img/landingpage/icon_login.svg" alt="Login icon")
                                             | Login
-                                button.btn-close(@click="openMoMenu")
-                                    img(src="@/assets/img/landingpage/icon_close.svg")
+                                button.btn-close.nohover(@click="openMoMenu")
+                                    img(src="@/assets/img/landingpage/icon_close.svg" alt="Close icon")
 
                         ul.section-list(v-if="route.name === 'home'")
                             li.section-item(@click="scrollSec('section1')") Features
                             li.section-item(@click="scrollSec('section2')") Price
                             li.section-item(@click="scrollSec('section3')") FAQ
                             li.section-item(@click="scrollSec('section4')") Contents
+                        SideNav(v-if="currentRoutePath === 'my-services' && serviceMainLoaded" @closeMobileMenu="closeMobileMenu")
                         ul.menu-list
-                            li.list.go-docs
+                            li.list.go-docs.mo-item
                                 a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank" @click="closeMobileMenu") 
-                                    img(src="@/assets/img/landingpage/icon_docs.svg")
+                                    img(src="@/assets/img/landingpage/icon_docs.svg" alt="Docs icon")
                                     | Docs
-                            li.list.go-github
+                            li.list.go-github.mo-item
                                 a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank" @click="closeMobileMenu")
-                                    img(src="@/assets/img/landingpage/icon_github.svg")
+                                    img(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
                                     | Github
-                            li.list.go-service
+                            li.list.go-service.mo-item(v-if="user?.user_id")
                                 router-link.ser(to="/my-services" @click="closeMobileMenu") 
-                                    img(src="@/assets/img/logo/symbol-logo-white.svg")
+                                    img(src="@/assets/img/logo/symbol-logo-white.svg" alt="My Services icon")
                                     | My Services
-                        .community
+                        .community(:class="{'absolute': currentRoutePath !== 'my-services'}")
                             span.text Community
                             ul.list-wrap
                                 li.item
                                     a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                                        img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                                        img(src="@/assets/img/landingpage/icon_tiktok.svg" alt="TikTok icon")
                                 li.item
                                     a.link(href="https://www.instagram.com/skapi_api" target="_blank")
-                                        img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                        img(src="@/assets/img/landingpage/icon_instagram.svg" alt="Instagram icon")
                                 li.item
                                     a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
-                                        img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                        img(src="@/assets/img/landingpage/icon_youtube.svg" alt="YouTube icon")
                                 li.item
                                     a.link(href="https://x.com/skapi_api" target="_blank")
-                                        img(src="@/assets/img/landingpage/icon_x.svg")
+                                        img(src="@/assets/img/landingpage/icon_x.svg" alt="X (formerly Twitter) icon")
                                 li.item
                                     a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
-                                        img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                        img(src="@/assets/img/landingpage/icon_linkedin.svg" alt="LinkedIn icon")
                                 li.item
                                     a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
-                                        img(src="@/assets/img/landingpage/icon_facebook.svg")
-#proceeding(v-if="running")
+                                        img(src="@/assets/img/landingpage/icon_facebook.svg" alt="Facebook icon")
+                                li.item
+                                    a.link(href="https://dev.to/skapi_api" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_devto.svg" alt="Dev.to icon")
+//- #proceeding(v-if="!running")
     .inner    
-        .loader(style="--loader-color:black; --loader-size: 20px")
+        .loader(style="--loader-color:white; --loader-size: 20px")
         h4 Page Loading
+#loading(v-if="running")
+    .loader
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { useRoute, useRouter } from "vue-router";
 import { onMounted, onBeforeUnmount, ref, watch } from "vue";
 import { skapi } from "@/main";
@@ -197,6 +212,8 @@ import { serviceMainLoaded, currentService } from "@/views/service/main";
 import { user, customer } from "@/code/user";
 import { showDropDown } from "@/assets/js/event.js";
 import { setAutoHide, removeListener, routeName } from "./navBar-autohide.ts";
+
+import SideNav from "@/components/sideNav.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -207,8 +224,16 @@ let running = ref(false);
 let serviceName = ref(currentService?.service?.name || "");
 const userEmail = ref(user?.email || "");
 const isDesktop = ref(window.innerWidth > 800);
+
+const navSecEl = ref(null);
 const navMenuEl = ref(null);
 const communityEl = ref(null);
+const communityDropdownVisible = ref(false);
+const profileDropdownVisible = ref(false);
+let currentRoutePath = ref("");
+let communityHideTimeout = null;
+let profileHideTimeout = null;
+const landingPageRef = ref(null);
 
 const updateServiceName = () => {
     serviceName.value = currentService?.service?.name || "loading...";
@@ -298,9 +323,9 @@ function handleMouseOver(container, selector, event) {
     if (hovered) {
         if (
             hovered.classList.contains("go-login") ||
-            hovered.classList.contains("user-profile")
+            hovered.classList.contains("user-profile") ||
+            hovered.classList.contains("mo-item")
         ) {
-            // go-login hover면: 모두 opacity 1 유지
             const elements = container.querySelectorAll(selector);
             elements.forEach((el) => (el.style.opacity = 1));
             return;
@@ -311,9 +336,10 @@ function handleMouseOver(container, selector, event) {
         elements.forEach((el) => {
             if (
                 el.classList.contains("go-login") ||
-                el.classList.contains("user-profile")
+                el.classList.contains("user-profile") ||
+                el.classList.contains("mo-item")
             ) {
-                el.style.opacity = 1; // go-login은 항상 1 유지
+                el.style.opacity = 1;
             } else {
                 el.style.opacity = 0.5;
             }
@@ -334,6 +360,53 @@ function handleMouseOut(container, selector, event) {
     elements.forEach((el) => (el.style.opacity = 1));
 }
 
+// community dropdown
+const showCommunityDropdown = () => {
+    if (communityHideTimeout) {
+        clearTimeout(communityHideTimeout);
+        communityHideTimeout = null;
+    }
+    communityDropdownVisible.value = true;
+};
+
+const hideCommunityDropdown = () => {
+    // 약간의 지연을 두어 사용자가 popup으로 마우스를 이동할 시간을 제공
+    communityHideTimeout = setTimeout(() => {
+        communityDropdownVisible.value = false;
+    }, 100);
+};
+
+// profile dropdown
+const showProfileDropdown = () => {
+    if (profileHideTimeout) {
+        clearTimeout(profileHideTimeout);
+        profileHideTimeout = null;
+    }
+    profileDropdownVisible.value = true;
+};
+
+const hideProfileDropdown = () => {
+    // 약간의 지연을 두어 사용자가 popup으로 마우스를 이동할 시간을 제공
+    profileHideTimeout = setTimeout(() => {
+        profileDropdownVisible.value = false;
+    }, 100);
+};
+
+// 로고 클릭 시 resetVideo 호출하는 함수
+const handleLogoClick = () => {
+    // 현재 홈페이지인 경우에만 비디오 리셋
+    if (route.name === "home") {
+        // landingPage 컴포넌트의 resetVideo 함수 호출
+        const landingPageComponent = document.querySelector(
+            "[data-landing-page]"
+        );
+        if (landingPageComponent && landingPageComponent.__vueParentComponent) {
+            landingPageComponent.__vueParentComponent.exposed?.resetVideo?.();
+        }
+    }
+    // router.push("/");
+};
+
 window.addEventListener("resize", () => {
     isDesktop.value = window.innerWidth > 800;
 });
@@ -341,6 +414,15 @@ window.addEventListener("resize", () => {
 onMounted(() => {
     setAutoHide(navBar.value, 3);
     window.addEventListener("serviceChanged", updateServiceName);
+
+    if (navSecEl.value) {
+        navSecEl.value.addEventListener("mouseover", (e) =>
+            handleMouseOver(navSecEl.value, ".section-item", e)
+        );
+        navSecEl.value.addEventListener("mouseout", (e) =>
+            handleMouseOut(navSecEl.value, ".section-item", e)
+        );
+    }
 
     if (navMenuEl.value) {
         navMenuEl.value.addEventListener("mouseover", (e) =>
@@ -362,8 +444,24 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+    if (communityHideTimeout) {
+        clearTimeout(communityHideTimeout);
+    }
+    if (profileHideTimeout) {
+        clearTimeout(profileHideTimeout);
+    }
+
     removeListener();
     window.removeEventListener("serviceChanged", updateServiceName);
+
+    if (navSecEl.value) {
+        navSecEl.value.removeEventListener("mouseover", (e) =>
+            handleMouseOver(navSecEl.value, ".section-item", e)
+        );
+        navSecEl.value.removeEventListener("mouseout", (e) =>
+            handleMouseOut(navSecEl.value, ".section-item", e)
+        );
+    }
 
     if (navMenuEl.value) {
         navMenuEl.value.removeEventListener("mouseover", (e) =>
@@ -373,6 +471,7 @@ onBeforeUnmount(() => {
             handleMouseOut(navMenuEl.value, ".list", e)
         );
     }
+
     if (communityEl.value) {
         communityEl.value.removeEventListener("mouseover", (e) =>
             handleMouseOver(communityEl.value, ".link", e)
@@ -389,6 +488,16 @@ watch(
         if (nv) {
             routeName.value = typeof nv === "string" ? nv : "";
         }
+    },
+    { immediate: true }
+);
+
+watch(
+    () => route.path,
+    (nv) => {
+        let splitPath = nv.split("/");
+
+        currentRoutePath.value = splitPath.length > 2 ? splitPath[1] : "";
     },
     { immediate: true }
 );
@@ -414,14 +523,37 @@ img.symbol.mobile {
     text-align: center;
 }
 
+#loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+
+    .loader {
+        --loader-color: #fff;
+        --loader-size: 1rem;
+        width: var(--loader-size);
+        height: var(--loader-size);
+    }
+}
+
 #navBar {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 99999;
+    z-index: 99999999;
     width: 100%;
     height: 4rem;
     background-color: #000;
+    box-shadow: 0px 0.5px 0px 0px #1a1a1a;
     font-size: 1.125rem;
     color: #fff;
     fill: #fff; // for svg
@@ -430,8 +562,14 @@ img.symbol.mobile {
         color: #fff;
     }
 
+    &.main-nav {
+        .wrap {
+            max-width: 100rem;
+        }
+    }
+
     .wrap {
-        max-width: 100rem;
+        // max-width: 100rem;
         width: 100%;
         height: 100%;
         display: flex;
@@ -558,6 +696,13 @@ img.symbol.mobile {
                                 border-radius: 50%;
                             }
                         }
+
+                        img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                            display: block;
+                        }
                     }
 
                     img {
@@ -663,7 +808,7 @@ img.symbol.mobile {
         .dropdown-menu {
             display: block;
             text-align: left;
-            padding: 0.625rem 0 1.25rem;
+            padding: 0.625rem 0 0.8125rem;
 
             .dropdown-list {
                 display: flex;
@@ -716,6 +861,23 @@ img.symbol.mobile {
                     }
                 }
             }
+        }
+    }
+
+    .go-community {
+        .dropdown-container {
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .moreVert.community {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            z-index: 1000;
+            /* 기존 moreVert 스타일 유지 */
         }
     }
 }
@@ -779,9 +941,12 @@ img.symbol.mobile {
                 background-color: inherit;
                 border-radius: 0;
                 padding: 1.25rem 1.25rem 0.75rem 1.25rem;
-                position: absolute;
-                width: 100%;
-                bottom: 60px;
+
+                &.absolute {
+                    position: absolute;
+                    width: calc(100% - 4.5rem);
+                    bottom: 60px;
+                }
 
                 .text {
                     font-size: 0.875rem;
@@ -814,6 +979,7 @@ img.symbol.mobile {
             padding-bottom: 3.75rem;
             transition: right 0.3s ease-in-out;
             z-index: 9999;
+            overflow-y: auto;
 
             .top-area {
                 display: flex;
@@ -908,18 +1074,13 @@ img.symbol.mobile {
 
             ul {
                 height: initial;
-                font-size: 1.25rem;
+                font-size: 1rem;
                 font-weight: 400;
                 padding-left: 0;
             }
 
             li {
-                padding: 1rem 1.5rem;
-
-                &:hover {
-                    background: rgba(255, 255, 255, 0.05);
-                    cursor: pointer;
-                }
+                padding: 0.75rem 2.25rem;
             }
 
             .section-list {
@@ -938,18 +1099,30 @@ img.symbol.mobile {
 
             .menu-list {
                 padding-top: 1.25rem;
+                padding-bottom: 1.25rem;
 
                 .list {
                     padding: 0;
+                    font-size: 1rem;
 
                     &:first-child {
                         .ser {
-                            padding-left: 1.5rem;
+                            // padding-left: 1.5rem;
+                            padding-left: 2.25rem;
                         }
                     }
 
                     &::after {
                         content: none;
+                    }
+
+                    &:hover {
+                        background: rgba(255, 255, 255, 0.05);
+                        cursor: pointer;
+                    }
+
+                    a {
+                        padding: 0.75rem 2.25rem;
                     }
                 }
 
@@ -959,6 +1132,30 @@ img.symbol.mobile {
 
                 .go-github {
                     padding-left: 0;
+                }
+            }
+
+            .community {
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 0.75rem 0;
+                margin: 0 2.25rem;
+
+                .list-wrap {
+                    li {
+                        &:first-child {
+                            a {
+                                padding-left: 0;
+                            }
+                        }
+                    }
+
+                    .item {
+                        margin-right: 12px;
+
+                        .link {
+                            padding: 0;
+                        }
+                    }
                 }
             }
 
@@ -1001,6 +1198,28 @@ img.symbol.mobile {
                         height: 1.25rem;
                     }
                 }
+            }
+
+            .menu-list {
+                .list {
+                    &:first-child {
+                        .ser {
+                            padding-left: 2rem;
+                        }
+                    }
+
+                    a {
+                        padding: 0.75rem 2rem;
+                    }
+                }
+            }
+
+            .community {
+                padding: 0.75rem 0;
+            }
+
+            li {
+                padding-left: 2rem;
             }
         }
     }

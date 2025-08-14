@@ -1,24 +1,22 @@
 <template lang="pug">
-br
-br
-br
-
 #refer
     router-link(to="/")
         img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px;")
 
-    .bottomLineTitle Referral Bonus
+    .page-title Referral Bonus
+
+    hr
 
     template(v-if="!alreadyRegister")
-        p You're signing up using {{ route.params.name }}'s referral link. #[br]Once you subscribe to Replit Core, you'll both get an extra 10 of monthly credits!
+        .page-desc You're signing up using {{ route.params.name }}'s referral link. #[br]Once you subscribe to Replit Core, you'll both get an extra 10 of monthly credits!
     template(v-else)
-        p You have already registered using a referral link. #[br]You can only register once using a referral link.
+        .page-desc You have already registered using a referral link. #[br]You can only register once using a referral link.
 
     br
 
     .bottom
-        button.noLine(:class="{'nonClickable': loading}" @click="router.push('/my-services')") Go to My Services
-        button.final(:class="{'nonClickable': loading || alreadyRegister}" @click="registerReferMisc") Get Bonus
+        button.inline.gray(:class="{'nonClickable': loading}" @click="router.push('/my-services')") Go to My Services
+        button.inline(:class="{'nonClickable': loading || alreadyRegister}" @click="registerReferMisc") Get Bonus
 </template>
 
 <script setup>
@@ -49,7 +47,7 @@ let registerReferMisc = () => {
         return;
     }
 
-    let misc = JSON.parse(user.misc || '{}');
+    let misc = JSON.parse(user.misc || "{}");
 
     // misc.refer가 배열이 아니면 배열로 변환
     if (!Array.isArray(misc.refer)) {
@@ -60,29 +58,25 @@ let registerReferMisc = () => {
 
     loading.value = true;
     misc.refer.push(refer);
-    console.log("Updating refer code to", misc.refer);
-    skapi.updateProfile({ misc: JSON.stringify(misc) })
+    skapi
+        .updateProfile({ misc: JSON.stringify(misc) })
         .then(() => {
-            console.log("Refer code updated successfully");
-            console.log(user);
             loading.value = false;
             alreadyRegister.value = true;
         })
-        .catch(err => {
-            console.error("Failed to update refer code", err);
+        .catch((err) => {
             loading.value = false;
             alreadyRegister.value = false;
         });
-}
+};
 
 onMounted(() => {
     if (!checkUser()) {
-        console.log("User is not logged in");
-        router.push({ path: '/login', query: { refer_name: refer } });
+        router.push({ path: "/login", query: { refer_name: refer } });
         return;
     }
 
-    let misc = JSON.parse(user.misc || '{}');
+    let misc = JSON.parse(user.misc || "{}");
     let miscRefer = misc.refer || [];
 
     if (miscRefer.includes(refer)) {
@@ -96,7 +90,7 @@ onMounted(() => {
 <style lang="less" scoped>
 #refer {
     max-width: 480px;
-    padding: 0 20px;
+    padding: 5rem 20px;
     margin: 0 auto;
 }
 

@@ -1,42 +1,34 @@
 <template lang="pug">
-br
-br
-br
-
 #success
     router-link(to="/")
-        img(src="@/assets/img/logo/logo.png" style="height: 49px;")
+        img(src="@/assets/img/logo/symbol-logo.png" alt="Skapi Logo" style="width: 40px; margin-bottom: .625rem")
 
-    h2(style="color:var(--main-color)") Thanks for joining!
+    .page-title Thanks for joining!
 
-    p Your email has been confirmed. You can now login to Skapi.
+    hr
+
+    .page-desc Your email has been confirmed. #[br]You can now login to Skapi.
 
     br
-    
+
     div(style="display:block;text-align:center")
-        button.final(@click="router.push({path: '/login', query: {suc_redirect: routeQuery} })") Login
-br
-br
-br
+        button.block(@click="router.push({path: '/login', query: {suc_redirect: routeQuery} })") Login
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
-import { onMounted } from 'vue';
+import { useRoute, useRouter } from "vue-router";
 
 const router = useRouter();
 const route = useRoute();
 
 let how = route.path.split("/")[2];
 let routeQuery = route.query?.suc_redirect;
-
-console.log(how)
 </script>
 
 <style scoped lang="less">
 #success {
     max-width: 480px;
-    padding: 0 20px;
+    padding: 5rem 20px;
     margin: 0 auto;
 }
 

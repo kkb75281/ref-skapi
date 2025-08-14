@@ -19,28 +19,30 @@
 </template>
 
 <script setup>
-import { currentService } from '@/views/service/main';
-import { onMounted, ref } from 'vue';
+import { currentService } from "@/views/service/main";
+import { onMounted, ref } from "vue";
 
 let disabled = ref(false);
-let getnewsletterGroupEndpoint = ref('click the button to get endpoint');
+let getnewsletterGroupEndpoint = ref("click the button to get endpoint");
 
 function registerNewsletterGroup() {
     const groupName = document.querySelector('input[name="group"]').value;
-    const restriction = document.querySelector('input[name="restriction"]').value;
+    const restriction = document.querySelector(
+        'input[name="restriction"]'
+    ).value;
 
     if (!groupName || !restriction) {
-        alert('Please fill in all fields.');
+        alert("Please fill in all fields.");
         return;
     }
 
     if (!/^[A-Za-z0-9]+$/.test(groupName) || /\s/.test(groupName)) {
-        alert('Group name must be alphanumeric and cannot contain spaces.');
+        alert("Group name must be alphanumeric and cannot contain spaces.");
         return;
     }
 
     if (isNaN(restriction) || restriction < 0 || restriction > 99) {
-        alert('Restriction must be a number between 0 and 99.');
+        alert("Restriction must be a number between 0 and 99.");
         return;
     }
 
@@ -48,16 +50,16 @@ function registerNewsletterGroup() {
 
     let option = {
         group: groupName,
-        restriction: restriction
+        restriction: restriction,
     };
 
-    currentService.registerNewsletterGroup(option).then(r => {
-        console.log(r); // SUCCESS: Group registered successfully.
-    }).catch(e => {
-        console.log(e);
-    }).finally(() => {
-        disabled.value = false;
-    });
+    currentService
+        .registerNewsletterGroup(option)
+        .then((r) => {})
+        .catch((e) => {})
+        .finally(() => {
+            disabled.value = false;
+        });
 }
 
 async function newsletterGroupEndpoint() {
@@ -68,10 +70,6 @@ async function newsletterGroupEndpoint() {
     getnewsletterGroupEndpoint.value = endpoint;
     disabled.value = false;
 }
-
-onMounted(() => {
-    console.log(currentService.service);
-});
 </script>
 
 <style scoped lang="less">

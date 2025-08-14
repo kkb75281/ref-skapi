@@ -1,16 +1,13 @@
 <template lang="pug">
-br
-br
-br
-
 #verify
     router-link(to="/")
-        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px;")
+        img(src="@/assets/img/logo/symbol-logo.png" alt="Skapi Logo" style="width: 40px; margin-bottom: .625rem")
 
-    .bottomLineTitle Enable Account
+    .page-title Enable Account
 
-    p Please check your inbox to enable your account.
-    p The confirmation link has been sent to #[b {{email}}].
+    hr
+
+    .page-desc Please check your inbox to enable your account. #[br]The confirmation link has been sent to #[b {{email}}].
 
     .resend 
         template(v-if="resending")
@@ -18,10 +15,6 @@ br
         template(v-else)
             | Haven’t received the email?&nbsp;
             span.click(@click="resend") Re-send
-br
-br
-br
-
 </template>
 
 <script setup lang="ts">
@@ -49,8 +42,8 @@ let resend = () => {
 
 <style scoped lang="less">
 #verify {
-    max-width: 640px;
-    padding: 0 20px;
+    max-width: 480px;
+    padding: 5rem 20px;
     margin: 0 auto;
 }
 
