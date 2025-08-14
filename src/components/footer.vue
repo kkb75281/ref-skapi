@@ -173,7 +173,7 @@ onUnmounted(() => {
     &.service-main-footer {
         margin-left: 260px;
         background-color: #16171a;
-        box-shadow: 0px -1px 0px 0px #1F1F1F;
+        box-shadow: 0px -1px 0px 0px #1f1f1f;
 
         .footer-wrap {
             padding: 1.875rem 2.5rem;
@@ -327,7 +327,6 @@ onUnmounted(() => {
                     height: 2.25rem;
                 }
             }
-
         }
     }
 
@@ -378,7 +377,6 @@ onUnmounted(() => {
         }
 
         .company-info {
-
             a,
             span {
                 display: block;
@@ -418,7 +416,6 @@ onUnmounted(() => {
 
 @media (max-width: 1560px) {
     #footer {
-
         .top-inner,
         .bottom-inner {
             margin: 0 80px;
@@ -472,7 +469,6 @@ onUnmounted(() => {
             }
 
             .company-info {
-
                 a,
                 span {
                     font-size: 0.75rem;
@@ -486,6 +482,7 @@ onUnmounted(() => {
 
             .icon-wrap {
                 left: -7px;
+                text-align: start;
             }
         }
     }
@@ -536,7 +533,6 @@ onUnmounted(() => {
 
 @media (max-width: 430px) {
     #footer {
-
         .top-inner,
         .bottom-inner {
             margin: 0 40px;

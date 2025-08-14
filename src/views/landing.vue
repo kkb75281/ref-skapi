@@ -403,6 +403,7 @@ watch(
         if (newTab === 1 && videos.value.length === 0) {
             const CHANNEL_ID = "UC0e4MITESMr3OaUiyWHpdYA"; // Skapi 공식 유튜브 채널 ID
             const API_KEY = import.meta.env.VITE_API_KEY;
+            console.log("API_KEY : ", API_KEY);
 
             try {
                 // 최신 영상 검색
