@@ -31,6 +31,10 @@ const route = useRoute();
 let refer = route.params.name;
 let alreadyRegister = ref(false);
 let loading = ref(false);
+let bonus = {
+    use: [],
+    useless: ["ThanhYDavid"]
+}
 
 let checkUser = () => {
     let u = user?.user_id;
@@ -74,6 +78,13 @@ onMounted(() => {
     if (!checkUser()) {
         router.push({ path: "/login", query: { refer_name: refer } });
         return;
+    } else {
+        // 로그인이 되어 있고
+        // refer 가 bonus.useless 에 포함되어 있으면 서비스 리스트로 페이지 이동
+        if (bonus.useless.includes(refer)) {
+            router.push('/my-services');
+            return;
+        }
     }
 
     let misc = JSON.parse(user.misc || "{}");
