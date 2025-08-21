@@ -349,8 +349,8 @@ Modal.modal-upload404(:open="modifyMode.page404" @close="modifyMode.page404 = fa
 
     form(@submit.prevent="change404")
         input(ref="focus_404" hidden type="file" name='file' required @change="handle404file" :disabled='updatingValue.page404' accept="text/html")
-        input.block(:placeholder="selected404File || 'Click here to select a file'" readonly)
-        button.block.gray(type="button"  @click='focus_404.value = ""; focus_404.click()' style="margin-top: 0.75rem;") Browse File
+        input.block(:placeholder="selected404File || 'No file selected.'" readonly style="cursor: default")
+        button.block.gray(type="button"  @click='focus_404.value = ""; focus_404.click()' style="margin-top: 0.75rem;") Select File
         .modal-btns
             .loader-wrap(v-if="updatingValue.page404")
                 .loader(style="--loader-color:white; --loader-size:12px")
@@ -884,9 +884,8 @@ function openFile(ns: any) {
     let path = ns.path;
     let url;
     if (path.split("/").length > 1) {
-        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${
-            ns.name
-        }`;
+        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${ns.name
+            }`;
     } else {
         url = `https://${hostUrl.value}/${ns.name}`;
     }

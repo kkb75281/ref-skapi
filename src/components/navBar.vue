@@ -819,6 +819,7 @@ img.symbol.mobile {
                 span {
                     font-size: 1.0625rem;
                     font-weight: 500;
+                    white-space: nowrap;
                 }
 
                 &:hover {
