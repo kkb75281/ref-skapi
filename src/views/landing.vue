@@ -12,11 +12,6 @@
 		section.video(ref="videoSection")
 			.wrap
 				#player.video-skapi(ref="player")
-				//- .inner
-					//- iframe(width="560" height="315" src="https://www.youtube.com/embed/Mek4XOg6ViU?si=NwvFNXQFnVGchcA4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen)
-					//- video.video-skapi(src="@/assets/img/landingpage/video_skapi.mp4", autoplay muted loop playsinline ref="videoElement")
-						source(src="@/assets/img/landingpage/video_skapi.mp4", type="video/mp4")
-						p Your browser does not support the video tag.
 
 		section.why
 			.title(data-aos="fade-up") Why Skapi?
@@ -453,34 +448,6 @@ watch(
 );
 
 onMounted(async () => {
-    // youtube iframe API 로드
-    if (!document.getElementById("youtube-iframe-api")) {
-        const tag = document.createElement("script");
-        tag.src = "https://www.youtube.com/iframe_api";
-        tag.id = "youtube-iframe-api";
-        document.body.appendChild(tag);
-    }
-
-    // 반드시 window에 등록!
-    window.onYouTubeIframeAPIReady = () => {
-        player.value = new window.YT.Player("player", {
-            width: "100%",
-            height: "100%",
-            videoId: "Mek4XOg6ViU",
-            events: {
-                onStateChange: onPlayerStateChange,
-            },
-            playerVars: {
-                autoplay: 0, // 자동 재생
-                controls: 0, // 컨트롤 표시
-                rel: 1, // 관련 동영상 표시 안함
-                modestbranding: 1, // YouTube 로고 최소화
-                playsinline: 1, // 모바일에서 전체 화면 모드로 재생하지 않음
-                mute: 1, // 음소거
-            },
-        });
-    };
-
     window.addEventListener("resize", setSwiperImageWidth);
     window.addEventListener("scroll", handleScroll);
     handleScroll();
@@ -491,6 +458,47 @@ onMounted(async () => {
             heroArea.classList.add("active");
         });
     }
+
+    // youtube iframe API 로드
+    if (!document.getElementById("youtube-iframe-api")) {
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        tag.id = "youtube-iframe-api";
+        document.body.appendChild(tag);
+    }
+
+    // YouTube API가 로드될 때까지 대기
+    setTimeout(() => {
+        window.onYouTubeIframeAPIReady = () => {
+            if (document.getElementById("player")) {
+                player.value = new window.YT.Player("player", {
+                    width: "100%",
+                    height: "100%",
+                    videoId: "Mek4XOg6ViU",
+                    events: {
+                        onStateChange: onPlayerStateChange,
+                    },
+                    playerVars: {
+                        autoplay: 0,
+                        controls: 0,
+                        rel: 1,
+                        modestbranding: 1,
+                        playsinline: 1,
+                        mute: 1,
+                    },
+                });
+            }
+        };
+
+        // API가 이미 로드되어 있다면 바로 실행
+        if (
+            window.YT &&
+            window.YT.Player &&
+            document.getElementById("player")
+        ) {
+            window.onYouTubeIframeAPIReady();
+        }
+    }, 100);
 
     // contents > articles (Dev.to api 호출)
     try {
@@ -517,9 +525,9 @@ onUnmounted(() => {
         heroArea.classList.remove("active");
     }
 
-    const tag = document.getElementById("youtube-iframe-api");
-    if (tag) {
-        tag.remove();
+    if (player.value) {
+        player.value.destroy();
+        player.value = null;
     }
 });
 </script>
@@ -565,7 +573,8 @@ section {
 }
 
 .bg-colorful {
-    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% / cover no-repeat;
+    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% /
+        cover no-repeat;
 }
 
 .hero-bg {
@@ -609,11 +618,13 @@ section {
     }
 
     .linear-gradient {
-        background-image: linear-gradient(92.16deg,
-                #0156ff 3.64%,
-                #079af2 37.09%,
-                #49c48d 61.65%,
-                #e0fa1c 100%);
+        background-image: linear-gradient(
+            92.16deg,
+            #0156ff 3.64%,
+            #079af2 37.09%,
+            #49c48d 61.65%,
+            #e0fa1c 100%
+        );
         background-clip: text;
         -webkit-background-clip: text;
         color: transparent;
@@ -768,8 +779,6 @@ section {
             img {
                 width: 100%;
                 height: 100%;
-                // min-width: 250px;
-                // min-height: 400px;
                 object-fit: cover;
                 display: block;
             }
@@ -1021,43 +1030,50 @@ section {
 
                         &.user {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_user.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.data {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_data.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.file {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_file.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.mail {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_mail.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.forbiden {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_forbiden.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.invitation {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_invitation.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.global {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_global.svg")
+                                    no-repeat;
                             }
                         }
                     }
@@ -1261,7 +1277,8 @@ section {
         display: flex;
         flex-direction: column;
         border-radius: 1rem;
-        background: url("@/assets/img/landingpage/bg_contents1.svg") lightgray 50% / cover no-repeat;
+        background: url("@/assets/img/landingpage/bg_contents1.svg") lightgray
+            50% / cover no-repeat;
         color: #000;
 
         &:nth-child(2) {
@@ -1362,11 +1379,13 @@ section {
         margin: 0 auto 0;
 
         .title {
-            background-image: linear-gradient(92.16deg,
-                    #0156ff 3.64%,
-                    #079af2 37.09%,
-                    #49c48d 51.65%,
-                    #e0fa1c 80%);
+            background-image: linear-gradient(
+                92.16deg,
+                #0156ff 3.64%,
+                #079af2 37.09%,
+                #49c48d 51.65%,
+                #e0fa1c 80%
+            );
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
@@ -1659,7 +1678,6 @@ section {
 @media (max-width: 480px) {
     .review {
         .review-swiper {
-
             .swiper-button-prev,
             .swiper-button-next {
                 display: none;
@@ -1754,7 +1772,6 @@ section {
         }
 
         .review-swiper {
-
             .swiper-button-prev,
             .swiper-button-next {
                 width: 56px;
