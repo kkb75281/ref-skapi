@@ -124,13 +124,21 @@ let login = (e) => {
             for (let k in u) {
                 user[k] = u[k];
             }
-            // if (route.query?.suc_redirect) {
-            //     // router.push(route.query?.suc_redirect);
-            //     router.push({ path: "/my-services", query: { redirect: route.query?.suc_redirect } });
-            // } else {
-            //     router.push("/my-services");
-            // }
-            router.push("/my-services");
+
+            let sucRedirect = String(route.query?.suc_redirect || "");
+
+            if (sucRedirect.length) {
+                let routename = sucRedirect.split("/")[1];
+
+                if (routename == 'refer') {
+                    let referName = sucRedirect.split("/")[2]; // /refer/name에서 name 추출
+                    router.push({ name: 'refer', params: { name: referName } });
+                } else {
+                    router.push({ path: "/my-services", query: { redirect: sucRedirect } });
+                }
+            } else {
+                router.push("/my-services");
+            }
         })
         .catch((err) => {
             for (let k in user) {
