@@ -772,8 +772,8 @@ section {
             img {
                 width: 100%;
                 height: 100%;
-                min-width: 250px;
-                min-height: 400px;
+                // min-width: 250px;
+                // min-height: 400px;
                 object-fit: cover;
                 display: block;
             }
@@ -1784,6 +1784,20 @@ section {
 
         .review-item {
             .reviewer {
+                position: relative;
+                width: 100%;
+                height: 0;
+                padding-bottom: 117.65%;
+                overflow: hidden;
+
+                img {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                }
+
                 .profile {
                     left: 24px;
                     bottom: 24px;
