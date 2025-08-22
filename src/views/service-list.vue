@@ -41,14 +41,17 @@ template(v-else)
                 )
                     swiper-slide.service-swiper-item.ann
                         .title Announcement
-                        .desc Stable release is live, and services are running smoothly! You’re good to go.
+                        //- .desc Stable release is live, and services are running smoothly! You’re good to go.
+                        .desc skapi-js has hit v1.0.260 — stable and good to go! We came a long way to provide you with the next standard of web development.
                     swiper-slide.service-swiper-item.use
                         .title Use Cases
-                        .desc Explore our example use cases for more project inspiration.
+                        //- .desc Explore our example use cases for more project inspiration.
+                        .desc Explore how developers are building full-stack apps, social platforms, dashboards, and more with Skapi. All without writing backend code.
                         a.btn-more(href="#") See more
                     swiper-slide.service-swiper-item.new
                         .title New Features
-                        .desc A new feature just dropped! Check your dashboard and enjoy the update.
+                        //- .desc A new feature just dropped! Check your dashboard and enjoy the update.
+                        .desc What’s New in v1.0.260: adds admin invites, advanced database controls, real-time syncing, WebRTC support, and user-specific alerts.
 
                     .swiper-pagination
             .top-item.create-service
