@@ -34,7 +34,7 @@ template(v-else)
                     :slidesPerView="1"
                     :spaceBetween="30"
                     :loop="true"
-                    :autoplay="{ delay: 2000, disableOnInteraction: false }"
+                    :autoplay="{ delay: 5000, disableOnInteraction: false }"
                     :pagination="{ clickable: true }"
                     :modules="[Pagination, Autoplay]"
 
@@ -43,7 +43,7 @@ template(v-else)
                         .title Announcement
                         //- .desc Stable release is live, and services are running smoothly! You’re good to go.
                         .desc skapi-js has hit v1.0.260 — stable and good to go! We came a long way to provide you with the next standard of web development.
-                    swiper-slide.service-swiper-item.use
+                    //- swiper-slide.service-swiper-item.use
                         .title Use Cases
                         //- .desc Explore our example use cases for more project inspiration.
                         .desc Explore how developers are building full-stack apps, social platforms, dashboards, and more with Skapi. All without writing backend code.
