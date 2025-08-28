@@ -209,8 +209,9 @@ let goServiceDashboard = (service: { [key: string]: any }) => {
     loading.value = true;
 
     setTimeout(() => {
-        router.push("/my-services/" + service.id);
-        loading.value = false;
+        router.push("/my-services/" + service.id).then(() => {
+            loading.value = false;
+        });
     }, 1000);
 };
 
@@ -336,7 +337,8 @@ a {
         position: absolute;
         bottom: 0;
         right: 0;
-        background: url("@/assets/img/myservice/img_docs.png") no-repeat center right;
+        background: url("@/assets/img/myservice/img_docs.png") no-repeat center
+            right;
     }
 
     &:first-child {
@@ -347,7 +349,8 @@ a {
             top: 0;
             left: 0;
             position: absolute;
-            background: url("@/assets/img/myservice/bg_texture.svg") no-repeat center;
+            background: url("@/assets/img/myservice/bg_texture.svg") no-repeat
+                center;
             opacity: 0.2;
             z-index: 1;
         }
@@ -395,7 +398,8 @@ a {
         top: 0;
         left: 0;
         position: absolute;
-        background: url("@/assets/img/myservice/bg_texture.svg") no-repeat center;
+        background: url("@/assets/img/myservice/bg_texture.svg") no-repeat
+            center;
         opacity: 0.2;
         z-index: 1;
     }
@@ -423,7 +427,8 @@ a {
         background: #60de87;
 
         &::before {
-            background: url("@/assets/img/myservice/img_announce.png") no-repeat center right;
+            background: url("@/assets/img/myservice/img_announce.png") no-repeat
+                center right;
         }
     }
 
@@ -431,7 +436,8 @@ a {
         background: #ffd54a;
 
         &::before {
-            background: url("@/assets/img/myservice/img_useCase.png") no-repeat center right;
+            background: url("@/assets/img/myservice/img_useCase.png") no-repeat
+                center right;
         }
     }
 
@@ -439,7 +445,8 @@ a {
         background: #675dff;
 
         &::before {
-            background: url("@/assets/img/myservice/img_newFeature.png") no-repeat center right;
+            background: url("@/assets/img/myservice/img_newFeature.png")
+                no-repeat center right;
         }
     }
 
@@ -452,7 +459,7 @@ a {
 
     .swiper-pagination-fraction,
     .swiper-pagination-custom,
-    .swiper-horizontal>.swiper-pagination-bullets,
+    .swiper-horizontal > .swiper-pagination-bullets,
     .swiper-pagination-bullets.swiper-pagination-horizontal {
         width: initial;
     }
@@ -567,9 +574,11 @@ a {
 
                 &:hover {
                     cursor: pointer;
-                    background: linear-gradient(0deg,
+                    background: linear-gradient(
+                            0deg,
                             rgba(255, 255, 255, 0.03) 0%,
-                            rgba(255, 255, 255, 0.03) 100%),
+                            rgba(255, 255, 255, 0.03) 100%
+                        ),
                         #141315;
 
                     td {
@@ -587,7 +596,7 @@ a {
                 }
 
                 &.hidden {
-                    >*:not(.name) {
+                    > *:not(.name) {
                         opacity: 0.5;
                     }
                 }
@@ -697,7 +706,8 @@ a {
                     display: block;
                     width: 1.25rem;
                     height: 1.25rem;
-                    background: url("@/assets/img/myservice/icon_lock.svg") no-repeat center;
+                    background: url("@/assets/img/myservice/icon_lock.svg")
+                        no-repeat center;
                 }
             }
         }
