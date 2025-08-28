@@ -4,13 +4,13 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
         .left
             template(v-if="route.name != 'home'")
                 .logo-wrap
-                    router-link.logo(to="/")
-                        img.symbol(src="@/assets/img/logo/icon_logo_symbol.svg")
+                    router-link.logo(to="/" @click="handleLogoClick")
+                        img.symbol(src="@/assets/img/logo/icon_logo_symbol.svg" alt="Skapi logo")
                     router-link.myservice(to="/my-services")
-                        img.symbol(src="@/assets/img/logo/icon_logo_text_myservices.svg")
+                        img.symbol(src="@/assets/img/logo/icon_logo_text_myservices.svg" alt="My Services")
             template(v-else)
                 router-link.logo(to="/")
-                    img.symbol(src="@/assets/img/logo/icon_logo.svg")
+                    img.symbol(src="@/assets/img/logo/icon_logo.svg" alt="Skapi logo")
                 ul.section-list(v-if="route.name === 'home'" ref="navSecEl")
                     li.section-item(@click="scrollSec('section1')") Features
                     li.section-item(@click="scrollSec('section2')") Price
@@ -22,129 +22,136 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                 template(v-if="isDesktop")
                     template(v-if="user?.user_id")
                         li.list.go-community(ref="communityEl")
-                            .dropdown-container(@mouseenter="showDropdown" @mouseleave="hideDropdown")
+                            .dropdown-container(@mouseenter="showCommunityDropdown" @mouseleave="hideCommunityDropdown")
                                 .ser.dropdown Community
-                                    img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
+                                    img(src="@/assets/img/landingpage/icon_dropdown.svg" alt="Dropdown icon" style="width: .6875rem; height: 1.5rem;")
                                 .moreVert.community(ref="moreVert" :style="{ '--moreVert-right': 0, display: communityDropdownVisible ? 'block' : 'none' }")
                                     ul.list-wrap
                                         li.item
                                             a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                                                img(src="@/assets/img/landingpage/icon_tiktok.svg" alt="TikTok icon")
                                         li.item
                                             a.link(href="https://www.instagram.com/skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                                img(src="@/assets/img/landingpage/icon_instagram.svg" alt="Instagram icon")
                                         li.item
                                             a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                                img(src="@/assets/img/landingpage/icon_youtube.svg" alt="YouTube icon")
                                         li.item
                                             a.link(href="https://x.com/skapi_api" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_x.svg")
+                                                img(src="@/assets/img/landingpage/icon_x.svg" alt="X (formerly Twitter) icon")
                                         li.item
                                             a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                                img(src="@/assets/img/landingpage/icon_linkedin.svg" alt="LinkedIn icon")
                                         li.item
                                             a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
-                                                img(src="@/assets/img/landingpage/icon_facebook.svg")
+                                                img(src="@/assets/img/landingpage/icon_facebook.svg" alt="Facebook icon")
+                                        li.item
+                                            a.link(href="https://dev.to/skapi_api" target="_blank")
+                                                img(src="@/assets/img/landingpage/icon_devto.svg" alt="Dev.to icon")
                         li.list.go-docs
                             a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
-                                img(src="@/assets/img/landingpage/icon_docs.svg")
+                                img(src="@/assets/img/landingpage/icon_docs.svg" alt="Docs icon")
                                 | Docs
                         li.list.go-github
                             a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank")
-                                img(src="@/assets/img/landingpage/icon_github.svg")
+                                img(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
                                 | Github
                         li.list.go-service(v-if="route.name === 'home'")
                             router-link.ser(to="/my-services") 
-                                img(src="@/assets/img/logo/symbol-logo-white.svg")
+                                img(src="@/assets/img/logo/symbol-logo-white.svg" alt="My Services icon")
                                 | My Services
-                        li.list.user-profile(@click.stop="(e)=>{showDropDown(e)}")
-                            .img-profile-wrap
-                                img(src="@/assets/img/landingpage/icon_profile.svg")
-                            .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
-                                .account 
-                                    span.user-id {{ userEmail.split("@")[0] }}
-                                    | @{{ userEmail.split("@")[1] }}
-                                ul.dropdown-menu
-                                    li.dropdown-list(@click="openBillingPage")
-                                        img(src="@/assets/img/landingpage/icon_billing.svg")
-                                        span Billing
-                                    li.dropdown-list(@click="navigateToPage")
-                                        img(src="@/assets/img/landingpage/icon_setting.svg")
-                                        span Account Settings
-                                    li.dropdown-list(@click="logout")
-                                        img(src="@/assets/img/landingpage/icon_logout.svg")
-                                        span Logout
+                        li.list.user-profile
+                            .dropdown-container(@mouseenter="showProfileDropdown" @mouseleave="hideProfileDropdown")
+                                .img-profile-wrap
+                                    img(src="@/assets/img/landingpage/icon_profile.svg" alt="User Profile icon")
+                                .moreVert.profile(ref="moreVert" @click.stop :style="{ '--moreVert-right': 0, display: profileDropdownVisible ? 'block' : 'none' }")
+                                    .account 
+                                        span.user-id {{ userEmail.split("@")[0] }}
+                                        | @{{ userEmail.split("@")[1] }}
+                                    ul.dropdown-menu
+                                        li.dropdown-list(@click="openBillingPage")
+                                            img(src="@/assets/img/landingpage/icon_billing.svg" alt="Billing icon")
+                                            span Billing
+                                        li.dropdown-list(@click="navigateToPage")
+                                            img(src="@/assets/img/landingpage/icon_setting.svg" alt="Account Settings icon")
+                                            span Account Settings
+                                        li.dropdown-list(@click="logout")
+                                            img(src="@/assets/img/landingpage/icon_logout.svg" alt="Logout icon")
+                                            span Logout
                     template(v-else)
                         li.list.go-community(ref="communityEl")
-                            .dropdown-container(@mouseenter="showDropdown" @mouseleave="hideDropdown")
+                            .dropdown-container(@mouseenter="showCommunityDropdown" @mouseleave="hideCommunityDropdown")
                                 .ser.dropdown Community
-                                    img(src="@/assets/img/landingpage/icon_dropdown.svg" style="width: .6875rem; height: 1.5rem;")
+                                    img(src="@/assets/img/landingpage/icon_dropdown.svg" alt="Dropdown icon" style="width: .6875rem; height: 1.5rem;")
                                     .moreVert.community(ref="moreVert" :style="{ '--moreVert-right': 0, display: communityDropdownVisible ? 'block' : 'none' }")
                                         ul.list-wrap
                                             li.item
                                                 a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                                                    img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                                                    img(src="@/assets/img/landingpage/icon_tiktok.svg" alt="TikTok icon")
                                             li.item
                                                 a.link(href="https://www.instagram.com/skapi_api" target="_blank")
-                                                    img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                                    img(src="@/assets/img/landingpage/icon_instagram.svg" alt="Instagram icon")
                                             li.item
                                                 a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
-                                                    img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                                    img(src="@/assets/img/landingpage/icon_youtube.svg" alt="YouTube icon")
                                             li.item
                                                 a.link(href="https://x.com/skapi_api" target="_blank")
-                                                    img(src="@/assets/img/landingpage/icon_x.svg")
+                                                    img(src="@/assets/img/landingpage/icon_x.svg" alt="X (formerly Twitter) icon")
                                             li.item
                                                 a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
-                                                    img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                                    img(src="@/assets/img/landingpage/icon_linkedin.svg" alt="LinkedIn icon")
                                             li.item
                                                 a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
-                                                    img(src="@/assets/img/landingpage/icon_facebook.svg")
+                                                    img(src="@/assets/img/landingpage/icon_facebook.svg" alt="Facebook icon")
+                                            li.item
+                                                a.link(href="https://dev.to/skapi_api" target="_blank")
+                                                    img(src="@/assets/img/landingpage/icon_devto.svg" alt="Dev.to icon")
                         li.list.go-docs
                             a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank") 
-                                img(src="@/assets/img/landingpage/icon_docs.svg")
+                                img(src="@/assets/img/landingpage/icon_docs.svg" alt="Docs icon")
                                 | Docs
                         li.list.go-github
                             a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank") 
-                                img(src="@/assets/img/landingpage/icon_github.svg")
+                                img(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
                                 | Github
                         li.list.go-login
                             router-link(to="/login") 
-                                img(src="@/assets/img/landingpage/icon_login.svg")
+                                img(src="@/assets/img/landingpage/icon_login.svg" alt="Login icon")
                                 | Login
 
                 template(v-else :class="{ 'mo' : true }")
                     button.btn-open-menu.nohover(@click="openMoMenu")
-                        img(src="@/assets/img/landingpage/icon_menubar.svg")
+                        img(src="@/assets/img/landingpage/icon_menubar.svg" alt="Menu icon")
                     .mo-menu-wrap
                         .top-area
                             .logo
-                                img.symbol.mobile(src="@/assets/img/logo/icon_logo.svg" @click="router.push('/')")
+                                img.symbol.mobile(src="@/assets/img/logo/icon_logo.svg" alt="Logo" @click="router.push('/')")
                             .right-area
                                 .prof
                                     template(v-if="user?.user_id" )
                                         .img-profile(@click.stop="(e)=>{showDropDown(e)}")
                                             .img-wrap
-                                                img(src="@/assets/img/landingpage/icon_profile.svg" style="width: 2.5rem; height: 2.5rem;")
+                                                img(src="@/assets/img/landingpage/icon_profile.svg" alt="Profile icon" style="width: 2.5rem; height: 2.5rem;")
                                             .moreVert.profile(ref="moreVert" @click.stop style="--moreVert-right:0;display:none")
                                                 .account 
                                                     span.user-id {{ userEmail.split("@")[0] }}
                                                     | @{{ userEmail.split("@")[1] }}
                                                 ul.dropdown-menu
                                                     li.dropdown-list(@click="openBillingPage")
-                                                        img(src="@/assets/img/landingpage/icon_billing.svg")
+                                                        img(src="@/assets/img/landingpage/icon_billing.svg" alt="Billing icon")
                                                         span Billing
                                                     li.dropdown-list(@click="navigateToPage")
-                                                        img(src="@/assets/img/landingpage/icon_setting.svg")
+                                                        img(src="@/assets/img/landingpage/icon_setting.svg" alt="Settings icon")
                                                         span Account Settings
                                                     li.dropdown-list(@click="logout")
-                                                        img(src="@/assets/img/landingpage/icon_logout.svg")
+                                                        img(src="@/assets/img/landingpage/icon_logout.svg" alt="Logout icon")
                                                         span Logout
                                     template(v-else)
                                         router-link.go-login(to="/login" @click="closeMobileMenu") 
-                                            img(src="@/assets/img/landingpage/icon_login.svg")
+                                            img(src="@/assets/img/landingpage/icon_login.svg" alt="Login icon")
                                             | Login
                                 button.btn-close.nohover(@click="openMoMenu")
-                                    img(src="@/assets/img/landingpage/icon_close.svg")
+                                    img(src="@/assets/img/landingpage/icon_close.svg" alt="Close icon")
 
                         ul.section-list(v-if="route.name === 'home'")
                             li.section-item(@click="scrollSec('section1')") Features
@@ -155,41 +162,46 @@ nav#navBar(ref="navBar" :class="{ 'main-nav': routeName === 'home' }")
                         ul.menu-list
                             li.list.go-docs.mo-item
                                 a.ser(href="https://docs.skapi.com/introduction/getting-started.html" target="_blank" @click="closeMobileMenu") 
-                                    img(src="@/assets/img/landingpage/icon_docs.svg")
+                                    img(src="@/assets/img/landingpage/icon_docs.svg" alt="Docs icon")
                                     | Docs
                             li.list.go-github.mo-item
                                 a.ser(href="https://github.com/broadwayinc/skapi-js" target="_blank" @click="closeMobileMenu")
-                                    img(src="@/assets/img/landingpage/icon_github.svg")
+                                    img(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
                                     | Github
                             li.list.go-service.mo-item(v-if="user?.user_id")
                                 router-link.ser(to="/my-services" @click="closeMobileMenu") 
-                                    img(src="@/assets/img/logo/symbol-logo-white.svg")
+                                    img(src="@/assets/img/logo/symbol-logo-white.svg" alt="My Services icon")
                                     | My Services
                         .community(:class="{'absolute': currentRoutePath !== 'my-services'}")
                             span.text Community
                             ul.list-wrap
                                 li.item
                                     a.link(href="http://www.tiktok.com/@skapi_api" target="_blank")
-                                        img(src="@/assets/img/landingpage/icon_tiktok.svg")
+                                        img(src="@/assets/img/landingpage/icon_tiktok.svg" alt="TikTok icon")
                                 li.item
                                     a.link(href="https://www.instagram.com/skapi_api" target="_blank")
-                                        img(src="@/assets/img/landingpage/icon_instagram.svg")
+                                        img(src="@/assets/img/landingpage/icon_instagram.svg" alt="Instagram icon")
                                 li.item
                                     a.link(href="https://www.youtube.com/@skapi_official" target="_blank")
-                                        img(src="@/assets/img/landingpage/icon_youtube.svg")
+                                        img(src="@/assets/img/landingpage/icon_youtube.svg" alt="YouTube icon")
                                 li.item
                                     a.link(href="https://x.com/skapi_api" target="_blank")
-                                        img(src="@/assets/img/landingpage/icon_x.svg")
+                                        img(src="@/assets/img/landingpage/icon_x.svg" alt="X (formerly Twitter) icon")
                                 li.item
                                     a.link(href="https://www.linkedin.com/company/skapi-backend-api/" target="_blank")
-                                        img(src="@/assets/img/landingpage/icon_linkedin.svg")
+                                        img(src="@/assets/img/landingpage/icon_linkedin.svg" alt="LinkedIn icon")
                                 li.item
                                     a.link(href="https://www.facebook.com/profile.php?id=61577236221327" target="_blank")
-                                        img(src="@/assets/img/landingpage/icon_facebook.svg")
-#proceeding(v-if="running")
+                                        img(src="@/assets/img/landingpage/icon_facebook.svg" alt="Facebook icon")
+                                li.item
+                                    a.link(href="https://dev.to/skapi_api" target="_blank")
+                                        img(src="@/assets/img/landingpage/icon_devto.svg" alt="Dev.to icon")
+//- #proceeding(v-if="!running")
     .inner    
-        .loader(style="--loader-color:black; --loader-size: 20px")
+        .loader(style="--loader-color:white; --loader-size: 20px")
         h4 Page Loading
+#loading(v-if="running")
+    .loader
 </template>
 
 <script setup>
@@ -217,8 +229,11 @@ const navSecEl = ref(null);
 const navMenuEl = ref(null);
 const communityEl = ref(null);
 const communityDropdownVisible = ref(false);
+const profileDropdownVisible = ref(false);
 let currentRoutePath = ref("");
-let hideTimeout = null;
+let communityHideTimeout = null;
+let profileHideTimeout = null;
+const landingPageRef = ref(null);
 
 const updateServiceName = () => {
     serviceName.value = currentService?.service?.name || "loading...";
@@ -346,19 +361,50 @@ function handleMouseOut(container, selector, event) {
 }
 
 // community dropdown
-const showDropdown = () => {
-    if (hideTimeout) {
-        clearTimeout(hideTimeout);
-        hideTimeout = null;
+const showCommunityDropdown = () => {
+    if (communityHideTimeout) {
+        clearTimeout(communityHideTimeout);
+        communityHideTimeout = null;
     }
     communityDropdownVisible.value = true;
 };
 
-const hideDropdown = () => {
+const hideCommunityDropdown = () => {
     // 약간의 지연을 두어 사용자가 popup으로 마우스를 이동할 시간을 제공
-    hideTimeout = setTimeout(() => {
+    communityHideTimeout = setTimeout(() => {
         communityDropdownVisible.value = false;
     }, 100);
+};
+
+// profile dropdown
+const showProfileDropdown = () => {
+    if (profileHideTimeout) {
+        clearTimeout(profileHideTimeout);
+        profileHideTimeout = null;
+    }
+    profileDropdownVisible.value = true;
+};
+
+const hideProfileDropdown = () => {
+    // 약간의 지연을 두어 사용자가 popup으로 마우스를 이동할 시간을 제공
+    profileHideTimeout = setTimeout(() => {
+        profileDropdownVisible.value = false;
+    }, 100);
+};
+
+// 로고 클릭 시 resetVideo 호출하는 함수
+const handleLogoClick = () => {
+    // 현재 홈페이지인 경우에만 비디오 리셋
+    if (route.name === "home") {
+        // landingPage 컴포넌트의 resetVideo 함수 호출
+        const landingPageComponent = document.querySelector(
+            "[data-landing-page]"
+        );
+        if (landingPageComponent && landingPageComponent.__vueParentComponent) {
+            landingPageComponent.__vueParentComponent.exposed?.resetVideo?.();
+        }
+    }
+    // router.push("/");
 };
 
 window.addEventListener("resize", () => {
@@ -398,8 +444,11 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-    if (hideTimeout) {
-        clearTimeout(hideTimeout);
+    if (communityHideTimeout) {
+        clearTimeout(communityHideTimeout);
+    }
+    if (profileHideTimeout) {
+        clearTimeout(profileHideTimeout);
     }
 
     removeListener();
@@ -474,14 +523,37 @@ img.symbol.mobile {
     text-align: center;
 }
 
+#loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+
+    .loader {
+        --loader-color: #fff;
+        --loader-size: 1rem;
+        width: var(--loader-size);
+        height: var(--loader-size);
+    }
+}
+
 #navBar {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 99999;
+    z-index: 99999999;
     width: 100%;
     height: 4rem;
     background-color: #000;
+    box-shadow: 0px 0.5px 0px 0px #1a1a1a;
     font-size: 1.125rem;
     color: #fff;
     fill: #fff; // for svg
@@ -624,6 +696,13 @@ img.symbol.mobile {
                                 border-radius: 50%;
                             }
                         }
+
+                        img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                            display: block;
+                        }
                     }
 
                     img {
@@ -729,7 +808,7 @@ img.symbol.mobile {
         .dropdown-menu {
             display: block;
             text-align: left;
-            padding: 0.625rem 0 1.25rem;
+            padding: 0.625rem 0 0.8125rem;
 
             .dropdown-list {
                 display: flex;
@@ -740,6 +819,7 @@ img.symbol.mobile {
                 span {
                     font-size: 1.0625rem;
                     font-weight: 500;
+                    white-space: nowrap;
                 }
 
                 &:hover {

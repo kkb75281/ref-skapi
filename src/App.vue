@@ -4,7 +4,7 @@ div._root(style='min-height: calc(100vh - var(--footer-height, 0));')
 
 Footer
 
-#code-copy-msg The code copied!
+#copy-msg
 </template>
 
 <script setup>
@@ -18,7 +18,7 @@ const router = useRouter();
 const route = useRoute();
 </script>
 <style lang="less">
-#code-copy-msg {
+#copy-msg {
     position: fixed;
     bottom: 0px;
     left: 50%;
@@ -35,6 +35,11 @@ const route = useRoute();
         transform: translateX(-50%) translateY(-100px);
         opacity: 1;
     }
+}
+
+.first-create-service {
+    background: url("@/assets/img/landingpage/bg_colorful.svg") no-repeat center center fixed;
+    background-size: cover;
 }
 
 .review-swiper {

@@ -3,20 +3,19 @@
 	.bg-blue.hero-bg
 		section.hero
 			.title #[span.linear-gradient Zero-Setup] #[span.wordset Backend API]
-			.desc Skapi is a serverless backend platform that gives frontend developers,no-coders, and product teams everything they need: auth, database,file storage, and real-time APIs.  Launch your app in minutes.
+			.desc Skapi is a serverless backend platform that gives frontend developers, no-coders, and product teams everything they need: auth, database, file storage, and real-time APIs. #[br]Launch your app in minutes.
 			template(v-if="user?.user_id")
 				button(type="button" data-aos="fade-up" data-aos-duration="500" @click="$router.push('/my-services')") Go to My Services
 			router-link(v-else to="/signup")
 				button(type="button" data-aos="fade-up" data-aos-duration="500") Get Started
 
-		section.video
+		section.video(ref="videoSection")
 			.wrap
-				.inner
-					img(src="@/assets/img/landingpage/bg_hero.png", alt="Skapi Video")
+				#player.video-skapi(ref="player")
 
 		section.why
 			.title(data-aos="fade-up") Why Skapi?
-			.reason-wrap(data-aos="fade-up" data-aos-delay="300")
+			.reason-wrap(data-aos="fade-up" data-aos-delay="200")
 				.reason-item
 					.image
 						img(src="@/assets/img/landingpage/icon_reason1.svg", alt="Why Skapi Icon1")
@@ -39,15 +38,15 @@
 						.desc No more server config, maintenance, and email hacks. Skapi gives you everything out of the box — so you can launch faster and sleep better.
 	.bg-dark
 		section.review
-			.title(data-aos="fade-up" data-aos-delay="300") Real Reviews
-			.review-swiper(data-aos="fade-up" data-aos-delay="500")
+			.title(data-aos="fade-up" data-aos-delay="200") Real Reviews
+			.review-swiper(data-aos="fade-up" data-aos-delay="300")
 				swiper(
 					:slidesPerView="1"
 					:spaceBetween="30"
 					:loop="true"
 					:pagination="{ clickable: true }"
 					:navigation="{ nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }"
-                    :autoplay="{ delay: 3000, disableOnInteraction: false }"
+					:autoplay="{ delay: 3000, disableOnInteraction: false }"
 					:modules="[Pagination, Navigation, Autoplay]"
 					@swiper="onSwiperReady"
 				)
@@ -92,9 +91,9 @@
 					img(src="@/assets/img/landingpage/arrow_right.svg", alt="Arrow Right")
 	.bg-blue
 		section#section1.feature
-			.title(data-aos="fade-up" data-aos-delay="300") Features
-			.desc(data-aos="fade-up" data-aos-delay="300") All You Need for Modern Web Apps. #[br]Discover 6 Unique Advantages Only Skapi Delivers.
-			.feature-wrap(data-aos="fade-up" data-aos-delay="500")
+			.title(data-aos="fade-up" data-aos-delay="200") Features
+			.desc(data-aos="fade-up" data-aos-delay="200") All You Need for Modern Web Apps. #[br]Discover 6 Unique Advantages Only Skapi Delivers.
+			.feature-wrap(data-aos="fade-up" data-aos-delay="400")
 				.feature-item
 					.img
 						img(src="@/assets/img/landingpage/feature1.svg", alt="Feature Icon1")
@@ -132,9 +131,9 @@
 					.content Skapi uses JWT-based authentication, pre-configured to securely handle user data, file access, and third-party API connections via Skapi’s API Bridge. No complex setup — just secure, reliable access out of the box.
 	.bg-colorful
 		section#section2.plan
-			.title.black(data-aos="fade-up" data-aos-delay="300") Pricing Plans
-			.desc.black(data-aos="fade-up" data-aos-delay="300") Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
-			.plan-swiper(data-aos="fade-up" data-aos-delay="500")
+			.title.black(data-aos="fade-up" data-aos-delay="200") Pricing Plans
+			.desc.black(data-aos="fade-up" data-aos-delay="200") Start for free, no credit card required.#[br]Test features, connect your frontend, #[span.wordset and launch your project.]#[br]Decide later if you want to upgrade.
+			.plan-swiper(data-aos="fade-up" data-aos-delay="400")
 				.plan-swiper-pagination
 				swiper(
 					:spaceBetween="30"
@@ -145,13 +144,13 @@
 				)
 					swiper-slide.plan-item.blue
 						svg.mark
-							use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+							use(xlink:href="/material-icon.svg#icon-card-mark")
 						.top
 							.title Trial
-							.desc Best for testing and prototyping.
+							.desc Best for testing and prototyping. #[br]#[br]
 						.middle
 							.price Free
-							router-link(:to="user?.user_id ? '/create' : '/signup'")
+							router-link(:to="user?.user_id ? { path: '/my-services', query: { redirect: 'create' } } : { path: '/signup', query: { suc_redirect: 'create' } }")
 								button(type="button") Get
 						.bottom
 							p Core includes:
@@ -164,14 +163,14 @@
 
 					swiper-slide.plan-item.green
 						svg.mark
-							use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+							use(xlink:href="/material-icon.svg#icon-card-mark")
 						.top
 							.title Standard
 							.desc Suit best for small businesses, MVP, small projects, etc.
 						.middle
 							.price $19
 								span /mon
-							router-link(:to="user?.user_id ? '/create' : { path: '/signup', query: { suc_redirect: '/create' } }")
+							router-link(:to="user?.user_id ? { path: '/my-services', query: { redirect: 'create' } } : { path: '/signup', query: { suc_redirect: 'create' } }")
 								button(type="button") Get
 						.bottom
 							p Includes all Trial Plan features, but more functions:
@@ -184,27 +183,27 @@
 
 					swiper-slide.plan-item.yellow
 						svg.mark
-							use(xlink:href="@/assets/img/material-icon.svg#icon-card-mark")
+							use(xlink:href="/material-icon.svg#icon-card-mark")
 						.top
 							.title Premium
 							.desc Suit best for huge projects, Saas, social media, AI application, etc.
 						.middle
 							.price $89
 								span /mon
-							router-link(:to="user?.user_id ? '/create' : { path: '/signup', query: { suc_redirect: '/create' } }")
+							router-link(:to="user?.user_id ? { path: '/my-services', query: { redirect: 'create' } } : { path: '/signup', query: { suc_redirect: 'create' } }")
 								button(type="button") Get
 						.bottom
 							p Includes all Standard Plan features, but more data:
 							ul
 								li.user 100K User Accounts
-								li.data 10GB Database Storage
+								li.data 100GB Database Storage
 								li.file 1TB File Storage
 								li.mail 10GB Email Storage
 
 	.bg-dark
 		section#section3.faq
-			.title(data-aos="fade-up" data-aos-delay="300") FAQ
-			ul.faq-list(data-aos="fade-up" data-aos-delay="500")
+			.title(data-aos="fade-up" data-aos-delay="200") FAQ
+			ul.faq-list(data-aos="fade-up" data-aos-delay="400")
 				li.faq-item
 					.item-title(:class="{ open: openStates[0]}" @click="faqToggle(0)") How does Skapi make your app more secure?
 					.item-cont(v-show="openStates[0]")
@@ -261,10 +260,10 @@
 
 	.bg-blue
 		section#section4.contents
-			.title(data-aos="fade-up" data-aos-delay="300") Contents
+			.title(data-aos="fade-up" data-aos-delay="200") Contents
 			.tab-cont-wrap
-				TabMenu(v-model="activeTabs.contents" :tabs="['Articles', 'Videos']" data-aos="fade-up" data-aos-delay="500")
-				.tab-cont(data-aos="fade-up" data-aos-delay="700")
+				TabMenu(v-model="activeTabs.contents" :tabs="['Articles', 'Videos']" data-aos="fade-up" data-aos-delay="400")
+				.tab-cont(data-aos="fade-up" data-aos-delay="600")
 					template(v-if="activeTabs.contents === 0")
 						.tab-item(v-for="article in articles" :key="article.id")
 							.title {{ article.title }}
@@ -286,31 +285,35 @@
 	.bg-dark
 		section.banner
 			.banner-inner
-				.title.black(data-aos="fade-up" data-aos-delay="700") Start Building Today!
-				.desc.black(data-aos="fade-up" data-aos-delay="700") Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
+				.title.black(data-aos="fade-up" data-aos-delay="600") Start Building Today!
+				.desc.black(data-aos="fade-up" data-aos-delay="600") Serverless Backend for Modern Web Apps. #[span.wordset Auth, database, file storage — all from the frontend.]
 				template(v-if="user?.user_id")
-					button(type="button" data-aos="fade-up" data-aos-delay="1000" @click="$router.push('/my-services')") Go to My Services
+					button(type="button" data-aos="fade-up" data-aos-delay="800" @click="$router.push('/my-services')") Go to My Services
 				router-link(v-else to="/signup")
-					button(type="button" data-aos="fade-up" data-aos-delay="1000") Get Started
+					button(type="button" data-aos="fade-up" data-aos-delay="800") Get Started
 </template>
 
 <script setup>
-import { onMounted, ref, watch, onUnmounted, onBeforeUnmount } from "vue";
+import { onMounted, ref, onUnmounted, onBeforeUnmount, watch } from "vue";
 import { npmVersion } from "@/main.ts";
 import { user } from "@/code/user";
+
+import TabMenu from "@/components/tab.vue";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css"; // import Swiper styles
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import TabMenu from "@/components/tab.vue";
 
 const activeTabs = ref({
     contents: 0,
 });
 const articles = ref([]);
 const videos = ref([]);
+const videoSection = ref(null);
+const videoElement = ref(null);
+const player = ref(null);
 
 function setSwiperImageWidth() {
     let swiperImage = document.getElementById("reviewerImg");
@@ -323,7 +326,6 @@ function setSwiperImageWidth() {
 }
 
 function onSwiperReady(swiper) {
-    console.log("Swiper is ready!");
     setTimeout(() => {
         setSwiperImageWidth();
     }, 100); // 약간의 딜레이로 DOM이 완전히 렌더링되도록 함
@@ -350,9 +352,12 @@ function makeBullet(index, className) {
     return `<span class="${className}">${menu[index]}</span>`;
 }
 
+// 스크롤에 따른 영상 효과
 function handleScroll() {
     const video = document.querySelector(".video .wrap");
+
     if (!video) return;
+    if (!player.value) return;
 
     const maxScroll = 300; // 효과 구간
     const scrollTop = Math.min(window.scrollY, maxScroll);
@@ -361,7 +366,86 @@ function handleScroll() {
     const rotate = 15 - 15 * progress; // 15deg → 0deg로 변화 (뒤로 → 정면)
 
     video.style.transform = `perspective(1000px) rotateX(${rotate}deg)`;
+
+    // 비디오 재생 제어
+    if (progress >= 1) {
+        if (player.value && typeof player.value.playVideo === "function") {
+            player.value.playVideo();
+        }
+    } else {
+        if (player.value && typeof player.value.pauseVideo === "function") {
+            player.value.pauseVideo();
+        }
+    }
 }
+
+function onPlayerStateChange(event) {
+    if (event.data == window.YT.PlayerState.PLAYING) {
+        // 재생 중일 때
+    } else if (event.data == window.YT.PlayerState.PAUSED) {
+        // 일시 중지 중일 때
+    } else if (event.data == window.YT.PlayerState.ENDED) {
+        // 재생 완료 시 처음부터 다시 재생
+        event.target.seekTo(0);
+        event.target.playVideo();
+    }
+}
+
+// contents > videos (youtube api 호출 - Videos 탭 클릭 시에만 API 호출)
+watch(
+    () => activeTabs.value.contents,
+    async (newTab) => {
+        if (newTab === 1 && videos.value.length === 0) {
+            const CHANNEL_ID = "UC0e4MITESMr3OaUiyWHpdYA"; // Skapi 공식 유튜브 채널 ID
+            const API_KEY = import.meta.env.VITE_API_KEY;
+
+            try {
+                // 최신 영상 검색
+                const searchRes = await fetch(
+                    `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&order=date&maxResults=10&type=video`
+                );
+                const searchData = await searchRes.json();
+                const videoIds = searchData.items
+                    .map((item) => item.id.videoId)
+                    .join(",");
+
+                // 영상 상세 조회 (duration 얻기)
+                const videosRes = await fetch(
+                    `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${videoIds}&part=snippet,contentDetails`
+                );
+                const videosData = await videosRes.json();
+
+                // shorts 제외 (60초 이하 제외) 후 3개만 선택
+                const filtered = videosData.items
+                    .filter((item) => {
+                        const duration = item.contentDetails.duration;
+                        const match = duration.match(/PT((\d+)M)?(\d+)S/);
+                        let totalSeconds = 0;
+                        if (match) {
+                            const minutes = match[2]
+                                ? parseInt(match[2], 10)
+                                : 0;
+                            const seconds = match[3]
+                                ? parseInt(match[3], 10)
+                                : 0;
+                            totalSeconds = minutes * 60 + seconds;
+                        }
+                        return totalSeconds > 60;
+                    })
+                    .slice(0, 3)
+                    .map((item) => ({
+                        id: item.id,
+                        title: item.snippet.title,
+                        description: item.snippet.description,
+                    }));
+
+                videos.value = filtered;
+            } catch (error) {
+                videos.value = []; // 에러 발생 시 빈 배열로 초기화
+            }
+        }
+    }
+);
 
 onMounted(async () => {
     window.addEventListener("resize", setSwiperImageWidth);
@@ -375,6 +459,47 @@ onMounted(async () => {
         });
     }
 
+    // youtube iframe API 로드
+    if (!document.getElementById("youtube-iframe-api")) {
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        tag.id = "youtube-iframe-api";
+        document.body.appendChild(tag);
+    }
+
+    // YouTube API가 로드될 때까지 대기
+    setTimeout(() => {
+        window.onYouTubeIframeAPIReady = () => {
+            if (document.getElementById("player")) {
+                player.value = new window.YT.Player("player", {
+                    width: "100%",
+                    height: "100%",
+                    videoId: "Mek4XOg6ViU",
+                    events: {
+                        onStateChange: onPlayerStateChange,
+                    },
+                    playerVars: {
+                        autoplay: 0,
+                        controls: 0,
+                        rel: 1,
+                        modestbranding: 1,
+                        playsinline: 1,
+                        mute: 1,
+                    },
+                });
+            }
+        };
+
+        // API가 이미 로드되어 있다면 바로 실행
+        if (
+            window.YT &&
+            window.YT.Player &&
+            document.getElementById("player")
+        ) {
+            window.onYouTubeIframeAPIReady();
+        }
+    }, 100);
+
     // contents > articles (Dev.to api 호출)
     try {
         const response = await fetch(
@@ -383,55 +508,7 @@ onMounted(async () => {
         if (!response.ok) throw new Error("Fetch failed");
         articles.value = await response.json();
     } catch (err) {
-        console.error(err);
-    }
-
-    // contents > videos (youtube api 호출)
-    // skapi's youtube channelId : UC0e4MITESMr3OaUiyWHpdYA
-    // mina's googleConsole api_key : AIzaSyC6PGYZWVYqPO7ItsTVBarYW_htT1kaXW0
-    const API_KEY = "AIzaSyC6PGYZWVYqPO7ItsTVBarYW_htT1kaXW0";
-    const CHANNEL_ID = "UC0e4MITESMr3OaUiyWHpdYA";
-
-    try {
-        // 최신 영상 검색
-        const searchRes = await fetch(
-            `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&order=date&maxResults=10&type=video`
-        );
-        const searchData = await searchRes.json();
-        const videoIds = searchData.items
-            .map((item) => item.id.videoId)
-            .join(",");
-
-        // 영상 상세 조회 (duration 얻기)
-        const videosRes = await fetch(
-            `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${videoIds}&part=snippet,contentDetails`
-        );
-        const videosData = await videosRes.json();
-
-        // shorts 제외 (60초 이하 제외) 후 3개만 선택
-        const filtered = videosData.items
-            .filter((item) => {
-                const duration = item.contentDetails.duration;
-                // ISO 8601 duration에서 PT60S 이하인지 파싱
-                const match = duration.match(/PT((\d+)M)?(\d+)S/);
-                let totalSeconds = 0;
-                if (match) {
-                    const minutes = match[2] ? parseInt(match[2], 10) : 0;
-                    const seconds = match[3] ? parseInt(match[3], 10) : 0;
-                    totalSeconds = minutes * 60 + seconds;
-                }
-                return totalSeconds > 60; // shorts는 60초 이하이므로 초과만 포함
-            })
-            .slice(0, 3)
-            .map((item) => ({
-                id: item.id,
-                title: item.snippet.title,
-                description: item.snippet.description,
-            }));
-
-        videos.value = filtered;
-    } catch (error) {
-        console.error("영상 정보를 가져오는 중 오류:", error);
+        articles.value = []; // 에러 발생 시 빈 배열로 초기화
     }
 });
 
@@ -441,10 +518,16 @@ onBeforeUnmount(() => {
 
 onUnmounted(() => {
     window.removeEventListener("resize", setSwiperImageWidth);
+    window.removeEventListener("scroll", handleScroll);
 
     const heroArea = document.querySelector(".hero");
     if (heroArea) {
         heroArea.classList.remove("active");
+    }
+
+    if (player.value) {
+        player.value.destroy();
+        player.value = null;
     }
 });
 </script>
@@ -490,7 +573,8 @@ section {
 }
 
 .bg-colorful {
-    background: url("@/assets/img/landingpage/bg_price.png") lightgray 50% / cover no-repeat;
+    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% /
+        cover no-repeat;
 }
 
 .hero-bg {
@@ -526,18 +610,21 @@ section {
     }
 
     .desc {
-        max-width: 43.75rem;
+        // max-width: 43.75rem;
+        max-width: 44.6rem;
         margin: 0 auto;
         line-height: 1.5;
         margin-bottom: 1.875rem;
     }
 
     .linear-gradient {
-        background-image: linear-gradient(92.16deg,
-                #0156ff 3.64%,
-                #079af2 37.09%,
-                #49c48d 61.65%,
-                #e0fa1c 100%);
+        background-image: linear-gradient(
+            92.16deg,
+            #0156ff 3.64%,
+            #079af2 37.09%,
+            #49c48d 61.65%,
+            #e0fa1c 100%
+        );
         background-clip: text;
         -webkit-background-clip: text;
         color: transparent;
@@ -558,7 +645,9 @@ section {
         border-radius: 0.625rem;
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.1);
-        max-height: 46.875rem;
+        // max-height: 46.875rem;
+        // height: 39.1vw;
+        aspect-ratio: 560 / 350;
 
         perspective: 1000px;
         transform-style: preserve-3d;
@@ -566,20 +655,27 @@ section {
         transition: transform 0.1s linear;
         will-change: transform;
 
-        .inner {
-            width: 100%;
-            height: 100%;
-            background-color: #1c1c1c;
-            object-fit: cover;
+        // .inner {
+        // 	width: 100%;
+        // 	height: 100%;
+        // 	background-color: #1c1c1c;
+        // 	object-fit: cover;
 
-            img {
-                display: block;
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
-        }
+        // 	iframe {
+        // 		display: block;
+        // 		width: 100%;
+        // 		height: 100%;
+        // 		object-fit: cover;
+        // 	}
+        // }
     }
+
+    // .video-skapi {
+    // 	width: 100%;
+    // 	height: 100%;
+    // 	object-fit: cover;
+    // 	display: block;
+    // }
 }
 
 .why {
@@ -683,8 +779,6 @@ section {
             img {
                 width: 100%;
                 height: 100%;
-                min-width: 250px;
-                min-height: 400px;
                 object-fit: cover;
                 display: block;
             }
@@ -871,6 +965,7 @@ section {
 
                 .desc {
                     width: 280px;
+                    height: 2.8125rem;
                     font-size: 1.0625rem;
                     font-weight: 300;
                     line-height: 1.3;
@@ -935,43 +1030,50 @@ section {
 
                         &.user {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_user.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.data {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_data.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.file {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_file.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.mail {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_mail.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.forbiden {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_forbiden.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.invitation {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_invitation.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.global {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_global.svg")
+                                    no-repeat;
                             }
                         }
                     }
@@ -1175,15 +1277,16 @@ section {
         display: flex;
         flex-direction: column;
         border-radius: 1rem;
-        background: url("@/assets/img/landingpage/bg_contents1.png") lightgray 50% / cover no-repeat;
+        background: url("@/assets/img/landingpage/bg_contents1.svg") lightgray
+            50% / cover no-repeat;
         color: #000;
 
         &:nth-child(2) {
-            background-image: url("@/assets/img/landingpage/bg_contents2.png");
+            background-image: url("@/assets/img/landingpage/bg_contents2.svg");
         }
 
         &:nth-child(3) {
-            background-image: url("@/assets/img/landingpage/bg_contents3.png");
+            background-image: url("@/assets/img/landingpage/bg_contents3.svg");
         }
 
         .title {
@@ -1276,11 +1379,13 @@ section {
         margin: 0 auto 0;
 
         .title {
-            background-image: linear-gradient(92.16deg,
-                    #0156ff 3.64%,
-                    #079af2 37.09%,
-                    #49c48d 51.65%,
-                    #e0fa1c 80%);
+            background-image: linear-gradient(
+                92.16deg,
+                #0156ff 3.64%,
+                #079af2 37.09%,
+                #49c48d 51.65%,
+                #e0fa1c 80%
+            );
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
@@ -1573,7 +1678,6 @@ section {
 @media (max-width: 480px) {
     .review {
         .review-swiper {
-
             .swiper-button-prev,
             .swiper-button-next {
                 display: none;
@@ -1625,6 +1729,10 @@ section {
         }
     }
 
+    .video {
+        padding: 0 1.875rem;
+    }
+
     .why {
         padding-top: 5rem;
         padding-bottom: 5rem;
@@ -1664,7 +1772,6 @@ section {
         }
 
         .review-swiper {
-
             .swiper-button-prev,
             .swiper-button-next {
                 width: 56px;
@@ -1682,6 +1789,20 @@ section {
 
         .review-item {
             .reviewer {
+                position: relative;
+                width: 100%;
+                height: 0;
+                padding-bottom: 117.65%;
+                overflow: hidden;
+
+                img {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                }
+
                 .profile {
                     left: 24px;
                     bottom: 24px;

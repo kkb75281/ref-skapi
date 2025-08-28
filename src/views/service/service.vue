@@ -1,48 +1,97 @@
 <template lang="pug">
+section.page-header
+    //- .page-title {{ currentService.service.name }}
+    .page-title Service Settings
+    .flex-wrap
+        router-link(:to='`/subscription/${currentService.id}`')
+            //- button.inline.sm.blue Change Plan
+            button.inline.icon-text.sm.blue
+                .icon
+                    svg
+                        use(xlink:href="/material-icon.svg#icon-change")
+                template(v-if="new Date().getTime() < currentService?.service?.subscription?.canceled_at")
+                    | Resume Plan
+                template(v-else)
+                    | Change Plan
+        router-link(v-if="currentService.service.active < 0 || currentService.plan == 'Trial' || currentService.plan == 'Unlimited' || currentService.service.plan == 'Canceled'" :to='"/delete-service/" + currentService.id' :class="{'nonClickable': !user?.email_verified || currentService.service.active == 0 }")
+            //- button.inline.sm.gray.caution Delete Service
+            button.inline.icon-text.sm.gray.caution(type="button" )
+                .icon
+                    svg
+                        use(xlink:href="/basic-icon.svg#icon-delete")
+                | Delete Service
+        a.btn-docs(href='https://docs.skapi.com/service-settings/service-settings.html' target="_blank")
+            button.inline.icon-text.sm.gray
+                img(src="@/assets/img/landingpage/icon_docs.svg")
+                | Go Docs
+
+hr
+
 section
-    //- .page-title Service Settings
+    .info-value-set
+        .info-edit-wrap
+            .info
+                .title Service Name
+                .value {{ currentService.service.name }}
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" :disabled="!user?.email_verified || currentService.service.active <= 0" @click="editName")
+                    //- Tooltip(tip-background-color="rgb(45 46 48)" text-color="white")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="/basic-icon.svg#icon-edit")
+                        template(v-slot:tip) Edit
+                    .icon
+                        svg
+                            use(xlink:href="/basic-icon.svg#icon-edit")
+        .info-edit-wrap
+            .info
+                .title CORS
+                .value {{ currentService.service.cors || '*' }}
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" :disabled="!user?.email_verified" @click="editCors")
+                    .icon
+                        svg
+                            use(xlink:href="/basic-icon.svg#icon-edit")
 
-    //- hr
+        .info-edit-wrap
+            .info
+                .title Secret Key
+                .value {{ currentService.service.api_key ? currentService.service.api_key.slice(0, 2) + '*'.repeat(currentService.service.api_key.length - 2) + '...' : '-' }}
+            .actions-wrap
+                button.only-icon.gray.edit-btn(type="button" :disabled="!user?.email_verified" @click="editApiKey")
+                    .icon
+                        svg
+                            use(xlink:href="/basic-icon.svg#icon-edit")
 
-    .flex-wrap.space-between
-        div
-            .page-title {{ currentService.service.name }}
-            //- .desc {{ currentService.service.description || 'No description provided.' }}
-        .flex-wrap(style="gap:10px")
-            button.inline-btn(type="button" @click="editName") Rename
-            button.inline-btn CORS
-            button.inline-btn Secret Key
-            button.inline-btn.blue Change Plan
+    br
 
-    hr
-
-    .flex-wrap.space-between(style="gap: 20px;")
+    .info-value-set
         .card-wrap(style="flex: 2;")
-            //- .card(style="background-color: #77DFA2; color: #121214;")
             .card
-                //- .title Plan
                 .plan-name 
                     span {{ currentService.service.plan + ' Plan' }}
                 .flex-wrap.space-between
                     div
                         .data Renewal Date 
-                        .date {{ currentService.subscription?.current_period_end ? dateFormat(currentService.subscription?.current_period_end * 1000) : '-' }}
+                        template(v-if="currentService.plan === 'Trial'")
+                            .date.red {{ 'All Data will reset on ' + resetTime(currentService.service.timestamp) }}
+                        template(v-else-if='currentService.service.plan == "Canceled" && !currentService.service.suspended')
+                            .date.red {{ 'Suspends on ' + dateFormat(currentService.subscription?.current_period_end * 1000) }}
+                        template(v-else-if='currentService.service.suspended') 
+                            .date.red {{ 'Terminates on ' + dateFormat(2592000000 + currentService.subscription.cancel_at * 1000) }}
+                        template(v-else)
+                            .date {{ currentService.subscription?.current_period_end ? dateFormat(currentService.subscription?.current_period_end * 1000) : '-' }}
                     div
                         .data Date Created 
                         .date {{ dateFormat(currentService.dateCreated) }}
 
-                //- br
-
-                //- button(style="max-width: unset") Change Subscription
-
-                //- hr(style="background: rgba(0, 0, 0, 0.1);")
                 hr
 
                 .flex-wrap.space-between
                     .tit Users
                     .data {{ currentServiceSpec.dataSize?.users || 0 }} / {{ currentServiceSpec.servicePlan.users }}
                 .bar-wrap
-                    .bar(:style='{width: currentServiceSpec.dataPercent.users * 100 + "%"}')
+                    .bar(:style='{width: Math.max(currentServiceSpec.dataPercent.users, 1) + "%"}' :class="getBarColorClass(currentServiceSpec.dataPercent.users)")
 
                 br
 
@@ -50,7 +99,7 @@ section
                     .tit Database
                     .data {{ currentServiceSpec.dataSize?.database || 0 }} / {{ currentServiceSpec.servicePlan.storage.database }}
                 .bar-wrap
-                    .bar(:style='{width: currentServiceSpec.dataPercent.database * 100 + "%"}')
+                    .bar(:style='{width: Math.max(currentServiceSpec.dataPercent.database, 1) + "%"}' :class="getBarColorClass(currentServiceSpec.dataPercent.database)")
 
                 br
 
@@ -58,110 +107,160 @@ section
                     .tit File Storage
                     .data {{ currentServiceSpec.dataSize?.cloud || 0 }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
                 .bar-wrap
-                    .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
+                    .bar(:style='{width: Math.max(currentServiceSpec.dataPercent.cloud, 1) + "%"}' :class="getBarColorClass(currentServiceSpec.dataPercent.cloud)")
 
-                //- .card-wrap
-                    .card
-                        .title Users
-                        .data {{ currentServiceSpec.dataSize?.users || 0 }} / {{ currentServiceSpec.servicePlan.users }}
-                        .bar-wrap
-                            .bar(:style='{width: currentServiceSpec.dataPercent.users * 100 + "%"}')
-                    .card
-                        .title Database
-                        .data {{ currentServiceSpec.dataSize?.database || 0 }} / {{ currentServiceSpec.servicePlan.storage.database }}
-                        .bar-wrap
-                            .bar(:style='{width: currentServiceSpec.dataPercent.database * 100 + "%"}')
-                    .card
-                        .title File Storage
-                        .data {{ currentServiceSpec.dataSize?.cloud || 0 }} / {{ currentServiceSpec.servicePlan.storage.cloud }}
-                        .bar-wrap
-                            .bar(:style='{width: currentServiceSpec.dataPercent.cloud * 100 + "%"}')
-        .card-wrap(style="flex: 1;")
-            .card
-                //- .title Toggle Switches
+        .toggle-wrap
+            .title Service Settings
+            .flex-wrap.space-between.toggle-div
+                .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;") 
+                    span.label Disable/Enable
+                    Tooltip(tip-background-color="var(--main-color)" text-color="white" tip-max-width="9rem")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="/basic-icon.svg#icon-help-circle")
+                        template(v-slot:tip)
+                            | When the service is disabled, users cannot access the service.
+                Toggle(
+                    style='display:inline-flex;align-items:center;'
+                    :disabled="!user?.email_verified || currentService.service.suspended || updatingValue.enableDisable"
+                    :active="currentService.service.active >= 1"
+                    @click="enableDisable"
+                )
+            
+            .flex-wrap.space-between.toggle-div
+                .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
+                    span.label Allow Signup
+                    Tooltip(tip-background-color="var(--main-color)" text-color="white" tip-max-width="9rem")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="/basic-icon.svg#icon-help-circle")
+                        template(v-slot:tip)
+                            | When signup is disallowed, only the administrator can create accounts.
+                Toggle(
+                    style='display:inline-flex;align-items:center;'
+                    :active='!currentService.service.prevent_signup'
+                    :disabled='currentService.service.active < 1 || updatingValue.prevent_signup'
+                    @click="changeCreateUserMode(!currentService.service.prevent_signup)"
+                )
 
-                .flex-wrap.space-between
-                    .data(style="position:relative; margin:0; font-size: 16px;") Disable/Enable
-                        //- .tooltip-icon
-                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                                template(v-slot:tip)
-                                    | When the service is disabled, users cannot access the service.
-                    Toggle(
-                        style='display:inline-flex;align-items:center;'
-                        :disabled="!user?.email_verified || currentService.service.suspended || updatingValue.enableDisable"
-                        :active="currentService.service.active >= 1"
-                        @click="enableDisable"
-                    )
-                
-                br
+            .flex-wrap.space-between.toggle-div
+                .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
+                    span.label Prevent Inquiry
+                    Tooltip(tip-background-color="var(--main-color)" text-color="white" tip-max-width="9rem")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="/basic-icon.svg#icon-help-circle")
+                        template(v-slot:tip)
+                            | When inquiry is prevented, users cannot send inquiries via sendInquiry() to the service.
+                Toggle(
+                    style='display:inline-flex;align-items:center;'
+                    :active='currentService.service.prevent_inquiry'
+                    :disabled='currentService.service.active < 1 || updatingValue.prevent_inquiry'
+                    @click="changePreventInquiry(!currentService.service.prevent_inquiry)"
+                )
 
-                .flex-wrap.space-between
-                    .data(style="position:relative; margin:0; font-size: 16px;") Allow Signup
-                        //- .tooltip-icon
-                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                                template(v-slot:tip)
-                                    | When signup is disallowed, only the administrator can create accounts.
-                    Toggle(
-                        style='display:inline-flex;align-items:center;'
-                        :active='!currentService.service.prevent_signup'
-                        :disabled='updatingValue.prevent_signup'
-                        @click="changeCreateUserMode(!currentService.service.prevent_signup)"
-                    )
+            .flex-wrap.space-between.toggle-div
+                .data.flex-wrap(style="position:relative; margin:0; font-size: 16px;")
+                    span.label Freeze Database
+                    Tooltip(tip-background-color="var(--main-color)" text-color="white" tip-max-width="9rem")
+                        template(v-slot:tool)
+                            svg.svgIcon
+                                use(xlink:href="/basic-icon.svg#icon-help-circle")
+                        template(v-slot:tip)
+                            | When the database is frozen, users cannot upload any data to the database.
+                Toggle(
+                    style='display:inline-flex;align-items:center;'
+                    :active='currentService.service.freeze_database'
+                    :disabled='currentService.service.active < 1 || updatingValue.freeze_database'
+                    @click="changeFreezeDatabase(!currentService.service.freeze_database)"
+                )
 
-                br
+Modal(:open="modifyMode.name" @close="modifyMode.name = false")
+    .modal-close(@click="modifyMode.name = false;")
+        svg.svgIcon
+            use(xlink:href="/basic-icon.svg#icon-x")
 
-                .flex-wrap.space-between
-                    .data(style="position:relative; margin:0; font-size: 16px;") Prevent Inquiry
-                        //- .tooltip-icon
-                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                                template(v-slot:tip)
-                                    | You can prevent users from sending inquiries via sendInquiry() to the service.
-                    Toggle(
-                        style='display:inline-flex;align-items:center;'
-                        :active='currentService.service.prevent_inquiry'
-                        :disabled='updatingValue.prevent_inquiry'
-                        @click="changePreventInquiry(!currentService.service.prevent_inquiry)"
-                    )
+    .modal-title Change Service Name
 
-                br
+    .modal-desc
+        | Enter a new name for the service.
+        br
+        | (Maximum 40 characters.)
 
-                .flex-wrap.space-between
-                    .data(style="position:relative; margin:0; font-size: 16px;") Freeze Database
-                        //- .tooltip-icon
-                            Tooltip(tip-background-color="var(--main-color)" text-color="white")
-                                template(v-slot:tip)
-                                    | You can prevent users from uploading any data to the database by freezing the database.
-                    Toggle(
-                        style='display:inline-flex;align-items:center;'
-                        :active='currentService.service.freeze_database'
-                        :disabled='updatingValue.freeze_database'
-                        @click="changeFreezeDatabase(!currentService.service.freeze_database)"
-                    )
+    form(@submit.prevent="changeName")
+        input.block(type="text" ref="focus_name" placeholder="Maximum 40 characters" maxlength="40" :value='inputName' @input="(e) => inputName = e.target.value" :disabled="updatingValue.name" required)
 
-Modal(:open="modifyMode.name")
+        .modal-btns
+            .loader-wrap(v-if='updatingValue.name')
+                .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else)
+                button.block(type="submit") Save
+
+Modal(:open="modifyMode.cors" @close="modifyMode.cors = false")
+    .modal-close(@click="modifyMode.cors = false;")
+        svg.svgIcon
+            use(xlink:href="/basic-icon.svg#icon-x")
+
+    .modal-title Change CORS
+
+    .modal-desc
+        | Enter the CORS settings for the service.
+        br
+        | Leave empty for all origins, or enter a specific origin.
+        br
+        | (https://your.domain.com, http://second.domain.net, ...)
+
+    form(@submit.prevent="changeCors")
+        input#modifyCors.block(ref="focus_cors" :disabled="updatingValue.cors || null" type="text" placeholder='https://your.domain.com, http://second.domain.net, ...' :value='inputCors' @input="(e) => {e.target.setCustomValidity(''); inputCors = e.target.value;}")
+
+        .modal-btns
+            .loader-wrap(v-if='updatingValue.cors')
+                .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else)
+                button.block(type="submit") Save
+
+Modal(:open="modifyMode.api_key" @close="modifyMode.api_key = false")
+    .modal-close(@click="modifyMode.api_key = false;")
+        svg.svgIcon
+            use(xlink:href="/basic-icon.svg#icon-x")
+
+    .modal-title Change API Key
+
+    .modal-desc
+        | Enter a new API key for the service.
+        br
+        | (Maximum 256 characters, At least 4 characters.)
+
+    form(@submit.prevent="changeApiKey")
+        input.block(ref="focus_key" :disabled="updatingValue.api_key || null" type="text" minlength="4" maxlength="256" placeholder='Maximum 256 characters, At least 4 characters.' :value='inputKey' @input="(e) => inputKey = e.target.value")
+
+        .modal-btns
+            .loader-wrap(v-if='updatingValue.api_key')
+                .loader(style="--loader-color:white; --loader-size:12px")
+            template(v-else)
+                button.block(type="submit") Save
 </template>
 
 <script setup lang="ts">
-import { nextTick, reactive, ref, computed, onMounted } from 'vue';
-import { currentService } from '@/views/service/main';
-import { dateFormat } from '@/code/admin';
-import { devLog } from '@/code/logger';
-import { user } from '@/code/user';
-import { currentServiceSpec } from '@/views/service/service-spec';
+import { nextTick, reactive, ref } from "vue";
+import { currentService } from "@/views/service/main";
+import { dateFormat } from "@/code/admin";
+import { user } from "@/code/user";
+import { currentServiceSpec } from "@/views/service/service-spec";
 
-import Modal from '@/components/modal.vue';
-import Toggle from '@/components/toggle.vue';
-import Tooltip from '@/components/tooltip.vue';
+import Modal from "@/components/modal.vue";
+import Toggle from "@/components/toggle.vue";
+import Tooltip from "@/components/tooltip.vue";
 
-let inputName = '';
-let inputCors = '';
-let inputKey = '';
+let inputName = "";
+let inputCors = "";
+let inputKey = "";
 let modifyMode = reactive({
     name: false,
     cors: false,
     api_key: false,
-    prevent_signup: false
-})
+    prevent_signup: false,
+});
 let updatingValue = reactive({
     name: false,
     cors: false,
@@ -201,7 +300,7 @@ let resetTime = (timestamp: number) => {
 
     // Return the date as a 13-digit timestamp
     return dateFormat(today.getTime());
-}
+};
 
 // edit/change name
 let editName = () => {
@@ -210,60 +309,74 @@ let editName = () => {
     nextTick(() => {
         focus_name.value.focus();
     });
-}
+};
 let changeName = () => {
     if (currentService.service.name !== inputName) {
         let regex = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
         if (inputName.match(regex)) {
-            alert('Special characters are not allowed');
+            alert("Special characters are not allowed");
 
-            return
+            return;
         }
 
         let previous = currentService.service.name;
 
         updatingValue.name = true;
 
-        currentService.updateService({
-            name: inputName
-        }).then(() => {
-            updatingValue.name = false;
-            currentService.service.name = inputName;
-            modifyMode.name = false;
-        }).catch(err => {
-            updatingValue.name = false;
-            currentService.service.name = previous;
-            throw err;
-        });
+        currentService
+            .updateService({
+                name: inputName,
+            })
+            .then(() => {
+                updatingValue.name = false;
+                currentService.service.name = inputName;
+                modifyMode.name = false;
+            })
+            .catch((err) => {
+                updatingValue.name = false;
+                currentService.service.name = previous;
+                throw err;
+            });
     } else {
-        return false;
+        // If the name is not changed, just close the modal
+        updatingValue.name = false;
+        currentService.service.name = inputName;
+        modifyMode.name = false;
     }
-}
+};
 
 // edit/change cors
 let editCors = () => {
-    inputCors = currentService.service.cors === '*' ? '' : currentService.service.cors;
+    inputCors =
+        currentService.service.cors === "*" ? "" : currentService.service.cors;
     modifyMode.cors = true;
     nextTick(() => {
         focus_cors.value.focus();
     });
-}
+};
 let changeCors = () => {
     updatingValue.cors = true;
-    currentService.updateService({
-        cors: inputCors
-    }).then(() => {
-        updatingValue.cors = false;
-        modifyMode.cors = false;
-    }).catch(err => {
-        updatingValue.cors = false;
-        nextTick(() => {
-            document.getElementById('modifyCors').focus();
-            document.getElementById('modifyCors').setCustomValidity(err.message);
-            document.getElementById('modifyCors').reportValidity();
+    currentService
+        .updateService({
+            cors: inputCors,
+        })
+        .then(() => {
+            updatingValue.cors = false;
+            modifyMode.cors = false;
+        })
+        .catch((err) => {
+            updatingValue.cors = false;
+            nextTick(() => {
+                document.getElementById("modifyCors").focus();
+                (
+                    document.getElementById("modifyCors") as HTMLInputElement
+                ).setCustomValidity(err.message);
+                (
+                    document.getElementById("modifyCors") as HTMLInputElement
+                ).reportValidity();
+            });
         });
-    });
-}
+};
 
 // edit/change api_key
 let editApiKey = () => {
@@ -272,170 +385,137 @@ let editApiKey = () => {
     nextTick(() => {
         focus_key.value.focus();
     });
-}
+};
 let changeApiKey = () => {
     let previous = currentService.service.api_key;
 
     updatingValue.api_key = true;
 
-    currentService.updateService({
-        api_key: inputKey
-    }).then(() => {
-        updatingValue.api_key = false;
-        currentService.service.api_key = inputKey;
-        modifyMode.api_key = false;
-    }).catch(err => {
-        currentService.service.api_key = previous;
-        throw err;
-    });
-}
+    currentService
+        .updateService({
+            api_key: inputKey,
+        })
+        .then(() => {
+            updatingValue.api_key = false;
+            currentService.service.api_key = inputKey;
+            modifyMode.api_key = false;
+        })
+        .catch((err) => {
+            currentService.service.api_key = previous;
+            throw err;
+        });
+};
 
 // change prevent_signup
 let changeCreateUserMode = async (onlyAdmin: boolean) => {
     updatingValue.prevent_signup = true;
-    currentService.setServiceOption({
-        prevent_signup: onlyAdmin,
-    }).catch(err => {
-        alert(err.message);
-    }).finally(() => {
-        updatingValue.prevent_signup = false;
-    });
-}
+    currentService
+        .setServiceOption({
+            prevent_signup: onlyAdmin,
+        })
+        .catch((err) => {
+            alert(err.message);
+        })
+        .finally(() => {
+            updatingValue.prevent_signup = false;
+        });
+};
 let enableDisable = async () => {
     updatingValue.enableDisable = true;
     try {
         if (currentService.service.active >= 1)
-            await currentService.disableService()
-        else
-            await currentService.enableService()
-    }
-    catch (error) {
-        window.alert(error.message)
+            await currentService.disableService();
+        else await currentService.enableService();
+    } catch (error) {
+        window.alert(error.message);
         throw error;
-    }
-    finally {
+    } finally {
         updatingValue.enableDisable = false;
     }
-}
+};
 
 // change prevent_inquiry
 let changePreventInquiry = async (onlyAdmin: boolean) => {
     updatingValue.prevent_inquiry = true;
-    currentService.setServiceOption({
-        prevent_inquiry: onlyAdmin,
-    }).catch(err => {
-        alert(err.message);
-    }).finally(() => {
-        updatingValue.prevent_inquiry = false;
-    });
-}
+    currentService
+        .setServiceOption({
+            prevent_inquiry: onlyAdmin,
+        })
+        .catch((err) => {
+            alert(err.message);
+        })
+        .finally(() => {
+            updatingValue.prevent_inquiry = false;
+        });
+};
 
 // change freeze_database
 let changeFreezeDatabase = async (onlyAdmin: boolean) => {
     updatingValue.freeze_database = true;
-    currentService.setServiceOption({
-        freeze_database: onlyAdmin,
-    }).catch(err => {
-        alert(err.message);
-    }).finally(() => {
-        updatingValue.freeze_database = false;
-    });
-}
+    currentService
+        .setServiceOption({
+            freeze_database: onlyAdmin,
+        })
+        .catch((err) => {
+            alert(err.message);
+        })
+        .finally(() => {
+            updatingValue.freeze_database = false;
+        });
+};
+
+// 사용량에 따른 바 색상 변경 함수
+const getBarColorClass = (percent) => {
+    if (percent === "Unlimited" || typeof percent !== "number")
+        return "bar-blue";
+    if (percent >= 80) return "bar-red";
+    if (percent >= 50) return "bar-yellow";
+    return "bar-blue";
+};
 </script>
 
 <style lang="less" scoped>
-.page-title {
-    font-size: 38px;
+a {
+    text-decoration: none;
 }
 
-.middle-title {
-    font-size: 26px;
-    margin-bottom: 16px;
-}
-
-hr {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-button {
-    display: inline-flex;
-    max-width: 240px;
-    padding: 0 0.875rem;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 13px;
-    background: #0a4df1;
-    border: 0;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 1.5;
-    white-space: nowrap;
-
-    &:hover {
-        background-color: #1656f2;
-    }
-}
-
-.inline-btn {
-    background-color: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 14px;
-    width: auto;
-
-    &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    &.blue {
-        background-color: #0a4df1;
-
-        &:hover {
-            background-color: #1656f2;
-        }
-    }
-}
-
-.tooltip-icon {
-    position: absolute;
-    right: -30px;
-    top: 50%;
-    transform: translateY(-57%);
-    z-index: 1;
-}
-
-.icon-btn {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 8px;
-    margin: 0 4px;
-    border-radius: 50%;
-    cursor: pointer;
+.title {
+    margin-bottom: 10px;
+    opacity: 0.6;
 }
 
 .plan-name {
     margin-bottom: 20px;
 
     span {
-        // background-color: #77DFA2;
-        // color: #121214;
         font-size: 18px;
         border-radius: 5px;
         font-weight: bold;
     }
 }
 
-.flex-wrap {
-    display: flex;
-    flex-wrap: wrap;
+.toggle-wrap {
+    padding: 20px;
+    border-radius: 13px;
+    background-color: #121214;
 
-    &.space-between {
-        justify-content: space-between;
+    .title {
+        margin-bottom: 1rem !important;
     }
 
-    &.center {
-        justify-content: center;
+    .toggle-div {
+        margin-bottom: 14px;
+
+        .svgIcon {
+            width: 1.25rem;
+            height: 1.25rem;
+            position: relative;
+            top: -2px;
+        }
+    }
+
+    .flex-wrap {
+        gap: 0.5rem;
     }
 }
 
@@ -443,9 +523,9 @@ button {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    margin-bottom: 20px;
 
     .card {
+        position: relative;
         background-color: #121214;
         padding: 20px;
         border-radius: 13px;
@@ -455,18 +535,13 @@ button {
         flex-direction: column;
         box-sizing: border-box;
 
-        .title {
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-
         .data {
             font-size: 14px;
             font-weight: 300;
-            opacity: 0.6;
+            max-width: 12.5rem;
 
             @media (max-width: 600px) {
-                font-size: 12px;
+                // font-size: 12px;
             }
         }
 
@@ -475,8 +550,13 @@ button {
             margin-top: 5px;
             opacity: 0.6;
 
+            &.red {
+                color: var(--caution-color);
+                opacity: 1;
+            }
+
             @media (max-width: 600px) {
-                font-size: 12px;
+                // font-size: 12px;
             }
         }
 
@@ -495,6 +575,17 @@ button {
                 align-items: center;
                 justify-content: center;
 
+                &.bar-blue {
+                    background-color: var(--main-color);
+                }
+
+                &.bar-yellow {
+                    background-color: #ffed91;
+                }
+
+                &.bar-red {
+                    background-color: #f04e4e;
+                }
             }
 
             span {
@@ -504,23 +595,4 @@ button {
         }
     }
 }
-
-// .question {
-//     display: inline-block;
-//     font-size: 14px;
-//     color: var(--black-4);
-//     vertical-align: middle;
-
-//     &:hover {
-//         text-decoration: none;
-//     }
-// }
-
-// .svgIcon.nohover {
-//     background-color: unset;
-// }
-
-// .svgIcon:hover {
-//     border-radius: 50%;
-//     background-color: #293FE61A;
-// }</style>
+</style>

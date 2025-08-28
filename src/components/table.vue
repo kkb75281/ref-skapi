@@ -1,5 +1,6 @@
 <template lang="pug">
 .tableWrap(ref='full')
+    slot(name="msg")
     table.customTbl(ref='table' :class='{resizable}' style="width:0")
         thead(ref="thead")
             slot(name="head")
@@ -47,9 +48,6 @@ if (resizable) {
                         if (type === "childList") {
                             setResize();
                         }
-                        // if (mutation.type === 'attributes') {
-                        //     console.log('The ' + mutation.attributeName + ' attribute was modified.');
-                        // }
                     }
                 });
 
@@ -88,13 +86,6 @@ const resizeObserver = new ResizeObserver((entries) => {
         } else {
             document.body.style.setProperty("--fakeWidth", "0px"); // fakeWidth 초기화
         }
-
-        // 디버깅 로그 출력
-        // console.log({
-        //     tableWrapWidth,
-        //     customTblWidth,
-        //     fakeWidth: parseFloat(document.body.style.getPropertyValue('--fakeWidth'))
-        // });
     }
 });
 
@@ -232,17 +223,73 @@ let setResize = async () => {
     document.addEventListener("mouseup", mouseup);
 };
 </script>
+
 <style lang="less">
 .customTbl.resizable > thead > tr > th > .resizer {
     cursor: col-resize;
 }
 
-.tableWrap {
+.table-cont-wrap {
     position: relative;
+}
+
+.tableWrap {
+    // position: relative;
     overflow-x: auto;
     overflow-y: hidden;
     box-sizing: border-box;
     border-radius: 10px;
+
+    &::-webkit-scrollbar {
+        width: 0.25rem;
+        height: 0.25rem;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba(225, 225, 225, 0.4);
+        border-radius: 12px 12px 12px 12px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+}
+
+.tableMsg {
+    position: absolute;
+    top: 58px;
+    left: 0;
+    color: rgba(225, 225, 225, 0.8);
+    font-size: 0.875rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    z-index: 2;
+
+    &.left {
+        left: 16px;
+    }
+
+    &.center {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    &.empty {
+        & ~ .customTbl {
+            tbody {
+                tr {
+                    pointer-events: none;
+
+                    &:hover {
+                        background: transparent;
+                    }
+                }
+            }
+        }
+    }
 }
 
 .customTbl {
@@ -256,8 +303,6 @@ let setResize = async () => {
             th {
                 &.hovered,
                 &:hover {
-                    // background-color: #eeeeee;
-
                     .resizer {
                         display: block;
                     }
@@ -273,11 +318,9 @@ let setResize = async () => {
     }
 
     thead {
-        // background-color: #f0f0f0;
         background-color: #f9f9f9;
         text-align: left;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        // box-shadow: inset 0 -3px 3px -3px rgba(0, 0, 0, 0.2);
 
         tr {
             position: relative;
@@ -288,22 +331,26 @@ let setResize = async () => {
                 content: "";
                 display: block;
                 height: 100%; // 높이는 최소화
-                background-color: #f9f9f9;
+                background-color: #121214;
                 min-width: var(--fakeWidth); // 화면 너비만큼 확장
                 top: 0;
                 right: calc(var(--fakeWidth) * -1);
                 z-index: -1; // 테이블 뒤쪽으로 배치
+                border-top-left-radius: 0.625rem;
+                border-bottom-left-radius: 0.625rem;
             }
+
             &::after {
                 position: absolute;
                 content: "";
                 display: block;
-                background-color: rgba(0, 0, 0, 0.05);
+                background-color: #121214;
                 min-width: var(--fakeWidth); // 화면 너비만큼 확장
-                height: 1px;
+                height: 100%;
                 bottom: -0.5px;
                 right: calc(var(--fakeWidth) * -1);
-                // z-index: -1; // 테이블 뒤쪽으로 배치
+                border-top-right-radius: 0.625rem;
+                border-bottom-right-radius: 0.625rem;
             }
         }
 
@@ -323,7 +370,6 @@ let setResize = async () => {
                 max-width: 100%;
             }
 
-            // overflow: hidden;
             text-overflow: ellipsis;
 
             &.center {
@@ -341,7 +387,12 @@ let setResize = async () => {
             &.nohover,
             &.fixed {
                 &:hover {
-                    background-color: #f9f9f9 !important;
+                    background: linear-gradient(
+                            0deg,
+                            rgba(255, 255, 255, 0.03) 0%,
+                            rgba(255, 255, 255, 0.03) 100%
+                        ),
+                        #141315;
 
                     .resizer {
                         display: none;
@@ -351,26 +402,21 @@ let setResize = async () => {
 
             .resizer {
                 position: absolute;
-                // top: 50%;
                 top: 0px;
                 right: -9px;
-                // transform: translateY(-50%);
                 width: 12px; // enough width for user to grab
-                // border-left: 5px solid transparent;
-                // border-right: 5px solid transparent;
                 border-left: 4px solid transparent;
                 border-right: 12px solid transparent;
                 display: none;
+                height: 20px;
 
                 &::before {
                     content: "";
                     display: block;
                     height: 100%;
                     width: 2px;
-                    background-color: rgba(0, 0, 0, 0.2);
+                    background-color: rgba(225, 225, 225, 0.5);
                 }
-
-                height: 20px;
 
                 &.contrast {
                     background-color: #fff !important;
@@ -387,53 +433,38 @@ let setResize = async () => {
             position: relative;
             height: 60px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            // box-shadow: inset 0 -3px 3px -3px rgba(0, 0, 0, 0.2);
 
             &::before {
                 position: absolute;
                 content: "";
                 display: block;
-                height: 100%; // 높이는 최소화
-                background-color: #fff;
+                height: 3.75rem; // 높이는 최소화
+                background-color: #121214;
                 min-width: var(--fakeWidth); // 화면 너비만큼 확장
                 top: 0;
                 right: calc(var(--fakeWidth) * -1);
                 z-index: -1; // 테이블 뒤쪽으로 배치
+                border-top-left-radius: 0.625rem;
+                border-bottom-left-radius: 0.625rem;
             }
+
             &::after {
                 position: absolute;
                 content: "";
                 display: block;
-                background-color: rgba(0, 0, 0, 0.05);
+                background-color: #121214;
                 min-width: var(--fakeWidth); // 화면 너비만큼 확장
-                height: 1px;
-                bottom: -1.5px;
+                height: 3.75rem;
+                bottom: -1px;
                 right: calc(var(--fakeWidth) * -1);
                 // z-index: -1; // 테이블 뒤쪽으로 배치
+                border-top-right-radius: 0.625rem;
+                border-bottom-right-radius: 0.625rem;
             }
 
             &:last-child {
                 border-bottom: none;
             }
-
-            // &.hoverRow {
-            //     &:not(.active):hover {
-            //         background-color: rgba(41, 63, 230, 0.05);
-            //         cursor: pointer;
-
-            //         &::before {
-            //             background-color: rgba(41, 63, 230, 0.05);
-            //         }
-            //     }
-
-            //     &.active {
-            //         background-color: rgba(41, 63, 230, 0.1);
-
-            //         &::before {
-            //             background-color: rgba(41, 63, 230, 0.1);
-            //         }
-            //     }
-            // }
         }
 
         td {
@@ -451,9 +482,34 @@ let setResize = async () => {
     border-collapse: separate;
     border-spacing: 0 0.5rem;
     color: rgba(225, 225, 225, 0.8);
-    width: 100% !important;
-    text-align: center;
-    min-width: 75rem;
+
+    .left {
+        text-align: left;
+    }
+
+    .nohover {
+        &:hover {
+            cursor: default;
+            background: transparent;
+
+            td {
+                border: none;
+
+                &:first-child {
+                    border-left: none;
+                }
+            }
+
+            &::before,
+            &::after {
+                height: calc(100% + 1px);
+                background: #121214;
+                border-top: none;
+                border-bottom: none;
+                border-right: none;
+            }
+        }
+    }
 
     thead {
         background-color: #121214;
@@ -462,10 +518,6 @@ let setResize = async () => {
             width: 100%;
             height: 2.625rem;
             overflow: hidden;
-
-            &::before {
-                content: none;
-            }
         }
 
         th {
@@ -477,19 +529,17 @@ let setResize = async () => {
             padding: 0 0.625rem;
 
             &:first-child {
-                padding-left: 3rem;
                 border-top-left-radius: 0.625rem;
                 border-bottom-left-radius: 0.625rem;
             }
 
-            &:last-child {
-                padding-right: 3rem;
-                border-top-right-radius: 0.625rem;
-                border-bottom-right-radius: 0.625rem;
-            }
-
             &:hover {
-                background-color: transparent;
+                background: linear-gradient(
+                        0deg,
+                        rgba(255, 255, 255, 0.03) 0%,
+                        rgba(255, 255, 255, 0.03) 100%
+                    ),
+                    #141315;
             }
         }
     }
@@ -500,11 +550,6 @@ let setResize = async () => {
         tr {
             height: 3.75rem;
             overflow: hidden;
-
-            &::before,
-            &::after {
-                content: none;
-            }
 
             &:hover {
                 cursor: pointer;
@@ -524,8 +569,25 @@ let setResize = async () => {
                     }
 
                     &:last-child {
-                        border-right: 1px solid rgba(255, 255, 255, 0.1);
+                        border-right: none;
                     }
+                }
+
+                &::before,
+                &::after {
+                    background: linear-gradient(
+                            0deg,
+                            rgba(255, 255, 255, 0.03) 0%,
+                            rgba(255, 255, 255, 0.03) 100%
+                        ),
+                        #141315;
+                    border-top: 1px solid rgba(255, 255, 255, 0.1);
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                    border-right: 1px solid rgba(255, 255, 255, 0.1);
+                }
+
+                &::after {
+                    height: calc(100% - 1px);
                 }
             }
         }
@@ -538,17 +600,77 @@ let setResize = async () => {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            text-align: center;
 
             &:first-child {
-                padding-left: 3rem;
                 border-top-left-radius: 0.625rem;
                 border-bottom-left-radius: 0.625rem;
             }
+        }
+    }
 
-            &:last-child {
-                padding-right: 3rem;
-                border-top-right-radius: 0.625rem;
-                border-bottom-right-radius: 0.625rem;
+    .empty-value {
+        position: absolute;
+        top: 78px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1;
+        pointer-events: none;
+        cursor: default;
+        height: fit-content;
+
+        ~ tr {
+            &:hover {
+                cursor: default;
+                background: transparent;
+
+                &::before,
+                &::after {
+                    background: #121214;
+                    border: none;
+                }
+
+                td {
+                    border: none;
+                }
+            }
+        }
+
+        &:hover {
+            cursor: default;
+            background: transparent;
+
+            ~ tr {
+                pointer-events: none;
+
+                &:hover {
+                    background: transparent;
+                }
+            }
+
+            td {
+                border: none;
+            }
+
+            &::before,
+            &::after {
+                background: #121214;
+                border: none;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .customTbl {
+        tbody {
+            tr {
+                &:hover {
+                    &::before,
+                    &::after {
+                        border-right: none;
+                    }
+                }
             }
         }
     }

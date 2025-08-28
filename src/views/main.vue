@@ -11,5 +11,6 @@ import NavBar from "@/components/navBar.vue";
 <style lang="less">
 #main {
     padding-top: 4rem; // height of the navbar
+    height: 100%;
 }
 </style>

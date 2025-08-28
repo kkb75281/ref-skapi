@@ -1,16 +1,13 @@
 <template lang="pug">
-br
-br
-br
-
 #confirmation 
     router-link(to="/")
-        img(src="@/assets/img/logo/symbol-logo.png" style="width: 40px;")
+        img(src="@/assets/img/logo/symbol-logo.png" alt="Skapi Logo" style="width: 40px; margin-bottom: .625rem")
 
-    .bottomLineTitle Verify Your Email
+    .page-title Verify Your Email
 
-    p Please check your inbox to verify your email address.
-    p The confirmation link has been sent to #[b {{decodedEmail}}].
+    hr
+
+    .page-desc Please check your inbox to verify your email address. #[br]The confirmation link has been sent to #[b {{decodedEmail}}].
 
     .resend
         template(v-if="resending")
@@ -22,10 +19,6 @@ br
     .resend(style="margin-top:8px")
         | Have you completed the email authentication?&nbsp;
         router-link(to='/login') Login
-
-br
-br
-br
 </template>
 
 <script setup lang="ts">
@@ -49,8 +42,8 @@ let resend = () => {
 
 <style scoped lang="less">
 #confirmation {
-    max-width: 640px;
-    padding: 0 20px;
+    max-width: 480px;
+    padding: 5rem 20px;
     margin: 0 auto;
 }
 

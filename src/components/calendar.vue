@@ -5,14 +5,12 @@
             input#here(type="date" hidden)
             input.big#year(type="text" :value="currentYear" @change.stop="(e) => updateCalendar(e, 'year')" @keyup.stop="(e) => {e.target.value=e.target.value.replace(/[^0-9]/g,'')}" style='cursor: text;')
             .month
-                //- .material-symbols-outlined.notranslate.prev(@click="reRender('prev')") arrow_back_ios
                 svg.svgIcon.reactive.prev(@click="reRender('prev')")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-back-ios" style="pointer-events: none;")
+                    use(xlink:href="/basic-icon.svg#icon-arrow-left" style="pointer-events: none;")
                 select(style='background-color:transparent' @change="(e) => updateCalendar(e, 'month')")
                     option(v-for="(m,i) in monthObj" :value="i" :selected="currentMonth === i") {{ m }}
-                //- .material-symbols-outlined.notranslate.next(@click="reRender('next')") arrow_forward_ios
                 svg.svgIcon.reactive.prev(@click="reRender('next')")
-                    use(xlink:href="@/assets/img/material-icon.svg#icon-arrow-forward-ios" style="pointer-events: none;")
+                    use(xlink:href="/material-icon.svg#icon-arrow-right" style="pointer-events: none;")
         .timeCont 
             .days 
                 .day Mo
@@ -27,15 +25,13 @@
     .timeSettingWrap
         .input(@mouseover="startDate ? showIcon.start = true : showIcon.start = false" @mouseleave="showIcon.start = false")
             input#start(type="text" placeholder="Start" readonly v-model="startDate" :class="{'active' : activeDate}" @click="activeDate = true")
-            //- .material-symbols-outlined.notranslate.fill.delete(:class="{'show' : showIcon.start}" @click="deleteDate") cancel
             svg.svgIcon.black.delete(:class="{'show' : showIcon.start}" @click="deleteDate")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-cancel-fill")
+                use(xlink:href="/basic-icon.svg#icon-x-circle")
         span ~
         .input(@mouseover="endDate ? showIcon.end = true : showIcon.end = false" @mouseleave="showIcon.end = false") 
             input#end(type="text" placeholder="End" readonly v-model="endDate" :class="{'active' : !activeDate}" @click="activeDate = false")
-            //- .material-symbols-outlined.notranslate.fill.delete(:class="{'show' : showIcon.end}" @click="deleteDate") cancel
             svg.svgIcon.black.delete(:class="{'show' : showIcon.end}" @click="deleteDate")
-                use(xlink:href="@/assets/img/material-icon.svg#icon-cancel-fill")
+                use(xlink:href="/basic-icon.svg#icon-x-circle")
 </template>
 
 <script setup>
@@ -97,7 +93,7 @@ let preventEnterKey = (e) => {
     if (e.key == 'Enter') {
         e.preventDefault();
 
-        if(activeInput.id == 'year') {
+        if (activeInput.id == 'year') {
             activeInput.blur();
         }
         return false;
@@ -162,7 +158,7 @@ let renderCalender = async (thisMonth) => {
 
     for (let i = 1; i <= nextDate; i++) {
         let currentTimestamp = new Date(currentYear.value, currentMonth.value, i);
-        if(currentTimestamp.getTime() == todayTimestamp.getTime() && today.getFullYear() == currentYear.value && today.getMonth() == currentMonth.value) {
+        if (currentTimestamp.getTime() == todayTimestamp.getTime() && today.getFullYear() == currentYear.value && today.getMonth() == currentMonth.value) {
             dates.value.push({ day: i, classes: 'date current today', time: currentTimestamp.getTime() });
         } else {
             dates.value.push({ day: i, classes: 'date current', time: currentTimestamp.getTime() });
@@ -194,7 +190,7 @@ let periodDateSetting = () => {
     }
 }
 
-let updateCalendar = async (e, what) => {    
+let updateCalendar = async (e, what) => {
     if (what == 'year') {
         if (e.target.value.length > 4) {
             alert('maxLength 4');
@@ -289,7 +285,7 @@ let createdDate = (e, date) => {
                 endDate.value = null;
                 selectedEnd.value = null;
                 activeDate.value = false;
-            } else  {
+            } else {
                 for (let i = 0; i < getDateClass.length; i++) {
                     if (selectedStart.value < getDateClass[i].dataset.time && getDateClass[i].dataset.time < selectedEnd.value) {
                         nextTick(() => {
@@ -327,10 +323,12 @@ let createdDate = (e, date) => {
 
 <style lang="less" scoped>
 #calendar {
-    width: 340px;
+    // width: 340px;
+    width: 100%;
     border-radius: 6px;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    background: #FAFAFA;
+    // border: 1px solid rgba(0, 0, 0, 0.15);
+    // background: #FAFAFA;
+    background: #16171a;
     box-shadow: 8px 12px 36px 0px rgba(0, 0, 0, 0.10);
     display: none;
 
@@ -362,8 +360,8 @@ let createdDate = (e, date) => {
             }
 
             svg {
-              height: 18px;
-              width: 18px;
+                height: 18px;
+                width: 18px;
             }
 
             .month {
@@ -375,12 +373,14 @@ let createdDate = (e, date) => {
                 font-size: 0.9rem;
             }
 
-            .prev, .next {
+            .prev,
+            .next {
                 flex-grow: 0;
                 cursor: pointer;
                 font-size: 0.9rem;
                 user-select: none;
-                
+                fill: #fff;
+
                 &:hover {
                     color: var(--main-color);
                 }
@@ -403,7 +403,8 @@ let createdDate = (e, date) => {
                 .day {
                     text-align: center;
                     width: calc(100% / 7);
-                    color: rgba(0, 0, 0, 0.25);
+                    // color: rgba(0, 0, 0, 0.25);
+                    color: rgba(255, 255, 255, 0.25);
                     font-size: 0.7rem;
                     font-weight: 500;
                 }
@@ -487,9 +488,10 @@ let createdDate = (e, date) => {
             height: 1px;
             top: 0;
             left: 0;
-            background: rgba(0, 0, 0, 0.10);
+            // background: rgba(0, 0, 0, 0.10);
+            background: rgba(255, 255, 255, 0.10);
             box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.06);
-        } 
+        }
 
         .input {
             position: relative;
@@ -507,6 +509,7 @@ let createdDate = (e, date) => {
                 &:hover {
                     opacity: 1;
                 }
+
                 &.show {
                     display: block;
                 }
@@ -514,11 +517,11 @@ let createdDate = (e, date) => {
         }
 
         input {
-            background-color: white;
-            width: 100%;
-            padding: 12px 10px;
-            border-radius: 6px;
-            outline: 1px solid rgba(0, 0, 0, 0.5);
+            // background-color: white;
+            // width: 100%;
+            // padding: 12px 10px;
+            // border-radius: 6px;
+            // outline: 1px solid rgba(0, 0, 0, 0.5);
             cursor: pointer;
 
             &.active {

@@ -1,33 +1,36 @@
 <template lang="pug">
-label._checkbox(:class="{'nonClickable' : disabled}" :style='{opacity: disabled ? ".5" : "1", "align-items": "center"}')
+label._checkbox(:class="{'nonClickable' : disabled}" :style='{opacity: disabled ? ".5" : "1"}')
     //- input(type="checkbox" :checked='modelValue' @input="e=>{modelValue = e.target.checked;$emit('update:modelValue', e.target.checked)}" :disabled="disabled" :name="name" hidden)
     input(type="checkbox" :checked='modelValue' @input.stop="e=>{$emit('update:modelValue', e.target.checked)}" :disabled="disabled" :name="name" hidden)
-    //- span.material-symbols-outlined.notranslate(:class='{fill:modelValue !== null}' :style='{"margin-top": hasSlotContent ? "-3px" : null}') {{ modelValue === null ? 'indeterminate_check_box' : modelValue ? 'check_box' : 'check_box_outline_blank' }}
     template(v-if="modelValue === null")
         svg.svgIcon.white(:class='{fill:modelValue !== null}')
-            use(xlink:href="@/assets/img/material-icon.svg#icon-indeterminate-check-box")
+            use(xlink:href="/material-icon.svg#icon-minus-square")
     template(v-else-if="modelValue")
         svg.svgIcon.white(:class='{fill:modelValue !== null}')
-            use(xlink:href="@/assets/img/material-icon.svg#icon-check-box-fill")
+            use(xlink:href="/material-icon.svg#icon-check-square")
     template(v-else)
         svg.svgIcon.white(:class='{fill:modelValue !== null}')
-            use(xlink:href="@/assets/img/material-icon.svg#icon-check-box-outline-blank")
+            use(xlink:href="/material-icon.svg#icon-square")
 
     div
         slot
 </template>
 <script setup>
-import { ref, onMounted, useSlots, watch } from 'vue';
-let { disabled, modelValue = ref(false), name } = defineProps({
+import { ref, onMounted, useSlots, watch } from "vue";
+let {
+    disabled,
+    modelValue = ref(false),
+    name,
+} = defineProps({
     disabled: Boolean,
     modelValue: {
         type: Boolean,
-        default: false
+        default: false,
     },
-    name: String
+    name: String,
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(["update:modelValue"]);
 const slots = useSlots();
 let hasSlotContent = ref(false);
 onMounted(() => {
@@ -44,7 +47,9 @@ label._checkbox {
     user-select: none;
 
     &>div {
-        font-size: 0.8rem;
+        // font-size: 0.8rem;
+        font-size: 1rem;
+        font-weight: 300;
         white-space: nowrap;
     }
 
@@ -59,6 +64,19 @@ label._checkbox {
 
     svg {
         margin-right: 4px;
+        width: 22px;
+        height: 22px;
+    }
+}
+
+@media (max-width: 430px) {
+    label._checkbox {
+        // align-items: unset;
+
+        &>div {
+            // white-space: wrap;
+            // margin-top: 4px;
+        }
     }
 }
 </style>

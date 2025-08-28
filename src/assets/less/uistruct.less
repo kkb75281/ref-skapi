@@ -4,86 +4,17 @@
  * Description: Defines extra styles not in main.less
  */
 
-.iconClick {
-    // clickable material icon
-    // .iconClick
-    //      .material-symbols-outlined !!use_round_icon!!
-    //      span Some Text (optional)
-
-    display: inline-block;
-    color: var(--main-color);
-    text-decoration: none;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 0.8rem;
-    position: relative;
-    user-select: none;
-
-    & > * {
-        vertical-align: middle;
-    }
-
-    &.square {
-        padding: 4px 8px;
-    }
-
-    &:hover {
-        text-decoration: none;
-    }
-
-    &:hover.square::before {
-        box-shadow: inset 0 0 0 100vw;
-    }
-
-    &:hover:not(.square) .material-symbols-outlined::before {
-        box-shadow: inset 0 0 0 100vw;
-    }
-
-    &.square::before {
-        position: absolute;
-        content: "";
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        border-radius: 4px;
-        opacity: 0.1;
-    }
-
-    .material-symbols-outlined {
-        position: relative;
-        font-size: 24px; // rotate 에니메이션이 필요한 경우가 있어서 바꿈 + 공간절약
-        // font-size: 1.5rem;
-    }
-
-    &:not(.square) {
-        .material-symbols-outlined::before {
-            position: absolute;
-            content: "";
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 100%;
-            opacity: 0.1;
-        }
-    }
-}
-
 .svgIcon {
-    //svg icon
-    fill: var(--main-color);
+    fill: #fff;
     width: 24px;
     height: 24px;
 
     &.reactive {
-        fill: black;
         &:hover {
             fill: var(--main-color);
         }
     }
     &.reactiveDanger {
-        fill: black;
         &:hover {
             fill: var(--caution-color);
         }
@@ -105,311 +36,171 @@
         width: 100% !important;
     }
 }
-.editHandle {
-    // text button for edit -> [edit]
-    font-size: 0.66rem;
-    font-weight: normal;
-    color: var(--main-color);
-    text-decoration: none;
-    vertical-align: super;
 
-    &:hover {
-        text-decoration: underline;
+.flex-wrap {
+    display: flex;
+    // align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    &.space-between {
+        justify-content: space-between;
     }
 
-    cursor: pointer;
+    &.center {
+        justify-content: center;
+    }
+
+    &.end {
+        justify-content: flex-end;
+    }
 }
 
-.infoBox {
-    // info box for displaying information
-    /*
+.page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
 
-    .infoBox
-        .infoTitle Title
-        hr
-        .state
-            .smallTitle Small Title
-            .smallValue Small Value
-        
-        .state.nobreak
-            .smallTitle Small Title
-            .ellipsis Ellipsised value...
+.page-title {
+    font-size: 2.375rem;
+    font-weight: 500;
+    line-height: 1.4;
+    margin: 0;
+}
 
-        .infoValue
-            .smallTitle Editable value
-            template(v-if="...")
-                form.editValue(@submit.prevent="...")
-                    input
+.page-desc {
+    color: #888888;
+    margin-bottom: 30px;
+    line-height: 1.4;
+}
 
-                    template(v-if="updatingValue")
-                        img.loading(src="@/assets/img/loading.png")
-                    label.material-symbols-outlined.save(v-else) done
-                        input(type="submit" hidden)
-                    span.material-symbols-outlined.cancel(@click="...") close
+.table-menu-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 2rem 0 0.5rem;
+    gap: 10px;
 
-            div(v-else)
-                .smallValue {{ value }}&nbsp;
-                span.editHandle(@click="...") [EDIT]
-        
-        .infoValue
-            .smallTitle Ellipsised editable value
-            template(v-if="...")
-                form.editValue(@submit.prevent="...")
-                    input
-
-                    template(v-if="updatingValue")
-                        img.loading(src="@/assets/img/loading.png")
-                    label.material-symbols-outlined.save(v-else) done
-                        input(type="submit" hidden)
-                    span.material-symbols-outlined.cancel(@click="...") close
-            template(v-else)
-                .ellipsis {{ value }}&nbsp;
-                span.editHandle(@click="...") [EDIT]
-    */
-
-    // --smallTitle-width: 130px; <- can be adjusted
-
-    --smallTitle-width: 120px;
-    position: relative;
-    background-color: #fff;
-    padding: 0 1.2rem;
-    // padding: 1.2rem;
-
-    // border-radius: 4px;
-    // border: 1px solid rgba(0, 0, 0, 0.2);
-    // box-shadow: 2px 2px 3px -2px rgba(0, 0, 0, 0.2);
-
-    .titleHead {
+    .table-functions,
+    .table-actions {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
         flex-wrap: wrap;
-        font-size: 1.5em;
-        margin: calc(0.83em - 4px) 0;
+        gap: 10px;
+    }
 
-        & > * {
-            margin: 4px 0;
-            flex-shrink: 0;
-        }
+    .search-btn {
+        max-width: unset;
+    }
 
-        h2 {
-            font-size: 1em;
-        }
+    .search-ing-btn {
+        height: 2.75rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        padding: 0 8px;
 
-        .moreInfo {
-            display: flex;
-            cursor: pointer;
-            font-size: 0.8rem;
-            align-items: center;
-
-            & > * {
-                vertical-align: middle;
-            }
-
-            .fill {
-                display: none;
-            }
+        .search-for-value {
+            padding-left: 5px;
+            color: #999;
+            cursor: auto;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            width: 100%;
 
             &:hover {
-                .fill {
-                    display: inline-block;
-                }
-                .noFill {
-                    display: none;
-                }
+                color: #fff;
             }
         }
-    }
 
-    .infoTitle {
-        display: inline-block;
-        font-size: 1.2rem;
-        font-weight: 500;
-    }
+        .reset-btn {
+            fill: #999;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
 
-    .state {
-        margin-bottom: 0.75rem;
-
-        &.nobreak {
-            white-space: nowrap;
-        }
-
-        .ellipsis {
-            max-width: calc(100% - var(--smallTitle-width));
-        }
-
-        .smallValue {
-            font-size: 0.8rem;
-        }
-    }
-
-    .smallTitle {
-        font-size: 0.8rem;
-        font-weight: 500;
-        display: inline-block;
-        width: var(--smallTitle-width);
-    }
-
-    .smallValue {
-        display: inline-block;
-        min-width: 280px;
-    }
-
-    .infoValue {
-        max-width: 100%;
-        margin-bottom: 0.5rem;
-
-        .smallTitle {
-            font-size: 0.7rem;
-            font-weight: normal;
-        }
-
-        &
-            > *:not(.ellipsis, span, .editHandle, a, select, ._tooltip):not(
-                :first-child
-            ) {
-            min-height: 44px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-start;
-            margin: 4px 0;
-        }
-
-        .editValue {
-            display: flex;
-            align-items: center !important;
-            flex-grow: 1;
-            position: relative;
-            flex-wrap: nowrap !important;
-            margin: 4px 0;
-            gap: 0.5rem;
-
-            // .loading {
-            //   vertical-align: middle;
-            //   // margin-right: 10px;
-            // }
-
-            .save,
-            .cancel {
-                position: relative;
-                font-size: 1.3rem;
-                font-weight: 500;
-                cursor: pointer;
-
-                &::after {
-                    position: absolute;
-                    content: "";
-                    top: 50%;
-                    left: 50%;
-                    width: 100%;
-                    height: 100%;
-                    padding: 4px;
-                    transform: translate(-50%, -50%);
-                    border-radius: 50%;
-                    background-color: #293fe61a;
-                    display: none;
-                }
-
-                &:hover::after {
-                    display: block;
-                }
-            }
-
-            .save {
-                color: var(--main-color);
-                // margin-right: 10px;
-            }
-
-            input,
-            .input {
-                flex-grow: 1;
-                // margin-right: 10px;
+            &:hover {
+                fill: #fff;
             }
         }
     }
 }
 
-.detailRecord {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
+.table-page-wrap {
     display: flex;
-    flex-direction: column;
-    background-color: #fff;
-    transform: translateX(110%);
-    transition: all 0.3s;
-    border: 1px solid #f2f2f4;
-    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 1rem;
+}
 
-    &.show {
-        transform: translateX(0px);
+.info-value-set {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1.25rem;
+
+    > div {
+        flex: 1;
+        min-width: 300px;
     }
 
-    .header {
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 60px;
-        padding: 0 20px;
-        font-weight: 500;
-        background-color: #f9f9f9;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        border-radius: 10px 10px 0 0;
+    @media (max-width: 430px) {
+        gap: 0.75rem;
 
-        .material-symbols-outlined {
-            cursor: pointer;
-        }
-
-        .name {
-            flex-grow: 1;
-            padding-left: 20px;
-        }
-
-        button {
-            padding: 0;
-            font-size: 0.9rem;
+        > div {
+            min-width: 100%;
         }
     }
+}
 
-    .content {
+.info-edit-wrap {
+    min-width: 300px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 13px;
+    background-color: #121214;
+
+    .info {
         flex-grow: 1;
-        overflow-y: auto;
-        padding: 20px;
-        font-size: 0.8rem;
+        min-width: 0;
 
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            margin-bottom: 12px;
-
-            &.indent {
-                padding-left: 20px;
-
-                .key {
-                    font-weight: normal;
-                    width: 180px;
-                }
-            }
-        }
-
-        .key {
-            font-weight: 500;
-            // width: 170px;
-            width: 200px;
+        .title {
+            margin-bottom: 10px;
+            opacity: 0.6;
         }
 
         .value {
-            flex-grow: 1;
-            min-width: 270px;
-            margin: 6px 0 6px;
-
-            input {
-                width: 100%;
-            }
+            font-size: 14px;
+            font-weight: 300;
+            // max-width: 12.5rem;
+            display: block;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+    }
+
+    .actions-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-left: auto;
+    }
+
+    @media (max-width: 430px) {
+        min-width: 100%;
     }
 }

@@ -6,7 +6,7 @@
 <script setup>
 let { active } = defineProps({
     active: Boolean,
-    disabled: Boolean
+    disabled: Boolean,
 });
 </script>
 <style lang="less">
@@ -23,7 +23,7 @@ let { active } = defineProps({
             background-color: var(--main-color);
 
             .toggleBtn {
-                right: 2px;
+                right: 3px;
                 transition: ease-in 0.05s;
             }
         }
@@ -36,19 +36,20 @@ let { active } = defineProps({
         width: 48px;
         height: 24px;
         border-radius: 16px;
-        background-color: rgba(0, 0, 0, 0.6);
+        background-color: #2c2d2f;
         transition: ease-in 0.05s;
         padding: 2px;
-        box-shadow: inset 0 0 0 2px rgba(0,0,0,0.1);
+        box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.1);
         .toggleBtn {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
+            top: 3px;
             right: 26px;
             border-radius: 50%;
             background-color: white;
             transition: ease-in 0.05s;
-            box-shadow: inset 0 0 0 2px rgba(0,0,0,0.1);
+            box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.1);
         }
     }
 }
