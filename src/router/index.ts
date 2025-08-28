@@ -123,6 +123,11 @@ const router = createRouter({
                     component: LandingPage,
                 },
                 {
+                    path: "use-cases",
+                    name: "usecases",
+                    component: () => import("@/views/use-cases.vue"),
+                },
+                {
                     path: "account-setting",
                     name: "accountsetting",
                     component: () => import("@/views/account-setting.vue"),
