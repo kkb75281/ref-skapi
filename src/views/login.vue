@@ -130,14 +130,27 @@ let login = (e) => {
             if (sucRedirect.length) {
                 let routename = sucRedirect.split("/")[1];
 
-                if (routename == 'refer') {
+                if (routename == "refer") {
                     let referName = sucRedirect.split("/")[2]; // /refer/name에서 name 추출
-                    router.push({ name: 'refer', params: { name: referName } });
+                    router
+                        .push({ name: "refer", params: { name: referName } })
+                        .then(() => {
+                            promiseRunning.value = false;
+                        });
                 } else {
-                    router.push({ path: "/my-services", query: { redirect: sucRedirect } });
+                    router
+                        .push({
+                            path: "/my-services",
+                            query: { redirect: sucRedirect },
+                        })
+                        .then(() => {
+                            promiseRunning.value = false;
+                        });
                 }
             } else {
-                router.push("/my-services");
+                router.push("/my-services").then(() => {
+                    promiseRunning.value = false;
+                });
             }
         })
         .catch((err) => {
@@ -159,8 +172,6 @@ let login = (e) => {
             } else {
                 error.value = err.message;
             }
-        })
-        .finally(() => {
             promiseRunning.value = false;
         });
 };
@@ -177,7 +188,7 @@ let login = (e) => {
 form {
     padding: 8px;
 
-    >label {
+    > label {
         margin-bottom: 16px;
     }
 
