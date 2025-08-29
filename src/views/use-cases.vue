@@ -5,13 +5,13 @@
             .section-title Use Cases
             .section-desc Pre-built modules for database, authentication, chat, and real-time communication. #[span.wordset Explore ready-to-use examples that show how Skapi features work in real applications.]
             .flex-wrap.link-card-wrap
-                a.link-card(href="https://github.com/broadwayinc/skapi-database-html-template" target="_blank")
+                a.link-card(href="https://github.com/broadwayinc/skapi-auth-html-template" target="_blank")
                     .icon
                         svg
                             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-users")
                     .title Auth
                     .desc A plain HTML starter showcasing Skapi’s authentication system. Includes login, signup, and account management features you can easily integrate.
-                a.link-card(href="https://github.com/broadwayinc/skapi-auth-html-template" target="_blank")
+                a.link-card(href="https://github.com/broadwayinc/skapi-database-html-template" target="_blank")
                     .icon
                         svg
                             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-database")
