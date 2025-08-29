@@ -41,18 +41,15 @@ template(v-else)
                 )
                     swiper-slide.service-swiper-item.ann
                         .title Announcement
-                        //- .desc Stable release is live, and services are running smoothly! You’re good to go.
                         .desc skapi-js has hit v1.0.260 — stable and good to go! We came a long way to provide you with the next standard of web development.
-                    swiper-slide.service-swiper-item.use(@click="router.push('/use-cases')")
+                    swiper-slide.service-swiper-item.use
                         .title Use Cases
-                        //- .desc Explore our example use cases for more project inspiration.
                         .desc Explore how developers are building full-stack apps, social platforms, dashboards, and more with Skapi. All without writing backend code.
-                        //- router-link.btn-more(to="/use-cases") See more
-                        .btn-more See more
+                        router-link.btn-more(to="/use-cases") See more
                     swiper-slide.service-swiper-item.new
                         .title New Features
-                        //- .desc A new feature just dropped! Check your dashboard and enjoy the update.
-                        .desc What’s New in v1.0.260: adds admin invites, advanced database controls, real-time syncing, WebRTC support, and user-specific alerts.
+                        .desc Invite service admins, Advanced database controls, WebRTC support for video chat and P2P apps, and send user-specific alerts.
+                        a.btn-more(href="https://docs.skapi.com/versionlog/versions.html" target="_blank") See more
 
                     .swiper-pagination
             .top-item.create-service
@@ -431,7 +428,6 @@ a {
 
     &.use {
         background: #ffd54a;
-        cursor: pointer;
 
         &::before {
             background: url("@/assets/img/myservice/img_useCase.png") no-repeat center right;
@@ -453,7 +449,7 @@ a {
         display: block;
         width: fit-content;
         cursor: pointer;
-        z-index: 1;
+        z-index: 2;
     }
 
     .swiper-pagination-fraction,
