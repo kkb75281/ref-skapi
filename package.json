@@ -13,10 +13,12 @@
         "build-only": "vite build",
         "type-check": "vue-tsc --build --force",
         "start": "serve dist",
-        "builddev": "node script.cjs; npm run build:ts; vite build --mode development"
+        "builddev": "node script.cjs; npm run build:ts; vite build --mode development",
+        "cachingicons": "node icon.cjs"
     },
     "dependencies": {
         "aos": "^3.0.0-beta.6",
+        "glob": "^11.0.3",
         "jsoncrawler": "^0.2.1",
         "mime": "^4.0.4",
         "skapi-js": "^1.0.261",

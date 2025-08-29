@@ -21,7 +21,7 @@ template(v-else)
                 style="margin-bottom: 0.75rem;")
             button.block.icon-text(type="button" :disabled="!newServiceName" :style="!newServiceName ? { backgroundColor: 'rgba(34, 35, 37, 1)' } : {}" @click="openCreateService")
                 svg
-                    use(xlink:href="/basic-icon.svg#icon-plus") 
+                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-plus") 
                 span Create
 
     .service-list(v-else)
@@ -56,7 +56,7 @@ template(v-else)
                 .title Create a new service
                 button.icon-text(@click="openCreateService")
                     svg
-                        use(xlink:href="/basic-icon.svg#icon-plus") 
+                        use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-plus") 
                     span Create
                 //- modalCreateService(:visible="showCreateModal" @close="showCreateModal = false")
         section.section.my-services-list
