@@ -105,6 +105,7 @@
     flex-grow: 1;
     background-color: #121214;
     border-radius: 1.0625rem;
+    padding: 0 1.5rem;
     overflow: hidden;
     color: #fff;
     text-align: left;
@@ -147,7 +148,7 @@
     }
 
     .desc {
-        padding: 0.7rem 1.5rem 1.5rem;
+        padding: 0.7rem 0 1.5rem;
         font-size: 14px;
         line-height: 1.5;
         color: rgba(255, 255, 255, 0.5);
