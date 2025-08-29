@@ -34,24 +34,22 @@ template(v-else)
                     :slidesPerView="1"
                     :spaceBetween="30"
                     :loop="true"
-                    :autoplay="{ delay: 2000, disableOnInteraction: false }"
+                    :autoplay="{ delay: 5000, disableOnInteraction: false }"
                     :pagination="{ clickable: true }"
                     :modules="[Pagination, Autoplay]"
 
                 )
                     swiper-slide.service-swiper-item.ann
                         .title Announcement
-                        //- .desc Stable release is live, and services are running smoothly! You’re good to go.
                         .desc skapi-js has hit v1.0.260 — stable and good to go! We came a long way to provide you with the next standard of web development.
                     swiper-slide.service-swiper-item.use
                         .title Use Cases
-                        //- .desc Explore our example use cases for more project inspiration.
                         .desc Explore how developers are building full-stack apps, social platforms, dashboards, and more with Skapi. All without writing backend code.
-                        a.btn-more(href="#") See more
+                        router-link.btn-more(to="/use-cases") See more
                     swiper-slide.service-swiper-item.new
                         .title New Features
-                        //- .desc A new feature just dropped! Check your dashboard and enjoy the update.
-                        .desc What’s New in v1.0.260: adds admin invites, advanced database controls, real-time syncing, WebRTC support, and user-specific alerts.
+                        .desc Invite service admins, Advanced database controls, WebRTC support for video chat and P2P apps, and send user-specific alerts.
+                        a.btn-more(href="https://docs.skapi.com/versionlog/versions.html" target="_blank") See more
 
                     .swiper-pagination
             .top-item.create-service
@@ -337,8 +335,7 @@ a {
         position: absolute;
         bottom: 0;
         right: 0;
-        background: url("@/assets/img/myservice/img_docs.png") no-repeat center
-            right;
+        background: url("@/assets/img/myservice/img_docs.png") no-repeat center right;
     }
 
     &:first-child {
@@ -349,8 +346,7 @@ a {
             top: 0;
             left: 0;
             position: absolute;
-            background: url("@/assets/img/myservice/bg_texture.svg") no-repeat
-                center;
+            background: url("@/assets/img/myservice/bg_texture.svg") no-repeat center;
             opacity: 0.2;
             z-index: 1;
         }
@@ -391,19 +387,6 @@ a {
         content: none;
     }
 
-    &::after {
-        content: "";
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        position: absolute;
-        background: url("@/assets/img/myservice/bg_texture.svg") no-repeat
-            center;
-        opacity: 0.2;
-        z-index: 1;
-    }
-
     .swiper {
         height: 100%;
     }
@@ -423,12 +406,23 @@ a {
         right: 0;
     }
 
+    &::after {
+        content: "";
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        position: absolute;
+        background: url("@/assets/img/myservice/bg_texture.svg") no-repeat center;
+        opacity: 0.2;
+        z-index: 1;
+    }
+
     &.ann {
         background: #60de87;
 
         &::before {
-            background: url("@/assets/img/myservice/img_announce.png") no-repeat
-                center right;
+            background: url("@/assets/img/myservice/img_announce.png") no-repeat center right;
         }
     }
 
@@ -436,8 +430,7 @@ a {
         background: #ffd54a;
 
         &::before {
-            background: url("@/assets/img/myservice/img_useCase.png") no-repeat
-                center right;
+            background: url("@/assets/img/myservice/img_useCase.png") no-repeat center right;
         }
     }
 
@@ -445,21 +438,23 @@ a {
         background: #675dff;
 
         &::before {
-            background: url("@/assets/img/myservice/img_newFeature.png")
-                no-repeat center right;
+            background: url("@/assets/img/myservice/img_newFeature.png") no-repeat center right;
         }
     }
 
     .btn-more {
+        position: relative;
         font-size: 1rem;
         margin-top: 0.75rem;
         display: block;
         width: fit-content;
+        cursor: pointer;
+        z-index: 2;
     }
 
     .swiper-pagination-fraction,
     .swiper-pagination-custom,
-    .swiper-horizontal > .swiper-pagination-bullets,
+    .swiper-horizontal>.swiper-pagination-bullets,
     .swiper-pagination-bullets.swiper-pagination-horizontal {
         width: initial;
     }
@@ -574,11 +569,9 @@ a {
 
                 &:hover {
                     cursor: pointer;
-                    background: linear-gradient(
-                            0deg,
+                    background: linear-gradient(0deg,
                             rgba(255, 255, 255, 0.03) 0%,
-                            rgba(255, 255, 255, 0.03) 100%
-                        ),
+                            rgba(255, 255, 255, 0.03) 100%),
                         #141315;
 
                     td {
@@ -596,7 +589,7 @@ a {
                 }
 
                 &.hidden {
-                    > *:not(.name) {
+                    >*:not(.name) {
                         opacity: 0.5;
                     }
                 }
@@ -706,8 +699,7 @@ a {
                     display: block;
                     width: 1.25rem;
                     height: 1.25rem;
-                    background: url("@/assets/img/myservice/icon_lock.svg")
-                        no-repeat center;
+                    background: url("@/assets/img/myservice/icon_lock.svg") no-repeat center;
                 }
             }
         }
