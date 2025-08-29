@@ -5,25 +5,25 @@
             .section-title Use Cases
             .section-desc Pre-built modules for database, authentication, chat, and real-time communication. #[span.wordset Explore ready-to-use examples that show how Skapi features work in real applications.]
             .flex-wrap.link-card-wrap
-                a.link-card(href="https://github.com/broadwayinc/skapi-database-html-template" target="_blank")
+                a.link-card(href="https://github.com/alsdk9879/skapi-auth-html-template" target="_blank")
                     .icon
                         svg
                             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-users")
                     .title Auth
                     .desc A plain HTML starter showcasing Skapi’s authentication system. Includes login, signup, and account management features you can easily integrate.
-                a.link-card(href="https://github.com/broadwayinc/skapi-auth-html-template" target="_blank")
+                a.link-card(href="https://github.com/alsdk9879/skapi-database-html-template" target="_blank")
                     .icon
                         svg
                             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-database")
                     .title Database
                     .desc An HTML example for building a simple photo-sharing app with Skapi’s database. Users can log in, upload photos, and fetch content securely.
-                a.link-card(href="https://github.com/broadwayinc/skapi-chat-html-template" target="_blank")
+                a.link-card(href="https://github.com/alsdk9879/skapi-chat-html-template" target="_blank")
                     .icon
                         svg
                             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-chat")
                     .title Chat
                     .desc A lightweight chat application template using Skapi’s real-time features. Supports login, message posting, and instant updates between users.
-                a.link-card(href="https://github.com/broadwayinc/skapi-webrtc-html-template" target="_blank")
+                a.link-card(href="https://github.com/alsdk9879/skapi-webrtc-html-template" target="_blank")
                     .icon
                         svg
                             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-webrtc")
@@ -58,8 +58,7 @@
 
 </template>
 
-<script setup>
-</script>
+<script setup></script>
 
 <style lang="less" scoped>
 .dark {
@@ -104,7 +103,6 @@
         padding: 4rem 1rem;
     }
 }
-
 
 .link-card-wrap {
     flex-wrap: wrap;
