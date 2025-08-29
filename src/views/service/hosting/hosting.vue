@@ -12,17 +12,17 @@ hr
 //- section
     .error(v-if='!user?.email_verified')
         svg
-            use(xlink:href="@/assets/img/icon/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
         router-link(to="/account-setting") Please verify your email address to modify settings.
         
     .error(v-else-if='currentService.service.active == 0')
         svg
-            use(xlink:href="@/assets/img/icon/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
         span This service is currently disabled.
 
     .error(v-else-if='currentService.service.active < 0')
         svg
-            use(xlink:href="@/assets/img/icon/material-icon.svg#icon-warning")
+            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
         span This service is currently suspended.
 
 template(v-if='!currentService.service.subdomain')
@@ -46,17 +46,17 @@ template(v-else-if='!user?.email_verified || currentService.service.active == 0 
     section.page-desc
         .error(v-if='!user?.email_verified')
             svg
-                use(xlink:href="@/assets/img/icon/material-icon.svg#icon-warning")
+                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
             router-link(to="/account-setting") Please verify your email address to modify settings.
 
         .error(v-if='currentService.service.active == 0')
             svg
-                use(xlink:href="@/assets/img/icon/material-icon.svg#icon-warning")
+                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
             span This service is currently disabled.
 
         .error(v-else-if='currentService.service.active < 0')
             svg
-                use(xlink:href="@/assets/img/icon/material-icon.svg#icon-warning")
+                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
             span This service is currently suspended.
 
         p.
@@ -76,7 +76,7 @@ template(v-else)
                     button.only-icon.gray.delete-btn(type="button" @click="removeHosting = true")
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-delete")
+                                use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-delete")
 
             .info-edit-wrap
                 .info
@@ -87,7 +87,7 @@ template(v-else)
                     button.only-icon.gray.edit-btn(type="button" @click="editSubdomain")
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-edit")
+                                use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-edit")
 
             .info-edit-wrap
                 .info
@@ -97,13 +97,13 @@ template(v-else)
                     button.only-icon.gray.edit-btn(:disabled='email_is_unverified_or_service_is_disabled || isPending' @click="open404FileInp")
                         .icon
                             svg(v-if="sdInfo?.['404']")
-                                use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-edit")
+                                use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-edit")
                             svg(v-else)
-                                use(xlink:href="@/assets/img/icon/material-icon.svg#icon-upload")
+                                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-upload")
                     button.only-icon.gray.edit-btn(v-if='!updatingValue.page404 && sdInfo?.["404"] && sdInfo?.["404"] !== "..."' @click="openRemove404=true")
                         .icon
                             svg
-                                use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-delete")
+                                use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-delete")
 
     section
         .table-menu-wrap
@@ -113,7 +113,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-refresh")
+                                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-refresh")
                         template(v-slot:tip) Refresh CDN
             .table-actions
                 button.inline.only-icon.gray(aria-label="Upload Files" @click='uploadFileInp.click()' :disabled="email_is_unverified_or_service_is_disabled || isPending || fetching")
@@ -122,7 +122,7 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-file-plus")
+                                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-file-plus")
                         template(v-slot:tip) Upload Files
                 button.inline.only-icon.gray(aria-label="Upload Folder" @click='uploadFolderInp.click()' :disabled="email_is_unverified_or_service_is_disabled || isPending || fetching")
                     input(type="file" hidden multiple directory webkitdirectory @change="e=>uploadFiles(e.target.files, getFileList)" ref="uploadFolderInp")
@@ -130,14 +130,14 @@ template(v-else)
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-folder-plus")
+                                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-folder-plus")
                         template(v-slot:tip) Upload Folder
                 button.inline.only-icon.gray(aria-label="Delete Selected" :disabled="email_is_unverified_or_service_is_disabled || isPending || fetching || !Object.keys(checked).length" @click='deleteSelected=true')
                     Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
                         template(v-slot:tool)
                             .icon
                                 svg
-                                    use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-delete")
+                                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-delete")
                         template(v-slot:tip) Delete Selected
 
         .table-cont-wrap
@@ -151,7 +151,7 @@ template(v-else)
                     .progress(:style="{ width: uploadProgress.progress + '%', height: '3px', background: 'var(--main-color)', position: 'absolute', top: '58px', left: '0px', zIndex: 1}")
                     .tableMsg.left
                         svg.svgIcon.moving(style="margin-right: 13px;")
-                            use(xlink:href="@/assets/img/icon/material-icon.svg#icon-upload")
+                            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-upload")
                         | Uploading: /{{ uploadProgress.name }}&nbsp;
                         b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
 
@@ -178,7 +178,7 @@ template(v-else)
                 template(v-else-if="!listDisplay || listDisplay?.length === 0" v-slot:msg)
                     .tableMsg.center.empty 
                         svg.svgIcon
-                            use(xlink:href="@/assets/img/icon/material-icon.svg#icon-upload")
+                            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-upload")
                         | Drag and drop files here
                 
                 template(v-slot:head)
@@ -190,26 +190,26 @@ template(v-else)
                             span(@click='toggleSort("name")')
                                 | Filename
                                 svg.svgIcon(v-if='sortBy === "name" && ascending')
-                                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-arrow-drop-down")
+                                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-arrow-drop-down")
                                 svg.svgIcon(v-if='sortBy === "name" && !ascending')
-                                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-arrow-drop-up")
+                                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-arrow-drop-up")
                             .resizer
 
                         th(style='width:160px;')
                             span(@click='toggleSort("size")')
                                 | Size
                                 svg.svgIcon(v-if='sortBy === "size" && ascending')
-                                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-arrow-drop-down")
+                                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-arrow-drop-down")
                                 svg.svgIcon(v-if='sortBy === "size" && !ascending')
-                                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-arrow-drop-up")
+                                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-arrow-drop-up")
                             .resizer
                         th(style='width:220px;')
                             span(@click='toggleSort("upl")')
                                 | Uploaded
                                 svg.svgIcon(v-if='sortBy === "upl" && ascending')
-                                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-arrow-drop-down")
+                                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-arrow-drop-down")
                                 svg.svgIcon(v-if='sortBy === "upl" && !ascending')
-                                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-arrow-drop-up")
+                                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-arrow-drop-up")
 
                 template(v-slot:body)
                     template(v-if="fetching || isPending || !subdomainReady || currentService.pending.cdn || uploadProgress.name || !listDisplay || listDisplay.length === 0")
@@ -221,7 +221,7 @@ template(v-else)
                         tr.uploadState(style="position:relative")
                             td
                                 svg.svgIcon.moving()
-                                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-upload")
+                                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-upload")
                             td.left(colspan="3")
                                 | Uploading: /{{ uploadProgress.name }}&nbsp;
                                 b ({{ uploadCount[0] }} / {{ uploadCount[1] }})
@@ -230,7 +230,7 @@ template(v-else)
                         tr.nohover(:class='{hoverRow:currentDirectory}' @click='currentDirectory = currentDirectory.split("/").length === 1 ? "" : currentDirectory.split("/").slice(0, -1).join("/")')
                             td
                                 svg.svgIcon
-                                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-folder-open-fill")
+                                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-folder-open-fill")
 
                             td.left(colspan="3")
                                 | {{hostUrl}}/{{ currentDirectory ? currentDirectory + '/' : '' }}
@@ -241,7 +241,7 @@ template(v-else)
 
                             td.overflow.left(v-if='ns.name[0] == "#"')
                                 svg.svgIcon(style='height: 22px; width: 22px; vertical-align: sub;')
-                                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-folder-fill")
+                                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-folder-fill")
                                 | &nbsp;{{ ns.name.slice(1) }}
                             td.overflow.left(v-else) {{ ns.name }}
                             td.overflow {{ getFileSize(ns.size) }}
@@ -254,15 +254,15 @@ template(v-else)
         button.inline.only-icon.gray(aria-label="Previous" @click="currentPage--;" :disabled="fetching || currentPage <= 1")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-chevron-left")
+                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-chevron-left")
         button.inline.only-icon.gray(aria-label="Next" @click="currentPage++;" :disabled="fetching || endOfList && currentPage >= maxPage")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-chevron-right")
+                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-chevron-right")
 
     .dragPopup(:class="{'show' : dragHere}")
         svg.svgIcon(style="width: 64px; height: 64px; fill: white")
-            use(xlink:href="@/assets/img/icon/material-icon.svg#icon-upload-cloud")
+            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-upload-cloud")
         p Drop your files to upload
 
 //- modal :: refresh CDN
@@ -289,7 +289,7 @@ Modal(:open="openRefreshCdn")
 Modal(:open="modifyMode.subdomain")
     .modal-close(@click="modifyMode.subdomain = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-x")
 
     .modal-title Change Subdomain
 
@@ -338,7 +338,7 @@ Modal.modal-removeHosting(:open="removeHosting" @close="removeHosting=false")
 Modal.modal-upload404(:open="modifyMode.page404" @close="modifyMode.page404 = false; selected404File = null;")
     .modal-close(@click="modifyMode.page404 = false; selected404File = null;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-x")
 
     .modal-title Upload 404 Page
 

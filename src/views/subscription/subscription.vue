@@ -5,7 +5,7 @@ main#subscription
             button.inline.icon-text.dark.btn-prev(type="button" @click="router.push('/my-services/' + serviceId + '/dashboard')")
                 .icon
                     svg
-                        use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-arrow-left")
+                        use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-arrow-left")
                 span Back
 
             //- button.inline.gray.caution.btn-cancel(v-if="serviceList[serviceId]?.service.plan !== 'Canceled' && serviceList[serviceId]?.service.plan !== 'Trial'" type="button" @click="()=>openCancelplan=true") Cancel Subscription
@@ -21,7 +21,7 @@ main#subscription
         .plan-wrap
             //- .plan-item.blue
                 svg.mark
-                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
+                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-card-mark")
                 .top
                     .title Trial
                     .desc 
@@ -43,7 +43,7 @@ main#subscription
 
             .plan-item.green
                 svg.mark
-                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
+                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-card-mark")
                 .top
                     .title Standard
                     .desc Suit best for small businesses, MVP, small projects, etc.
@@ -68,7 +68,7 @@ main#subscription
 
             .plan-item.yellow
                 svg.mark
-                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
+                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-card-mark")
                 .top
                     .title Premium
                     .desc Suit best for huge projects, Saas, social media, AI application, etc.

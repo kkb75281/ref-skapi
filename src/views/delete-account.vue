@@ -2,7 +2,7 @@
 main#confirmation 
     button.inline.icon-text.dark.btn-prev(type="button" @click="router.push('/account-setting')")
         svg
-            use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-arrow-left")
+            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-arrow-left")
         span Back
 
     br

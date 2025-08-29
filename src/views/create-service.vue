@@ -2,11 +2,11 @@
 Modal(:open="props.showCreateModal" @close="handleClose")
     .modal-close(@click="handleClose")
         svg.svgIcon
-            use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-x")
 
     .btn-prev(v-if="step > 1 && !props.firstServiceName")
         svg.svgIcon(@click="step--")
-            use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-arrow-left")
+            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-arrow-left")
     
     .service-name-part(v-if="step === 1")
         .modal-title Create your service
@@ -24,7 +24,7 @@ Modal(:open="props.showCreateModal" @close="handleClose")
         )
         button.create-button.block.icon-text(type="button" :disabled="!newServiceName" :style="!newServiceName ? { backgroundColor: 'rgba(34, 35, 37, 1)' } : {}" @click="step++")
             svg
-                use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-plus") 
+                use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-plus") 
             span Create
 
     .service-plan-part(v-else-if="step === 2")
@@ -36,7 +36,7 @@ Modal(:open="props.showCreateModal" @close="handleClose")
         .plan-wrap
             .plan-item.blue(:class="{'selected' : serviceMode == 'trial' && promiseRunning, 'disabled' : serviceMode !== 'trial' && promiseRunning}")
                 svg.mark
-                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
+                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-card-mark")
                 .top
                     .title Trial
                     .desc Best for testing and prototyping.
@@ -64,7 +64,7 @@ Modal(:open="props.showCreateModal" @close="handleClose")
 
             .plan-item.green(:class="{'selected' : (serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'standard' && serviceMode !== 'standard-perpetual') && promiseRunning}")
                 svg.mark
-                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
+                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-card-mark")
                 .top
                     .title Standard
                         span.ref(v-if="showReferPrice") (Referral Price)
@@ -100,7 +100,7 @@ Modal(:open="props.showCreateModal" @close="handleClose")
                         li(v-for="(des) in planSpec['Standard'].description") {{ des }}
             .plan-item.yellow(:class="{'selected' : (serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'premium' && serviceMode !== 'premium-perpetual') && promiseRunning}")
                 svg.mark
-                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
+                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-card-mark")
                 .top
                     .title Premium
                         span.ref(v-if="showReferPrice") (Referral Price)

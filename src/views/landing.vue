@@ -144,7 +144,7 @@
 				)
 					swiper-slide.plan-item.blue
 						svg.mark
-							use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
+							use(xlink:href="/material-icon.svg?v=20250829065753667#icon-card-mark")
 						.top
 							.title Trial
 							.desc Best for testing and prototyping. #[br]#[br]
@@ -163,7 +163,7 @@
 
 					swiper-slide.plan-item.green
 						svg.mark
-							use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
+							use(xlink:href="/material-icon.svg?v=20250829065753667#icon-card-mark")
 						.top
 							.title Standard
 							.desc Suit best for small businesses, MVP, small projects, etc.
@@ -183,7 +183,7 @@
 
 					swiper-slide.plan-item.yellow
 						svg.mark
-							use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
+							use(xlink:href="/material-icon.svg?v=20250829065753667#icon-card-mark")
 						.top
 							.title Premium
 							.desc Suit best for huge projects, Saas, social media, AI application, etc.

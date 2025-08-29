@@ -19,7 +19,7 @@ section
                 button.only-icon.gray.edit-btn(type="button" @click="copy(currentService.id)")
                     .icon
                         svg
-                            use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-copy")
+                            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-copy")
         .info-edit-wrap
             .info
                 .title Service Owner
@@ -28,7 +28,7 @@ section
                 button.only-icon.gray.edit-btn(type="button" @click="copy(currentService.owner)")
                     .icon
                         svg
-                            use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-copy")
+                            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-copy")
 
 section
     .middle-title For AI-Driven Development

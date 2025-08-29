@@ -4,11 +4,11 @@
         //- .copy(v-if='cpy_btn' @click="copy")
             span.copyMsg Copy code
             svg(height="16" width="16" style="margin-left: 5px;")
-                use(xlink:href="@/assets/img/icon/material-icon.svg#icon-file-copy-fill")          
+                use(xlink:href="/material-icon.svg#icon-file-copy-fill")          
         button.inline.icon-text.gray.btn-copy(v-if='cpy_btn' @click="copy")
             .icon
                 svg
-                    use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-copy")            
+                    use(xlink:href="/basic-icon.svg#icon-copy")            
             span.copyMsg Copy
     .code
         slot

@@ -10,7 +10,7 @@
     section
         .error(v-if="!user?.email_verified")
             svg
-                use(xlink:href="@/assets/img/icon/material-icon.svg#icon-warning")
+                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
             span.clickable(@click="modifyEmail = true;") Please verify your email address to modify settings.
 
     br
@@ -24,7 +24,7 @@
                 button.only-icon.gray.edit-btn(type="button" @click="modifyEmail = true;")
                     .icon
                         svg
-                            use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-edit")
+                            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-edit")
 
         .info-edit-wrap
             .info
@@ -34,7 +34,7 @@
                 button.only-icon.gray.edit-btn(type="button" @click="router.push('/change-password')")
                     .icon
                         svg
-                            use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-edit")
+                            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-edit")
 
         .info-edit-wrap
             .info
@@ -51,7 +51,7 @@
 Modal(:open="modifyEmail" @close="modifyEmail = false")
     .modal-close(@click="modifyEmail = false;")
         svg.svgIcon
-            use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-x")
 
     .modal-title Change Email
     .modal-desc.

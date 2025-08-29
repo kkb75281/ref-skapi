@@ -29,10 +29,10 @@
             //- .passwordIcon(@click="showPassword = !showPassword")
             //-     template(v-if="showPassword")
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/icon/material-icon.svg#icon-visibility-fill")
+            //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-fill")
             //-     template(v-else)
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/icon/material-icon.svg#icon-visibility-off-fill")
+            //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-off-fill")
 
         label.passwordInput
             | Confirm password
@@ -45,10 +45,10 @@
             //- .passwordIcon(@click="showPassword = !showPassword")
             //-     template(v-if="showPassword")
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/icon/material-icon.svg#icon-visibility-fill")
+            //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-fill")
             //-     template(v-else)
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="@/assets/img/icon/material-icon.svg#icon-visibility-off-fill")
+            //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-off-fill")
 
         .actions 
             Checkbox(v-model="form.subscribe" style='font-weight:unset;') I agree to receive newsletters from Skapi.
@@ -57,7 +57,7 @@
 
         .error(v-if="error")
             svg
-                use(xlink:href="@/assets/img/icon/material-icon.svg#icon-error")
+                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-error")
             span {{ error }}
         
         br

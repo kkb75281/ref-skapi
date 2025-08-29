@@ -8,25 +8,25 @@
                 a.link-card(href="https://github.com/broadwayinc/skapi-database-html-template" target="_blank")
                     .icon
                         svg
-                            use(xlink:href="@/assets/img/icon/material-icon.svg#icon-users")
+                            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-users")
                     .title Auth
                     .desc A plain HTML starter showcasing Skapi’s authentication system. Includes login, signup, and account management features you can easily integrate.
                 a.link-card(href="https://github.com/broadwayinc/skapi-auth-html-template" target="_blank")
                     .icon
                         svg
-                            use(xlink:href="@/assets/img/icon/material-icon.svg#icon-database")
+                            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-database")
                     .title Database
                     .desc An HTML example for building a simple photo-sharing app with Skapi’s database. Users can log in, upload photos, and fetch content securely.
                 a.link-card(href="https://github.com/broadwayinc/skapi-chat-html-template" target="_blank")
                     .icon
                         svg
-                            use(xlink:href="@/assets/img/icon/material-icon.svg#icon-chat")
+                            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-chat")
                     .title Chat
                     .desc A lightweight chat application template using Skapi’s real-time features. Supports login, message posting, and instant updates between users.
                 a.link-card(href="https://github.com/broadwayinc/skapi-webrtc-html-template" target="_blank")
                     .icon
                         svg
-                            use(xlink:href="@/assets/img/icon/material-icon.svg#icon-webrtc")
+                            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-webrtc")
                     .title WebRTC
                     .desc A basic video call app built with Skapi’s WebRTC capabilities. Logged-in users can request, accept, and join live video sessions.
 
