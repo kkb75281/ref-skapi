@@ -5,7 +5,7 @@ main#subscription
             button.inline.icon-text.dark.btn-prev(type="button" @click="router.push('/my-services/' + serviceId + '/dashboard')")
                 .icon
                     svg
-                        use(xlink:href="/basic-icon.svg#icon-arrow-left")
+                        use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-arrow-left")
                 span Back
 
             //- button.inline.gray.caution.btn-cancel(v-if="serviceList[serviceId]?.service.plan !== 'Canceled' && serviceList[serviceId]?.service.plan !== 'Trial'" type="button" @click="()=>openCancelplan=true") Cancel Subscription
@@ -21,7 +21,7 @@ main#subscription
         .plan-wrap
             //- .plan-item.blue
                 svg.mark
-                    use(xlink:href="/material-icon.svg#icon-card-mark")
+                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
                 .top
                     .title Trial
                     .desc 
@@ -43,7 +43,7 @@ main#subscription
 
             .plan-item.green
                 svg.mark
-                    use(xlink:href="/material-icon.svg#icon-card-mark")
+                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
                 .top
                     .title Standard
                     .desc Suit best for small businesses, MVP, small projects, etc.
@@ -68,7 +68,7 @@ main#subscription
 
             .plan-item.yellow
                 svg.mark
-                    use(xlink:href="/material-icon.svg#icon-card-mark")
+                    use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
                 .top
                     .title Premium
                     .desc Suit best for huge projects, Saas, social media, AI application, etc.
@@ -196,15 +196,15 @@ let availablePlans = computed(() => {
     if (serviceList[serviceId]?.service.plan == "Premium") {
         let notAvail =
             currentServiceSpec.value.service.service.users >
-                Number(planSpec["Premium"].users) ||
+            Number(planSpec["Premium"].users) ||
             currentServiceSpec.value.storage.database >
-                Number(planSpec["Premium"].storage.database) ||
+            Number(planSpec["Premium"].storage.database) ||
             currentServiceSpec.value.storage.cloud >
-                Number(planSpec["Premium"].storage.cloud) ||
+            Number(planSpec["Premium"].storage.cloud) ||
             currentServiceSpec.value.storage.host >
-                Number(planSpec["Premium"].storage.host) ||
+            Number(planSpec["Premium"].storage.host) ||
             currentServiceSpec.value.storage.email >
-                Number(planSpec["Premium"].storage.email);
+            Number(planSpec["Premium"].storage.email);
 
         return [
             notAvail ? null : "Downgrade",
@@ -475,50 +475,43 @@ let updateSubscription = async (ticket_id) => {
 
                     &.user {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_user.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
                         }
                     }
 
                     &.data {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_data.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
                         }
                     }
 
                     &.file {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_file.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
                         }
                     }
 
                     &.mail {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_mail.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
                         }
                     }
 
                     &.forbiden {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_forbiden.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
                         }
                     }
 
                     &.invitation {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_invitation.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
                         }
                     }
 
                     &.global {
                         &::before {
-                            background: url("@/assets/img/landingpage/icon_global.svg")
-                                no-repeat;
+                            background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
                         }
                     }
                 }

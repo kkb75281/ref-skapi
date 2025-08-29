@@ -134,7 +134,7 @@ section.ui-wrap
     .dialog.modal-scroll
         .modal-close
             svg.svgIcon
-                use(xlink:href="/basic-icon.svg#icon-x")
+                use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-x")
         form.modal-container
             .modal-header
                 .title Modal Title

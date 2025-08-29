@@ -144,7 +144,7 @@
 				)
 					swiper-slide.plan-item.blue
 						svg.mark
-							use(xlink:href="/material-icon.svg#icon-card-mark")
+							use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
 						.top
 							.title Trial
 							.desc Best for testing and prototyping. #[br]#[br]
@@ -163,7 +163,7 @@
 
 					swiper-slide.plan-item.green
 						svg.mark
-							use(xlink:href="/material-icon.svg#icon-card-mark")
+							use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
 						.top
 							.title Standard
 							.desc Suit best for small businesses, MVP, small projects, etc.
@@ -183,7 +183,7 @@
 
 					swiper-slide.plan-item.yellow
 						svg.mark
-							use(xlink:href="/material-icon.svg#icon-card-mark")
+							use(xlink:href="@/assets/img/icon/material-icon.svg#icon-card-mark")
 						.top
 							.title Premium
 							.desc Suit best for huge projects, Saas, social media, AI application, etc.
@@ -573,8 +573,7 @@ section {
 }
 
 .bg-colorful {
-    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% /
-        cover no-repeat;
+    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% / cover no-repeat;
 }
 
 .hero-bg {
@@ -618,13 +617,11 @@ section {
     }
 
     .linear-gradient {
-        background-image: linear-gradient(
-            92.16deg,
-            #0156ff 3.64%,
-            #079af2 37.09%,
-            #49c48d 61.65%,
-            #e0fa1c 100%
-        );
+        background-image: linear-gradient(92.16deg,
+                #0156ff 3.64%,
+                #079af2 37.09%,
+                #49c48d 61.65%,
+                #e0fa1c 100%);
         background-clip: text;
         -webkit-background-clip: text;
         color: transparent;
@@ -1030,50 +1027,43 @@ section {
 
                         &.user {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_user.svg")
-                                    no-repeat;
+                                background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
                             }
                         }
 
                         &.data {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_data.svg")
-                                    no-repeat;
+                                background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
                             }
                         }
 
                         &.file {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_file.svg")
-                                    no-repeat;
+                                background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
                             }
                         }
 
                         &.mail {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_mail.svg")
-                                    no-repeat;
+                                background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
                             }
                         }
 
                         &.forbiden {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_forbiden.svg")
-                                    no-repeat;
+                                background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
                             }
                         }
 
                         &.invitation {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_invitation.svg")
-                                    no-repeat;
+                                background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
                             }
                         }
 
                         &.global {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_global.svg")
-                                    no-repeat;
+                                background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
                             }
                         }
                     }
@@ -1277,8 +1267,7 @@ section {
         display: flex;
         flex-direction: column;
         border-radius: 1rem;
-        background: url("@/assets/img/landingpage/bg_contents1.svg") lightgray
-            50% / cover no-repeat;
+        background: url("@/assets/img/landingpage/bg_contents1.svg") lightgray 50% / cover no-repeat;
         color: #000;
 
         &:nth-child(2) {
@@ -1379,13 +1368,11 @@ section {
         margin: 0 auto 0;
 
         .title {
-            background-image: linear-gradient(
-                92.16deg,
-                #0156ff 3.64%,
-                #079af2 37.09%,
-                #49c48d 51.65%,
-                #e0fa1c 80%
-            );
+            background-image: linear-gradient(92.16deg,
+                    #0156ff 3.64%,
+                    #079af2 37.09%,
+                    #49c48d 51.65%,
+                    #e0fa1c 80%);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
@@ -1678,6 +1665,7 @@ section {
 @media (max-width: 480px) {
     .review {
         .review-swiper {
+
             .swiper-button-prev,
             .swiper-button-next {
                 display: none;
@@ -1772,6 +1760,7 @@ section {
         }
 
         .review-swiper {
+
             .swiper-button-prev,
             .swiper-button-next {
                 width: 56px;

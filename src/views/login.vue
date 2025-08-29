@@ -21,10 +21,10 @@
             //- .passwordIcon(@click.stop="showPassword = !showPassword")
             //-     template(v-if="showPassword")
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
+            //-             use(xlink:href="@/assets/img/icon/material-icon.svg#icon-visibility-fill")
             //-     template(v-else)
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
+            //-             use(xlink:href="@/assets/img/icon/material-icon.svg#icon-visibility-off-fill")
 
         .actions
             Checkbox(style='font-weight:unset;' @change="(e)=>{setLocalStorage(e)}" :disabled='promiseRunning' v-model='remVal') Remember Me
@@ -34,7 +34,7 @@
 
         .error(v-if="error")
             svg
-                use(xlink:href="/material-icon.svg#icon-error")
+                use(xlink:href="@/assets/img/icon/material-icon.svg#icon-error")
             div(v-if="enableAccount")
                 | {{ error }}
                 br
@@ -59,7 +59,7 @@
 Modal(:open="enableAccount")
     .modal-close(@click="enableAccount = false;")
         svg.svgIcon
-            use(xlink:href="/basic-icon.svg#icon-x")
+            use(xlink:href="@/assets/img/icon/basic-icon.svg#icon-x")
 
     .modal-title Enable Account
     .modal-desc.
@@ -188,7 +188,7 @@ let login = (e) => {
 form {
     padding: 8px;
 
-    > label {
+    >label {
         margin-bottom: 16px;
     }
 
