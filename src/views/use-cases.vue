@@ -73,12 +73,17 @@
 .use-cases-content {
     max-width: 1500px;
     margin: 0 auto;
-    padding: 5rem 20px;
+    padding: 5rem 1.25rem;
     text-align: center;
 
     .section-title {
         font-size: 2.7rem;
-        margin-bottom: 20px;
+        margin-bottom: 1.25rem;
+
+        @media (max-width: 430px) {
+            font-size: 1.875rem;
+            margin-bottom: 1rem;
+        }
     }
 
     .section-desc {
@@ -89,6 +94,14 @@
         font-size: 1.125rem;
         opacity: 0.7;
         margin-bottom: 3rem;
+
+        @media (max-width: 430px) {
+            font-size: 0.875rem;
+        }
+    }
+
+    @media (max-width: 430px) {
+        padding: 4rem 1rem;
     }
 }
 
