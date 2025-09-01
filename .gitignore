@@ -34,3 +34,5 @@ package-lock.json
 # .env.production
 deploy.py
 deploy-test.py
+
+/src/assets/download
