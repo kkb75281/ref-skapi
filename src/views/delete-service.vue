@@ -34,7 +34,7 @@ main#confirmation
         br
         br
         
-        .flex-wrap.end
+        .flex-wrap.center
             button.inline.gray.btn-cancel(type="submit" :disabled="!iUnderstand" :class="{red: iUnderstand}" @click='deleteService()') Delete Service
 
         //- .bottom
