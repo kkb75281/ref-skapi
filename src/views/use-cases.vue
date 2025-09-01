@@ -77,7 +77,7 @@
                         span.title html
                         p.desc A clean and minimal starter template using only HTML, CSS, and JavaScript. Great for beginners, quick prototypes, or when you need a lightweight setup without frameworks.
                         .btn-wrap
-                            a.btn.btn-demo(href="https://github.com/kkb75281/getting-started-template-vanilla-html" target="_blank")
+                            a.btn.btn-demo(href="https://getting-started-template-vanilla.skapi.com" target="_blank")
                                 .icon(style="width: 1.25rem; height: 1.25rem;")
                                     svg
                                         use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
@@ -91,7 +91,7 @@
                         span.title vue
                         p.desc A Vue 3 starter template designed for fast and efficient development. Ideal for learning Vue’s component-based structure or bootstrapping small to mid-sized apps.
                         .btn-wrap
-                            a.btn.btn-demo(href="https://github.com/kkb75281/getting-started-template-vue" target="_blank")
+                            a.btn.btn-demo(href="https://getting-started-template-vue.skapi.com" target="_blank")
                                 .icon(style="width: 1.25rem; height: 1.25rem;")
                                     svg
                                         use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
@@ -105,7 +105,7 @@
                         span.title angular
                         p.desc A complete Angular CLI setup with best practices in place. Perfect for building scalable, enterprise-level web applications with TypeScript support.
                         .btn-wrap
-                            a.btn.btn-demo(href="https://github.com/kkb75281/getting-started-template-angular" target="_blank")
+                            a.btn.btn-demo(href="https://getting-started-template-angular.skapi.com" target="_blank")
                                 .icon(style="width: 1.25rem; height: 1.25rem;")
                                     svg
                                         use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
@@ -119,7 +119,7 @@
                         span.title react
                         p.desc A modern React starter powered by Vite for blazing-fast builds and hot reload. Great for quickly creating single-page applications and experimenting with React hooks and components.
                         .btn-wrap
-                            a.btn.btn-demo(href="https://github.com/kkb75281/getting-started-template-react" target="_blank")
+                            a.btn.btn-demo(href="https://getting-started-template-react.skapi.com" target="_blank")
                                 .icon(style="width: 1.25rem; height: 1.25rem;")
                                     svg
                                         use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
