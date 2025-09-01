@@ -70,7 +70,7 @@
                 button.inline Sign-up
                 .signup 
                     | Have an account?&nbsp;
-                    RouterLink(:to="{name: 'login'}") Login
+                    RouterLink(:to="route.query.suc_redirect ? {name: 'login', query: { suc_redirect: route.query.suc_redirect }} : {name: 'login'}") Login
 </template>
 
 <script setup lang="ts">

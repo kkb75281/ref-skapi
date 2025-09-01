@@ -76,7 +76,8 @@ let registerReferMisc = () => {
 
 onMounted(() => {
     if (!checkUser()) {
-        router.push({ path: "/login", query: { refer_name: refer } });
+        // router.push({ path: "/signup", query: { refer_name: refer } });
+        router.push({ path: "/signup", query: { suc_redirect: '/refer/' + refer } });
         return;
     } else {
         // 로그인이 되어 있고
