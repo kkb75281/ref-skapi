@@ -9,22 +9,6 @@ section.page-header
 
 hr
 
-//- section
-    .error(v-if='!user?.email_verified')
-        svg
-            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
-        router-link(to="/account-setting") Please verify your email address to modify settings.
-        
-    .error(v-else-if='currentService.service.active == 0')
-        svg
-            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
-        span This service is currently disabled.
-
-    .error(v-else-if='currentService.service.active < 0')
-        svg
-            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
-        span This service is currently suspended.
-
 template(v-if='!currentService.service.subdomain')
     section(:class="{disabled: email_is_unverified_or_service_is_disabled}")
         p.page-desc.
@@ -349,13 +333,13 @@ Modal.modal-upload404(:open="modifyMode.page404" @close="modifyMode.page404 = fa
 
     form(@submit.prevent="change404")
         input(ref="focus_404" hidden type="file" name='file' required @change="handle404file" :disabled='updatingValue.page404' accept="text/html")
-        input.block(:placeholder="selected404File || 'No file selected.'" readonly style="cursor: default")
-        button.block.gray(type="button"  @click='focus_404.value = ""; focus_404.click()' style="margin-top: 0.75rem;") Select File
+        input.block(:placeholder="selected404File || uploaded404File || 'No file selected.'" readonly style="cursor: default")
+        button.block.gray(type="button" @click='focus_404.value = ""; focus_404.click()' style="margin-top: 0.75rem;") Select File
         .modal-btns
             .loader-wrap(v-if="updatingValue.page404")
                 .loader(style="--loader-color:white; --loader-size:12px")
             template(v-else)
-                button.block.btn-save(type="submit" :disabled="!selected404File") Save
+                button.block.btn-save(type="submit" :disabled="!selected404File || updatingValue.page404") Save
 
 //- modal :: remove 404
 Modal.modal-remove404(:open="openRemove404" @close="openRemove404=false")
@@ -464,22 +448,23 @@ let editSubdomain = () => {
 // modal
 let focus_404 = ref();
 let selected404File = ref(null);
+let uploaded404File = ref(null);
 let open404FileInp = async () => {
     modifyMode.page404 = true;
     await nextTick();
-    focus_404.value.click();
+
+    if (sdInfo.value?.['404']) {
+        uploaded404File.value = sdInfo.value['404'];
+    } else {
+        focus_404.value.click();
+    }
 };
 
 let handle404file = (e: any) => {
     let file = e.target?.files?.[0];
     let fileName = file?.name;
 
-    if (!file) {
-        selected404File.value = null;
-        return;
-    }
-
-    selected404File.value = fileName;
+    selected404File.value = fileName || null;
 };
 
 let progress404 = ref(0);

@@ -43,35 +43,35 @@ section
         .download-file
             .file-icon
                 svg
-                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-file-text")
+                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
             .file-name skapi.md
             .file-desc Skapi API documentation in Markdown format.
-            button.only-icon.gray.file-download(type="button" @click="downloadFile('@/assets/download/skapi.md', 'skapi.md')")
-                .icon
-                    svg
-                        use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
+            //- button.only-icon.gray.file-download(type="button" @click="downloadFile('@/assets/download/skapi.md', 'skapi.md')")
+            //- .icon
+                svg
+                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
 
         .download-file
             .file-icon
                 svg
-                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-file-text")
+                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
             .file-name skapi-types.md
             .file-desc Detailed information on all Skapi API data types.
-            button.only-icon.gray.file-download(type="button" @click="downloadFile('@/assets/download/skapi-types.md', 'skapi-types.md')")
-                .icon
-                    svg
-                        use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
+            //- button.only-icon.gray.file-download(type="button" @click="downloadFile('@/assets/download/skapi-types.md', 'skapi-types.md')")
+            //- .icon
+                svg
+                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
 
         .download-file
             .file-icon
                 svg
-                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-file-text")
+                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
             .file-name SYSTEM.md
             .file-desc The default system prompt for AI coding assistants.
-            button.only-icon.gray.file-download(type="button" @click="downloadFile('@/assets/download/SYSTEM.md', 'SYSTEM.md')")
-                .icon
-                    svg
-                        use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
+            //- button.only-icon.gray.file-download(type="button" @click="downloadFile('@/assets/download/SYSTEM.md', 'SYSTEM.md')")
+            //- .icon
+                svg
+                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
 
     .important-wrap
         .important-icon
@@ -145,19 +145,30 @@ section:not(.page-header) {
     min-width: 300px;
     background-color: #121214;
     border-radius: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    scale: 1;
 
     @media (max-width: 430px) {
         min-width: unset;
         width: 100%;
     }
 
+    &:hover {
+        scale: 0.98;
+
+        .file-name {
+            text-decoration: underline;
+        }
+    }
+
     .file-icon {
-        padding: 8px 0;
-        margin-bottom: 0.5rem;
+        // padding: 8px 0;
+        margin-bottom: 1rem;
 
         svg {
-            width: 1.75rem;
-            height: 1.75rem;
+            width: 1.5rem;
+            height: 1.5rem;
         }
     }
 
@@ -174,10 +185,15 @@ section:not(.page-header) {
         border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    button {
+    .icon {
         position: absolute;
         right: 20px;
-        top: 20px;
+        top: 22px;
+
+        svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
     }
 }
 
