@@ -198,6 +198,7 @@ section:not(.page-header) {
     p {
         margin: 0;
         opacity: 0.9;
+        line-height: 28px;
     }
 }
 </style>
