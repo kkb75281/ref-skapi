@@ -13,12 +13,18 @@
                         span.title Auth
                         p.desc A plain HTML starter showcasing Skapi’s authentication system. Includes login, signup, and account management features you can easily integrate.
                         .btn-wrap
-                            a.btn.btn-demo(href="https://github.com/alsdk9879/skapi-auth-html-template" target="_blank")
-                                .icon(style="width: 1.25rem; height: 1.25rem;")
-                                    svg
-                                        use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                            a.btn.btn-demo(href="https://skapi-auth-html-template.skapi.com/" target="_blank")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        .icon(style="width: 1.25rem; height: 1.25rem;")
+                                            svg
+                                                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                                    template(v-slot:tip) Demo
                             a.btn.btn-github(href="https://github.com/alsdk9879/skapi-auth-html-template" target="_blank")
-                                img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                    template(v-slot:tip) Github
                             
                 div.link-card
                     .icon
@@ -28,12 +34,18 @@
                         span.title Database
                         p.desc An HTML example for building a simple photo-sharing app with Skapi’s database. Users can log in, upload photos, and fetch content securely.
                         .btn-wrap
-                            a.btn.btn-demo(href="https://github.com/alsdk9879/skapi-database-html-template" target="_blank")
-                                .icon(style="width: 1.25rem; height: 1.25rem;")
-                                    svg
-                                        use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                            a.btn.btn-demo(href="https://skapi-database-html-template.skapi.com/" target="_blank")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        .icon(style="width: 1.25rem; height: 1.25rem;")
+                                            svg
+                                                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                                    template(v-slot:tip) Demo
                             a.btn.btn-github(href="https://github.com/alsdk9879/skapi-database-html-template" target="_blank")
-                                img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                    template(v-slot:tip) Github
 
                 div.link-card
                     .icon
@@ -43,12 +55,18 @@
                         span.title Chat
                         p.desc A lightweight chat application template using Skapi’s real-time features. Supports login, message posting, and instant updates between users.
                         .btn-wrap
-                            a.btn.btn-demo(href="https://github.com/alsdk9879/skapi-chat-html-template" target="_blank")
-                                .icon(style="width: 1.25rem; height: 1.25rem;")
-                                    svg
-                                        use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                            a.btn.btn-demo(href="https://skapi-chat-html-template.skapi.com/" target="_blank")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        .icon(style="width: 1.25rem; height: 1.25rem;")
+                                            svg
+                                                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                                    template(v-slot:tip) Demo
                             a.btn.btn-github(href="https://github.com/alsdk9879/skapi-chat-html-template" target="_blank")
-                                img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                    template(v-slot:tip) Github
                                 
                 div.link-card
                     .icon
@@ -58,12 +76,18 @@
                         span.title WebRTC
                         p.desc A basic video call app built with Skapi’s WebRTC capabilities. Logged-in users can request, accept, and join live video sessions.
                         .btn-wrap
-                            a.btn.btn-demo(href="https://github.com/alsdk9879/skapi-webrtc-html-template" target="_blank")
-                                .icon(style="width: 1.25rem; height: 1.25rem;")
-                                    svg
-                                        use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                            a.btn.btn-demo(href="https://skapi-webrtc-html-template.skapi.com/" target="_blank")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        .icon(style="width: 1.25rem; height: 1.25rem;")
+                                            svg
+                                                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                                    template(v-slot:tip) Demo
                             a.btn.btn-github(href="https://github.com/alsdk9879/skapi-webrtc-html-template" target="_blank")
-                                img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                    template(v-slot:tip) Github
 
     section.dark(style="padding-bottom: 2rem")
         .use-cases-content
@@ -78,11 +102,17 @@
                         p.desc A clean and minimal starter template using only HTML, CSS, and JavaScript. Great for beginners, quick prototypes, or when you need a lightweight setup without frameworks.
                         .btn-wrap
                             a.btn.btn-demo(href="https://github.com/kkb75281/getting-started-template-vanilla-html" target="_blank")
-                                .icon(style="width: 1.25rem; height: 1.25rem;")
-                                    svg
-                                        use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        .icon(style="width: 1.25rem; height: 1.25rem;")
+                                            svg
+                                                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                                    template(v-slot:tip) Demo
                             a.btn.btn-github(href="https://github.com/kkb75281/getting-started-template-vanilla-html" target="_blank")
-                                img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                    template(v-slot:tip) Github
 
                 div.link-card
                     .icon
@@ -92,11 +122,17 @@
                         p.desc A Vue 3 starter template designed for fast and efficient development. Ideal for learning Vue’s component-based structure or bootstrapping small to mid-sized apps.
                         .btn-wrap
                             a.btn.btn-demo(href="https://github.com/kkb75281/getting-started-template-vue" target="_blank")
-                                .icon(style="width: 1.25rem; height: 1.25rem;")
-                                    svg
-                                        use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        .icon(style="width: 1.25rem; height: 1.25rem;")
+                                            svg
+                                                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                                    template(v-slot:tip) Demo
                             a.btn.btn-github(href="https://github.com/kkb75281/getting-started-template-vue" target="_blank")
-                                img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                    template(v-slot:tip) Github
 
                 div.link-card
                     .icon
@@ -106,11 +142,17 @@
                         p.desc A complete Angular CLI setup with best practices in place. Perfect for building scalable, enterprise-level web applications with TypeScript support.
                         .btn-wrap
                             a.btn.btn-demo(href="https://github.com/kkb75281/getting-started-template-angular" target="_blank")
-                                .icon(style="width: 1.25rem; height: 1.25rem;")
-                                    svg
-                                        use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        .icon(style="width: 1.25rem; height: 1.25rem;")
+                                            svg
+                                                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                                    template(v-slot:tip) Demo
                             a.btn.btn-github(href="https://github.com/kkb75281/getting-started-template-angular" target="_blank")
-                                img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                    template(v-slot:tip) Github
 
                 div.link-card
                     .icon
@@ -120,15 +162,23 @@
                         p.desc A modern React starter powered by Vite for blazing-fast builds and hot reload. Great for quickly creating single-page applications and experimenting with React hooks and components.
                         .btn-wrap
                             a.btn.btn-demo(href="https://github.com/kkb75281/getting-started-template-react" target="_blank")
-                                .icon(style="width: 1.25rem; height: 1.25rem;")
-                                    svg
-                                        use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        .icon(style="width: 1.25rem; height: 1.25rem;")
+                                            svg
+                                                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-globe")
+                                    template(v-slot:tip) Demo
                             a.btn.btn-github(href="https://github.com/kkb75281/getting-started-template-react" target="_blank")
-                                img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
+                                    template(v-slot:tool)
+                                        img.icon(src="@/assets/img/landingpage/icon_github.svg" alt="Github icon")
+                                    template(v-slot:tip) Github
 
 </template>
 
-<script setup></script>
+<script setup>
+import Tooltip from "@/components/tooltip.vue";
+</script>
 
 <style lang="less" scoped>
 .dark {
@@ -295,6 +345,17 @@
         justify-content: flex-end;
         align-items: center;
         gap: 0.25rem;
+    }
+
+    .btn-demo {
+        position: relative;
+        top: 1px;
+    }
+}
+
+._tooltip {
+    > :deep(.tool) {
+        height: 1.375rem !important;
     }
 }
 </style>
