@@ -40,38 +40,26 @@ section
         | Download the files below to your project folder:
 
     .download-file-wrap
-        .download-file
+        .download-file(@click="downloadFile('@/assets/download/skapi.md', 'skapi.md')")
             .file-icon
                 svg
                     use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
             .file-name skapi.md
             .file-desc Skapi API documentation in Markdown format.
-            //- button.only-icon.gray.file-download(type="button" @click="downloadFile('@/assets/download/skapi.md', 'skapi.md')")
-            //- .icon
-                svg
-                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
 
-        .download-file
+        .download-file(@click="downloadFile('@/assets/download/skapi-types.md', 'skapi-types.md')")
             .file-icon
                 svg
                     use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
             .file-name skapi-types.md
             .file-desc Detailed information on all Skapi API data types.
-            //- button.only-icon.gray.file-download(type="button" @click="downloadFile('@/assets/download/skapi-types.md', 'skapi-types.md')")
-            //- .icon
-                svg
-                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
 
-        .download-file
+        .download-file(@click="downloadFile('@/assets/download/SYSTEM.md', 'SYSTEM.md')")
             .file-icon
                 svg
                     use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
             .file-name SYSTEM.md
             .file-desc The default system prompt for AI coding assistants.
-            //- button.only-icon.gray.file-download(type="button" @click="downloadFile('@/assets/download/SYSTEM.md', 'SYSTEM.md')")
-            //- .icon
-                svg
-                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
 
     .important-wrap
         .important-icon
@@ -132,7 +120,7 @@ section:not(.page-header) {
 .download-file-wrap {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: stretch;
     justify-content: space-between;
     gap: 20px;
     margin-bottom: 30px;
@@ -163,7 +151,6 @@ section:not(.page-header) {
     }
 
     .file-icon {
-        // padding: 8px 0;
         margin-bottom: 1rem;
 
         svg {
@@ -184,17 +171,6 @@ section:not(.page-header) {
         opacity: 0.7;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
-
-    .icon {
-        position: absolute;
-        right: 20px;
-        top: 22px;
-
-        svg {
-            width: 1.5rem;
-            height: 1.5rem;
-        }
-    }
 }
 
 .important-wrap {
@@ -206,15 +182,15 @@ section:not(.page-header) {
     background-color: rgba(240, 78, 78, 0.15);
 
     svg {
-        width: 1.75rem;
-        height: 1.75rem;
+        width: 1.5rem;
+        height: 1.5rem;
         opacity: 0.9;
     }
 
     p {
         margin: 0;
         opacity: 0.9;
-        line-height: 28px;
+        line-height: 1.5rem;
     }
 }
 </style>
