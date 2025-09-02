@@ -86,7 +86,7 @@ template(v-else)
                             svg
                                 use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-edit")
             .info-edit-wrap
-                .info(style="max-width: calc(100% - 180px);")
+                .info.email
                     .title Email Address
                     .value {{ newsletterEndpoint || '...' }}
                 .actions-wrap
@@ -743,17 +743,14 @@ let converter = (html: string, parsed: boolean, inv: boolean) => {
     }
 }
 
-.desc-wrap {
-    max-width: 37.5rem;
-    margin: 0 auto 2rem;
-    text-align: center;
-    color: #999;
+.info-edit-wrap {
+    .email {
+        max-width: calc(100% - 120px);
+    }
 
-    p {
-        margin: 0 auto 1rem;
-
-        &:last-child {
-            margin-bottom: 0;
+    @media (max-width: 430px) {
+        .email {
+            max-width: 100%;
         }
     }
 }

@@ -100,7 +100,7 @@ template(v-else)
                             svg
                                 use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-edit")
             .info-edit-wrap
-                .info(style="max-width: calc(100% - 180px);")
+                .info.email
                     .title Email Template
                     .value {{ email_templates[group] }}
                 .actions-wrap
@@ -121,7 +121,7 @@ template(v-else)
                 .info
                     span.txt-required * required
                     .title Email Placeholder
-                    .value
+                    .value.placeholder-wrap
                         span.placeholder.required(v-for="(placeholder, i) in emailPlaceholders[group].required" :key="'req-' + i")
                             | {{ placeholder }}
                         span.placeholder.optional(v-for="(placeholder, i) in emailPlaceholders[group].optional" :key="'opt-' + i")
@@ -927,11 +927,18 @@ init();
     }
 }
 
-.desc-wrap {
-    // max-width: 600px;
-    // margin: 2rem auto;
-    // text-align: center;
-    color: #999;
+.info-edit-wrap {
+    min-width: 400px;
+
+    .email {
+        max-width: calc(100% - 180px);
+    }
+
+    @media (max-width: 430px) {
+        .email {
+            max-width: 100%;
+        }
+    }
 }
 
 .email-btn-wrap {
@@ -974,22 +981,27 @@ init();
 }
 
 .placeholder-wrap {
-    font-size: 1rem;
-    text-align: center;
-    margin-bottom: 2rem;
-    color: #888888;
+    @media (max-width: 465px) {
+        >span {
+            display: block;
+            margin-right: 0 !important;
+            margin-bottom: 0.5rem;
 
-    svg {
-        width: 18px;
-        height: 18px;
-        fill: #888888;
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+        }
+
+        .placeholder.required {
+            margin-right: 0;
+
+            &::after {
+                position: static; // 기존 absolute 대신 static
+                display: inline; // 인라인으로 바로 뒤에 붙게
+                margin-left: 2px; // 약간의 간격
+            }
+        }
     }
-
-    .label {
-        margin-left: 0.25rem;
-        margin-right: 0.5rem;
-    }
-
 }
 
 .placeholder {
