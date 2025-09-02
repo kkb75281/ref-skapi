@@ -393,7 +393,6 @@ function onPlayerStateChange(event) {
 
 // contents > videos (youtube api 호출 - Videos 탭 클릭 시에만 API 호출)
 const fetchVideos = async () => {
-    console.log("videosLoaded.value (before): ", videosLoaded.value);
     if (videosLoaded.value) return; // 이미 로드된 경우 중복 호출 방지
 
     videosLoaded.value = true;
@@ -438,7 +437,6 @@ const fetchVideos = async () => {
             }));
 
         videos.value = filtered;
-        console.log("videos.value : ", videos.value);
     } catch (error) {
         videos.value = []; // 에러 발생 시 빈 배열로 초기화
     }
@@ -447,20 +445,9 @@ const fetchVideos = async () => {
 watch(
     () => activeTabs.value.contents,
     async (newTab) => {
-        console.log("newTab : ", newTab);
-        console.log("videosLoaded : ", videosLoaded.value);
         if (newTab === 1 && !videosLoaded.value) {
-            try {
-                console.log("== AA ==");
-                await fetchVideos();
-                videosLoaded.value = true;
-                console.log("AA == videosLoaded.value : ", videos.value);
-            } catch (error) {
-                videos.value = []; // 에러 발생 시 빈 배열로 초기화
-            }
-        } else {
-            console.log("== BB ==");
-            console.log("BB == videosLoaded.value : ", videos.value);
+            await fetchVideos();
+            videosLoaded.value = true;
         }
     }
 );
