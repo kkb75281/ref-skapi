@@ -619,10 +619,10 @@ img.symbol.mobile {
                     display: flex;
                     align-items: center;
                     flex-wrap: wrap;
-                    padding-right: 2.75rem;
+                    margin-right: 2.75rem;
 
                     &:last-child {
-                        padding-right: 0;
+                        margin-right: 0;
                     }
                 }
             }
