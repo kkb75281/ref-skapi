@@ -312,7 +312,7 @@ const activeTabs = ref({
 const articles = ref([]);
 const videos = ref([]);
 const videoSection = ref(null);
-const videoElement = ref(null);
+const videosLoaded = ref(false); // 비디오 데이터 로드 여부
 const player = ref(null);
 
 function setSwiperImageWidth() {
@@ -392,57 +392,62 @@ function onPlayerStateChange(event) {
 }
 
 // contents > videos (youtube api 호출 - Videos 탭 클릭 시에만 API 호출)
+const fetchVideos = async () => {
+    if (videosLoaded.value) return; // 이미 로드된 경우 중복 호출 방지
+
+    videosLoaded.value = true;
+
+    const CHANNEL_ID = "UC0e4MITESMr3OaUiyWHpdYA"; // Skapi 공식 유튜브 채널 ID
+    const API_KEY = import.meta.env.VITE_API_KEY;
+
+    try {
+        // 최신 영상 검색
+        const searchRes = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&order=date&maxResults=10&type=video`
+        );
+        const searchData = await searchRes.json();
+        const videoIds = searchData.items
+            .map((item) => item.id.videoId)
+            .join(",");
+
+        // 영상 상세 조회 (duration 얻기)
+        const videosRes = await fetch(
+            `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${videoIds}&part=snippet,contentDetails`
+        );
+        const videosData = await videosRes.json();
+
+        // shorts 제외 (60초 이하 제외) 후 3개만 선택
+        const filtered = videosData.items
+            .filter((item) => {
+                const duration = item.contentDetails.duration;
+                const match = duration.match(/PT((\d+)M)?(\d+)S/);
+                let totalSeconds = 0;
+                if (match) {
+                    const minutes = match[2] ? parseInt(match[2], 10) : 0;
+                    const seconds = match[3] ? parseInt(match[3], 10) : 0;
+                    totalSeconds = minutes * 60 + seconds;
+                }
+                return totalSeconds > 60;
+            })
+            .slice(0, 3)
+            .map((item) => ({
+                id: item.id,
+                title: item.snippet.title,
+                description: item.snippet.description,
+            }));
+
+        videos.value = filtered;
+    } catch (error) {
+        videos.value = []; // 에러 발생 시 빈 배열로 초기화
+    }
+};
+
 watch(
     () => activeTabs.value.contents,
     async (newTab) => {
-        if (newTab === 1 && videos.value.length === 0) {
-            const CHANNEL_ID = "UC0e4MITESMr3OaUiyWHpdYA"; // Skapi 공식 유튜브 채널 ID
-            const API_KEY = import.meta.env.VITE_API_KEY;
-
-            try {
-                // 최신 영상 검색
-                const searchRes = await fetch(
-                    `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet&order=date&maxResults=10&type=video`
-                );
-                const searchData = await searchRes.json();
-                const videoIds = searchData.items
-                    .map((item) => item.id.videoId)
-                    .join(",");
-
-                // 영상 상세 조회 (duration 얻기)
-                const videosRes = await fetch(
-                    `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${videoIds}&part=snippet,contentDetails`
-                );
-                const videosData = await videosRes.json();
-
-                // shorts 제외 (60초 이하 제외) 후 3개만 선택
-                const filtered = videosData.items
-                    .filter((item) => {
-                        const duration = item.contentDetails.duration;
-                        const match = duration.match(/PT((\d+)M)?(\d+)S/);
-                        let totalSeconds = 0;
-                        if (match) {
-                            const minutes = match[2]
-                                ? parseInt(match[2], 10)
-                                : 0;
-                            const seconds = match[3]
-                                ? parseInt(match[3], 10)
-                                : 0;
-                            totalSeconds = minutes * 60 + seconds;
-                        }
-                        return totalSeconds > 60;
-                    })
-                    .slice(0, 3)
-                    .map((item) => ({
-                        id: item.id,
-                        title: item.snippet.title,
-                        description: item.snippet.description,
-                    }));
-
-                videos.value = filtered;
-            } catch (error) {
-                videos.value = []; // 에러 발생 시 빈 배열로 초기화
-            }
+        if (newTab === 1 && !videosLoaded.value) {
+            await fetchVideos();
+            videosLoaded.value = true;
         }
     }
 );
@@ -573,7 +578,8 @@ section {
 }
 
 .bg-colorful {
-    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% / cover no-repeat;
+    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% /
+        cover no-repeat;
 }
 
 .hero-bg {
@@ -617,11 +623,13 @@ section {
     }
 
     .linear-gradient {
-        background-image: linear-gradient(92.16deg,
-                #0156ff 3.64%,
-                #079af2 37.09%,
-                #49c48d 61.65%,
-                #e0fa1c 100%);
+        background-image: linear-gradient(
+            92.16deg,
+            #0156ff 3.64%,
+            #079af2 37.09%,
+            #49c48d 61.65%,
+            #e0fa1c 100%
+        );
         background-clip: text;
         -webkit-background-clip: text;
         color: transparent;
@@ -1027,43 +1035,50 @@ section {
 
                         &.user {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_user.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.data {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_data.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.file {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_file.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.mail {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_mail.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.forbiden {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_forbiden.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.invitation {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_invitation.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.global {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_global.svg")
+                                    no-repeat;
                             }
                         }
                     }
@@ -1267,7 +1282,8 @@ section {
         display: flex;
         flex-direction: column;
         border-radius: 1rem;
-        background: url("@/assets/img/landingpage/bg_contents1.svg") lightgray 50% / cover no-repeat;
+        background: url("@/assets/img/landingpage/bg_contents1.svg") lightgray
+            50% / cover no-repeat;
         color: #000;
 
         &:nth-child(2) {
@@ -1279,14 +1295,14 @@ section {
         }
 
         .title {
-            font-size: 2.125rem;
+            font-size: 1.5rem;
             font-weight: 500;
             line-height: 1.3;
             margin-bottom: 1.25rem;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 4;
             -webkit-box-orient: vertical;
         }
 
@@ -1368,11 +1384,13 @@ section {
         margin: 0 auto 0;
 
         .title {
-            background-image: linear-gradient(92.16deg,
-                    #0156ff 3.64%,
-                    #079af2 37.09%,
-                    #49c48d 51.65%,
-                    #e0fa1c 80%);
+            background-image: linear-gradient(
+                92.16deg,
+                #0156ff 3.64%,
+                #079af2 37.09%,
+                #49c48d 51.65%,
+                #e0fa1c 80%
+            );
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
@@ -1665,7 +1683,6 @@ section {
 @media (max-width: 480px) {
     .review {
         .review-swiper {
-
             .swiper-button-prev,
             .swiper-button-next {
                 display: none;
@@ -1760,7 +1777,6 @@ section {
         }
 
         .review-swiper {
-
             .swiper-button-prev,
             .swiper-button-next {
                 width: 56px;
