@@ -231,7 +231,7 @@ Modal.modal-deleteEmail(:open="emailToDelete" @close="emailToDelete=false")
 
 //- modal :: set email alias
 Modal.modal-setAlias(:open="showSetAliasModal" @close="showSetAliasModal=false")
-    .modal-close(@click="showSetAliasModal = false; emailAliasVal.value = '';")
+    .modal-close(@click="showSetAliasModal = false; emailAliasVal = '';")
         svg.svgIcon
             use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-x")
 
