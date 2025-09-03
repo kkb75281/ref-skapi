@@ -1,13 +1,10 @@
 <template lang="pug">
 section.page-header
     .page-title Bulk Email
-    .flex-wrap
-        select(v-if='!needsEmailAlias' v-model="activeTabs")
-            option(v-for="(tab, index) in emailTypeSelect" :key="index" :value="index" :class="{ active: activeTabs === index }") {{ tab }}
-        a.btn-docs(href='https://docs.skapi.com/email/newsletters.html' target="_blank")
-            button.inline.icon-text.sm.gray(style="height: 100%;")
-                img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
-                | Go Docs
+    a.btn-docs(href='https://docs.skapi.com/email/newsletters.html' target="_blank")
+        button.inline.icon-text.sm.gray(style="height: 100%;")
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
+            | Go Docs
 
 hr
 
@@ -61,17 +58,18 @@ template(v-else-if='!user?.email_verified || currentService.service.active == 0 
         router-link(v-else-if='!user?.email_verified' to="/account-setting") Click here to verify your email address.
 
 template(v-else)
+    ul.tab-menu
+        li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
+
     section
         template(v-if='mailType === "Newsletter"')
             p.page-desc.
                 Once the users have subscribed #[span.wordset to your newsletter,]
-                #[br]
                 they will be able to receive your emails sent to the address provided below:
         template(v-else)
             p.page-desc.
                 Once the users have subscribed to your service mail,
                 they will be able to receive your emails sent to the address provided below:
-                #[br]
                 User must be logged in to subscribe to Service Mail, and the user must have their email verified.
 
     section
@@ -617,11 +615,11 @@ let converter = (html: string, parsed: boolean, inv: boolean) => {
     }
 }
 
-// .page-desc {
-//     text-align: center;
-//     margin: 2rem auto;
-//     max-width: 620px;
-// }
+.page-desc {
+    max-width: 55rem;
+    margin: 2rem auto 2.5rem;
+    text-align: center;
+}
 
 #registerForm {
     &.flex {

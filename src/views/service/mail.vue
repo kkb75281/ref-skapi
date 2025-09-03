@@ -1,13 +1,10 @@
 <template lang="pug">
 section.page-header
     .page-title Automated Email
-    .flex-wrap
-        select(v-if='!needsEmailAlias' v-model="activeTabs")
-            option(v-for="(tab, index) in emailTypeSelect" :key="index" :value="index" :class="{ active: activeTabs === index }") {{ tab }}
-        a.btn-docs(href='https://docs.skapi.com/email/email-templates.html' target="_blank")
-            button.inline.icon-text.sm.gray(style="height: 100%;")
-                img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
-                | Go Docs
+    a.btn-docs(href='https://docs.skapi.com/email/email-templates.html' target="_blank")
+        button.inline.icon-text.sm.gray(style="height: 100%;")
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
+            | Go Docs
 
 hr
 
@@ -62,6 +59,14 @@ template(v-else-if='!user?.email_verified || currentService.service.active == 0 
         router-link(v-else-if='!user?.email_verified' to="/account-setting") Click here to verify your email address.
 
 template(v-else)
+    //- .flex-wrap.center.email-type(style="margin-bottom:3rem")
+        button.inline.sm.dark(v-for="(tab, index) in emailTypeSelect" :key="index" :value="index" :class="{ active: activeTabs === index }" @click="activeTabs = index") {{ tab }}
+
+    //- hr
+
+    ul.tab-menu
+        li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
+
     section
         template(v-if='emailType === "Signup Confirmation"')
             p.page-desc.
@@ -82,7 +87,6 @@ template(v-else)
             p.page-desc.
                 Invitation Email is sent when the user is invited to join the service.
                 #[span.wordset You can invite new users] to your service from the #[router-link(to='users') Users] page.
-                #[br]
                 #[span.wordset User can login] with provided email and password after they accept the invitation by clicking on the link provided in the email.
 
         template(v-if='emailType === "Newsletter Confirmation"')
@@ -111,7 +115,7 @@ template(v-else)
                     button.only-icon.gray.btn-preview(type="button" @click="showPreview = true; previewModal.current = true; previewModal.subject = null; beforeTemp = null;")
                         .icon
                             svg
-                                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-preview")
+                                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-eye")
                     a(:href="'mailto:' + mailEndpoint")
                         button.only-icon.gray.btn-send(type="button")
                             .icon
@@ -886,10 +890,24 @@ init();
 </script>
 
 <style lang="less" scoped>
+.page-desc {
+    max-width: 50rem;
+    margin: 2rem auto 2.5rem;
+    text-align: center;
+}
+
 .txt-required {
     position: absolute;
     right: 1.3rem;
     top: 1.3rem;
+}
+
+.email-type {
+    button {
+        &.active {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+    }
 }
 
 #registerForm {
