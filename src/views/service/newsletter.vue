@@ -41,12 +41,14 @@ template(v-else-if='!user?.email_verified || currentService.service.active == 0 
         .error(v-if='currentService.service.active == 0')
             svg
                 use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
-            span This service is currently disabled.
+            //- span This service is currently disabled.
+            router-link(:to="`/my-services/${currentService.id}/dashboard`") This service is currently disabled.
 
         .error(v-else-if='currentService.service.active < 0')
             svg
                 use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
-            span This service is currently suspended.
+            //- span This service is currently suspended.
+            router-link(:to="`/my-services/${currentService.id}/dashboard`") This service is currently suspended.
 
         p.
             You can send bulk emails to your newsletter subscribers.
@@ -54,8 +56,8 @@ template(v-else-if='!user?.email_verified || currentService.service.active == 0 
             #[br]
             #[span.wordset If you have not verified your email address, please do so first.]
 
-        router-link(v-if='currentService.service.active == 0' :to="`/my-services/${currentService.id}/dashboard`") Click here to enable the service.
-        router-link(v-else-if='!user?.email_verified' to="/account-setting") Click here to verify your email address.
+        //- router-link(v-if='currentService.service.active == 0' :to="`/my-services/${currentService.id}/dashboard`") Click here to enable the service.
+        //- router-link(v-else-if='!user?.email_verified' to="/account-setting") Click here to verify your email address.
 
 template(v-else)
     ul.tab-menu
