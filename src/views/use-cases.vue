@@ -222,134 +222,134 @@ import Tooltip from "@/components/tooltip.vue";
     @media (max-width: 430px) {
         padding: 4rem 1rem;
     }
-}
 
-.link-card-wrap {
-    flex-wrap: wrap;
-    gap: 20px;
-}
+    .link-card-wrap {
+        flex-wrap: wrap;
+        gap: 20px;
 
-.link-card {
-    position: relative;
-    width: 23%;
-    min-width: 250px;
-    flex-grow: 1;
-    background-color: #121214;
-    border-radius: 1.0625rem;
-    padding: 1.5rem;
-    overflow: hidden;
-    color: #fff;
-    text-align: left;
-    transition: all 0.3s ease;
-    scale: 0.98;
-    display: flex;
-    flex-direction: column;
+        .link-card {
+            position: relative;
+            width: 23%;
+            min-width: 250px;
+            flex-grow: 1;
+            background-color: #121214;
+            border-radius: 1.0625rem;
+            padding: 1.5rem;
+            overflow: hidden;
+            color: #fff;
+            text-align: left;
+            transition: all 0.3s ease;
+            scale: 0.98;
+            display: flex;
+            flex-direction: column;
 
-    &:hover {
-        text-decoration: none;
-        scale: 1;
+            &:hover {
+                text-decoration: none;
+                scale: 1;
 
-        .card-cont {
-            .btn {
-                padding: 2px;
+                .card-cont {
+                    .btn {
+                        padding: 2px;
+                    }
+
+                    .icon {
+                        opacity: 0.8;
+                    }
+                }
             }
 
             .icon {
-                opacity: 0.8;
-            }
-        }
-    }
+                height: 8rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 0.5rem 0.5rem 0 0;
+                transition: all 0.3s ease;
+                opacity: 0.5;
+                cursor: default;
 
-    .icon {
-        height: 8rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 0.5rem 0.5rem 0 0;
-        transition: all 0.3s ease;
-        opacity: 0.5;
-        cursor: default;
-
-        svg {
-            width: 32px;
-            height: 32px;
-        }
-    }
-
-    .card-cont {
-        margin-top: 1.5rem;
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-
-        .icon {
-            width: 1.375rem;
-            height: 1.375rem;
-            border-bottom: none;
-
-            svg {
-                width: 1.375rem;
-                height: 1.375rem;
-            }
-        }
-
-        .btn {
-            background: transparent;
-            padding: 2px;
-            width: fit-content;
-            height: initial;
-            min-height: initial;
-
-            &:hover {
-                opacity: 1;
-                background: rgb(62 62 62 / 80%);
-
-                &::before,
-                &::after {
-                    content: none;
-                    opacity: 0;
+                svg {
+                    width: 32px;
+                    height: 32px;
                 }
+            }
+
+            .card-cont {
+                margin-top: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                flex: 1;
 
                 .icon {
-                    opacity: 0.8;
-                    cursor: pointer;
+                    width: 1.375rem;
+                    height: 1.375rem;
+                    border-bottom: none;
+
+                    svg {
+                        width: 1.375rem;
+                        height: 1.375rem;
+                    }
+                }
+
+                .btn {
+                    background: transparent;
+                    padding: 2px;
+                    width: fit-content;
+                    height: initial;
+                    min-height: initial;
+
+                    &:hover {
+                        opacity: 1;
+                        background: rgb(62 62 62 / 80%);
+
+                        &::before,
+                        &::after {
+                            content: none;
+                            opacity: 0;
+                        }
+
+                        .icon {
+                            opacity: 0.8;
+                            cursor: pointer;
+                        }
+                    }
                 }
             }
+
+            .desc {
+                margin: 1rem 0 0;
+                font-size: 14px;
+                line-height: 1.5;
+                color: rgba(255, 255, 255, 0.5);
+                flex: 1;
+            }
+
+            .img {
+                max-width: 100%;
+                height: 200px;
+                border-radius: 0.5rem;
+                overflow: hidden;
+
+                img {
+                    max-width: 100%;
+                    object-fit: cover;
+                }
+            }
+
+            .btn-wrap {
+                margin-top: 1.5rem;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                gap: 0.25rem;
+            }
+
+            .btn-demo {
+                position: relative;
+                top: 1px;
+            }
         }
-    }
-
-    .desc {
-        margin: 1rem 0 0;
-        font-size: 14px;
-        line-height: 1.5;
-        color: rgba(255, 255, 255, 0.5);
-        flex: 1;
-    }
-
-    .img {
-        max-width: 100%;
-        height: 200px;
-        border-radius: 0.5rem;
-        overflow: hidden;
-
-        img {
-            max-width: 100%;
-            object-fit: cover;
-        }
-    }
-
-    .btn-wrap {
-        margin-top: 1.5rem;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 0.25rem;
-    }
-
-    .btn-demo {
-        position: relative;
-        top: 1px;
     }
 }
 
