@@ -71,8 +71,12 @@ import Tooltip from "@/components/tooltip.vue";
 .dark {
     background-color: #111112;
 
-    .link-card {
-        background-color: #16171a;
+    .use-cases-content {
+        .link-card-wrap {
+            .link-card {
+                background-color: #16171a;
+            }
+        }
     }
 }
 
@@ -81,6 +85,10 @@ import Tooltip from "@/components/tooltip.vue";
     margin: 0 auto;
     padding: 5rem 1.25rem;
     text-align: center;
+
+    @media (max-width: 430px) {
+        padding: 4rem 1rem;
+    }
 
     .section-title {
         font-size: 2.7rem;
@@ -106,34 +114,34 @@ import Tooltip from "@/components/tooltip.vue";
         }
     }
 
-    @media (max-width: 430px) {
-        padding: 4rem 1rem;
-    }
-
     .link-card-wrap {
         flex-wrap: wrap;
         gap: 20px;
+    }
 
-        .link-card {
-            position: relative;
-            width: 23%;
-            min-width: 250px;
-            flex-grow: 1;
-            background-color: #121214;
-            border-radius: 1.0625rem;
-            padding: 1.5rem;
-            overflow: hidden;
-            color: #fff;
-            text-align: left;
-            transition: all 0.3s ease;
-            scale: 0.98;
-            display: flex;
-            flex-direction: column;
+    .link-card {
+        position: relative;
+        width: 23%;
+        min-width: 250px;
+        flex-grow: 1;
+        background-color: #121214;
+        border-radius: 1.0625rem;
+        padding: 1.5rem;
+        overflow: hidden;
+        color: #fff;
+        text-align: left;
+        transition: all 0.3s ease;
+        scale: 0.98;
+        display: flex;
+        flex-direction: column;
 
-            &:hover {
-                text-decoration: none;
-                scale: 1;
-            }
+        @media (max-width: 430px) {
+            min-width: 100%;
+        }
+
+        &:hover {
+            text-decoration: none;
+            scale: 1;
 
             .icon {
                 opacity: 0.8;
@@ -150,7 +158,6 @@ import Tooltip from "@/components/tooltip.vue";
         border-radius: 0.5rem 0.5rem 0 0;
         transition: all 0.3s ease;
         opacity: 0.5;
-        cursor: default;
 
         svg {
             width: 32px;

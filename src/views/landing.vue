@@ -129,6 +129,72 @@
 						img(src="@/assets/img/landingpage/feature6.svg", alt="Feature Icon6")
 					.title Solid#[br]Security
 					.content Skapi uses JWT-based authentication, pre-configured to securely handle user data, file access, and third-party API connections via Skapi’s API Bridge. No complex setup — just secure, reliable access out of the box.
+	
+	.bg-dark
+		section.use-cases
+			.title(data-aos="fade-up" data-aos-delay="200") Use Cases
+			//- .desc(data-aos="fade-up" data-aos-delay="200") Pre-built modules for database, authentication, chat, and real-time communication. #[span.wordset Explore ready-to-use examples that show how Skapi features work in real applications.]
+			.desc(data-aos="fade-up" data-aos-delay="200") Pre-built modules for database, authentication, chat, and real-time communication. Explore ready-to-use examples that show how Skapi features work in real applications.
+			.use-cases-content(data-aos="fade-up" data-aos-delay="400")
+				.flex-wrap.link-card-wrap
+					a.link-card.light(href="https://github.com/alsdk9879/skapi-auth-html-template" target="_blank")
+						.icon
+							svg
+								use(xlink:href="/material-icon.svg?v=20250829065753667#icon-users")
+						span.title Authentication
+						p.desc A plain HTML starter showcasing Skapi’s authentication system. Includes login, signup, and account management features you can easily integrate.
+								
+					a.link-card.light(href="https://github.com/alsdk9879/skapi-database-html-template" target="_blank")
+						.icon
+							svg
+								use(xlink:href="/material-icon.svg?v=20250829065753667#icon-database")
+						span.title Database
+						p.desc An HTML example for building a simple photo-sharing app with Skapi’s database. Users can log in, upload photos, and fetch content securely.
+
+					a.link-card.light(href="https://github.com/alsdk9879/skapi-chat-html-template" target="_blank")
+						.icon
+							svg
+								use(xlink:href="/material-icon.svg?v=20250829065753667#icon-chat")
+						span.title Chat
+						p.desc A lightweight chat application template using Skapi’s real-time features. Supports login, message posting, and instant updates between users.
+									
+					a.link-card.light(href="https://github.com/alsdk9879/skapi-webrtc-html-template" target="_blank")
+						.icon
+							svg
+								use(xlink:href="/material-icon.svg?v=20250829065753667#icon-webrtc")
+						span.title WebRTC
+						p.desc A basic video call app built with Skapi’s WebRTC capabilities. Logged-in users can request, accept, and join live video sessions.
+	.bg-blue
+		section.use-cases
+			.title(data-aos="fade-up" data-aos-delay="200") Starter Templates
+			//- .desc(data-aos="fade-up" data-aos-delay="200") Quick start templates for HTML, Vue, Angular, and React projects. #[span.wordset Set up your environment faster and focus on building features right away.]
+			.desc(data-aos="fade-up" data-aos-delay="200") Quick start templates for HTML, Vue, Angular, and React projects. Set up your environment faster and focus on building features right away.
+			.use-cases-content(data-aos="fade-up" data-aos-delay="400")
+				.flex-wrap.link-card-wrap
+					a.link-card(href="https://github.com/kkb75281/getting-started-template-vanilla-html" target="_blank")
+						.icon
+							img(src="@/assets/img/logo/html.svg")
+						span.title HTML
+						p.desc A clean and minimal starter template using only HTML, CSS, and JavaScript. Great for beginners, quick prototypes, or when you need a lightweight setup without frameworks.
+
+					a.link-card(href="https://github.com/kkb75281/getting-started-template-vue" target="_blank")
+						.icon
+							img(src="@/assets/img/logo/vue.svg")
+						span.title Vue.js
+						p.desc A Vue 3 starter template crafted for rapid and efficient development. Showcases best practices for integrating Skapi into your project.
+
+					a.link-card(href="https://github.com/kkb75281/getting-started-template-angular" target="_blank")
+						.icon
+							img(src="@/assets/img/logo/angular.svg")
+						span.title Angular
+						p.desc A complete Angular starter template with TypeScript support. Showcases best practices for integrating Skapi into your project.
+
+					a.link-card(href="https://github.com/kkb75281/getting-started-template-react" target="_blank")
+						.icon
+							img(src="@/assets/img/logo/react.svg")
+						span.title React
+						p.desc A modern React starter template powered by Vite for blazing-fast builds and hot reload. Showcases best practices for integrating Skapi into your project.
+	
 	.bg-colorful
 		section#section2.plan
 			.title.black(data-aos="fade-up" data-aos-delay="200") Pricing Plans
@@ -387,7 +453,6 @@ function onPlayerStateChange(event) {
 
 // contents > videos (youtube api 호출 - Videos 탭 클릭 시에만 API 호출)
 const fetchVideos = async () => {
-    console.log("== fetchVideos == videosLoaded.value : ", videosLoaded.value);
     if (videosLoaded.value) return; // 이미 로드된 경우 중복 호출 방지
 
     videosLoaded.value = true;
@@ -433,7 +498,6 @@ const fetchVideos = async () => {
 
         videos.value = filtered;
         videosLoaded.value = true;
-        console.log("== fetchVideos == videos.value : ", videos.value);
     } catch (error) {
         videos.value = []; // 에러 발생 시 빈 배열로 초기화
     }
@@ -442,13 +506,8 @@ const fetchVideos = async () => {
 watch(
     () => activeTabs.value.contents,
     async (newTab) => {
-        console.log("newTab : ", newTab);
-        console.log("videosLoaded : ", videosLoaded.value);
-
         if (newTab === 1 && !videosLoaded.value) {
-            console.log("== AA ==");
             await fetchVideos();
-            console.log("== watch == videos.value : ", videos.value);
         }
     }
 );
@@ -916,6 +975,92 @@ section {
     }
 }
 
+.use-cases {
+    padding: 5rem 0;
+
+    .desc {
+        max-width: 36rem;
+        margin: 0 auto;
+        line-height: 1.4;
+        margin-bottom: 5rem;
+    }
+
+    .use-cases-content {
+        max-width: 1580px;
+        margin: 0 auto;
+        text-align: center;
+
+        .link-card-wrap {
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .link-card {
+            position: relative;
+            width: 23%;
+            min-width: 250px;
+            flex-grow: 1;
+            background-color: #121214;
+            border-radius: 1.0625rem;
+            padding: 1.5rem;
+            overflow: hidden;
+            color: #fff;
+            text-align: left;
+            transition: all 0.3s ease;
+            scale: 0.98;
+            display: flex;
+            flex-direction: column;
+
+            &:hover {
+                text-decoration: none;
+                scale: 1;
+
+                .icon {
+                    opacity: 0.8;
+                }
+            }
+
+            &.light {
+                background-color: #16171a;
+            }
+        }
+
+        .title {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .icon {
+            height: 8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem 0.5rem 0 0;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+
+            svg {
+                width: 32px;
+                height: 32px;
+            }
+        }
+
+        .title {
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .desc {
+            margin: 1rem 0 0;
+            font-size: 14px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.5);
+            flex: 1;
+        }
+    }
+}
+
 .plan {
     padding: 5rem 0 6.25rem 0;
 
@@ -1266,13 +1411,6 @@ section {
             display: none;
         }
     }
-
-    // .tab-cont {
-    //     display: flex;
-    //     align-items: flex-start;
-    //     gap: 1.875rem;
-    //     flex-wrap: wrap;
-    // }
 
     .tab-item-wrap {
         display: flex;
@@ -1877,6 +2015,24 @@ section {
                 .content {
                     font-size: 0.875rem;
                 }
+            }
+        }
+    }
+
+    .use-cases {
+        padding: 3.125rem 0;
+
+        .title {
+            margin-bottom: 1rem;
+        }
+
+        .desc {
+            margin-bottom: 2.5rem;
+        }
+
+        .use-cases-content {
+            .link-card {
+                min-width: 100%;
             }
         }
     }
