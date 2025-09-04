@@ -54,10 +54,10 @@ const route = useRoute();
     }
 
     .swiper-pagination-bullet {
-        background: #3f3f3f;
+        background: #aaa;
 
         &:hover {
-            background: #999;
+            background: #fff;
         }
     }
 
