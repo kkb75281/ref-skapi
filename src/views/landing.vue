@@ -230,25 +230,19 @@
 							li Lower costs
 							li Simpler development
 				li.faq-item
-					.item-title(:class="{ open: openStates[2]}" @click="faqToggle(2)") Do I need to know how to code?
+					.item-title(:class="{ open: openStates[2]}" @click="faqToggle(2)") Do I need backend engineering knowledge?
 					.item-cont(v-show="openStates[2]")
 						p.text Not at all. With Skapi, there’s no server to set up, no backend code to write, and no complex configuration required. Just drop it into your frontend, and you’re ready to build.
-						p.text Skapi is also designed for AI-assisted and no-code development. Since everything runs securely from the frontend, you can even let your AI agent build a full-stack app — without exposing backend infrastructure.
+						p.text Skapi is also designed for AI-assisted and no-code development. Since everything runs securely from the frontend, you can even let your AI agent build a full-stack app without exposing backend infrastructure.
 						p.text It’s the simplest and safest way to bring automation and AI into modern web development.
 				li.faq-item
 					.item-title(:class="{ open: openStates[3]}" @click="faqToggle(3)") How does Skapi keep the price so low?
 					.item-cont(v-show="openStates[3]")
-						p.text Traditional backends get expensive fast. A basic cloud server alone can cost over $100/month — and that’s before you add a basic SQL or NoSQL database which starts at another $50/month. Add file storage, CDN, email systems, and more — and the costs quickly multiply.
+						p.text Traditional backends get expensive fast. A basic cloud server alone can cost over $100/month and that’s before you add a basic SQL or NoSQL database which starts at another $50/month. Add file storage, CDN, email systems, and the costs quickly multiply.
 						br
-						p.text Skapi avoids all of that. Our fully serverless architecture means no idle servers, no maintenance, and no wasted resources. You only pay for what you use — and still get everything you need:
+						p.text Skapi avoids all of that. Our fully serverless architecture means no idle servers, no maintenance, and no wasted resources.
 						br
-						ul
-							li Database
-							li File Storage
-							li Global CDN
-							li Built-in Email System
-						br
-						p.text With Skapi, you can run a complete web service at a fraction of the cost — often saving 90% or more compared to traditional stacks.
+						p.text With Skapi, you can run a complete web service at a fraction of the cost often saving 90% or more compared to traditional stacks.
 
 				li.faq-item
 					.item-title(:class="{ open: openStates[4]}" @click="faqToggle(4)") What happens if I cancel my subscription?
@@ -578,7 +572,8 @@ section {
 }
 
 .bg-colorful {
-    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% / cover no-repeat;
+    background: url("@/assets/img/landingpage/bg_colorful.svg") lightgray 50% /
+        cover no-repeat;
 }
 
 .hero-bg {
@@ -622,11 +617,13 @@ section {
     }
 
     .linear-gradient {
-        background-image: linear-gradient(92.16deg,
-                #0156ff 3.64%,
-                #079af2 37.09%,
-                #49c48d 61.65%,
-                #e0fa1c 100%);
+        background-image: linear-gradient(
+            92.16deg,
+            #0156ff 3.64%,
+            #079af2 37.09%,
+            #49c48d 61.65%,
+            #e0fa1c 100%
+        );
         background-clip: text;
         -webkit-background-clip: text;
         color: transparent;
@@ -1032,43 +1029,50 @@ section {
 
                         &.user {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_user.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_user.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.data {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_data.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_data.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.file {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_file.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_file.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.mail {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_mail.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_mail.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.forbiden {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_forbiden.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_forbiden.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.invitation {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_invitation.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_invitation.svg")
+                                    no-repeat;
                             }
                         }
 
                         &.global {
                             &::before {
-                                background: url("@/assets/img/landingpage/icon_global.svg") no-repeat;
+                                background: url("@/assets/img/landingpage/icon_global.svg")
+                                    no-repeat;
                             }
                         }
                     }
@@ -1272,7 +1276,8 @@ section {
         display: flex;
         flex-direction: column;
         border-radius: 1rem;
-        background: url("@/assets/img/landingpage/bg_contents1.svg") lightgray 50% / cover no-repeat;
+        background: url("@/assets/img/landingpage/bg_contents1.svg") lightgray
+            50% / cover no-repeat;
         color: #000;
 
         &:nth-child(2) {
@@ -1373,11 +1378,13 @@ section {
         margin: 0 auto 0;
 
         .title {
-            background-image: linear-gradient(92.16deg,
-                    #0156ff 3.64%,
-                    #079af2 37.09%,
-                    #49c48d 51.65%,
-                    #e0fa1c 80%);
+            background-image: linear-gradient(
+                92.16deg,
+                #0156ff 3.64%,
+                #079af2 37.09%,
+                #49c48d 51.65%,
+                #e0fa1c 80%
+            );
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
@@ -1670,7 +1677,6 @@ section {
 @media (max-width: 480px) {
     .review {
         .review-swiper {
-
             .swiper-button-prev,
             .swiper-button-next {
                 display: none;
@@ -1765,7 +1771,6 @@ section {
         }
 
         .review-swiper {
-
             .swiper-button-prev,
             .swiper-button-next {
                 width: 56px;
