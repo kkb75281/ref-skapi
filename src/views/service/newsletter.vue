@@ -1,13 +1,10 @@
 <template lang="pug">
 section.page-header
     .page-title Bulk Email
-    .flex-wrap
-        select(v-if='!needsEmailAlias' v-model="activeTabs")
-            option(v-for="(tab, index) in emailTypeSelect" :key="index" :value="index" :class="{ active: activeTabs === index }") {{ tab }}
-        a.btn-docs(href='https://docs.skapi.com/email/newsletters.html' target="_blank")
-            button.inline.icon-text.sm.gray(style="height: 100%;")
-                img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
-                | Go Docs
+    a.btn-docs(href='https://docs.skapi.com/email/newsletters.html' target="_blank")
+        button.inline.icon-text.sm.gray(style="height: 100%;")
+            img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
+            | Go Docs
 
 hr
 
@@ -44,12 +41,14 @@ template(v-else-if='!user?.email_verified || currentService.service.active == 0 
         .error(v-if='currentService.service.active == 0')
             svg
                 use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
-            span This service is currently disabled.
+            //- span This service is currently disabled.
+            router-link(:to="`/my-services/${currentService.id}/dashboard`") This service is currently disabled.
 
         .error(v-else-if='currentService.service.active < 0')
             svg
                 use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
-            span This service is currently suspended.
+            //- span This service is currently suspended.
+            router-link(:to="`/my-services/${currentService.id}/dashboard`") This service is currently suspended.
 
         p.
             You can send bulk emails to your newsletter subscribers.
@@ -57,21 +56,22 @@ template(v-else-if='!user?.email_verified || currentService.service.active == 0 
             #[br]
             #[span.wordset If you have not verified your email address, please do so first.]
 
-        router-link(v-if='currentService.service.active == 0' :to="`/my-services/${currentService.id}/dashboard`") Click here to enable the service.
-        router-link(v-else-if='!user?.email_verified' to="/account-setting") Click here to verify your email address.
+        //- router-link(v-if='currentService.service.active == 0' :to="`/my-services/${currentService.id}/dashboard`") Click here to enable the service.
+        //- router-link(v-else-if='!user?.email_verified' to="/account-setting") Click here to verify your email address.
 
 template(v-else)
+    ul.tab-menu
+        li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
+
     section
         template(v-if='mailType === "Newsletter"')
             p.page-desc.
                 Once the users have subscribed #[span.wordset to your newsletter,]
-                #[br]
                 they will be able to receive your emails sent to the address provided below:
         template(v-else)
             p.page-desc.
                 Once the users have subscribed to your service mail,
                 they will be able to receive your emails sent to the address provided below:
-                #[br]
                 User must be logged in to subscribe to Service Mail, and the user must have their email verified.
 
     section
@@ -233,7 +233,7 @@ Modal.modal-deleteEmail(:open="emailToDelete" @close="emailToDelete=false")
 
 //- modal :: set email alias
 Modal.modal-setAlias(:open="showSetAliasModal" @close="showSetAliasModal=false")
-    .modal-close(@click="showSetAliasModal = false; emailAliasVal.value = '';")
+    .modal-close(@click="showSetAliasModal = false; emailAliasVal = '';")
         svg.svgIcon
             use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-x")
 
@@ -617,11 +617,11 @@ let converter = (html: string, parsed: boolean, inv: boolean) => {
     }
 }
 
-// .page-desc {
-//     text-align: center;
-//     margin: 2rem auto;
-//     max-width: 620px;
-// }
+.page-desc {
+    max-width: 55rem;
+    margin: 2rem auto 2.5rem;
+    text-align: center;
+}
 
 #registerForm {
     &.flex {
