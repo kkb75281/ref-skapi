@@ -10,7 +10,7 @@
                         svg
                             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-users")
                     .card-cont
-                        span.title Auth
+                        span.title Authentication
                         p.desc A plain HTML starter showcasing Skapi’s authentication system. Includes login, signup, and account management features you can easily integrate.
                         .btn-wrap
                             a.btn.btn-demo(href="https://skapi-auth-html-template.skapi.com/" target="_blank")
@@ -98,7 +98,7 @@
                     .icon
                         img(src="@/assets/img/logo/html.svg")
                     .card-cont
-                        span.title html
+                        span.title HTML
                         p.desc A clean and minimal starter template using only HTML, CSS, and JavaScript. Great for beginners, quick prototypes, or when you need a lightweight setup without frameworks.
                         .btn-wrap
                             a.btn.btn-demo(href="https://getting-started-template-vanilla.skapi.com" target="_blank")
@@ -118,8 +118,8 @@
                     .icon
                         img(src="@/assets/img/logo/vue.svg")
                     .card-cont
-                        span.title vue
-                        p.desc A Vue 3 starter template designed for fast and efficient development. Ideal for learning Vue’s component-based structure or bootstrapping small to mid-sized apps.
+                        span.title Vue.js
+                        p.desc A Vue 3 starter template crafted for rapid and efficient development. Showcases best practices for integrating Skapi into your project.
                         .btn-wrap
                             a.btn.btn-demo(href="https://getting-started-template-vue.skapi.com" target="_blank")
                                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
@@ -138,8 +138,8 @@
                     .icon
                         img(src="@/assets/img/logo/angular.svg")
                     .card-cont
-                        span.title angular
-                        p.desc A complete Angular CLI setup with best practices in place. Perfect for building scalable, enterprise-level web applications with TypeScript support.
+                        span.title Angular
+                        p.desc A complete Angular starter template with TypeScript support. Showcases best practices for integrating Skapi into your project.
                         .btn-wrap
                             a.btn.btn-demo(href="https://getting-started-template-angular.skapi.com" target="_blank")
                                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
@@ -158,8 +158,8 @@
                     .icon
                         img(src="@/assets/img/logo/react.svg")
                     .card-cont
-                        span.title react
-                        p.desc A modern React starter powered by Vite for blazing-fast builds and hot reload. Great for quickly creating single-page applications and experimenting with React hooks and components.
+                        span.title React
+                        p.desc A modern React starter template powered by Vite for blazing-fast builds and hot reload. Showcases best practices for integrating Skapi into your project.
                         .btn-wrap
                             a.btn.btn-demo(href="https://getting-started-template-react.skapi.com" target="_blank")
                                 Tooltip(tip-background-color="rgb(45 46 48)" text-color="white" class="right")
