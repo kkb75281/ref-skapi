@@ -54,10 +54,13 @@ const route = useRoute();
     }
 
     .swiper-pagination-bullet {
-        background: #3f3f3f;
+        width: 11px;
+        height: 11px;
+        background: #aaa;
+        margin: 0 5px !important;
 
         &:hover {
-            background: #999;
+            background: #fff;
         }
     }
 
@@ -142,6 +145,10 @@ const route = useRoute();
             left: 50% !important;
             top: var(--swiper-pagination-translate-y, 0) !important;
             transform: translateX(-50%) !important;
+        }
+
+        .swiper-pagination-bullet {
+            margin: 0 8px !important;
         }
     }
 

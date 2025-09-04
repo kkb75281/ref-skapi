@@ -325,6 +325,15 @@ a {
         font-size: 0.875rem;
         font-weight: 300;
         line-height: 1.4;
+
+        @media (max-width: 430px) {
+            display: -webkit-box;
+            word-wrap: break-word;
+            -webkit-line-clamp: 6;
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
     }
 
     &::before {
@@ -440,6 +449,19 @@ a {
         &::before {
             background: url("@/assets/img/myservice/img_newFeature.png") no-repeat center right;
         }
+    }
+
+    .title {
+        white-space: nowrap;
+    }
+
+    .desc {
+        display: -webkit-box;
+        word-wrap: break-word;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 
     .btn-more {
