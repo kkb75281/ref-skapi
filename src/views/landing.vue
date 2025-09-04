@@ -258,13 +258,13 @@
 			.tab-cont-wrap
 				TabMenu(v-model="activeTabs.contents" :tabs="['Articles', 'Videos']" data-aos="fade-up" data-aos-delay="400")
 				.tab-cont(data-aos="fade-up" data-aos-delay="600")
-					template(v-if="activeTabs.contents === 0")
+					.tab-item-wrap(v-show="activeTabs.contents === 0")
 						.tab-item(v-for="article in articles" :key="article.id")
 							.title {{ article.title }}
 							.desc {{ article.description }}
 							a.btn-read-more(:href="article.url" target="_blank") Read more
 
-					template(v-else-if="activeTabs.contents === 1")
+					.tab-item-wrap(v-show="activeTabs.contents === 1")
 						.tab-item.videos(v-for="video in videos" :key="video.id")
 							.videos-wrap
 								iframe(
@@ -387,6 +387,7 @@ function onPlayerStateChange(event) {
 
 // contents > videos (youtube api 호출 - Videos 탭 클릭 시에만 API 호출)
 const fetchVideos = async () => {
+    console.log("== fetchVideos == videosLoaded.value : ", videosLoaded.value);
     if (videosLoaded.value) return; // 이미 로드된 경우 중복 호출 방지
 
     videosLoaded.value = true;
@@ -431,6 +432,8 @@ const fetchVideos = async () => {
             }));
 
         videos.value = filtered;
+        videosLoaded.value = true;
+        console.log("== fetchVideos == videos.value : ", videos.value);
     } catch (error) {
         videos.value = []; // 에러 발생 시 빈 배열로 초기화
     }
@@ -439,9 +442,13 @@ const fetchVideos = async () => {
 watch(
     () => activeTabs.value.contents,
     async (newTab) => {
+        console.log("newTab : ", newTab);
+        console.log("videosLoaded : ", videosLoaded.value);
+
         if (newTab === 1 && !videosLoaded.value) {
+            console.log("== AA ==");
             await fetchVideos();
-            videosLoaded.value = true;
+            console.log("== watch == videos.value : ", videos.value);
         }
     }
 );
@@ -1260,7 +1267,14 @@ section {
         }
     }
 
-    .tab-cont {
+    // .tab-cont {
+    //     display: flex;
+    //     align-items: flex-start;
+    //     gap: 1.875rem;
+    //     flex-wrap: wrap;
+    // }
+
+    .tab-item-wrap {
         display: flex;
         align-items: flex-start;
         gap: 1.875rem;
@@ -1475,7 +1489,7 @@ section {
 
 @media (max-width: 900px) {
     .contents {
-        .tab-cont {
+        .tab-item-wrap {
             flex-direction: column;
             gap: 1.375rem;
         }
