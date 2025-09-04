@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "vite --host",
         "prod": "vite --host --mode production",
-        "build": "node script.cjs; npm run build:ts; vite build --mode production",
+        "build": "npm run build:ts; vite build --mode production",
         "build:ts": "tsc",
         "build-check": "node script.cjs; run-p type-check \"build-only {@}\" --",
         "preview": "vite preview --host",
@@ -14,7 +14,7 @@
         "type-check": "vue-tsc --build --force",
         "start": "serve dist",
         "builddev": "node script.cjs; npm run build:ts; vite build --mode development",
-        "cachingicons": "node icon.cjs"
+        "buildbefore": "node script.cjs; node icon.cjs; node pp.cjs"
     },
     "dependencies": {
         "aos": "^3.0.0-beta.6",

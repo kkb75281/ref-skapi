@@ -109,35 +109,35 @@ import Tooltip from "@/components/tooltip.vue";
     @media (max-width: 430px) {
         padding: 4rem 1rem;
     }
-}
 
-.link-card-wrap {
-    flex-wrap: wrap;
-    gap: 20px;
-}
+    .link-card-wrap {
+        flex-wrap: wrap;
+        gap: 20px;
 
-.link-card {
-    position: relative;
-    width: 23%;
-    min-width: 250px;
-    flex-grow: 1;
-    background-color: #121214;
-    border-radius: 1.0625rem;
-    padding: 1.5rem;
-    overflow: hidden;
-    color: #fff;
-    text-align: left;
-    transition: all 0.3s ease;
-    scale: 0.98;
-    display: flex;
-    flex-direction: column;
+        .link-card {
+            position: relative;
+            width: 23%;
+            min-width: 250px;
+            flex-grow: 1;
+            background-color: #121214;
+            border-radius: 1.0625rem;
+            padding: 1.5rem;
+            overflow: hidden;
+            color: #fff;
+            text-align: left;
+            transition: all 0.3s ease;
+            scale: 0.98;
+            display: flex;
+            flex-direction: column;
 
-    &:hover {
-        text-decoration: none;
-        scale: 1;
+            &:hover {
+                text-decoration: none;
+                scale: 1;
+            }
 
-        .icon {
-            opacity: 0.8;
+            .icon {
+                opacity: 0.8;
+            }
         }
     }
 
