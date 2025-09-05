@@ -68,7 +68,7 @@ template(v-else)
                     .value
                         a.go-hosturl(:href="`https://${hostUrl}`" target="_blank") {{ hostUrl}}
                 .actions-wrap
-                    button.only-icon.gray.edit-btn(type="button" @click="editSubdomain")
+                    button.only-icon.gray.edit-btn(type="button" @click="editSubdomain" :disabled="currentService.pending.cdn")
                         .icon
                             svg
                                 use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-edit")
@@ -356,37 +356,23 @@ Modal.modal-remove404(:open="openRemove404" @close="openRemove404=false")
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed, watch, nextTick } from "vue";
-import { user } from "@/code/user";
-import { currentService } from "@/views/service/main";
-import { getFileSize } from "@/code/admin";
-import {
-    serviceFolders,
-    uploadFiles,
-    onDrop,
-    currentDirectory,
-    uploadCount,
-    uploadProgress,
-} from "@/views/service/hosting/file";
-import Table from "@/components/table.vue";
-import Modal from "@/components/modal.vue";
-import Pager from "@/code/pager";
-import Tooltip from "@/components/tooltip.vue";
-import Checkbox from "@/components/checkbox.vue";
+import { reactive, ref, computed, watch, nextTick } from 'vue';
+import { user } from '@/code/user';
+import { currentService } from '@/views/service/main';
+import { getFileSize } from '@/code/admin';
+import { serviceFolders, uploadFiles, onDrop, currentDirectory, uploadCount, uploadProgress } from '@/views/service/hosting/file';
+import Table from '@/components/table.vue';
+import Modal from '@/components/modal.vue';
+import Pager from '@/code/pager';
+import Tooltip from '@/components/tooltip.vue';
+import Checkbox from '@/components/checkbox.vue';
 
 let folders = {}; // cache folders
 let domain = import.meta.env.VITE_DOMAIN;
 
-let email_is_unverified_or_service_is_disabled = computed(
-    () => !user?.email_verified || currentService.service.active <= 0
-);
+let email_is_unverified_or_service_is_disabled = computed(() => !user?.email_verified || currentService.service.active <= 0);
 
-let isPending = computed(
-    () =>
-        currentService.pending.subdomain ||
-        currentService.pending.cdn ||
-        !subdomainReady.value
-);
+let isPending = computed(() => currentService.pending.subdomain || currentService.pending.cdn || !subdomainReady.value);
 let sdInfo = computed(() => currentService.subdInfo);
 
 // fileinputs
@@ -398,51 +384,55 @@ let registerSubdomainRunning = ref(false);
 let modalPromise = ref(false);
 
 let refreshCdn = async () => {
-    openRefreshCdn.value = false;
-    await currentService.refreshCDN();
-    // currentService.refreshCDN({
-    //     checkStatus: res => {
-    //         cdnPending.value = false;
-    //     }
-    // });
+  openRefreshCdn.value = false;
+  await currentService.refreshCDN();
+  // currentService.refreshCDN({
+  //     checkStatus: res => {
+  //         cdnPending.value = false;
+  //     }
+  // });
 };
 
-let subdomain = ref(""); // register input value. not the actual subdomain
+let subdomain = ref(''); // register input value. not the actual subdomain
 let registerSubdomain = async () => {
-    registerSubdomainRunning.value = true;
-    try {
-        await currentService.registerSubdomain({
-            subdomain: subdomain.value,
-            cb: (srvc) => {
-                registerSubdomainRunning.value = false;
-                // getInfo();
-            },
-        });
-    } catch (err: any) {
+  registerSubdomainRunning.value = true;
+  try {
+    await currentService.registerSubdomain({
+      subdomain: subdomain.value,
+      cb: (srvc) => {
         registerSubdomainRunning.value = false;
-        alert(err.message);
-    }
+        // getInfo();
+      },
+    });
+  } catch (err: any) {
+    registerSubdomainRunning.value = false;
+    alert(err.message);
+  }
 };
 
 // edit/change
 let openRefreshCdn = ref(false);
 let modifyMode = reactive({
-    subdomain: false,
-    page404: false,
+  subdomain: false,
+  page404: false,
 });
 let updatingValue = reactive({
-    subdomain: false,
-    page404: false,
+  subdomain: false,
+  page404: false,
 });
 let focus_subdomain = ref();
 
-let inputSubdomain = "";
+let inputSubdomain = '';
 let editSubdomain = () => {
-    inputSubdomain = hostUrl.value.split(".").slice(0, -2).join(".");
-    modifyMode.subdomain = true;
-    nextTick(() => {
-        focus_subdomain.value.focus();
-    });
+  if (currentService.pending.cdn) {
+    return;
+  }
+
+  inputSubdomain = hostUrl.value.split('.').slice(0, -2).join('.');
+  modifyMode.subdomain = true;
+  nextTick(() => {
+    focus_subdomain.value.focus();
+  });
 };
 
 // modal
@@ -450,169 +440,166 @@ let focus_404 = ref();
 let selected404File = ref(null);
 let uploaded404File = ref(null);
 let open404FileInp = async () => {
-    modifyMode.page404 = true;
-    await nextTick();
+  modifyMode.page404 = true;
+  await nextTick();
 
-    if (sdInfo.value?.['404']) {
-        uploaded404File.value = sdInfo.value['404'];
-    } else {
-        focus_404.value.click();
-    }
+  if (sdInfo.value?.['404']) {
+    uploaded404File.value = sdInfo.value['404'];
+  } else {
+    focus_404.value.click();
+  }
 };
 
 let handle404file = (e: any) => {
-    let file = e.target?.files?.[0];
-    let fileName = file?.name;
+  let file = e.target?.files?.[0];
+  let fileName = file?.name;
 
-    selected404File.value = fileName || null;
+  selected404File.value = fileName || null;
 };
 
 let progress404 = ref(0);
 let change404 = async (e: any) => {
-    const file = e.target?.elements?.file?.files?.[0];
-    if (!file) {
-        return;
-    }
+  const file = e.target?.elements?.file?.files?.[0];
+  if (!file) {
+    return;
+  }
 
-    updatingValue.page404 = true;
+  updatingValue.page404 = true;
 
-    try {
-        let up = await currentService.uploadHostFiles(e, {
-            progress: (p) => {
-                progress404.value = Math.floor(p.progress);
-            },
-        });
+  try {
+    let up = await currentService.uploadHostFiles(e, {
+      progress: (p) => {
+        progress404.value = Math.floor(p.progress);
+      },
+    });
 
-        // get current 13 digit timestamp
-        let pager = folders["!"].pager;
+    // get current 13 digit timestamp
+    let pager = folders['!'].pager;
 
-        await pager.editItem({
-            name: up.completed[0].name,
-            size: up.completed[0].size,
-            upl: Date.now(),
-        });
+    await pager.editItem({
+      name: up.completed[0].name,
+      size: up.completed[0].size,
+      upl: Date.now(),
+    });
 
-        getFileList();
+    getFileList();
 
-        await currentService.set404({
-            path: up.completed[0].name,
-        });
+    await currentService.set404({
+      path: up.completed[0].name,
+    });
 
-        currentService.subdInfo["404"] = up.completed[0].name;
+    currentService.subdInfo['404'] = up.completed[0].name;
 
-        modifyMode.page404 = false;
-        updatingValue.page404 = false;
-        progress404.value = 0;
-        selected404File.value = null;
-    } catch (err: any) {
-        updatingValue.page404 = false;
-        alert(err.message);
-    }
+    modifyMode.page404 = false;
+    updatingValue.page404 = false;
+    progress404.value = 0;
+    selected404File.value = null;
+  } catch (err: any) {
+    updatingValue.page404 = false;
+    alert(err.message);
+  }
 };
 
 let openRemove404 = ref(false);
 let remove404 = async () => {
-    modalPromise.value = true;
+  modalPromise.value = true;
 
-    try {
-        const current404File = currentService.subdInfo["404"];
+  try {
+    const current404File = currentService.subdInfo['404'];
 
-        await currentService.set404({
-            path: null,
-        });
+    await currentService.set404({
+      path: null,
+    });
 
-        delete currentService.subdInfo["404"];
+    delete currentService.subdInfo['404'];
 
-        // 테이블에서도 해당 파일 제거
-        if (current404File && folders["!"]) {
-            const pager = folders["!"].pager;
-            if (pager.list?.[current404File]) {
-                await pager.deleteItem(current404File);
-                // 현재 페이지가 루트 디렉토리일 때만 리스트 업데이트
-                if (!currentDirectory.value) {
-                    getFileList();
-                }
-            }
+    // 테이블에서도 해당 파일 제거
+    if (current404File && folders['!']) {
+      const pager = folders['!'].pager;
+      if (pager.list?.[current404File]) {
+        await pager.deleteItem(current404File);
+        // 현재 페이지가 루트 디렉토리일 때만 리스트 업데이트
+        if (!currentDirectory.value) {
+          getFileList();
         }
-
-        openRemove404.value = false;
-        selected404File.value = null;
-    } catch (err: any) {
-        alert(err.message);
-    } finally {
-        modalPromise.value = false;
+      }
     }
+
+    openRemove404.value = false;
+    selected404File.value = null;
+  } catch (err: any) {
+    alert(err.message);
+  } finally {
+    modalPromise.value = false;
+  }
 };
 
 let removeHosting = ref(false);
 let remove = () => {
-    modalPromise.value = true;
-    currentService
-        .registerSubdomain()
-        .then(() => {
-            removeHosting.value = false;
-            modalPromise.value = false;
-        })
-        .catch((err) => {
-            modalPromise.value = false;
-            alert(err.message);
-        });
+  modalPromise.value = true;
+  currentService
+    .registerSubdomain()
+    .then(() => {
+      removeHosting.value = false;
+      modalPromise.value = false;
+    })
+    .catch((err) => {
+      modalPromise.value = false;
+      alert(err.message);
+    });
 };
 
 let changeSubdomain = async () => {
-    if (currentService.service.subdomain === inputSubdomain) {
-        modifyMode.subdomain = false;
-        return;
-    }
+  if (currentService.service.subdomain === inputSubdomain) {
+    modifyMode.subdomain = false;
+    return;
+  }
 
-    if (
-        inputSubdomain.charAt(0) == "-" &&
-        inputSubdomain.charAt(inputSubdomain.length - 1) == "-"
-    ) {
-        alert("Subdomains cannot start or end with a hyphen.");
-        return;
-    }
+  if (inputSubdomain.charAt(0) == '-' && inputSubdomain.charAt(inputSubdomain.length - 1) == '-') {
+    alert('Subdomains cannot start or end with a hyphen.');
+    return;
+  }
 
-    if (/--/.test(inputSubdomain)) {
-        alert("Hyphens cannot be used consecutively.");
-        return;
-    }
+  if (/--/.test(inputSubdomain)) {
+    alert('Hyphens cannot be used consecutively.');
+    return;
+  }
 
-    updatingValue.subdomain = true;
+  updatingValue.subdomain = true;
 
-    try {
-        await currentService.registerSubdomain({
-            subdomain: inputSubdomain,
-        });
-    } catch (err: any) {
-        alert(err?.message || err.toString());
-        throw err;
-    } finally {
-        modifyMode.subdomain = false;
-        updatingValue.subdomain = false;
-    }
+  try {
+    await currentService.registerSubdomain({
+      subdomain: inputSubdomain,
+    });
+  } catch (err: any) {
+    alert(err?.message || err.toString());
+    throw err;
+  } finally {
+    modifyMode.subdomain = false;
+    updatingValue.subdomain = false;
+  }
 };
 
 let retriveCachedFolders = () => {
-    let sd = currentService.service.subdomain;
-    if (!sd) {
-        return "";
-    }
+  let sd = currentService.service.subdomain;
+  if (!sd) {
+    return '';
+  }
 
-    let subd = "";
-    if ((sd && sd[0] === "*") || sd[0] === "+") {
-        subd = sd.slice(1) + "." + domain;
-    } else {
-        subd = sd + "." + domain;
-    }
+  let subd = '';
+  if ((sd && sd[0] === '*') || sd[0] === '+') {
+    subd = sd.slice(1) + '.' + domain;
+  } else {
+    subd = sd + '.' + domain;
+  }
 
-    if (serviceFolders?.[sd] && Object.keys(serviceFolders[sd]).length) {
-        folders = serviceFolders[sd];
-    } else {
-        serviceFolders[sd] = folders;
-    }
+  if (serviceFolders?.[sd] && Object.keys(serviceFolders[sd]).length) {
+    folders = serviceFolders[sd];
+  } else {
+    serviceFolders[sd] = folders;
+  }
 
-    return subd;
+  return subd;
 };
 
 let hostUrl = computed(retriveCachedFolders);
@@ -620,7 +607,7 @@ let hostUrl = computed(retriveCachedFolders);
 retriveCachedFolders();
 
 let listDisplay = ref([]);
-let sortBy = ref("name");
+let sortBy = ref('name');
 let ascending = ref(true);
 let currentPage = ref(1);
 let endOfList: any = reactive({});
@@ -647,74 +634,72 @@ let checked: any = ref({});
 let deleteSelected = ref(false);
 
 let deleteFiles = async () => {
-    modalPromise.value = true;
-    let toDel = [];
-    for (let i in checked.value) {
-        if (checked.value[i]) {
-            toDel.push(
-                (() => {
-                    for (let v of listDisplay.value) {
-                        if (v.name === i) {
-                            return v;
-                        }
-                    }
-                })()
-            );
-        }
-    }
-
-    try {
-        let currDir = currentDirectory.value || "!";
-        let pager = folders[currDir].pager;
-
-        // 404 파일이 삭제 대상에 포함되어 있는지 확인
-        const current404File = currentService.subdInfo?.["404"];
-        const is404FileDeleted = toDel.some(
-            (file) => file.name === current404File
-        );
-
-        await currentService.deleteHostFiles({
-            paths: toDel.map(
-                (v) =>
-                    v.path +
-                    "/" +
-                    (() => {
-                        let n = v.name;
-                        if (n[0] == "#") {
-                            return n.slice(1) + "/";
-                        }
-                        return n;
-                    })()
-            ),
-        });
-
-        for (let v of toDel) {
-            await pager.deleteItem(v.name);
-        }
-
-        // 404 파일이 삭제되었다면 404 설정도 해제
-        if (is404FileDeleted && current404File) {
-            await currentService.set404({
-                path: null,
-            });
-            delete currentService.subdInfo["404"];
-        }
-
-        getFileList().then(() => {
-            // when empty, go back a page
-            if (!listDisplay.value.length && currentPage.value > 1) {
-                currentPage.value--;
+  modalPromise.value = true;
+  let toDel = [];
+  for (let i in checked.value) {
+    if (checked.value[i]) {
+      toDel.push(
+        (() => {
+          for (let v of listDisplay.value) {
+            if (v.name === i) {
+              return v;
             }
-        });
-
-        deleteSelected.value = false;
-        checked.value = {};
-        // checkedall.value = false;
-    } catch (err: any) {
-        alert(err.message);
-    } finally {
-        modalPromise.value = false;
+          }
+        })()
+      );
     }
+  }
+
+  try {
+    let currDir = currentDirectory.value || '!';
+    let pager = folders[currDir].pager;
+
+    // 404 파일이 삭제 대상에 포함되어 있는지 확인
+    const current404File = currentService.subdInfo?.['404'];
+    const is404FileDeleted = toDel.some((file) => file.name === current404File);
+
+    await currentService.deleteHostFiles({
+      paths: toDel.map(
+        (v) =>
+          v.path +
+          '/' +
+          (() => {
+            let n = v.name;
+            if (n[0] == '#') {
+              return n.slice(1) + '/';
+            }
+            return n;
+          })()
+      ),
+    });
+
+    for (let v of toDel) {
+      await pager.deleteItem(v.name);
+    }
+
+    // 404 파일이 삭제되었다면 404 설정도 해제
+    if (is404FileDeleted && current404File) {
+      await currentService.set404({
+        path: null,
+      });
+      delete currentService.subdInfo['404'];
+    }
+
+    getFileList().then(() => {
+      // when empty, go back a page
+      if (!listDisplay.value.length && currentPage.value > 1) {
+        currentPage.value--;
+      }
+    });
+
+    deleteSelected.value = false;
+    checked.value = {};
+    // checkedall.value = false;
+  } catch (err: any) {
+    alert(err.message);
+  } finally {
+    modalPromise.value = false;
+  }
 };
 
 // let numberOfSelected = computed(() => {
@@ -728,350 +713,331 @@ let deleteFiles = async () => {
 // });
 
 let subdomainReady = computed(() => {
-    let sd = currentService.service.subdomain;
-    if (!sd) {
-        return "no-subdomain";
-    }
-    return (
-        (currentService.subdInfo.stat &&
-            currentService.subdInfo.stat === "active") ||
-        currentService.subdInfo.stat === "tracked"
-    );
+  let sd = currentService.service.subdomain;
+  if (!sd) {
+    return 'no-subdomain';
+  }
+  return (currentService.subdInfo.stat && currentService.subdInfo.stat === 'active') || currentService.subdInfo.stat === 'tracked';
 });
 
 if (currentService.dirInfo.path) {
-    fetching.value = false;
+  fetching.value = false;
 }
 
 watch(
-    () => currentService.dirInfo.path,
-    (n, o) => {
-        if (n) {
-            getFileList("conditional").then(() => {
-                fetching.value = false;
-            });
-        }
-    },
-    {
-        immediate: true,
+  () => currentService.dirInfo.path,
+  (n, o) => {
+    if (n) {
+      getFileList('conditional').then(() => {
+        fetching.value = false;
+      });
     }
+  },
+  {
+    immediate: true,
+  }
 );
 
 watch(
-    subdomainReady,
-    (n, o) => {
-        if (n) {
-            if (n !== "no-subdomain") {
-                // currentDirectory.value = "";
-                fetching.value = true;
-                currentService.getDirInfo();
-            }
-        }
-    },
-    {
-        immediate: true,
+  subdomainReady,
+  (n, o) => {
+    if (n) {
+      if (n !== 'no-subdomain') {
+        // currentDirectory.value = "";
+        fetching.value = true;
+        currentService.getDirInfo();
+      }
     }
+  },
+  {
+    immediate: true,
+  }
 );
 
 let setNewDir = (ns: any) => {
-    let path = ns.path;
-    path = path.split("/");
-    if (path.length > 1) {
-        return path.slice(1).join("/") + "/" + ns.name.slice(1);
-    }
+  let path = ns.path;
+  path = path.split('/');
+  if (path.length > 1) {
+    return path.slice(1).join('/') + '/' + ns.name.slice(1);
+  }
 
-    return ns.name.slice(1);
+  return ns.name.slice(1);
 };
 
 watch(currentDirectory, (n) => {
-    getFileList();
+  getFileList();
 });
 
 async function getFileList(refresh: string | boolean = false) {
-    if (!refresh && fetching.value) return;
+  if (!refresh && fetching.value) return;
 
-    let resultsPerPage = 10;
-    fetching.value = true;
+  let resultsPerPage = 10;
+  fetching.value = true;
 
-    let currDir = currentDirectory.value || "!";
-    let hasPage = folders?.[currDir]?.pager;
+  let currDir = currentDirectory.value || '!';
+  let hasPage = folders?.[currDir]?.pager;
 
-    let pager = null;
+  let pager = null;
 
-    if (hasPage) {
-        pager = folders[currDir].pager;
-        maxPage.value = Math.ceil(pager.map.length / pager.resultsPerPage);
-    }
-
-    if (!hasPage || (refresh && refresh !== "conditional")) {
-        folders[currDir] = {
-            pager: await Pager.init({
-                id: "name",
-                sortBy: sortBy.value,
-                order: ascending.value ? "asc" : "desc",
-                resultsPerPage,
-            }),
-        };
-        maxPage.value = 0;
-        currentPage.value = 1;
-        endOfList[currDir] = false;
-    }
-
+  if (hasPage) {
     pager = folders[currDir].pager;
+    maxPage.value = Math.ceil(pager.map.length / pager.resultsPerPage);
+  }
 
-    if (refresh && refresh !== "conditional") {
-        checked.value = {};
-    }
+  if (!hasPage || (refresh && refresh !== 'conditional')) {
+    folders[currDir] = {
+      pager: await Pager.init({
+        id: 'name',
+        sortBy: sortBy.value,
+        order: ascending.value ? 'asc' : 'desc',
+        resultsPerPage,
+      }),
+    };
+    maxPage.value = 0;
+    currentPage.value = 1;
+    endOfList[currDir] = false;
+  }
 
-    if (
-        (refresh && refresh !== "conditional") ||
-        (!endOfList[currDir] && currentPage.value > maxPage.value)
-    ) {
-        try {
-            let l = await currentService.listHostDirectory(
-                { dir: currentDirectory.value },
-                !(refresh || maxPage.value == 0)
-            );
-            if (l.list.length > 0) {
-                await pager.insertItems(l.list);
-                let fl = pager.getPage(currentPage.value);
-                listDisplay.value = fl.list;
-                maxPage.value = fl.maxPage;
-                endOfList[currDir] = l.endOfList;
-            } else {
-                listDisplay.value = [];
-                endOfList[currDir] = true;
-            }
-        } catch (err: any) {
-            alert(err.message);
-        } finally {
-            fetching.value = false;
-        }
-    } else if (
-        endOfList[currDir] ||
-        (maxPage.value && currentPage.value <= maxPage.value)
-    ) {
+  pager = folders[currDir].pager;
+
+  if (refresh && refresh !== 'conditional') {
+    checked.value = {};
+  }
+
+  if ((refresh && refresh !== 'conditional') || (!endOfList[currDir] && currentPage.value > maxPage.value)) {
+    try {
+      let l = await currentService.listHostDirectory({ dir: currentDirectory.value }, !(refresh || maxPage.value == 0));
+      if (l.list.length > 0) {
+        await pager.insertItems(l.list);
         let fl = pager.getPage(currentPage.value);
         listDisplay.value = fl.list;
         maxPage.value = fl.maxPage;
-        fetching.value = false;
+        endOfList[currDir] = l.endOfList;
+      } else {
+        listDisplay.value = [];
+        endOfList[currDir] = true;
+      }
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      fetching.value = false;
     }
+  } else if (endOfList[currDir] || (maxPage.value && currentPage.value <= maxPage.value)) {
+    let fl = pager.getPage(currentPage.value);
+    listDisplay.value = fl.list;
+    maxPage.value = fl.maxPage;
+    fetching.value = false;
+  }
 
-    // let chk: any = {};
-    // for (let lk in listDisplay.value) {
-    //     chk[listDisplay.value[lk].name] = false;
-    // }
+  // let chk: any = {};
+  // for (let lk in listDisplay.value) {
+  //     chk[listDisplay.value[lk].name] = false;
+  // }
 
-    // checked.value = chk;
+  // checked.value = chk;
 }
 
 function openFile(ns: any) {
-    let path = ns.path;
-    let url;
-    if (path.split("/").length > 1) {
-        url = `https://${hostUrl.value}/${path.split("/").slice(1).join("/")}/${ns.name
-            }`;
-    } else {
-        url = `https://${hostUrl.value}/${ns.name}`;
-    }
+  let path = ns.path;
+  let url;
+  if (path.split('/').length > 1) {
+    url = `https://${hostUrl.value}/${path.split('/').slice(1).join('/')}/${ns.name}`;
+  } else {
+    url = `https://${hostUrl.value}/${ns.name}`;
+  }
 
-    window.open(url, "_blank");
+  window.open(url, '_blank');
 }
 
 let resetIndex = async () => {
-    let currDir = currentDirectory.value || "!";
-    await folders[currDir].pager.resetIndex({
-        sortBy: sortBy.value,
-        order: ascending.value ? "asc" : "desc",
-    });
-    if (currentPage.value !== 1) {
-        currentPage.value = 1;
-    } else {
-        getFileList();
-    }
+  let currDir = currentDirectory.value || '!';
+  await folders[currDir].pager.resetIndex({
+    sortBy: sortBy.value,
+    order: ascending.value ? 'asc' : 'desc',
+  });
+  if (currentPage.value !== 1) {
+    currentPage.value = 1;
+  } else {
+    getFileList();
+  }
 };
 
 let toggleSort = (search: any) => {
-    if (fetching.value || !listDisplay.value.length) {
-        // if no list or fetching no nothing
-        return;
-    }
+  if (fetching.value || !listDisplay.value.length) {
+    // if no list or fetching no nothing
+    return;
+  }
 
-    if (sortBy.value === search) {
-        ascending.value = !ascending.value;
-    } else {
-        sortBy.value = search;
-    }
+  if (sortBy.value === search) {
+    ascending.value = !ascending.value;
+  } else {
+    sortBy.value = search;
+  }
 };
 
 // call getPage when currentPage changes
 watch(currentPage, (n, o) => {
-    if (
-        n !== o &&
-        n > 0 &&
-        (n <= maxPage.value ||
-            (n > maxPage.value && !endOfList[currentDirectory.value || "!"]))
-    ) {
-        // if new value is different from old value
-        // if new value is within maxPage
-        // if new value is greater than maxPage but not end of list
+  if (n !== o && n > 0 && (n <= maxPage.value || (n > maxPage.value && !endOfList[currentDirectory.value || '!']))) {
+    // if new value is different from old value
+    // if new value is within maxPage
+    // if new value is greater than maxPage but not end of list
 
-        getFileList();
-    } else {
-        currentPage.value = o; // revert back to old value
-    }
+    getFileList();
+  } else {
+    currentPage.value = o; // revert back to old value
+  }
 });
 
 // initialize the pager when searchFor changes
 watch(sortBy, (n) => {
-    if (!fetching.value) {
-        let currDir = currentDirectory.value || "!";
-        if (endOfList[currDir]) {
-            resetIndex();
-        } else {
-            getFileList(true);
-        }
+  if (!fetching.value) {
+    let currDir = currentDirectory.value || '!';
+    if (endOfList[currDir]) {
+      resetIndex();
+    } else {
+      getFileList(true);
     }
+  }
 });
 
 watch(ascending, () => {
-    if (!fetching.value) {
-        let currDir = currentDirectory.value || "!";
-        if (endOfList[currDir]) {
-            resetIndex();
-        } else {
-            getFileList(true);
-        }
+  if (!fetching.value) {
+    let currDir = currentDirectory.value || '!';
+    if (endOfList[currDir]) {
+      resetIndex();
+    } else {
+      getFileList(true);
     }
+  }
 });
 </script>
 
 <style lang="less" scoped>
 .page-desc {
-    max-width: 620px;
-    margin: 2rem auto;
-    text-align: center;
+  max-width: 620px;
+  margin: 2rem auto;
+  text-align: center;
 }
 
 #registerForm {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    max-width: 620px;
-    margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  max-width: 620px;
+  margin: 0 auto;
 
-    .email-alias {
-        position: relative;
-        flex-grow: 1;
+  .email-alias {
+    position: relative;
+    flex-grow: 1;
 
-        &::after {
-            content: ".skapi.app";
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #999;
-            font-size: 0.8rem;
-            font-weight: 400;
-            pointer-events: none;
-            user-select: none;
-            z-index: 1;
-        }
-
-        input {
-            padding-right: 81px;
-        }
+    &::after {
+      content: '.skapi.app';
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+      font-size: 0.8rem;
+      font-weight: 400;
+      pointer-events: none;
+      user-select: none;
+      z-index: 1;
     }
 
+    input {
+      padding-right: 81px;
+    }
+  }
+
+  button {
+    width: 92px;
+  }
+
+  @media (max-width: 540px) {
     button {
-        width: 92px;
+      width: 100%;
+      max-width: 100%;
     }
-
-    @media (max-width: 540px) {
-        button {
-            width: 100%;
-            max-width: 100%;
-        }
-    }
+  }
 }
 
 .dragPopup {
-    position: fixed;
-    left: 50%;
-    bottom: 20px;
-    max-width: 300px;
-    width: 100%;
-    padding: 10px 20px;
-    margin: 8px;
-    border-radius: 6px;
-    transform: translate(-50%, 300px);
-    transition: all 0.15s;
-    background-color: var(--main-color);
-    color: #fff;
-    user-select: none;
-    pointer-events: none;
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  max-width: 300px;
+  width: 100%;
+  padding: 10px 20px;
+  margin: 8px;
+  border-radius: 6px;
+  transform: translate(-50%, 300px);
+  transition: all 0.15s;
+  background-color: var(--main-color);
+  color: #fff;
+  user-select: none;
+  pointer-events: none;
 
-    &.show {
-        transform: translate(-50%, 0);
-    }
+  &.show {
+    transform: translate(-50%, 0);
+  }
 }
 
 .moving {
-    font-size: 24px;
-    animation: motion 0.3s linear 1s infinite alternate;
+  font-size: 24px;
+  animation: motion 0.3s linear 1s infinite alternate;
 }
 
 .error {
-    margin-bottom: 1rem;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.125rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.125rem;
 
-    svg {
-        width: 1.25rem;
-        height: 1.25rem;
-        margin-top: 0;
-    }
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0;
+  }
 }
 
 .go-hosturl {
-    color: inherit;
-    font-weight: 300;
+  color: inherit;
+  font-weight: 300;
 }
 
 @keyframes motion {
-    0% {
-        margin-top: -10px;
-    }
+  0% {
+    margin-top: -10px;
+  }
 
-    100% {
-        margin-top: 0px;
-    }
+  100% {
+    margin-top: 0px;
+  }
 }
 
 @media (pointer: coarse) {
-    .hide {
-        display: block !important;
-    }
+  .hide {
+    display: block !important;
+  }
 }
 
 .subdomain {
-    position: relative;
+  position: relative;
 
-    &::after {
-        content: ".skapi.com";
-        position: absolute;
-        top: 1px;
-        right: 1.25rem;
-        line-height: 2.75rem;
-        color: #999;
-        font-size: 0.875rem;
-        font-weight: 400;
-        pointer-events: none;
-        user-select: none;
-        z-index: 1;
-    }
+  &::after {
+    content: '.skapi.com';
+    position: absolute;
+    top: 1px;
+    right: 1.25rem;
+    line-height: 2.75rem;
+    color: #999;
+    font-size: 0.875rem;
+    font-weight: 400;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+  }
 }
 </style>
