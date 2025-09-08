@@ -33,6 +33,7 @@ import { useRoute, useRouter } from "vue-router";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { onMounted, ref } from "vue";
+import { miscUpdater } from "@/code/misc";
 import Modal from "@/components/modal.vue";
 
 const router = useRouter();
@@ -80,18 +81,28 @@ let registerReferMisc = async () => {
     }
 
     misc.refer.push(referParams);
-    skapi
-        .updateProfile({ misc: JSON.stringify(misc) })
-        .then(() => {
-            loading.value = false;
-            alreadyRegister.value = true;
-            completeRegister.value = true;
-            // console.log(user);
-        })
-        .catch((err) => {
-            loading.value = false;
-            alreadyRegister.value = false;
-        });
+    // skapi
+    //     .updateProfile({ misc: JSON.stringify(misc) })
+    //     .then(() => {
+    //         loading.value = false;
+    //         alreadyRegister.value = true;
+    //         completeRegister.value = true;
+    //         // console.log(user);
+    //     })
+    //     .catch((err) => {
+    //         loading.value = false;
+    //         alreadyRegister.value = false;
+    //     });
+    try {
+        // await skapi.updateProfile({ misc: JSON.stringify(misc) });
+        await miscUpdater.update({ refer: misc.refer });
+        loading.value = false;
+        alreadyRegister.value = true;
+        completeRegister.value = true;
+    } catch (err) {
+        loading.value = false;
+        alreadyRegister.value = false;
+    }
 };
 
 onMounted(async () => {

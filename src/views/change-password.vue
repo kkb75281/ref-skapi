@@ -130,6 +130,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { skapi } from '@/main';
 import { user } from '@/code/user';
+import { miscUpdater } from '@/code/misc';
 
 const router = useRouter();
 const route = useRoute();
@@ -178,7 +179,8 @@ let changePassword = async () => {
 
         misc.changePassword = true;
 
-        await skapi.updateProfile({ misc: JSON.stringify(misc) });
+        // await skapi.updateProfile({ misc: JSON.stringify(misc) });
+        miscUpdater.update({ changePassword: true });
 
         step.value++;
     }

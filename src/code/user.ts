@@ -7,6 +7,7 @@ import {
     serviceIdList,
     serviceSpecList,
 } from "@/views/service-list";
+import { miscUpdater } from "@/code/misc";
 import Service, { type PublicUser } from "./service";
 
 export let user: { [key: string]: any } = reactive({});
@@ -138,7 +139,9 @@ export let userLoginCallback = (userIncoming: any) => {
 
             userIncomingMisc.changePassword = false;
 
-            skapi.updateProfile({ misc: JSON.stringify(userIncomingMisc) });
+            // skapi.updateProfile({ misc: JSON.stringify(userIncomingMisc) });
+
+            miscUpdater.update({ changePassword: false });
         }
     } else {
         emailSubscribed.value === null;
@@ -193,8 +196,7 @@ let getStripeCustomer = async (user: any) => {
 
         // update customer id in user misc
         misc.stripe_customer_id = (await customer).id;
-        skapi.updateProfile({
-            misc: JSON.stringify(misc),
-        });
+        // skapi.updateProfile({misc: JSON.stringify(misc)});
+        miscUpdater.update({ stripe_customer_id: misc.stripe_customer_id });
     }
 };
