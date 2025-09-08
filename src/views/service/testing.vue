@@ -16,11 +16,17 @@
         h4 2. Check Newsletter Group Endpoint
         button(:disabled="disabled" @click="newsletterGroupEndpoint") Check Endpoint
         .result {{ getnewsletterGroupEndpoint }}
+
+    // user misc
+    .form-wrap
+        h4 3. User Misc
+        p {{ JSON.parse(JSON.stringify(user.misc, null, 2)) }}
 </template>
 
 <script setup>
-import { currentService } from "@/views/service/main";
 import { onMounted, ref } from "vue";
+import { currentService } from "@/views/service/main";
+import { user } from "@/code/user";
 
 let disabled = ref(false);
 let getnewsletterGroupEndpoint = ref("click the button to get endpoint");
@@ -55,8 +61,8 @@ function registerNewsletterGroup() {
 
     currentService
         .registerNewsletterGroup(option)
-        .then((r) => {})
-        .catch((e) => {})
+        .then((r) => { })
+        .catch((e) => { })
         .finally(() => {
             disabled.value = false;
         });
@@ -75,14 +81,11 @@ async function newsletterGroupEndpoint() {
 <style scoped lang="less">
 .testing-page {
     min-height: 500px;
-    background-color: #eee;
     padding: 1rem;
     margin-top: var(--nav-top, 20);
 }
 
 .form-wrap {
-    max-width: 500px;
-    margin: 0 auto;
     margin-bottom: 3rem;
 
     input {
