@@ -19,7 +19,7 @@ section
                 button.only-icon.gray.edit-btn(type="button" @click="copy(currentService.id)")
                     .icon
                         svg
-                            use(xlink:href="/basic-icon.svg#icon-copy")
+                            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-copy")
         .info-edit-wrap
             .info
                 .title Service Owner
@@ -28,24 +28,45 @@ section
                 button.only-icon.gray.edit-btn(type="button" @click="copy(currentService.owner)")
                     .icon
                         svg
-                            use(xlink:href="/basic-icon.svg#icon-copy")
+                            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-copy")
 
 section
     .middle-title For AI-Driven Development
-    p.page-desc Skapi works seamlessly with AI-driven development environments like OpenAI's Codex and Anthropic's Claude. #[br]Simply download the necessary markdown files below to your project folder:
+    p.page-desc
+        | Skapi works seamlessly with AI-driven development environments such as OpenAI Codex and Anthropic Claude Code.
+        br
+        | To enable AI-driven development, download the API documentation and default prompts so your AI model understands how to integrate the Skapi API into your project.
+        br
+        | Download the files below to your project folder:
 
-    b Download:&nbsp;&nbsp;&nbsp;&nbsp;
-    a.downlink(href="https://docs.skapi.com/skapi.md" download="skapi.md") skapi.md
-    span &nbsp;&nbsp;|&nbsp;&nbsp;
-    a.downlink(href="https://docs.skapi.com/skapi-types.md" download="skapi-types.md") skapi-types.md
-    span &nbsp;&nbsp;|&nbsp;&nbsp;
-    a.downlink(href="https://docs.skapi.com/SYSTEM.md" download="SYSTEM.md") SYSTEM.md
+    .download-file-wrap
+        .download-file(@click="downloadFile('@/assets/download/skapi.md', 'skapi.md')")
+            .file-icon
+                svg
+                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
+            .file-name skapi.md
+            .file-desc Skapi API documentation in Markdown format.
 
-    br
-    br
+        .download-file(@click="downloadFile('@/assets/download/skapi-types.md', 'skapi-types.md')")
+            .file-icon
+                svg
+                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
+            .file-name skapi-types.md
+            .file-desc Detailed information on all Skapi API data types.
 
-    b Important: 
-    p.page-desc Rename the `SYSTEM.md` file to an appropriate filename that your coding assistant recognizes. #[br](e.g., `AGENT.md` for OpenAI Codex, `CLAUDE.md` for Anthropic Claude)
+        .download-file(@click="downloadFile('@/assets/download/SYSTEM.md', 'SYSTEM.md')")
+            .file-icon
+                svg
+                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-download")
+            .file-name SYSTEM.md
+            .file-desc The default system prompt for AI coding assistants.
+
+    .important-wrap
+        .important-icon
+            svg
+                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-alert-triangle")
+        p.important-text Rename the `SYSTEM.md` file to an appropriate filename that your coding assistant recognizes. (e.g., `AGENT.md` for OpenAI Codex, `CLAUDE.md` for Anthropic Claude)
+
 
 section
     .middle-title For HTML Projects
@@ -83,7 +104,7 @@ section
 <script setup>
 import Code from '@/components/code.vue';
 import { currentService } from '@/views/service/main';
-import { copy } from '@/assets/js/common.js'
+import { copy, downloadFile } from '@/assets/js/common.js'
 </script>
 
 <style lang="less" scoped>
@@ -96,24 +117,80 @@ section:not(.page-header) {
     margin-bottom: 3rem;
 }
 
-// .downlink {
-//     position: relative;
-//     margin-right: 1.5rem;
+.download-file-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 30px;
+}
 
-//     &::after {
-//         content: '';
-//         position: absolute;
-//         top: 50%;
-//         right: -0.8rem;
-//         width: 1px;
-//         height: 13px;
-//         background-color: #888;
-//         transform: translateY(-50%);
-//     }
+.download-file {
+    position: relative;
+    padding: 1.25rem;
+    flex: 1;
+    min-width: 300px;
+    background-color: #121214;
+    border-radius: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    scale: 1;
 
-//     &:last-of-type {
-//         &::after {
-//             display: none;
-//         }
-//     }
-// }</style>
+    @media (max-width: 430px) {
+        min-width: unset;
+        width: 100%;
+    }
+
+    &:hover {
+        scale: 0.98;
+
+        .file-name {
+            text-decoration: underline;
+        }
+    }
+
+    .file-icon {
+        margin-bottom: 1rem;
+
+        svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+    }
+
+    .file-name {
+        font-size: 1.2rem;
+    }
+
+    .file-desc {
+        width: 100%;
+        margin-top: 20px;
+        padding-top: 20px;
+        padding-bottom: 5px;
+        opacity: 0.7;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
+.important-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 1.25rem;
+    gap: 1rem;
+    border-radius: 13px;
+    background-color: rgba(240, 78, 78, 0.15);
+
+    svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        opacity: 0.9;
+    }
+
+    p {
+        margin: 0;
+        opacity: 0.9;
+        line-height: 1.5rem;
+    }
+}
+</style>

@@ -2,7 +2,7 @@
 main#confirmation 
     button.inline.icon-text.dark.btn-prev(type="button" @click="router.push('/my-services/' + serviceId + '/dashboard')")
         svg
-            use(xlink:href="/basic-icon.svg#icon-arrow-left")
+            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-arrow-left")
         span Back
 
     br
@@ -34,7 +34,7 @@ main#confirmation
         br
         br
         
-        .flex-wrap.end
+        .flex-wrap.center
             button.inline.gray.btn-cancel(type="submit" :disabled="!iUnderstand" :class="{red: iUnderstand}" @click='deleteService()') Delete Service
 
         //- .bottom

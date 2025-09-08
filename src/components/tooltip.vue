@@ -99,7 +99,7 @@ const handleMouseEnter = (e) => {
         }
     }
 
-    >.tool {
+    > .tool {
         text-align: inherit;
     }
 
@@ -133,6 +133,15 @@ const handleMouseEnter = (e) => {
         padding: 8px;
         font-size: 0.8rem;
         border-radius: 0.375rem;
+
+        &.left {
+            left: 0;
+        }
+
+        &.right {
+            left: initial;
+            right: 0;
+        }
     }
 
     .tip-arrow {
@@ -160,31 +169,6 @@ const handleMouseEnter = (e) => {
             border-top-width: 0;
             border-bottom-width: 4px;
             border-bottom-color: var(--tip-background-color);
-        }
-    }
-}
-
-.table-menu-wrap {
-    ._tooltip {
-        .tip {
-            bottom: calc(100% + 8px);
-
-            &.left {
-                // left: -10px;
-                left: 0;
-            }
-
-            &.right {
-                left: initial;
-                // right: -10px;
-                right: 0;
-            }
-        }
-
-        .tip-arrow {
-            &.top {
-                bottom: calc(100% + 4px);
-            }
         }
     }
 }

@@ -2,7 +2,7 @@
 section.page-header
     .page-title Bulk Email
     a.btn-docs(href='https://docs.skapi.com/email/newsletters.html' target="_blank")
-        button.inline.icon-text.sm.gray(style="height: 100%;")
+        button.inline.icon-text.sm.gray
             img(src="@/assets/img/landingpage/icon_docs.svg" alt="Documentation Icon")
             | Go Docs
 
@@ -16,12 +16,12 @@ template(v-if='needsEmailAlias')
             router-link(to="/account-setting") Please verify your email address to modify settings.
 
     section
-        p.page-desc(style="text-align: center; margin: 2rem auto").
+        p.page-desc.
             You can send bulk emails to your newsletter subscribers.
             #[span.wordset To proceed, please register your email alias address that will be used to send out the emails.]
             #[span.wordset The email alias can only be alphanumeric and hyphen.]
-
-        form#registerForm.flex(@submit.prevent='registerAlias')
+        
+        form#registerForm(@submit.prevent='registerAlias')
             .email-alias
                 input.block(v-model='emailAliasVal' pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' :disabled="registerAliasRunning" placeholder="your-email-alias" required)
 
@@ -41,14 +41,12 @@ template(v-else-if='!user?.email_verified || currentService.service.active == 0 
         .error(v-if='currentService.service.active == 0')
             svg
                 use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
-            //- span This service is currently disabled.
-            router-link(:to="`/my-services/${currentService.id}/dashboard`") This service is currently disabled.
+            span This service is currently disabled.
 
         .error(v-else-if='currentService.service.active < 0')
             svg
                 use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
-            //- span This service is currently suspended.
-            router-link(:to="`/my-services/${currentService.id}/dashboard`") This service is currently suspended.
+            span This service is currently suspended.
 
         p.
             You can send bulk emails to your newsletter subscribers.
@@ -56,49 +54,58 @@ template(v-else-if='!user?.email_verified || currentService.service.active == 0 
             #[br]
             #[span.wordset If you have not verified your email address, please do so first.]
 
-        //- router-link(v-if='currentService.service.active == 0' :to="`/my-services/${currentService.id}/dashboard`") Click here to enable the service.
-        //- router-link(v-else-if='!user?.email_verified' to="/account-setting") Click here to verify your email address.
+        router-link(v-if='currentService.service.active == 0' :to="`/my-services/${currentService.id}/dashboard`") Click here to enable the service.
+        router-link(v-else-if='!user?.email_verified' to="/account-setting") Click here to verify your email address.
 
 template(v-else)
-    ul.tab-menu
-        li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
+    //- section
+        .error(v-if='!user?.email_verified')
+            svg
+                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
+            router-link(to="/account-setting") Please verify your email address to modify settings.
+        
+        .error(v-else-if='currentService.service.active == 0')
+            svg
+                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
+            span This service is currently disabled.
+
+        .error(v-else-if='currentService.service.active < 0')
+            svg
+                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-warning")
+            span This service is currently suspended.
 
     section
-        template(v-if='mailType === "Newsletter"')
-            p.page-desc.
-                Once the users have subscribed #[span.wordset to your newsletter,]
-                they will be able to receive your emails sent to the address provided below:
-        template(v-else)
-            p.page-desc.
-                Once the users have subscribed to your service mail,
-                they will be able to receive your emails sent to the address provided below:
-                User must be logged in to subscribe to Service Mail, and the user must have their email verified.
+        ul.tab-menu
+            li.tab-menu-item(v-for="(tab, index) in emailTypeSelect" :key="index" @click="activeTabs = index" :class="{ active: activeTabs === index }") {{ tab }}
 
-    section
-        .info-value-set
-            .info-edit-wrap
-                .info
-                    .title Email Alias
-                    .value {{ currentService.service.email_alias + '@mail.skapi.com' }}
-                .actions-wrap
-                    button.only-icon.gray.edit-btn(type="button" @click="showSetAliasModal = true; emailAliasVal = currentService.service.email_alias;")
-                        .icon
-                            svg
-                                use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-edit")
-            .info-edit-wrap
-                .info.email
-                    .title Email Address
-                    .value {{ newsletterEndpoint || '...' }}
-                .actions-wrap
-                    button.only-icon.gray.btn-copy(type="button" @click="copy(newsletterEndpoint)")
-                        .icon
-                            svg
-                                use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-copy")
-                    a(:href="'mailto:' + newsletterEndpoint" target="_blank")
-                        button.only-icon.gray.btn-send(type="button")
-                            .icon
-                                svg
-                                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-send")
+        .desc-wrap
+            template(v-if='mailType === "Newsletter"')
+                p.
+                    Once the users have subscribed #[span.wordset to your newsletter,]
+                    #[br]
+                    they will be able to receive your emails sent to the address provided below:
+            template(v-else)
+                p.
+                    Once the users have subscribed to your service mail,
+                    they will be able to receive your emails sent to the address provided below:
+
+                p(style="max-width: 23.75rem;").
+                    User must be logged in to subscribe to Service Mail,
+                    and the user must have their email verified.
+
+        .email-btn-wrap
+            .email {{ newsletterEndpoint || '...' }}
+
+            .flex-wrap.center.btn-wrap
+                button.inline.icon-text.gray.sm.btn-copy(@click="copy(newsletterEndpoint)")
+                    svg.svgIcon
+                        use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-copy")
+                    span Copy
+                a(:href="'mailto:' + newsletterEndpoint" target="_blank")
+                    button.inline.icon-text.gray.sm.btn-send
+                        svg.svgIcon
+                            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-send")
+                        span Send
 
     section.table-area
         .table-menu-wrap
@@ -231,25 +238,6 @@ Modal.modal-deleteEmail(:open="emailToDelete" @close="emailToDelete=false")
             button.gray.btn-cancel(@click="emailToDelete = null") Cancel
             button.red.btn-delete(@click="deleteEmail(emailToDelete)") Delete
 
-//- modal :: set email alias
-Modal.modal-setAlias(:open="showSetAliasModal" @close="showSetAliasModal=false")
-    .modal-close(@click="showSetAliasModal = false; emailAliasVal = '';")
-        svg.svgIcon
-            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-x")
-
-    .modal-title Set Email Alias
-
-    .modal-desc You can set automated email templates for your service.#[br]Please register your email alias address that will be used to send out the emails.#[br]The email alias can only be alphanumeric and hyphen.
-
-    form#registerForm(@submit.prevent='registerAlias')
-        .email-alias
-            input.block(v-model='emailAliasVal' pattern='^[a-z\\d](?:[a-z\\d\\-]{0,61}[a-z\\d])?$' :disabled="registerAliasRunning" placeholder="your-email-alias" required)
-
-        .modal-btns
-            .loader-wrap(v-if="registerAliasRunning")
-                .loader(style="--loader-color:white; --loader-size:12px")
-            template(v-else)
-                button.block(type="submit" :disabled='registerAliasRunning') Register
 </template>
 
 <script setup lang="ts">
@@ -285,8 +273,6 @@ let emailAliasVal = ref("");
 let email_is_unverified_or_service_is_disabled = computed(
     () => !user?.email_verified || currentService.service.active <= 0
 );
-
-let showSetAliasModal = ref(false);
 let registerAliasRunning = ref(false);
 function registerAlias() {
     registerAliasRunning.value = true;
@@ -299,7 +285,6 @@ function registerAlias() {
         })
         .finally(() => {
             registerAliasRunning.value = false;
-            showSetAliasModal.value = false;
         });
 }
 let needsEmailAlias = computed(() => {
@@ -618,21 +603,19 @@ let converter = (html: string, parsed: boolean, inv: boolean) => {
 }
 
 .page-desc {
-    max-width: 55rem;
-    margin: 2rem auto 2.5rem;
     text-align: center;
+    margin: 2rem auto;
+    max-width: 620px;
 }
 
 #registerForm {
-    &.flex {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        max-width: 620px;
-        margin: 0 auto;
-    }
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    max-width: 620px;
+    margin: 0 auto;
 
     .email-alias {
         position: relative;
@@ -654,6 +637,17 @@ let converter = (html: string, parsed: boolean, inv: boolean) => {
 
         input {
             padding-right: 132px;
+        }
+    }
+
+    button {
+        width: 92px;
+    }
+
+    @media (max-width: 540px) {
+        button {
+            width: 100%;
+            max-width: 100%;
         }
     }
 }
@@ -743,14 +737,17 @@ let converter = (html: string, parsed: boolean, inv: boolean) => {
     }
 }
 
-.info-edit-wrap {
-    .email {
-        max-width: calc(100% - 120px);
-    }
+.desc-wrap {
+    max-width: 37.5rem;
+    margin: 0 auto 2rem;
+    text-align: center;
+    color: #999;
 
-    @media (max-width: 430px) {
-        .email {
-            max-width: 100%;
+    p {
+        margin: 0 auto 1rem;
+
+        &:last-child {
+            margin-bottom: 0;
         }
     }
 }

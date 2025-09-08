@@ -6,20 +6,22 @@
     "scripts": {
         "dev": "vite --host",
         "prod": "vite --host --mode production",
-        "build": "node script.cjs; npm run build:ts; vite build --mode production",
+        "build": "npm run build:ts; vite build --mode production",
         "build:ts": "tsc",
         "build-check": "node script.cjs; run-p type-check \"build-only {@}\" --",
         "preview": "vite preview --host",
         "build-only": "vite build",
         "type-check": "vue-tsc --build --force",
         "start": "serve dist",
-        "builddev": "node script.cjs; npm run build:ts; vite build --mode development"
+        "builddev": "node script.cjs; npm run build:ts; vite build --mode development",
+        "buildbefore": "node script.cjs; node icon.cjs; node pp.cjs"
     },
     "dependencies": {
         "aos": "^3.0.0-beta.6",
+        "glob": "^11.0.3",
         "jsoncrawler": "^0.2.1",
         "mime": "^4.0.4",
-        "skapi-js": "^1.0.259",
+        "skapi-js": "^1.0.261",
         "swiper": "^11.2.8"
     },
     "devDependencies": {

@@ -99,7 +99,7 @@ onUnmounted(() => {
     }
 
     .service-plan-name {
-        padding: 40px 0;
+        padding: 40px 16px;
         text-align: center;
 
         .plan {
@@ -126,6 +126,7 @@ onUnmounted(() => {
         .name {
             font-size: 16px;
             margin-top: 8px;
+            word-break: break-word;
         }
     }
 

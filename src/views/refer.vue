@@ -15,8 +15,17 @@
     br
 
     .bottom
-        button.inline.gray(:class="{'nonClickable': loading}" @click="router.push('/my-services')") Go to My Services
-        button.inline(:class="{'nonClickable': loading || alreadyRegister}" @click="registerReferMisc") Get Bonus
+        .flex-wrap.center(v-if="loading" style="width:100%;")
+            .loader(style="--loader-color:white; --loader-size:12px;")
+        template(v-else)
+            button.inline.gray(:class="{'nonClickable': loading}" @click="router.push('/my-services')") Go to My Services
+            button.inline(:class="{'nonClickable': loading || alreadyRegister}" @click="registerReferMisc") Get Bonus
+
+Modal(:open="completeRegister")
+    .modal-title Completed!
+    .modal-desc Referrals registration has been completed.#[br]Please go to the service page and use the Skapi!
+    .modal-btns
+        button.block(type="button" @click="router.push({ path: '/my-services' }); completeRegister = false") Go to My Services
 </template>
 
 <script setup>
@@ -24,13 +33,20 @@ import { useRoute, useRouter } from "vue-router";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { onMounted, ref } from "vue";
+import { miscUpdater } from "@/code/misc";
+import Modal from "@/components/modal.vue";
 
 const router = useRouter();
 const route = useRoute();
 
-let refer = route.params.name;
+let referParams = route.params.name;
 let alreadyRegister = ref(false);
+let completeRegister = ref(false);
 let loading = ref(false);
+let bonus = {
+    use: [],
+    useless: ["ThanhYDavid"]
+}
 
 let checkUser = () => {
     let u = user?.user_id;
@@ -42,10 +58,14 @@ let checkUser = () => {
     }
 };
 
-let registerReferMisc = () => {
+let registerReferMisc = async () => {
     if (!checkUser()) {
         return;
     }
+
+    // console.log("referParams", referParams);
+
+    loading.value = true;
 
     let misc = JSON.parse(user.misc || "{}");
 
@@ -54,36 +74,63 @@ let registerReferMisc = () => {
         misc.refer = misc.refer ? [misc.refer] : [];
     }
 
-    if (misc.refer.includes(refer)) return;
-
-    loading.value = true;
-    misc.refer.push(refer);
-    skapi
-        .updateProfile({ misc: JSON.stringify(misc) })
-        .then(() => {
-            loading.value = false;
-            alreadyRegister.value = true;
-        })
-        .catch((err) => {
-            loading.value = false;
-            alreadyRegister.value = false;
-        });
-};
-
-onMounted(() => {
-    if (!checkUser()) {
-        router.push({ path: "/login", query: { refer_name: refer } });
+    if (misc.refer.includes(referParams)) {
+        loading.value = false;
+        completeRegister.value = true;
         return;
     }
 
-    let misc = JSON.parse(user.misc || "{}");
-    let miscRefer = misc.refer || [];
-
-    if (miscRefer.includes(refer)) {
+    misc.refer.push(referParams);
+    // skapi
+    //     .updateProfile({ misc: JSON.stringify(misc) })
+    //     .then(() => {
+    //         loading.value = false;
+    //         alreadyRegister.value = true;
+    //         completeRegister.value = true;
+    //         // console.log(user);
+    //     })
+    //     .catch((err) => {
+    //         loading.value = false;
+    //         alreadyRegister.value = false;
+    //     });
+    try {
+        // await skapi.updateProfile({ misc: JSON.stringify(misc) });
+        await miscUpdater.update({ refer: misc.refer });
+        loading.value = false;
         alreadyRegister.value = true;
-    } else {
+        completeRegister.value = true;
+    } catch (err) {
+        loading.value = false;
         alreadyRegister.value = false;
     }
+};
+
+onMounted(async () => {
+    if (!checkUser()) {
+        // router.push({ path: "/signup", query: { refer_name: refer } });
+        // router.push({ path: "/signup", query: { suc_redirect: '/refer/' + refer } });
+        router.push({ path: "/signup", query: { refer: referParams } });
+        return;
+    } else {
+        // 유저 misc 에 refer 등록
+        await registerReferMisc();
+
+        // // refer 가 bonus.useless 에 포함되어 있으면 서비스 리스트로 페이지 이동
+        // if (bonus.useless.includes(referParams)) {
+        //     // router.push('/my-services');
+        //     router.push({ path: "/my-services", query: { refer: referParams } });
+        //     return;
+        // }
+    }
+
+    // let misc = JSON.parse(user.misc || "{}");
+    // let miscRefer = misc.refer || [];
+
+    // if (miscRefer.includes(referParams)) {
+    //     alreadyRegister.value = true;
+    // } else {
+    //     alreadyRegister.value = false;
+    // }
 });
 </script>
 

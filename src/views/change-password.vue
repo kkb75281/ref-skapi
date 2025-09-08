@@ -7,7 +7,7 @@
         .page-title Change Password
     template(v-else)
         svg.svgIcon(style="height: 50px; width: 50px; margin-bottom: .625rem")
-            use(xlink:href="/material-icon.svg#icon-check-circle")
+            use(xlink:href="/material-icon.svg?v=20250829065753667#icon-check-circle")
 
         .page-title Success
 
@@ -34,14 +34,14 @@
                 //- .passwordIcon(@click="showPassword = !showPassword")
                 //-     template(v-if="showPassword")
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
+                //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-fill")
                 //-     template(v-else)
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
+                //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-off-fill")
 
             .error(v-if="error")
                 svg
-                    use(xlink:href="/material-icon.svg#icon-error")
+                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-error")
                 span {{ error }}
 
             br
@@ -69,11 +69,11 @@
                 //- .passwordIcon(@click="showNewPassword = !showNewPassword")
                 //-     template(v-if="showNewPassword")
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
+                //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-fill")
                         
                 //-     template(v-else)
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
+                //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-off-fill")
 
             label.passwordInput
                 | Confirm new password
@@ -90,14 +90,14 @@
                 //- .passwordIcon(@click="showConfirmPassword = !showConfirmPassword")
                 //-     template(v-if="showConfirmPassword")
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
+                //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-fill")
                 //-     template(v-else)
                 //-         svg.svgIcon(style="fill: var(--black-6)")
-                //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
+                //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-off-fill")
 
             .error(v-if="error")
                 svg
-                    use(xlink:href="/material-icon.svg#icon-error")
+                    use(xlink:href="/material-icon.svg?v=20250829065753667#icon-error")
                 span {{ error }}
 
             br
@@ -130,6 +130,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { skapi } from '@/main';
 import { user } from '@/code/user';
+import { miscUpdater } from '@/code/misc';
 
 const router = useRouter();
 const route = useRoute();
@@ -178,7 +179,8 @@ let changePassword = async () => {
 
         misc.changePassword = true;
 
-        await skapi.updateProfile({ misc: JSON.stringify(misc) });
+        // await skapi.updateProfile({ misc: JSON.stringify(misc) });
+        miscUpdater.update({ changePassword: true });
 
         step.value++;
     }

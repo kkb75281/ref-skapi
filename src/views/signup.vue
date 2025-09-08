@@ -29,10 +29,10 @@
             //- .passwordIcon(@click="showPassword = !showPassword")
             //-     template(v-if="showPassword")
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
+            //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-fill")
             //-     template(v-else)
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
+            //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-off-fill")
 
         label.passwordInput
             | Confirm password
@@ -45,10 +45,10 @@
             //- .passwordIcon(@click="showPassword = !showPassword")
             //-     template(v-if="showPassword")
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
+            //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-fill")
             //-     template(v-else)
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
+            //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-off-fill")
 
         .actions 
             Checkbox(v-model="form.subscribe" style='font-weight:unset;') I agree to receive newsletters from Skapi.
@@ -57,7 +57,7 @@
 
         .error(v-if="error")
             svg
-                use(xlink:href="/material-icon.svg#icon-error")
+                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-error")
             span {{ error }}
         
         br
@@ -70,7 +70,13 @@
                 button.inline Sign-up
                 .signup 
                     | Have an account?&nbsp;
-                    RouterLink(:to="{name: 'login'}") Login
+                    template(v-if="route.query.action")
+                        RouterLink(:to="{ name: 'login', query: { action: route.query.action } }") Login
+                    template(v-else-if="route.query.refer")
+                        RouterLink(:to="{ name: 'login', query: { refer: route.query.refer } }") Login
+                    template(v-else)
+                        RouterLink(:to="{name: 'login'}") Login
+                    //- RouterLink(:to="route.query.suc_redirect ? {name: 'login', query: { suc_redirect: route.query.suc_redirect }} : {name: 'login'}") Login
 </template>
 
 <script setup lang="ts">
@@ -96,6 +102,10 @@ let form = ref({
 });
 let routeQuery = route.query;
 
+onMounted(() => {
+
+});
+
 let validatePassword = () => {
     if (form.value.password_confirm !== form.value.password) {
         confirmPasswordField.value.setCustomValidity("Password does not match");
@@ -107,26 +117,40 @@ let signup = (e) => {
     error.value = "";
     promiseRunning.value = true;
 
+    let miscValue = {
+        affiliate_signup: null,
+        refer: [],
+    };
+
+    if (routeQuery?.refer) {
+        miscValue.affiliate_signup = routeQuery.refer;
+        miscValue.refer.push(routeQuery.refer);
+    }
+
     let params = {
         email: form.value.email,
         password: form.value.password,
+        misc: JSON.stringify(miscValue),
     };
+
     let options = {
         signup_confirmation: "/success",
         email_subscription: form.value.subscribe,
     };
 
-    if (routeQuery?.suc_redirect) {
-        if (routeQuery?.suc_redirect.includes("refer")) {
-            options.signup_confirmation = "/success/" + routeQuery.suc_redirect.split('/')[2];
+    if (routeQuery) {
+        if (routeQuery?.refer) {
+            options.signup_confirmation = "/success?refer=" + routeQuery.refer;
         } else {
             options.signup_confirmation = "/success";
         }
 
-        options.signup_confirmation =
-            options.signup_confirmation +
-            "?suc_redirect=" +
-            routeQuery.suc_redirect;
+        if (routeQuery?.action) {
+            options.signup_confirmation =
+                options.signup_confirmation +
+                "?action=" +
+                routeQuery.action;
+        }
     }
 
     skapi
@@ -165,7 +189,7 @@ let signup = (e) => {
 form {
     padding: 8px;
 
-    > label {
+    >label {
         margin-bottom: 16px;
     }
 

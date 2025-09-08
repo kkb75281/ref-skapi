@@ -21,10 +21,10 @@
             //- .passwordIcon(@click.stop="showPassword = !showPassword")
             //-     template(v-if="showPassword")
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="/material-icon.svg#icon-visibility-fill")
+            //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-fill")
             //-     template(v-else)
             //-         svg.svgIcon(style="fill: var(--black-6)")
-            //-             use(xlink:href="/material-icon.svg#icon-visibility-off-fill")
+            //-             use(xlink:href="/material-icon.svg?v=20250829065753667#icon-visibility-off-fill")
 
         .actions
             Checkbox(style='font-weight:unset;' @change="(e)=>{setLocalStorage(e)}" :disabled='promiseRunning' v-model='remVal') Remember Me
@@ -34,7 +34,7 @@
 
         .error(v-if="error")
             svg
-                use(xlink:href="/material-icon.svg#icon-error")
+                use(xlink:href="/material-icon.svg?v=20250829065753667#icon-error")
             div(v-if="enableAccount")
                 | {{ error }}
                 br
@@ -53,13 +53,19 @@
             template(v-else)
                 button.inline.btn-login Login
                 .signup
-                    span.text No account?
-                    router-link.btn-signup(:to="route.query.refer_name ? { name: 'signup', query: { suc_redirect: '/refer/' + route.query.refer_name } } : { name: 'signup' }") Sign up
+                    span.text No account?&nbsp;
+                    template(v-if="route.query.action")
+                        RouterLink(:to="{ name: 'signup', query: { action: route.query.action } }") Sign up
+                    template(v-else-if="route.query.refer")
+                        RouterLink(:to="{ name: 'signup', query: { refer: route.query.refer } }") Sign up
+                    template(v-else)
+                        RouterLink(:to="{ name: 'signup' }") Sign up
+                    //- router-link.btn-signup(:to="route.query.refer_name ? { name: 'signup', query: { suc_redirect: '/refer/' + route.query.refer_name } } : { name: 'signup' }") Sign up
 
 Modal(:open="enableAccount")
     .modal-close(@click="enableAccount = false;")
         svg.svgIcon
-            use(xlink:href="/basic-icon.svg#icon-x")
+            use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-x")
 
     .modal-title Enable Account
     .modal-desc.
@@ -78,6 +84,8 @@ import { useRoute, useRouter } from "vue-router";
 import { skapi } from "@/main";
 import { user } from "@/code/user";
 import { onMounted, ref } from "vue";
+import { type PublicUser } from "./service";
+
 import Checkbox from "@/components/checkbox.vue";
 import Modal from "@/components/modal.vue";
 
@@ -120,24 +128,34 @@ let login = (e) => {
 
     skapi
         .login(params)
-        .then((u) => {
+        .then(async (u) => {
             for (let k in u) {
                 user[k] = u[k];
             }
 
-            let sucRedirect = String(route.query?.suc_redirect || "");
+            let routerQuery = route.query || {};
 
-            if (sucRedirect.length) {
-                let routename = sucRedirect.split("/")[1];
-
-                if (routename == 'refer') {
-                    let referName = sucRedirect.split("/")[2]; // /refer/name에서 name 추출
-                    router.push({ name: 'refer', params: { name: referName } });
-                } else {
-                    router.push({ path: "/my-services", query: { redirect: sucRedirect } });
+            if (Object.keys(routerQuery).length) {
+                if (routerQuery.action) {
+                    router
+                        .push({
+                            path: "/my-services",
+                            query: { action: routerQuery.action },
+                        })
+                        .then(() => {
+                            promiseRunning.value = false;
+                        });
+                } else if (routerQuery.refer) {
+                    router
+                        .push({ name: "refer", params: { name: routerQuery.refer } })
+                        .then(() => {
+                            promiseRunning.value = false;
+                        });
                 }
             } else {
-                router.push("/my-services");
+                router.push("/my-services").then(() => {
+                    promiseRunning.value = false;
+                });
             }
         })
         .catch((err) => {
@@ -159,8 +177,6 @@ let login = (e) => {
             } else {
                 error.value = err.message;
             }
-        })
-        .finally(() => {
             promiseRunning.value = false;
         });
 };

@@ -21,7 +21,7 @@ template(v-else)
                 style="margin-bottom: 0.75rem;")
             button.block.icon-text(type="button" :disabled="!newServiceName" :style="!newServiceName ? { backgroundColor: 'rgba(34, 35, 37, 1)' } : {}" @click="openCreateService")
                 svg
-                    use(xlink:href="/basic-icon.svg#icon-plus") 
+                    use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-plus") 
                 span Create
 
     .service-list(v-else)
@@ -34,28 +34,29 @@ template(v-else)
                     :slidesPerView="1"
                     :spaceBetween="30"
                     :loop="true"
-                    :autoplay="{ delay: 2000, disableOnInteraction: false }"
+                    :autoplay="{ delay: 5000, disableOnInteraction: false }"
                     :pagination="{ clickable: true }"
                     :modules="[Pagination, Autoplay]"
 
                 )
                     swiper-slide.service-swiper-item.ann
                         .title Announcement
-                        .desc Stable release is live, and services are running smoothly! You’re good to go.
+                        .desc skapi-js has hit v1.0.260 — stable and good to go! We came a long way to provide you with the next standard of web development.
                     swiper-slide.service-swiper-item.use
                         .title Use Cases
-                        .desc Explore our example use cases for more project inspiration.
-                        a.btn-more(href="#") See more
+                        .desc Explore how developers are building full-stack apps, social platforms, dashboards, and more with Skapi. All without writing backend code.
+                        router-link.btn-more(to="/use-cases") See more
                     swiper-slide.service-swiper-item.new
                         .title New Features
-                        .desc A new feature just dropped! Check your dashboard and enjoy the update.
+                        .desc Invite service admins, Advanced database controls, WebRTC support for video chat and P2P apps, and send user-specific alerts.
+                        a.btn-more(href="https://docs.skapi.com/versionlog/versions.html" target="_blank") See more
 
                     .swiper-pagination
             .top-item.create-service
                 .title Create a new service
                 button.icon-text(@click="openCreateService")
                     svg
-                        use(xlink:href="/basic-icon.svg#icon-plus") 
+                        use(xlink:href="/basic-icon.svg?v=20250829065753667#icon-plus") 
                     span Create
                 //- modalCreateService(:visible="showCreateModal" @close="showCreateModal = false")
         section.section.my-services-list
@@ -160,7 +161,7 @@ let routeQuery = route.query;
 onMounted(() => {
     document.addEventListener("keydown", handleKey);
 
-    if (routeQuery?.redirect === "create" && !isFirstService.value) {
+    if (routeQuery?.action === "create" && !isFirstService.value) {
         openCreateService();
     }
 });
@@ -206,8 +207,9 @@ let goServiceDashboard = (service: { [key: string]: any }) => {
     loading.value = true;
 
     setTimeout(() => {
-        router.push("/my-services/" + service.id);
-        loading.value = false;
+        router.push("/my-services/" + service.id).then(() => {
+            loading.value = false;
+        });
     }, 1000);
 };
 
@@ -323,6 +325,15 @@ a {
         font-size: 0.875rem;
         font-weight: 300;
         line-height: 1.4;
+
+        @media (max-width: 430px) {
+            display: -webkit-box;
+            word-wrap: break-word;
+            -webkit-line-clamp: 6;
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
     }
 
     &::before {
@@ -385,18 +396,6 @@ a {
         content: none;
     }
 
-    &::after {
-        content: "";
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        position: absolute;
-        background: url("@/assets/img/myservice/bg_texture.svg") no-repeat center;
-        opacity: 0.2;
-        z-index: 1;
-    }
-
     .swiper {
         height: 100%;
     }
@@ -414,6 +413,18 @@ a {
         position: absolute;
         bottom: 0;
         right: 0;
+    }
+
+    &::after {
+        content: "";
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        position: absolute;
+        background: url("@/assets/img/myservice/bg_texture.svg") no-repeat center;
+        opacity: 0.2;
+        z-index: 1;
     }
 
     &.ann {
@@ -440,11 +451,27 @@ a {
         }
     }
 
+    .title {
+        white-space: nowrap;
+    }
+
+    .desc {
+        display: -webkit-box;
+        word-wrap: break-word;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
     .btn-more {
+        position: relative;
         font-size: 1rem;
         margin-top: 0.75rem;
         display: block;
         width: fit-content;
+        cursor: pointer;
+        z-index: 2;
     }
 
     .swiper-pagination-fraction,
