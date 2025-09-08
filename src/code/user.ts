@@ -64,7 +64,7 @@ export let userLoginCallback = (userIncoming: any) => {
             user[k] = userIncoming[k];
         }
 
-        console.log(JSON.stringify(JSON.parse(userIncoming.misc)))
+        // console.log(JSON.stringify(JSON.parse(userIncoming.misc)))
 
         let userIncomingMisc = JSON.parse(userIncoming.misc || "{}");
         let getServices = null;

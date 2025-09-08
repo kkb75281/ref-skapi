@@ -57,10 +57,12 @@ let checkUser = () => {
     }
 };
 
-let registerReferMisc = async() => {
+let registerReferMisc = async () => {
     if (!checkUser()) {
         return;
     }
+
+    // console.log("referParams", referParams);
 
     loading.value = true;
 
@@ -84,7 +86,7 @@ let registerReferMisc = async() => {
             loading.value = false;
             alreadyRegister.value = true;
             completeRegister.value = true;
-            console.log(user);
+            // console.log(user);
         })
         .catch((err) => {
             loading.value = false;
@@ -92,7 +94,7 @@ let registerReferMisc = async() => {
         });
 };
 
-onMounted(async() => {
+onMounted(async () => {
     if (!checkUser()) {
         // router.push({ path: "/signup", query: { refer_name: refer } });
         // router.push({ path: "/signup", query: { suc_redirect: '/refer/' + refer } });
@@ -101,7 +103,7 @@ onMounted(async() => {
     } else {
         // 유저 misc 에 refer 등록
         await registerReferMisc();
-        
+
         // // refer 가 bonus.useless 에 포함되어 있으면 서비스 리스트로 페이지 이동
         // if (bonus.useless.includes(referParams)) {
         //     // router.push('/my-services');
