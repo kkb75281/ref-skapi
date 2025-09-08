@@ -103,7 +103,7 @@ let form = ref({
 let routeQuery = route.query;
 
 onMounted(() => {
-    
+
 });
 
 let validatePassword = () => {
@@ -119,10 +119,12 @@ let signup = (e) => {
 
     let miscValue = {
         affiliate_signup: null,
+        refer: [],
     };
 
     if (routeQuery?.refer) {
         miscValue.affiliate_signup = routeQuery.refer;
+        miscValue.refer.push(routeQuery.refer);
     }
 
     let params = {
@@ -137,7 +139,7 @@ let signup = (e) => {
     };
 
     if (routeQuery) {
-        if(routeQuery?.refer) {
+        if (routeQuery?.refer) {
             options.signup_confirmation = "/success?refer=" + routeQuery.refer;
         } else {
             options.signup_confirmation = "/success";
