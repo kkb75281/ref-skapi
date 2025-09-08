@@ -25,7 +25,7 @@ Modal(:open="completeRegister")
     .modal-title Completed!
     .modal-desc Referrals registration has been completed.#[br]Please go to the service page and use the Skapi!
     .modal-btns
-        button.block(type="button" @click="router.push({ path: '/my-services' })") Go to My Services
+        button.block(type="button" @click="router.push({ path: '/my-services' }); completeRegister = false") Go to My Services
 </template>
 
 <script setup>
