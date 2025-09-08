@@ -216,7 +216,7 @@
 							.desc Best for testing and prototyping. #[br]#[br]
 						.middle
 							.price Free
-							router-link(:to="user?.user_id ? { path: '/my-services', query: { redirect: 'create' } } : { path: '/signup', query: { suc_redirect: 'create' } }")
+							router-link(:to="user?.user_id ? { path: '/my-services', query: { action: 'create' } } : { path: '/signup', query: { action: 'create' } }")
 								button(type="button") Get
 						.bottom
 							p Core includes:
@@ -236,7 +236,7 @@
 						.middle
 							.price $19
 								span /mon
-							router-link(:to="user?.user_id ? { path: '/my-services', query: { redirect: 'create' } } : { path: '/signup', query: { suc_redirect: 'create' } }")
+							router-link(:to="user?.user_id ? { path: '/my-services', query: { action: 'create' } } : { path: '/signup', query: { action: 'create' } }")
 								button(type="button") Get
 						.bottom
 							p Includes all Trial Plan features, but more functions:
@@ -256,7 +256,7 @@
 						.middle
 							.price $89
 								span /mon
-							router-link(:to="user?.user_id ? { path: '/my-services', query: { redirect: 'create' } } : { path: '/signup', query: { suc_redirect: 'create' } }")
+							router-link(:to="user?.user_id ? { path: '/my-services', query: { action: 'create' } } : { path: '/signup', query: { action: 'create' } }")
 								button(type="button") Get
 						.bottom
 							p Includes all Standard Plan features, but more data:

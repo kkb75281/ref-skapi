@@ -12,7 +12,12 @@
     br
 
     div(style="display:block;text-align:center")
-        button.block(@click="router.push({path: '/login', query: {suc_redirect: routeQuery} })") Login
+        template(v-if="routeQuery?.action")
+            button.block(@click="router.push({path: '/login', query: {action: routeQuery.action} })") Login
+        template(v-else-if="routeQuery?.refer")
+            button.block(@click="router.push({path: '/login', query: {refer: routeQuery.refer} })") Login
+        template(v-else)
+            button.block(@click="router.push('/login')") Login
 </template>
 
 <script setup lang="ts">
@@ -22,7 +27,7 @@ const router = useRouter();
 const route = useRoute();
 
 let how = route.path.split("/")[2];
-let routeQuery = route.query?.suc_redirect;
+let routeQuery = route.query;
 </script>
 
 <style scoped lang="less">

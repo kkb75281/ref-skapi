@@ -64,6 +64,8 @@ export let userLoginCallback = (userIncoming: any) => {
             user[k] = userIncoming[k];
         }
 
+        console.log(JSON.stringify(JSON.parse(userIncoming.misc)))
+
         let userIncomingMisc = JSON.parse(userIncoming.misc || "{}");
         let getServices = null;
 
@@ -190,8 +192,9 @@ let getStripeCustomer = async (user: any) => {
         });
 
         // update customer id in user misc
+        misc.stripe_customer_id = (await customer).id;
         skapi.updateProfile({
-            misc: JSON.stringify({ stripe_customer_id: (await customer).id }),
+            misc: JSON.stringify(misc),
         });
     }
 };

@@ -161,7 +161,7 @@ let routeQuery = route.query;
 onMounted(() => {
     document.addEventListener("keydown", handleKey);
 
-    if (routeQuery?.redirect === "create" && !isFirstService.value) {
+    if (routeQuery?.action === "create" && !isFirstService.value) {
         openCreateService();
     }
 });
