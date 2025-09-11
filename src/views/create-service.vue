@@ -58,9 +58,6 @@ Modal(:open="props.showCreateModal" @close="handleClose")
                         li.file 100GB File Storage
                         li.mail(style="margin-bottom: 2.5rem;") Automated Emails
                         li.forbiden(style="font-size: .9375rem;") All user data is deleted every 14 days
-                    //- ul.provides
-                        li(v-for="(des) in planSpec['Trial'].description") {{ des }}
-                        li.warning(v-for="(des) in planSpec['Trial'].description_warning") {{ des }}
 
             .plan-item.green(:class="{'selected' : (serviceMode == 'standard' || serviceMode == 'standard-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'standard' && serviceMode !== 'standard-perpetual') && promiseRunning}")
                 svg.mark
@@ -96,8 +93,6 @@ Modal(:open="props.showCreateModal" @close="handleClose")
                     //- .desc 
                         template(v-if="activeTabs.standard === 0") Suits best for hobby use #[span.wordset for small projects #[span.wordset or businesses.]]
                         template(v-else) Get lifetime access to the Standard plan for just $300—upgrade anytime as your needs grow.
-                    //- ul.provides
-                        li(v-for="(des) in planSpec['Standard'].description") {{ des }}
             .plan-item.yellow(:class="{'selected' : (serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning, 'disabled' : (serviceMode !== 'premium' && serviceMode !== 'premium-perpetual') && promiseRunning}")
                 svg.mark
                     use(xlink:href="/material-icon.svg?v=20250829065753667#icon-card-mark")
@@ -122,8 +117,6 @@ Modal(:open="props.showCreateModal" @close="handleClose")
                         template(v-if="(serviceMode == 'premium' || serviceMode == 'premium-perpetual') && promiseRunning")
                             .loader(style="--loader-color:white; --loader-size: 12px")
                         template(v-else) Select
-                //- ul.provides
-                    li(v-for="(des) in planSpec['Premium'].description") {{ des }}
                 .bottom
                     p Includes all Standard Plan features, but more data:
                     ul
@@ -633,28 +626,6 @@ const handleClose = () => {
     }
 }
 
-.provides {
-    li {
-        position: relative;
-        list-style: none;
-        text-align: left;
-        margin-bottom: 0.5rem;
-        font-size: 0.8rem;
-
-        &::before {
-            position: absolute;
-            content: "";
-            left: -1.3rem;
-            top: 0.1rem;
-            background: url("@/assets/img/icon/check.svg") no-repeat;
-            background-size: cover;
-            width: 16px;
-            height: 16px;
-            opacity: 0.8;
-        }
-    }
-}
-
 dialog {
     &::-webkit-scrollbar {
         width: 0.25rem;
@@ -681,10 +652,6 @@ dialog {
         width: 1.5rem;
         height: 1.5rem;
     }
-}
-
-.provides {
-    color: #666666;
 }
 
 @media (max-width: 992px) {
